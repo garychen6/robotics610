@@ -83,7 +83,7 @@ public class RobotTemplate extends IterativeRobot {
         } else {
             rA.set(Relay.Value.kOff);
             rB.set(Relay.Value.kOff);
-            rC.set(Relay.Value.kOff);
+            rC.set(Relay.Value.kOn); //Just because
         }
         if(rightStick.getTrigger()){
             a.set(1);
