@@ -12,9 +12,8 @@ package org.robotics.crescentschool;
 public class HerpDerp {
 //im cool
     //lol
-    //David cai is a kind of lol,jordan grant did not write this.
-}
-int. java im cool.abstract
+    //DERP! DERP! HERPADERP!
 
-        
-        David cai is stupid and he can't spell'
+
+    //95 - WC
+}
