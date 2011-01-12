@@ -8,7 +8,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 
-import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -18,12 +18,21 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  * directory.
  */
 public class KitBotXII extends IterativeRobot {
+    Jaguar red;
+    Jaguar black;
+    Joystick left;
+    Joystick right;
+    Watchdog watchdog;
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
-
+        red = new Jaguar(1);
+        black = new Jaguar(2);
+        left = new Joystick(1);
+        right = new Joystick(2);
+        watchdog = Watchdog.getInstance();
     }
 
     /**
@@ -37,7 +46,8 @@ public class KitBotXII extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        
+        watchdog.feed();
+        red.set(-left.getY());
+        black.set(right.getY());
     }
-    
 }
