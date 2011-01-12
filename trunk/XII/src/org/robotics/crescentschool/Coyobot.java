@@ -23,7 +23,8 @@ public class Coyobot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-
+        //This is the robotInit function
+        //Turn to page three hundred and ninety four
     }
 
     /**
