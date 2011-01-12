@@ -22,7 +22,8 @@ If you use a different client from TortoiseSVN, from here on out you are on your
 With Tortoise, checking out code only needs to be done once. Afterwards it can just be updated. The main files we will be sharing are !NetBeans projects. However, !NetBeans and Tortoise both like beginning with an empty folder. The solution is to download the existing project with Tortoise and open it with !NetBeans. This example will involve downloading the XII project, whose contents can be browsed [http://code.google.com/p/robotics610/source/browse/#svn%2Ftrunk%2FXII here]. Within the !NetBeansProjects folder that is created the first time you create a project with !NetBeans, create an empty folder called 'XII'. Right click on the folder and select SVN Checkout. Leave all of the options at their defaults, except for the URL field. In the URL field put 
 {{{
 https://robotics610.googlecode.com/svn/trunk/XII
-}}} and click OK. Tortoise will download all of the files in the server's XII folder and put them in your XII folder. The XII project can now be opened in !NetBeans with the Open Project dialog (Ctrl+Shift+O).
+}}} 
+and click OK. Tortoise will download all of the files in the server's XII folder and put them in your XII folder. The XII project can now be opened in !NetBeans with the Open Project dialog (Ctrl+Shift+O).
 ===Updating===
 It's generally considered unproductive to work on creating something that already exists. If you're working with an older revision of the project, this is likely to happen at some point, when multiple people are assigned a task and a user completes it without informing the others. By updating your project folder, you get the most recent revision, and can avoid unfortunate circumstances like this. To update, simply right click on the folder where your project is (in this case XII) and select SVN Update.
 ===Committing Code===
