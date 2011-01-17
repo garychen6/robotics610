@@ -48,6 +48,8 @@ public class KitBotXII extends IterativeRobot {
     public void teleopPeriodic() {
         watchdog.feed();
         red.set(-left.getY());
+        System.out.println("Left" + left.getY() + ", Red Jaguar: "+red.get());
+
         black.set(right.getY());
     }
 }
