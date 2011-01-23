@@ -1,4 +1,4 @@
-MIDlet-Name: XII
+MIDlet-Name: CoyoBotXII
 MIDlet-Version: 1.0.0
 MIDlet-Vendor: FIRST
 MIDlet-1: CoyoBotXII, ,  edu.wpi.first.wpilibj.templates.CoyoBotXII
