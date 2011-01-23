@@ -1,4 +1,4 @@
-MIDlet-Name: XII - Kitbot
+MIDlet-Name: KitbotXII
 MIDlet-Version: 1.0.0
 MIDlet-Vendor: FIRST
 MIDlet-1: KitBotXII, , edu.wpi.first.wpilibj.templates.KitBotXII
