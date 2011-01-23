@@ -130,7 +130,7 @@ public class CoyoBotXII extends IterativeRobot {
             jagBackLeftSlave.setX(jagFrontLeftMaster.getX());
             jagBackRightSlave.setX(jagFrontRightMaster.getX());
         } catch (CANTimeoutException ex) {
-                    System.out.println(ex.toString());
+            System.out.println(ex.toString());
         }
 
         // Update the Driver Station
