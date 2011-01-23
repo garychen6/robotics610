@@ -97,7 +97,8 @@ public class CoyoBotXII extends IterativeRobot {
         //Print drive mode to DS & send values to Jaguars
         switch (driveMode) {
             case 0:
-                dsLCD.println(DriverStationLCD.Line.kMain6, 1, "Drive mode: Tank  ");
+                dsLCD.println(DriverStationLCD.Line.kMain6, 1,
+                        "Drive mode: Tank  ");
                 try {
                     jagFrontLeftMaster.setX(joyDriver.getRawAxis(2));
                     jagFrontRightMaster.setX(joyDriver.getRawAxis(4));
@@ -106,19 +107,25 @@ public class CoyoBotXII extends IterativeRobot {
                 }
                 break;
             case 1:
-                dsLCD.println(DriverStationLCD.Line.kMain6, 1, "Drive mode: Arcade");
+                dsLCD.println(DriverStationLCD.Line.kMain6, 1,
+                        "Drive mode: Arcade");
                 try {
-                    jagFrontLeftMaster.setX(joyDriver.getRawAxis(2) - joyDriver.getRawAxis(1));
-                    jagFrontRightMaster.setX(joyDriver.getRawAxis(2) + joyDriver.getRawAxis(1));
+                    jagFrontLeftMaster.setX(joyDriver.getRawAxis(2)
+                            - joyDriver.getRawAxis(1));
+                    jagFrontRightMaster.setX(joyDriver.getRawAxis(2)
+                            + joyDriver.getRawAxis(1));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                 }
                 break;
             case 2:
-                dsLCD.println(DriverStationLCD.Line.kMain6, 1, "Drive mode: Kaj   ");
+                dsLCD.println(DriverStationLCD.Line.kMain6, 1,
+                        "Drive mode: Kaj   ");
                 try {
-                    jagFrontLeftMaster.setX(joyDriver.getRawAxis(2) - joyDriver.getRawAxis(3));
-                    jagFrontRightMaster.setX(joyDriver.getRawAxis(2) + joyDriver.getRawAxis(3));
+                    jagFrontLeftMaster.setX(joyDriver.getRawAxis(2)
+                            - joyDriver.getRawAxis(3));
+                    jagFrontRightMaster.setX(joyDriver.getRawAxis(2)
+                            + joyDriver.getRawAxis(3));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                 }
