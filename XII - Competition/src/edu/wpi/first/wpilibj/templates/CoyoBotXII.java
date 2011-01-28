@@ -1,6 +1,15 @@
 package edu.wpi.first.wpilibj.templates;
 
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.AnalogChannel;
+import edu.wpi.first.wpilibj.CANJaguar;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStationLCD;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
 public class CoyoBotXII extends IterativeRobot {
@@ -34,8 +43,10 @@ public class CoyoBotXII extends IterativeRobot {
 
         try {
             jagFrontLeftMaster = new CANJaguar(3);
+            jagFrontLeftMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
             jagBackLeftSlave = new CANJaguar(4);
             jagFrontRightMaster = new CANJaguar(1);
+            jagFrontRightMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
             jagBackRightSlave = new CANJaguar(2);
         } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
@@ -61,32 +72,56 @@ public class CoyoBotXII extends IterativeRobot {
 
         compressor.start();
     }
+    public void disabledInit(){
+
+    }
 
     public void disabledPeriodic(){
-        regulatePressure();
+
     }
+
+    public void autonomousInit(){
+        try {
+            jagFrontLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+            jagFrontRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+        } catch (CANTimeoutException ex){
+            System.out.println(ex.toString());
+        }
+    }
+
     public void autonomousPeriodic() {
-        regulatePressure();
+        watchdog.feed();
+        /*try {
+            //TODO: PID loop - possibly move to auto init
+        } catch (CANTimeoutException ex){
+            System.out.println(ex.toString());
+        }/**/
     }
 
     public void teleopInit() {
+        try {
+            jagFrontLeftMaster.changeControlMode(CANJaguar.ControlMode.kVoltage);
+            jagFrontRightMaster.changeControlMode(CANJaguar.ControlMode.kVoltage);
+        } catch (CANTimeoutException ex){
+            System.out.println(ex.toString());
+        }
     }
 
     public void teleopPeriodic() {
-        regulatePressure();
 
         watchdog.feed(); //feed the watchdog
 
-        //Check buttons & set shift - high is 3, low is 2
-        if(joyDriver.getRawButton(3)){
+        //Check buttons & set shift - high is 8, low is 7
+        if(joyDriver.getRawButton(8)){
             solShifterHigh.set(true);
             solShifterLow.set(false);
         }
-        else if(joyDriver.getRawButton(2)){
+        else if(joyDriver.getRawButton(7)){
             solShifterHigh.set(false);
             solShifterLow.set(true);
         }
         //Toggle drive mode
+        
         if (!driveToggle && joyDriver.getRawButton(2)) {
             driveMode = (driveMode + 1) % 3;
             driveToggle = true;
@@ -149,9 +184,5 @@ public class CoyoBotXII extends IterativeRobot {
 
         dsLCD.updateLCD();
 
-    }
-    public void regulatePressure(){
-        if(compressor.getPressureSwitchValue());//compressor.stop();
-        else compressor.start();
     }
 }
