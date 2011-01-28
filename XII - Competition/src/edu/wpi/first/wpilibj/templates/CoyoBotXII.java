@@ -1,27 +1,15 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the manifest file in the resource
- * directory.
- */
 public class CoyoBotXII extends IterativeRobot {
 
     CANJaguar jagFrontLeftMaster, jagBackLeftSlave,
             jagFrontRightMaster, jagBackRightSlave;
     Victor vicGripperTop, vicGripperBottom;
     CANJaguar jagShoulder;
+    Compressor compressor;
     Solenoid solShifterHigh, solShifterLow;
     Solenoid solArmStageOne, solArmStageTwo;
     Solenoid solDeploy;
@@ -45,47 +33,59 @@ public class CoyoBotXII extends IterativeRobot {
         dsLCD = DriverStationLCD.getInstance();
 
         try {
-            jagFrontLeftMaster = new CANJaguar(1);
-            jagBackLeftSlave = new CANJaguar(2);
-            jagFrontRightMaster = new CANJaguar(3);
-            jagBackRightSlave = new CANJaguar(4);
+            jagFrontLeftMaster = new CANJaguar(3);
+            jagBackLeftSlave = new CANJaguar(4);
+            jagFrontRightMaster = new CANJaguar(1);
+            jagBackRightSlave = new CANJaguar(2);
         } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
         }
 
+        compressor = new Compressor(1,1);
+
+        solShifterHigh = new Solenoid(7,1);
+        solShifterLow = new Solenoid(7,2);
+
         joyDriver = new Joystick(1);
         joyOperator = new Joystick(2);
 
-        digLineLeft = new DigitalInput(1);
-        digLineMiddle = new DigitalInput(2);
-        digLineRight = new DigitalInput(3);
+        //digLineLeft = new DigitalInput(1);
+        //digLineMiddle = new DigitalInput(2);
+        //digLineRight = new DigitalInput(3);
 
         anaUltraSonic = new AnalogChannel(1);
 
         driveMode = 0; //0 = Tank; 1 = Arcade; 2 = Kaj
         driveToggle = false;
         cruiseControl = false;
+
+        compressor.start();
     }
 
-    /**
-     * This function is called periodically during autonomous
-     */
+    public void disabledPeriodic(){
+        regulatePressure();
+    }
     public void autonomousPeriodic() {
+        regulatePressure();
     }
 
-    /**
-     * This function is called periodically during operator control
-     */
     public void teleopInit() {
     }
 
-    /**
-     * This function is called periodically during operator control
-     */
     public void teleopPeriodic() {
+        regulatePressure();
 
         watchdog.feed(); //feed the watchdog
 
+        //Check buttons & set shift - high is 3, low is 2
+        if(joyDriver.getRawButton(3)){
+            solShifterHigh.set(true);
+            solShifterLow.set(false);
+        }
+        else if(joyDriver.getRawButton(2)){
+            solShifterHigh.set(false);
+            solShifterLow.set(true);
+        }
         //Toggle drive mode
         if (!driveToggle && joyDriver.getRawButton(2)) {
             driveMode = (driveMode + 1) % 3;
@@ -141,13 +141,17 @@ public class CoyoBotXII extends IterativeRobot {
         }
 
         // Update the Driver Station
-        dsLCD.println(DriverStationLCD.Line.kUser3, 1, "L:" + digLineLeft.get()
-                + " M:" + digLineMiddle.get() + " R:" + digLineRight.get());
+       // dsLCD.println(DriverStationLCD.Line.kUser3, 1, "L:" + digLineLeft.get()
+         //       + " M:" + digLineMiddle.get() + " R:" + digLineRight.get());
 
         dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Range:"
                 + anaUltraSonic.getVoltage() + "    ");
 
         dsLCD.updateLCD();
 
+    }
+    public void regulatePressure(){
+        if(compressor.getPressureSwitchValue());//compressor.stop();
+        else compressor.start();
     }
 }
