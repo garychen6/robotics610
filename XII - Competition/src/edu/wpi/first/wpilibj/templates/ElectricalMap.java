@@ -25,8 +25,8 @@ public class ElectricalMap {
 
     public static final int kSolenoidModulePort = 7;
 
-    public static final int kLowSolenoidChannel = 2;
-    public static final int kHighSolenoidChannel = 1;
+    public static final int kSolenoidLowChannel = 2;
+    public static final int kSolenoidHighChannel = 1;
 
     //Digital Sidecar
     
@@ -36,8 +36,8 @@ public class ElectricalMap {
     public static final int kLightSensor2Channel = 3;
     public static final int kLightSensor3Channel = 4;
 
-    public static final int kPWMGripperTopChannel = 5;
-    public static final int kPWMGripperBottomChannel = 6;
+    public static final int kVictorGripperTopChannel = 5;
+    public static final int kVictorGripperBottomChannel = 6;
 
     public static final int kCompressorRelayChannel = 1;
     public static final int kCompressorPressureSwitchChannel = 1;
