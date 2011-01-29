@@ -14,12 +14,12 @@ public class ElectricalMap {
 
     public static final int kAnalogModulePort = 1;
 
-    public static final int kGyroChannel = 0;
+    public static final int kGyroChannel = 1;
 
-    public static final int kAcclerometerChannelA = 0;
-    public static final int kAcclerometerChannelB = 0;
+    public static final int kAcclerometerChannelA = 2;
+    public static final int kAcclerometerChannelB = 3;
 
-    public static final int kUltrasonicChannel = 0;
+    public static final int kUltrasonicChannel = 4;
 
     //Solenoid Module
 
@@ -32,9 +32,9 @@ public class ElectricalMap {
     
     public static final int kDigitalModulePort = 4;
 
-    public static final int kLightSensor1Channel = 2;
-    public static final int kLightSensor2Channel = 3;
-    public static final int kLightSensor3Channel = 4;
+    public static final int kLightSensorRChannel = 2;
+    public static final int kLightSensorMChannel = 3;
+    public static final int kLightSensorLChannel = 4;
 
     public static final int kVictorGripperTopChannel = 5;
     public static final int kVictorGripperBottomChannel = 6;
