@@ -43,10 +43,12 @@ public class CoyoBotXII extends IterativeRobot {
 
         try {
             jagLeftMaster = new CANJaguar(ElectricalMap.kJaguarLeftMaster);
-            jagLeftMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
-            jagLeftSlave = new CANJaguar(ElectricalMap.kJaguarLeftSlave);
             jagRightMaster = new CANJaguar(ElectricalMap.kJaguarRightMaster);
+            jagLeftMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
             jagRightMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
+            jagLeftMaster.configEncoderCodesPerRev(512);
+            jagRightMaster.configEncoderCodesPerRev(512);
+            jagLeftSlave = new CANJaguar(ElectricalMap.kJaguarLeftSlave);
             jagRightSlave = new CANJaguar(ElectricalMap.kJaguarRightSlave);
         } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
@@ -60,11 +62,11 @@ public class CoyoBotXII extends IterativeRobot {
         joyDriver = new Joystick(ElectricalMap.kJoystickDriverPort);
         joyOperator = new Joystick(ElectricalMap.kJoystickOperatorPort);
 
-        //digLineLeft = new DigitalInput(ElectricalMap.kLineSensor1Channel);
-        //digLineMiddle = new DigitalInput(ElectricalMap.kLineSensor2Channel);
-        //digLineRight = new DigitalInput(ElectricalMap.kLineSensor3Channel);
+        digLineLeft = new DigitalInput(ElectricalMap.kLightSensorLChannel);
+        digLineMiddle = new DigitalInput(ElectricalMap.kLightSensorMChannel);
+        digLineRight = new DigitalInput(ElectricalMap.kLightSensorRChannel);
 
-        anaUltraSonic = new AnalogChannel(ElectricalMap.kUltrasonicChannel);
+        //anaUltraSonic = new AnalogChannel(ElectricalMap.kUltrasonicChannel);
 
         driveMode = 0; //0 = Tank; 1 = Arcade; 2 = Kaj
         driveToggle = false;
@@ -84,24 +86,32 @@ public class CoyoBotXII extends IterativeRobot {
         try {
             jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+            jagLeftMaster.setPID(0.1, 0, 0);
+            jagRightMaster.setPID(0.1, 0, 0);
+            jagLeftMaster.enableControl();
+            jagRightMaster.enableControl();
+            jagLeftMaster.setX(-60);
+            jagRightMaster.setX(-60);
         } catch (CANTimeoutException ex){
             System.out.println(ex.toString());
         }
     }
 
-    public void autonomousPeriodic() {
+    public void autonomousPeriodic(){
         watchdog.feed();
-        /*try {
-            //TODO: PID loop - possibly move to auto init
-        } catch (CANTimeoutException ex){
-            System.out.println(ex.toString());
-        }/**/
+        updateDS();
+    }
+    
+    public void autonomousContinuous() {
+        syncSlaves();
     }
 
     public void teleopInit() {
         try {
-            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kVoltage);
-            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kVoltage);
+            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            jagLeftMaster.enableControl();
+            jagRightMaster.enableControl();
         } catch (CANTimeoutException ex){
             System.out.println(ex.toString());
         }
@@ -135,8 +145,8 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Tank  ");
                 try {
-                    jagLeftMaster.setX(joyDriver.getRawAxis(2));
-                    jagRightMaster.setX(joyDriver.getRawAxis(4));
+                    jagLeftMaster.setX(-joyDriver.getRawAxis(2));
+                    jagRightMaster.setX(-joyDriver.getRawAxis(4));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                 }
@@ -145,9 +155,9 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Arcade");
                 try {
-                    jagLeftMaster.setX(joyDriver.getRawAxis(2)
+                    jagLeftMaster.setX(-joyDriver.getRawAxis(2)
                             - joyDriver.getRawAxis(1));
-                    jagRightMaster.setX(joyDriver.getRawAxis(2)
+                    jagRightMaster.setX(-joyDriver.getRawAxis(2)
                             + joyDriver.getRawAxis(1));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
@@ -157,9 +167,9 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Kaj   ");
                 try {
-                    jagLeftMaster.setX(joyDriver.getRawAxis(2)
+                    jagLeftMaster.setX(-joyDriver.getRawAxis(2)
                             - joyDriver.getRawAxis(3));
-                    jagRightMaster.setX(joyDriver.getRawAxis(2)
+                    jagRightMaster.setX(-joyDriver.getRawAxis(2)
                             + joyDriver.getRawAxis(3));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
@@ -167,22 +177,36 @@ public class CoyoBotXII extends IterativeRobot {
                 break;
         }
 
-        // Synchronize Slave Jaguars
-        try {
-            jagLeftSlave.setX(jagLeftMaster.getX());
-            jagRightSlave.setX(jagRightMaster.getX());
-        } catch (CANTimeoutException ex) {
-            System.out.println(ex.toString());
-        }
+        syncSlaves();
+
+        updateDS();
 
         // Update the Driver Station
        // dsLCD.println(DriverStationLCD.Line.kUser3, 1, "L:" + digLineLeft.get()
          //       + " M:" + digLineMiddle.get() + " R:" + digLineRight.get());
 
-        dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Range:"
-                + anaUltraSonic.getVoltage() + "    ");
+//        dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Range:"
+  //              + anaUltraSonic.getVoltage() + "    ");
 
+
+    }
+
+    public void syncSlaves(){
+        try {
+            jagLeftSlave.setX(jagLeftMaster.getOutputVoltage());
+            jagRightSlave.setX(jagRightMaster.getOutputVoltage());
+        } catch (CANTimeoutException ex){
+            System.out.println(ex.toString());
+        }
+    }
+
+    public void updateDS(){
+        try{
+            dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + jagLeftMaster.getSpeed());
+            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Enc: " + jagRightMaster.getSpeed());
+        } catch (CANTimeoutException ex){
+            System.out.println(ex.toString());
+        }
         dsLCD.updateLCD();
-
     }
 }
