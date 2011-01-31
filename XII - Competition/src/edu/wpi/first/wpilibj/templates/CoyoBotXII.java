@@ -31,6 +31,7 @@ public class CoyoBotXII extends IterativeRobot {
     int driveMode;
     boolean driveToggle;
     boolean cruiseControl;
+    double pConstant = 0.1, iConstant = 0, dConstant = 0;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -57,8 +58,8 @@ public class CoyoBotXII extends IterativeRobot {
         try {
             jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
-            //jagLeftMaster.setPID(0.1, 0, 0);
-            //jagRightMaster.setPID(0.1, 0, 0);
+            jagLeftMaster.setPID(0.1, 0, 0);
+            jagRightMaster.setPID(0.1, 0, 0);
             jagLeftMaster.enableControl();
             jagRightMaster.enableControl();
         } catch (CANTimeoutException ex){
@@ -111,19 +112,43 @@ public class CoyoBotXII extends IterativeRobot {
     }
 
     public void teleopInit() {
-        /*
         try {
-            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            //jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            //jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagLeftMaster.enableControl();
             jagRightMaster.enableControl();
+            jagLeftMaster.setPID(pConstant, iConstant, dConstant);
+            jagRightMaster.setPID(pConstant, iConstant, dConstant);
+            jagLeftMaster.setX(60);
+            jagRightMaster.setX(60);
         } catch (CANTimeoutException ex){
             System.out.println(ex.toString());
         }
-         */
+         
     }
 
-    public void teleopPeriodic() {
+    public void teleopPeriodic(){
+        watchdog.feed();
+        syncSlaves();
+        if(joyDriver.getRawButton(5))pConstant += 0.01;
+        if(joyDriver.getRawButton(7))pConstant -= 0.01;
+        if(joyDriver.getRawButton(4))iConstant += 0.001;
+        if(joyDriver.getRawButton(2))iConstant -= 0.001;
+        if(joyDriver.getRawButton(6))dConstant += 0.01;
+        if(joyDriver.getRawButton(8))dConstant -= 0.01;
+
+        //Check buttons & set shift - high is 8, low is 7
+        if(joyDriver.getRawButton(10)){
+            solShifterHigh.set(true);
+            solShifterLow.set(false);
+        }
+        else if(joyDriver.getRawButton(9)){
+            solShifterHigh.set(false);
+            solShifterLow.set(true);
+        }
+        updateDS();
+    }
+    public void NOTteleopPeriodic() {
 
         watchdog.feed(); //feed the watchdog
 
@@ -208,8 +233,11 @@ public class CoyoBotXII extends IterativeRobot {
 
     public void updateDS(){
         try{
-            dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + jagLeftMaster.getSpeed());
-            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Enc: " + jagRightMaster.getSpeed());
+            dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + (int)jagLeftMaster.getSpeed());
+            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Enc: " + (int)jagRightMaster.getSpeed());
+            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "P: " + pConstant);
+            dsLCD.println(DriverStationLCD.Line.kUser5, 1, "I: " + iConstant);
+            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "D: " + dConstant);
         } catch (CANTimeoutException ex){
             System.out.println(ex.toString());
         }
