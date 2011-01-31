@@ -54,6 +54,16 @@ public class CoyoBotXII extends IterativeRobot {
             System.out.println(ex.toString());
         }
 
+        try {
+            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+            //jagLeftMaster.setPID(0.1, 0, 0);
+            //jagRightMaster.setPID(0.1, 0, 0);
+            jagLeftMaster.enableControl();
+            jagRightMaster.enableControl();
+        } catch (CANTimeoutException ex){
+            System.out.println(ex.toString());
+        }
         compressor = new Compressor(ElectricalMap.kCompressorPressureSwitchChannel,ElectricalMap.kCompressorRelayChannel);
 
         solShifterHigh = new Solenoid(ElectricalMap.kSolenoidModulePort,ElectricalMap.kSolenoidHighChannel);
@@ -83,13 +93,7 @@ public class CoyoBotXII extends IterativeRobot {
     }
 
     public void autonomousInit(){
-        try {
-            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
-            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
-            jagLeftMaster.setPID(0.1, 0, 0);
-            jagRightMaster.setPID(0.1, 0, 0);
-            jagLeftMaster.enableControl();
-            jagRightMaster.enableControl();
+        try {    
             jagLeftMaster.setX(-60);
             jagRightMaster.setX(-60);
         } catch (CANTimeoutException ex){
@@ -107,6 +111,7 @@ public class CoyoBotXII extends IterativeRobot {
     }
 
     public void teleopInit() {
+        /*
         try {
             jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
@@ -115,6 +120,7 @@ public class CoyoBotXII extends IterativeRobot {
         } catch (CANTimeoutException ex){
             System.out.println(ex.toString());
         }
+         */
     }
 
     public void teleopPeriodic() {
@@ -145,8 +151,8 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Tank  ");
                 try {
-                    jagLeftMaster.setX(-joyDriver.getRawAxis(2));
-                    jagRightMaster.setX(-joyDriver.getRawAxis(4));
+                    jagLeftMaster.setX(120*(-joyDriver.getRawAxis(2)));
+                    jagRightMaster.setX(120*(-joyDriver.getRawAxis(4)));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                 }
@@ -155,10 +161,10 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Arcade");
                 try {
-                    jagLeftMaster.setX(-joyDriver.getRawAxis(2)
-                            - joyDriver.getRawAxis(1));
-                    jagRightMaster.setX(-joyDriver.getRawAxis(2)
-                            + joyDriver.getRawAxis(1));
+                    jagLeftMaster.setX(120*(-joyDriver.getRawAxis(2)
+                            + joyDriver.getRawAxis(1)));
+                    jagRightMaster.setX(120*(-joyDriver.getRawAxis(2)
+                            - joyDriver.getRawAxis(1)));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                 }
@@ -167,10 +173,10 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Kaj   ");
                 try {
-                    jagLeftMaster.setX(-joyDriver.getRawAxis(2)
-                            - joyDriver.getRawAxis(3));
-                    jagRightMaster.setX(-joyDriver.getRawAxis(2)
-                            + joyDriver.getRawAxis(3));
+                    jagLeftMaster.setX(120*(-joyDriver.getRawAxis(2)
+                            + joyDriver.getRawAxis(3)));
+                    jagRightMaster.setX(120*(-joyDriver.getRawAxis(2)
+                            - joyDriver.getRawAxis(3)));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                 }
