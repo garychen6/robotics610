@@ -106,7 +106,7 @@ public class CoyoBotXII extends IterativeRobot {
         watchdog.feed();
         updateDS();
     }
-    
+
     public void autonomousContinuous() {
         syncSlaves();
     }
@@ -117,23 +117,22 @@ public class CoyoBotXII extends IterativeRobot {
             //jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagLeftMaster.enableControl();
             jagRightMaster.enableControl();
-            jagLeftMaster.setPID(pConstant, iConstant, dConstant);
-            jagRightMaster.setPID(pConstant, iConstant, dConstant);
+            jagLeftMaster.setPID(0.1, 0.002, 0.0);
+            jagRightMaster.setPID(0.1, 0.002, 0.0);
             jagLeftMaster.setX(60);
             jagRightMaster.setX(60);
         } catch (CANTimeoutException ex){
             System.out.println(ex.toString());
         }
-         
     }
 
-    public void teleopPeriodic(){
+    public void ALSONOTteleopPeriodic(){
         watchdog.feed();
         syncSlaves();
         if(joyDriver.getRawButton(5))pConstant += 0.01;
         if(joyDriver.getRawButton(7))pConstant -= 0.01;
-        if(joyDriver.getRawButton(4))iConstant += 0.001;
-        if(joyDriver.getRawButton(2))iConstant -= 0.001;
+        if(joyDriver.getRawButton(4))iConstant += 0.0001;
+        if(joyDriver.getRawButton(2))iConstant -= 0.0001;
         if(joyDriver.getRawButton(6))dConstant += 0.01;
         if(joyDriver.getRawButton(8))dConstant -= 0.01;
 
@@ -148,8 +147,8 @@ public class CoyoBotXII extends IterativeRobot {
         }
         updateDS();
     }
-    public void NOTteleopPeriodic() {
-
+    
+    public void teleopPeriodic() {
         watchdog.feed(); //feed the watchdog
 
         //Check buttons & set shift - high is 8, low is 7
@@ -162,7 +161,7 @@ public class CoyoBotXII extends IterativeRobot {
             solShifterLow.set(true);
         }
         //Toggle drive mode
-        
+
         if (!driveToggle && joyDriver.getRawButton(2)) {
             driveMode = (driveMode + 1) % 3;
             driveToggle = true;
@@ -208,7 +207,6 @@ public class CoyoBotXII extends IterativeRobot {
                 break;
         }
 
-        syncSlaves();
 
         updateDS();
 
@@ -220,6 +218,10 @@ public class CoyoBotXII extends IterativeRobot {
   //              + anaUltraSonic.getVoltage() + "    ");
 
 
+    }
+
+    public void teleopContinuous(){
+        syncSlaves();
     }
 
     public void syncSlaves(){
