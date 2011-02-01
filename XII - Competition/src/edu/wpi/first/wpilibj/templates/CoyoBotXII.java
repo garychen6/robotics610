@@ -47,8 +47,8 @@ public class CoyoBotXII extends IterativeRobot {
             jagRightMaster = new CANJaguar(ElectricalMap.kJaguarRightMaster);
             jagLeftMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
             jagRightMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
-            jagLeftMaster.configEncoderCodesPerRev(512);
-            jagRightMaster.configEncoderCodesPerRev(512);
+            jagLeftMaster.configEncoderCodesPerRev(256);
+            jagRightMaster.configEncoderCodesPerRev(256);
             jagLeftSlave = new CANJaguar(ElectricalMap.kJaguarLeftSlave);
             jagRightSlave = new CANJaguar(ElectricalMap.kJaguarRightSlave);
         } catch (CANTimeoutException ex) {
@@ -58,17 +58,15 @@ public class CoyoBotXII extends IterativeRobot {
         try {
             jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
-            jagLeftMaster.setPID(0.1, 0, 0);
-            jagRightMaster.setPID(0.1, 0, 0);
-            jagLeftMaster.enableControl();
-            jagRightMaster.enableControl();
-        } catch (CANTimeoutException ex){
+            jagLeftMaster.setPID(0.1, 0.0002, 0);
+            jagRightMaster.setPID(0.1, 0.0002, 0);
+        } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
         }
-        compressor = new Compressor(ElectricalMap.kCompressorPressureSwitchChannel,ElectricalMap.kCompressorRelayChannel);
+        compressor = new Compressor(ElectricalMap.kCompressorPressureSwitchChannel, ElectricalMap.kCompressorRelayChannel);
 
-        solShifterHigh = new Solenoid(ElectricalMap.kSolenoidModulePort,ElectricalMap.kSolenoidHighChannel);
-        solShifterLow = new Solenoid(ElectricalMap.kSolenoidModulePort,ElectricalMap.kSolenoidLowChannel);
+        solShifterHigh = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidHighChannel);
+        solShifterLow = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidLowChannel);
 
         joyDriver = new Joystick(ElectricalMap.kJoystickDriverPort);
         joyOperator = new Joystick(ElectricalMap.kJoystickOperatorPort);
@@ -77,7 +75,7 @@ public class CoyoBotXII extends IterativeRobot {
         digLineMiddle = new DigitalInput(ElectricalMap.kLightSensorMChannel);
         digLineRight = new DigitalInput(ElectricalMap.kLightSensorRChannel);
 
-        //anaUltraSonic = new AnalogChannel(ElectricalMap.kUltrasonicChannel);
+        anaUltraSonic = new AnalogChannel(ElectricalMap.kUltrasonicChannel);
 
         driveMode = 0; //0 = Tank; 1 = Arcade; 2 = Kaj
         driveToggle = false;
@@ -85,24 +83,25 @@ public class CoyoBotXII extends IterativeRobot {
 
         compressor.start();
     }
-    public void disabledInit(){
 
+    public void disabledInit() {
     }
 
-    public void disabledPeriodic(){
-
+    public void disabledPeriodic() {
     }
 
-    public void autonomousInit(){
-        try {    
+    public void autonomousInit() {
+        try {
+            jagLeftMaster.enableControl();
+            jagRightMaster.enableControl();
             jagLeftMaster.setX(-60);
             jagRightMaster.setX(-60);
-        } catch (CANTimeoutException ex){
+        } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
         }
     }
 
-    public void autonomousPeriodic(){
+    public void autonomousPeriodic() {
         watchdog.feed();
         updateDS();
     }
@@ -113,50 +112,54 @@ public class CoyoBotXII extends IterativeRobot {
 
     public void teleopInit() {
         try {
-            //jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-            //jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagLeftMaster.enableControl();
             jagRightMaster.enableControl();
-            jagLeftMaster.setPID(0.1, 0.002, 0.0);
-            jagRightMaster.setPID(0.1, 0.002, 0.0);
-            jagLeftMaster.setX(60);
-            jagRightMaster.setX(60);
-        } catch (CANTimeoutException ex){
+        } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
         }
     }
 
-    public void ALSONOTteleopPeriodic(){
+    public void ALSONOTteleopPeriodic() {
         watchdog.feed();
         syncSlaves();
-        if(joyDriver.getRawButton(5))pConstant += 0.01;
-        if(joyDriver.getRawButton(7))pConstant -= 0.01;
-        if(joyDriver.getRawButton(4))iConstant += 0.0001;
-        if(joyDriver.getRawButton(2))iConstant -= 0.0001;
-        if(joyDriver.getRawButton(6))dConstant += 0.01;
-        if(joyDriver.getRawButton(8))dConstant -= 0.01;
+        if (joyDriver.getRawButton(5)) {
+            pConstant += 0.01;
+        }
+        if (joyDriver.getRawButton(7)) {
+            pConstant -= 0.01;
+        }
+        if (joyDriver.getRawButton(4)) {
+            iConstant += 0.0001;
+        }
+        if (joyDriver.getRawButton(2)) {
+            iConstant -= 0.0001;
+        }
+        if (joyDriver.getRawButton(6)) {
+            dConstant += 0.01;
+        }
+        if (joyDriver.getRawButton(8)) {
+            dConstant -= 0.01;
+        }
 
         //Check buttons & set shift - high is 8, low is 7
-        if(joyDriver.getRawButton(10)){
+        if (joyDriver.getRawButton(10)) {
             solShifterHigh.set(true);
             solShifterLow.set(false);
-        }
-        else if(joyDriver.getRawButton(9)){
+        } else if (joyDriver.getRawButton(9)) {
             solShifterHigh.set(false);
             solShifterLow.set(true);
         }
         updateDS();
     }
-    
+
     public void teleopPeriodic() {
         watchdog.feed(); //feed the watchdog
 
         //Check buttons & set shift - high is 8, low is 7
-        if(joyDriver.getRawButton(8)){
+        if (joyDriver.getRawButton(8)) {
             solShifterHigh.set(true);
             solShifterLow.set(false);
-        }
-        else if(joyDriver.getRawButton(7)){
+        } else if (joyDriver.getRawButton(7)) {
             solShifterHigh.set(false);
             solShifterLow.set(true);
         }
@@ -175,8 +178,8 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Tank  ");
                 try {
-                    jagLeftMaster.setX(120*(-joyDriver.getRawAxis(2)));
-                    jagRightMaster.setX(120*(-joyDriver.getRawAxis(4)));
+                    jagLeftMaster.setX(120 * (-joyDriver.getRawAxis(2)));
+                    jagRightMaster.setX(120 * (-joyDriver.getRawAxis(4)));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                 }
@@ -185,9 +188,9 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Arcade");
                 try {
-                    jagLeftMaster.setX(120*(-joyDriver.getRawAxis(2)
+                    jagLeftMaster.setX(120 * (-joyDriver.getRawAxis(2)
                             + joyDriver.getRawAxis(1)));
-                    jagRightMaster.setX(120*(-joyDriver.getRawAxis(2)
+                    jagRightMaster.setX(120 * (-joyDriver.getRawAxis(2)
                             - joyDriver.getRawAxis(1)));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
@@ -197,9 +200,9 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Kaj   ");
                 try {
-                    jagLeftMaster.setX(120*(-joyDriver.getRawAxis(2)
+                    jagLeftMaster.setX(120 * (-joyDriver.getRawAxis(2)
                             + joyDriver.getRawAxis(3)));
-                    jagRightMaster.setX(120*(-joyDriver.getRawAxis(2)
+                    jagRightMaster.setX(120 * (-joyDriver.getRawAxis(2)
                             - joyDriver.getRawAxis(3)));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
@@ -211,36 +214,36 @@ public class CoyoBotXII extends IterativeRobot {
         updateDS();
 
         // Update the Driver Station
-       // dsLCD.println(DriverStationLCD.Line.kUser3, 1, "L:" + digLineLeft.get()
-         //       + " M:" + digLineMiddle.get() + " R:" + digLineRight.get());
+        // dsLCD.println(DriverStationLCD.Line.kUser3, 1, "L:" + digLineLeft.get()
+        //       + " M:" + digLineMiddle.get() + " R:" + digLineRight.get());
 
 //        dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Range:"
-  //              + anaUltraSonic.getVoltage() + "    ");
+        //              + anaUltraSonic.getVoltage() + "    ");
 
 
     }
 
-    public void teleopContinuous(){
+    public void teleopContinuous() {
         syncSlaves();
     }
 
-    public void syncSlaves(){
+    public void syncSlaves() {
         try {
             jagLeftSlave.setX(jagLeftMaster.getOutputVoltage());
             jagRightSlave.setX(jagRightMaster.getOutputVoltage());
-        } catch (CANTimeoutException ex){
+        } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
         }
     }
 
-    public void updateDS(){
-        try{
-            dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + (int)jagLeftMaster.getSpeed());
-            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Enc: " + (int)jagRightMaster.getSpeed());
+    public void updateDS() {
+        try {
+            dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + (int) jagLeftMaster.getSpeed());
+            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Enc: " + (int) jagRightMaster.getSpeed());
             dsLCD.println(DriverStationLCD.Line.kUser4, 1, "P: " + pConstant);
             dsLCD.println(DriverStationLCD.Line.kUser5, 1, "I: " + iConstant);
             dsLCD.println(DriverStationLCD.Line.kUser6, 1, "D: " + dConstant);
-        } catch (CANTimeoutException ex){
+        } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
         }
         dsLCD.updateLCD();
