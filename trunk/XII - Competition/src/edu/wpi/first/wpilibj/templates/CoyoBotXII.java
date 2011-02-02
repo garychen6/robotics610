@@ -33,6 +33,12 @@ public class CoyoBotXII extends IterativeRobot {
     boolean driveToggle;
     boolean cruiseControl;
     double pConstant = 0.1, iConstant = 0, dConstant = 0;
+    double leftSpeed, rightSpeed;
+    double xInput, yInput;
+    double maxSpeed;
+    double maxLowSpeed = 240;
+    double maxHighSpeed = 530;
+
 
     /**
      * This function is run when the robot is first started up and should be
@@ -84,6 +90,8 @@ public class CoyoBotXII extends IterativeRobot {
         driveMode = 0; //0 = Tank; 1 = Arcade; 2 = Kaj
         driveToggle = false;
         cruiseControl = false;
+        
+        maxSpeed = maxLowSpeed;
 
         compressor.start();
     }
@@ -164,9 +172,11 @@ public class CoyoBotXII extends IterativeRobot {
         if (joyDriver.getRawButton(8)) {
             solShifterHigh.set(true);
             solShifterLow.set(false);
+            maxSpeed = maxHighSpeed;
         } else if (joyDriver.getRawButton(7)) {
             solShifterHigh.set(false);
             solShifterLow.set(true);
+            maxSpeed = maxLowSpeed;
         }
         //Toggle drive mode
 
@@ -183,8 +193,8 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Tank  ");
                 try {
-                    jagLeftMaster.setX(120 * (-joyDriver.getRawAxis(2)));
-                    jagRightMaster.setX(120 * (-joyDriver.getRawAxis(4)));
+                    jagLeftMaster.setX(maxSpeed * (-joyDriver.getRawAxis(2)));
+                    jagRightMaster.setX(maxSpeed * (-joyDriver.getRawAxis(4)));
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                 }
@@ -193,10 +203,11 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Arcade");
                 try {
-                    jagLeftMaster.setX(120 * (-joyDriver.getRawAxis(2)
-                            + joyDriver.getRawAxis(1)));
-                    jagRightMaster.setX(120 * (-joyDriver.getRawAxis(2)
-                            - joyDriver.getRawAxis(1)));
+                    xInput = joyDriver.getRawAxis(1);
+                    yInput = joyDriver.getRawAxis(2);
+                    octantJoystick();
+                    jagLeftMaster.setX(maxSpeed * leftSpeed);
+                    jagRightMaster.setX(maxSpeed * rightSpeed);
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                 }
@@ -205,10 +216,11 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Kaj   ");
                 try {
-                    jagLeftMaster.setX(120 * (-joyDriver.getRawAxis(2)
-                            + joyDriver.getRawAxis(3)));
-                    jagRightMaster.setX(120 * (-joyDriver.getRawAxis(2)
-                            - joyDriver.getRawAxis(3)));
+                    xInput = joyDriver.getRawAxis(3);
+                    yInput = joyDriver.getRawAxis(2);
+                    octantJoystick();
+                    jagLeftMaster.setX(maxSpeed * leftSpeed);
+                    jagRightMaster.setX(maxSpeed * rightSpeed);
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                 }
@@ -232,6 +244,69 @@ public class CoyoBotXII extends IterativeRobot {
         syncSlaves();
     }
 
+    public void octantJoystick() {
+        if (xInput >= 0 && yInput >= 0)
+        {
+            if (xInput > yInput)
+            {
+                //Quadrant 8
+                leftSpeed = xInput - yInput;
+                rightSpeed = -xInput;
+            }
+            else
+            {
+                //Quadrant 7
+                leftSpeed = xInput - yInput;
+                rightSpeed = -yInput;
+            }
+        }
+        if (xInput >= 0 && yInput <= 0)
+        {
+            if (xInput > -yInput)
+            {
+                //Quadrant 1
+                leftSpeed = xInput;
+                rightSpeed = -(yInput + xInput);
+            }
+            else
+            {
+                //Quadrant 2
+                leftSpeed = -yInput;
+                rightSpeed = -(yInput + xInput);
+            }
+        }
+        if (xInput <= 0 && yInput <= 0)
+        {
+            if (xInput < yInput)
+            {
+                //Quadrant 4
+                leftSpeed = xInput - yInput;
+                rightSpeed = -xInput;
+            }
+            else
+            {
+                //Quadrant 3
+                leftSpeed = xInput - yInput;
+                rightSpeed = -yInput;
+            }
+        }
+        if (xInput <= 0 && yInput >= 0)
+        {
+            if (-xInput > yInput)
+            {
+                //Quadrant 5
+                leftSpeed = xInput;
+                rightSpeed = -(xInput + yInput);
+            }
+            else
+            {
+                //Quadrant 6
+                leftSpeed = -yInput;
+                rightSpeed = -(xInput + yInput);
+            }
+        }
+    }
+
     public void syncSlaves() {
         try {
             jagLeftSlave.setX(jagLeftMaster.getOutputVoltage());
@@ -243,8 +318,8 @@ public class CoyoBotXII extends IterativeRobot {
 
     public void updateDS() {
         try {
-            dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + (int) jagLeftMaster.getSpeed());
-            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Enc: " + (int) jagRightMaster.getSpeed());
+            dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + (int) jagLeftMaster.getSpeed() + "     ");
+            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Enc: " + (int) jagRightMaster.getSpeed() + "     ");
             //dsLCD.println(DriverStationLCD.Line.kUser4, 1, "P: " + pConstant);
             //dsLCD.println(DriverStationLCD.Line.kUser5, 1, "I: " + iConstant);
             //dsLCD.println(DriverStationLCD.Line.kUser6, 1, "D: " + dConstant);
