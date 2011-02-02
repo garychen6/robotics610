@@ -28,6 +28,7 @@ public class CoyoBotXII extends IterativeRobot {
     DriverStationLCD dsLCD;
     DigitalInput digLineLeft, digLineMiddle, digLineRight;
     AnalogChannel anaUltraSonic;
+    double distance;
     int driveMode;
     boolean driveToggle;
     boolean cruiseControl;
@@ -63,6 +64,7 @@ public class CoyoBotXII extends IterativeRobot {
         } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
         }
+
         compressor = new Compressor(ElectricalMap.kCompressorPressureSwitchChannel, ElectricalMap.kCompressorRelayChannel);
 
         solShifterHigh = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidHighChannel);
@@ -76,6 +78,8 @@ public class CoyoBotXII extends IterativeRobot {
         digLineRight = new DigitalInput(ElectricalMap.kLightSensorRChannel);
 
         anaUltraSonic = new AnalogChannel(ElectricalMap.kUltrasonicChannel);
+        anaUltraSonic.setAverageBits(8);
+        anaUltraSonic.setOversampleBits(4);
 
         driveMode = 0; //0 = Tank; 1 = Arcade; 2 = Kaj
         driveToggle = false;
@@ -88,6 +92,7 @@ public class CoyoBotXII extends IterativeRobot {
     }
 
     public void disabledPeriodic() {
+        updateDS();
     }
 
     public void autonomousInit() {
@@ -240,12 +245,14 @@ public class CoyoBotXII extends IterativeRobot {
         try {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + (int) jagLeftMaster.getSpeed());
             dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Enc: " + (int) jagRightMaster.getSpeed());
-            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "P: " + pConstant);
-            dsLCD.println(DriverStationLCD.Line.kUser5, 1, "I: " + iConstant);
-            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "D: " + dConstant);
+            //dsLCD.println(DriverStationLCD.Line.kUser4, 1, "P: " + pConstant);
+            //dsLCD.println(DriverStationLCD.Line.kUser5, 1, "I: " + iConstant);
+            //dsLCD.println(DriverStationLCD.Line.kUser6, 1, "D: " + dConstant);
         } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
         }
+        dsLCD.println(DriverStationLCD.Line.kUser4, 1, "L: " + digLineLeft.get() + " M: " + digLineMiddle.get() + " R: " + digLineRight.get());
+        dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Distance: " + (anaUltraSonic.getAverageVoltage() / 0.3858267716535433));
         dsLCD.updateLCD();
     }
 }
