@@ -238,7 +238,7 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Line   ");
                 try {
-                    xInput = lineError;
+                    xInput = pidLineError.lineError;
                     yInput = joyDriver.getRawAxis(2);
                     octantJoystick();
                     jagLeftMaster.setX(maxSpeed * leftSpeed);
