@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Watchdog;
@@ -28,6 +29,9 @@ public class CoyoBotXII extends IterativeRobot {
     DriverStationLCD dsLCD;
     DigitalInput digLineLeft, digLineMiddle, digLineRight;
     AnalogChannel anaUltraSonic;
+    PIDController pidLineController;
+    PIDLineSource pidLineError;
+    PIDLineOutput pidLineOutput;
     double distance;
     int driveMode;
     boolean driveToggle;
@@ -39,7 +43,6 @@ public class CoyoBotXII extends IterativeRobot {
     double maxLowSpeed = 180;
     double maxHighSpeed = 530;
     double lineError = 0;
-
 
     /**
      * This function is run when the robot is first started up and should be
@@ -88,10 +91,15 @@ public class CoyoBotXII extends IterativeRobot {
         anaUltraSonic.setAverageBits(8);
         anaUltraSonic.setOversampleBits(4);
 
+        pidLineError = new PIDLineSource();
+        pidLineOutput = new PIDLineOutput();
+        pidLineController = new PIDController(0.1,0.001,0,pidLineError,pidLineOutput);
+        pidLineController.enable();
+
         driveMode = 2; //0 = Tank; 1 = Arcade; 2 = Kaj; 3 = LineTrack
         driveToggle = false;
         cruiseControl = false;
-        
+
         maxSpeed = maxLowSpeed;
 
         compressor.start();
@@ -230,34 +238,6 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Line   ");
                 try {
-                    if (!digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get())
-                    {
-                        lineError = 0;
-                    }
-                    if (!digLineLeft.get() && digLineMiddle.get() && !digLineRight.get())
-                    {
-                        lineError = 0;
-                    }
-                    if (digLineLeft.get() && !digLineMiddle.get() && digLineRight.get())
-                    {
-                        lineError = 0;
-                    }
-                    if (!digLineLeft.get() && !digLineMiddle.get() && digLineRight.get())
-                    {
-                        lineError = -0.2;
-                    }
-                    if (digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get())
-                    {
-                        lineError = 0.2;
-                    }
-                    if (!digLineLeft.get() && digLineMiddle.get() && digLineRight.get())
-                    {
-                        lineError = -0.5;
-                    }
-                    if (digLineLeft.get() && digLineMiddle.get() && !digLineRight.get())
-                    {
-                        lineError = 0.5;
-                    }
                     xInput = lineError;
                     yInput = joyDriver.getRawAxis(2);
                     octantJoystick();
@@ -283,65 +263,70 @@ public class CoyoBotXII extends IterativeRobot {
     }
 
     public void teleopContinuous() {
+        if (!digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get()) {
+            pidLineError.lineError = 0;
+        }
+        if (!digLineLeft.get() && digLineMiddle.get() && !digLineRight.get()) {
+            pidLineError.lineError = 0;
+        }
+        if (digLineLeft.get() && !digLineMiddle.get() && digLineRight.get()) {
+            pidLineError.lineError = 0;
+        }
+        if (!digLineLeft.get() && !digLineMiddle.get() && digLineRight.get()) {
+            pidLineError.lineError = -1;
+        }
+        if (digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get()) {
+            pidLineError.lineError = 1;
+        }
+        if (!digLineLeft.get() && digLineMiddle.get() && digLineRight.get()) {
+            pidLineError.lineError = -2;
+        }
+        if (digLineLeft.get() && digLineMiddle.get() && !digLineRight.get()) {
+            pidLineError.lineError = 2;
+        }
         syncSlaves();
     }
 
     public void octantJoystick() {
-        if (xInput >= 0 && yInput >= 0)
-        {
-            if (xInput > yInput)
-            {
+        if (xInput >= 0 && yInput >= 0) {
+            if (xInput > yInput) {
                 //Quadrant 8
                 leftSpeed = xInput - yInput;
                 rightSpeed = -xInput;
-            }
-            else
-            {
+            } else {
                 //Quadrant 7
                 leftSpeed = xInput - yInput;
                 rightSpeed = -yInput;
             }
         }
-        if (xInput >= 0 && yInput <= 0)
-        {
-            if (xInput > -yInput)
-            {
+        if (xInput >= 0 && yInput <= 0) {
+            if (xInput > -yInput) {
                 //Quadrant 1
                 leftSpeed = xInput;
                 rightSpeed = -(yInput + xInput);
-            }
-            else
-            {
+            } else {
                 //Quadrant 2
                 leftSpeed = -yInput;
                 rightSpeed = -(yInput + xInput);
             }
         }
-        if (xInput <= 0 && yInput <= 0)
-        {
-            if (xInput < yInput)
-            {
+        if (xInput <= 0 && yInput <= 0) {
+            if (xInput < yInput) {
                 //Quadrant 4
                 leftSpeed = xInput - yInput;
                 rightSpeed = -xInput;
-            }
-            else
-            {
+            } else {
                 //Quadrant 3
                 leftSpeed = xInput - yInput;
                 rightSpeed = -yInput;
             }
         }
-        if (xInput <= 0 && yInput >= 0)
-        {
-            if (-xInput > yInput)
-            {
+        if (xInput <= 0 && yInput >= 0) {
+            if (-xInput > yInput) {
                 //Quadrant 5
                 leftSpeed = xInput;
                 rightSpeed = -(xInput + yInput);
-            }
-            else
-            {
+            } else {
                 //Quadrant 6
                 leftSpeed = -yInput;
                 rightSpeed = -(xInput + yInput);
@@ -362,13 +347,15 @@ public class CoyoBotXII extends IterativeRobot {
         try {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + (int) jagLeftMaster.getSpeed() + "     ");
             dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Enc: " + (int) jagRightMaster.getSpeed() + "     ");
+            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "pidX: " + pidLineOutput.xValue + "     ");
+
             //dsLCD.println(DriverStationLCD.Line.kUser4, 1, "P: " + pConstant);
             //dsLCD.println(DriverStationLCD.Line.kUser5, 1, "I: " + iConstant);
             //dsLCD.println(DriverStationLCD.Line.kUser6, 1, "D: " + dConstant);
         } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
         }
-        dsLCD.println(DriverStationLCD.Line.kUser4, 1, "L: " + digLineLeft.get() + " M: " + digLineMiddle.get() + " R: " + digLineRight.get());
+        dsLCD.println(DriverStationLCD.Line.kUser4, 1, "L: " + !digLineLeft.get() + " M: " + !digLineMiddle.get() + " R: " + !digLineRight.get());
         dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Distance: " + (anaUltraSonic.getAverageVoltage() / 0.3858267716535433));
         dsLCD.updateLCD();
     }
