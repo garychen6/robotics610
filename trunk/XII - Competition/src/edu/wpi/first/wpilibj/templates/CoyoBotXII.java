@@ -36,8 +36,9 @@ public class CoyoBotXII extends IterativeRobot {
     double leftSpeed, rightSpeed;
     double xInput, yInput;
     double maxSpeed;
-    double maxLowSpeed = 240;
+    double maxLowSpeed = 180;
     double maxHighSpeed = 530;
+    double lineError = 0;
 
 
     /**
@@ -87,7 +88,7 @@ public class CoyoBotXII extends IterativeRobot {
         anaUltraSonic.setAverageBits(8);
         anaUltraSonic.setOversampleBits(4);
 
-        driveMode = 0; //0 = Tank; 1 = Arcade; 2 = Kaj
+        driveMode = 2; //0 = Tank; 1 = Arcade; 2 = Kaj; 3 = LineTrack
         driveToggle = false;
         cruiseControl = false;
         
@@ -181,7 +182,7 @@ public class CoyoBotXII extends IterativeRobot {
         //Toggle drive mode
 
         if (!driveToggle && joyDriver.getRawButton(2)) {
-            driveMode = (driveMode + 1) % 3;
+            driveMode = (driveMode + 1) % 4;
             driveToggle = true;
         } else if (driveToggle && !joyDriver.getRawButton(2)) {
             driveToggle = false;
@@ -217,6 +218,47 @@ public class CoyoBotXII extends IterativeRobot {
                         "Drive mode: Kaj   ");
                 try {
                     xInput = joyDriver.getRawAxis(3);
+                    yInput = joyDriver.getRawAxis(2);
+                    octantJoystick();
+                    jagLeftMaster.setX(maxSpeed * leftSpeed);
+                    jagRightMaster.setX(maxSpeed * rightSpeed);
+                } catch (CANTimeoutException ex) {
+                    System.out.println(ex.toString());
+                }
+                break;
+            case 3:
+                dsLCD.println(DriverStationLCD.Line.kMain6, 1,
+                        "Drive mode: Line   ");
+                try {
+                    if (!digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get())
+                    {
+                        lineError = 0;
+                    }
+                    if (!digLineLeft.get() && digLineMiddle.get() && !digLineRight.get())
+                    {
+                        lineError = 0;
+                    }
+                    if (digLineLeft.get() && !digLineMiddle.get() && digLineRight.get())
+                    {
+                        lineError = 0;
+                    }
+                    if (!digLineLeft.get() && !digLineMiddle.get() && digLineRight.get())
+                    {
+                        lineError = -0.2;
+                    }
+                    if (digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get())
+                    {
+                        lineError = 0.2;
+                    }
+                    if (!digLineLeft.get() && digLineMiddle.get() && digLineRight.get())
+                    {
+                        lineError = -0.5;
+                    }
+                    if (digLineLeft.get() && digLineMiddle.get() && !digLineRight.get())
+                    {
+                        lineError = 0.5;
+                    }
+                    xInput = lineError;
                     yInput = joyDriver.getRawAxis(2);
                     octantJoystick();
                     jagLeftMaster.setX(maxSpeed * leftSpeed);
