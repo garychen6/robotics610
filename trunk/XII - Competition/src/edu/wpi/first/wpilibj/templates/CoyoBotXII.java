@@ -35,6 +35,7 @@ public class CoyoBotXII extends IterativeRobot {
     int driveMode;
     boolean driveToggle;
     boolean cruiseControl;
+    boolean joyToggle; //Terrible name
     double pConstant = 0.1, iConstant = 0, dConstant = 0;
     double leftSpeed, rightSpeed;
     double xInput, yInput;
@@ -100,6 +101,7 @@ public class CoyoBotXII extends IterativeRobot {
         driveMode = 2; //0 = Tank; 1 = Arcade; 2 = Kaj; 3 = LineTrack
         driveToggle = false;
         cruiseControl = false;
+        joyToggle = false;
         vicGripperTop = new Victor(ElectricalMap.kVictorGripperTopChannel);
         vicGripperBottom = new Victor(ElectricalMap.kVictorGripperBottomChannel);
 
@@ -191,23 +193,17 @@ public class CoyoBotXII extends IterativeRobot {
             solShifterLow.set(true);
             maxSpeed = maxLowSpeed;
         }
-        if (joyOperator.getRawButton(4))
-        {
+        if (joyOperator.getRawButton(4)) {
             vicGripperTop.set(1);
             vicGripperBottom.set(1);
-        }
-        else if(joyOperator.getRawButton(1))
-        {
+        } else if (joyOperator.getRawButton(1)) {
             vicGripperTop.set(-1);
             vicGripperBottom.set(-1);
-        }
-        else
-        {
-            if(joyOperator.getRawAxis(2) > 0)
-          {
-            vicGripperTop.set(-1 * (joyOperator.getRawAxis(2)));
-            vicGripperBottom.set(joyOperator.getRawAxis(2));
-          }
+        } else {
+            if (joyOperator.getRawAxis(2) > 0) {
+                vicGripperTop.set(-1 * (joyOperator.getRawAxis(2)));
+                vicGripperBottom.set(joyOperator.getRawAxis(2));
+            }
         }
         if (!driveToggle && joyDriver.getRawButton(2)) {
             driveMode = (driveMode + 1) % 4;
@@ -257,9 +253,16 @@ public class CoyoBotXII extends IterativeRobot {
                     System.out.println(ex.toString());
                 }
                 break;
-           
+
         }
 
+
+        if(!joyToggle && joyDriver.getRawButton(5)) {
+            xInput = joyDriver.getRawAxis(3)*convertJoy(joyDriver.getRawAxis(3),joyDriver.getRawAxis(4));
+            joyToggle = true;
+        } else if (joyToggle && !joyDriver.getRawButton(5)) {
+            joyToggle = false;
+        }
 
         updateDS();
 
@@ -296,9 +299,8 @@ public class CoyoBotXII extends IterativeRobot {
             pidLineError.lineError = 2;
         }
 
-        switch (driveMode)
-        {
-         case 3:
+        switch (driveMode) {
+            case 3:
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Line   ");
                 try {
@@ -371,6 +373,7 @@ public class CoyoBotXII extends IterativeRobot {
             System.out.println(ex.toString());
         }
     }
+
     /**
      * Convert the joystick values from polar to cartesian coordinates.
      * Only call when using the circle-based joysticks.
@@ -378,9 +381,10 @@ public class CoyoBotXII extends IterativeRobot {
      * @param y the y-value of the joystick
      * @return the ratio to multiply both x and y by
      */
-    public double convertJoy(double x, double y){
-        return Math.sqrt(1.0 + (x/y)*(x/y));
+    public double convertJoy(double x, double y) {
+        return Math.sqrt(1.0 + (x / y) * (x / y));
     }
+
     public void updateDS() {
         try {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + (int) jagLeftMaster.getSpeed() + "     ");
