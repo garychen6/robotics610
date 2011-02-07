@@ -371,7 +371,16 @@ public class CoyoBotXII extends IterativeRobot {
             System.out.println(ex.toString());
         }
     }
-
+    /**
+     * Convert the joystick values from polar to cartesian coordinates.
+     * Only call when using the circle-based joysticks.
+     * @param x the x-value of the joystick
+     * @param y the y-value of the joystick
+     * @return the ratio to multiply both x and y by
+     */
+    public double convertJoy(double x, double y){
+        return Math.sqrt(1.0 + (x/y)*(x/y));
+    }
     public void updateDS() {
         try {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + (int) jagLeftMaster.getSpeed() + "     ");
