@@ -134,8 +134,48 @@ public class CoyoBotXII extends IterativeRobot {
         updateDS();
     }
 
-    public void autonomousContinuous() {
+     public void autonomousContinuous() {
         syncSlaves();
+        pidLineController.enable();
+        try {
+            jagLeftMaster.setX(60);
+            jagRightMaster.setX(60);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+        if (!digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get()) {
+            pidLineError.lineError = 0;
+        }
+        if (!digLineLeft.get() && digLineMiddle.get() && !digLineRight.get()) {
+            pidLineError.lineError = 0;
+        }
+        if (digLineLeft.get() && !digLineMiddle.get() && digLineRight.get()) {
+            pidLineError.lineError = 0;
+        }
+        if (!digLineLeft.get() && !digLineMiddle.get() && digLineRight.get()) {
+            pidLineError.lineError = -1;
+        }
+        if (digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get()) {
+            pidLineError.lineError = 1;
+        }
+        if (!digLineLeft.get() && digLineMiddle.get() && digLineRight.get()) {
+            pidLineError.lineError = -2;
+        }
+        if (digLineLeft.get() && digLineMiddle.get() && !digLineRight.get()) {
+            pidLineError.lineError = 2;
+        }
+        if (digLineLeft.get() && digLineMiddle.get() && !digLineRight.get()) {
+            try {
+                jagLeftMaster.setX(0);
+                jagRightMaster.setX(0);
+            } catch (CANTimeoutException ex) {
+                ex.printStackTrace();
+            }
+
+        }
+
+
+
     }
 
     public void teleopInit() {
