@@ -166,7 +166,7 @@ public class PIDLineController implements IUtility{
                 }
                 if ((m_error == 1) || (m_error == -1))
                 {
-                     m_totalError /= 2;
+                     m_totalError /= 20;
                 }
                 if (m_result > m_maximumOutput) {
                     m_result = m_maximumOutput;
