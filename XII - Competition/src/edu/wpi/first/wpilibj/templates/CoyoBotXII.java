@@ -20,7 +20,8 @@ public class CoyoBotXII extends IterativeRobot {
     Victor vicGripperTop, vicGripperBottom;
     Compressor compressor;
     Solenoid solShifterHigh, solShifterLow;
-    Solenoid solArmStageOne, solArmStageTwo;
+    Solenoid solArmStageOneA, solArmStageOneB;
+    Solenoid solArmStageTwoA, solArmStageTwoB;
     Solenoid solDeploy;
     Joystick joyDriver;
     Joystick joyOperator;
@@ -86,6 +87,17 @@ public class CoyoBotXII extends IterativeRobot {
 
         solShifterHigh = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidHighChannel);
         solShifterLow = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidLowChannel);
+
+        solArmStageOneA = new Solenoid(8, 1);
+        solArmStageOneB = new Solenoid(8, 2);
+        solArmStageTwoA = new Solenoid(8, 3);
+        solArmStageTwoB = new Solenoid(8, 4);
+
+        solArmStageOneA.set(true);
+        solArmStageOneB.set(false);
+        solArmStageTwoA.set(true);
+        solArmStageTwoB.set(false);
+
 
         joyDriver = new Joystick(ElectricalMap.kJoystickDriverPort);
         joyOperator = new Joystick(ElectricalMap.kJoystickOperatorPort);
@@ -252,10 +264,10 @@ public class CoyoBotXII extends IterativeRobot {
             vicGripperTop.set(-1 * (joyOperator.getRawAxis(2)));
             vicGripperBottom.set(joyOperator.getRawAxis(2));
         }
-        try{
+        try {
             jagShoulderOne.setX(joyOperator.getRawAxis(4));
             jagShoulderTwo.setX(jagShoulderOne.getOutputVoltage());
-        } catch(CANTimeoutException ex){
+        } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
         }
 
