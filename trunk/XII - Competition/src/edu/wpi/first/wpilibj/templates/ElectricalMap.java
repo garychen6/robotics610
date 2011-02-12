@@ -48,7 +48,8 @@ public class ElectricalMap {
     public static final int kJaguarRightSlave = 1;
     public static final int kJaguarLeftMaster = 4;
     public static final int kJaguarLeftSlave = 3;
-    public static final int kJaguarShoulder = 7;
+    public static final int kJaguarShoulderOne = 7;
+    public static final int kJaguarShoulderTwo = 8;
 
     //Driver Station
     
