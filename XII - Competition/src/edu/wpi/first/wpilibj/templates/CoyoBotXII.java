@@ -16,7 +16,7 @@ public class CoyoBotXII extends IterativeRobot {
 
     CANJaguar jagLeftMaster, jagLeftSlave,
             jagRightMaster, jagRightSlave;
-    CANJaguar jagShoulder;
+    CANJaguar jagShoulderOne, jagShoulderTwo;
     Victor vicGripperTop, vicGripperBottom;
     Compressor compressor;
     Solenoid solShifterHigh, solShifterLow;
@@ -65,6 +65,10 @@ public class CoyoBotXII extends IterativeRobot {
             jagRightMaster.configEncoderCodesPerRev(256);
             jagLeftSlave = new CANJaguar(ElectricalMap.kJaguarLeftSlave);
             jagRightSlave = new CANJaguar(ElectricalMap.kJaguarRightSlave);
+
+            jagShoulderOne = new CANJaguar(ElectricalMap.kJaguarShoulderOne);
+            jagShoulderTwo = new CANJaguar(ElectricalMap.kJaguarShoulderTwo);
+
         } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
         }
@@ -237,6 +241,7 @@ public class CoyoBotXII extends IterativeRobot {
             pidLineController.setPID(pVal, 0, 0);
         }
 
+        //GRIPPER: Out, in, or rotate
         if (joyOperator.getRawButton(4)) {
             vicGripperTop.set(1);
             vicGripperBottom.set(1);
@@ -244,11 +249,18 @@ public class CoyoBotXII extends IterativeRobot {
             vicGripperTop.set(-1);
             vicGripperBottom.set(-1);
         } else {
-            if (joyOperator.getRawAxis(2) > 0) {
-                vicGripperTop.set(-1 * (joyOperator.getRawAxis(2)));
-                vicGripperBottom.set(joyOperator.getRawAxis(2));
-            }
+            vicGripperTop.set(-1 * (joyOperator.getRawAxis(2)));
+            vicGripperBottom.set(joyOperator.getRawAxis(2));
         }
+        try{
+            jagShoulderOne.setX(joyOperator.getRawAxis(4));
+            jagShoulderTwo.setX(jagShoulderOne.getOutputVoltage());
+        } catch(CANTimeoutException ex){
+            System.out.println(ex.toString());
+        }
+
+
+
         if (!driveToggle && joyDriver.getRawButton(2)) {
             driveMode = (driveMode + 1) % 4;
             driveToggle = true;
@@ -452,7 +464,7 @@ public class CoyoBotXII extends IterativeRobot {
         try {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + (int) jagLeftMaster.getSpeed() + "     ");
             dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Enc: " + (int) jagRightMaster.getSpeed() + "     ");
-            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "PIDX: " + pidLineOutput.xValue + "     ");
+            //dsLCD.println(DriverStationLCD.Line.kUser6, 1, "PIDX: " + pidLineOutput.xValue + "     ");
 
             //dsLCD.println(DriverStationLCD.Line.kUser4, 1, "P: " + pConstant);
             //dsLCD.println(DriverStationLCD.Line.kUser5, 1, "I: " + iConstant);
@@ -462,6 +474,7 @@ public class CoyoBotXII extends IterativeRobot {
         }
         dsLCD.println(DriverStationLCD.Line.kUser4, 1, "L: " + !digLineLeft.get() + " M: " + !digLineMiddle.get());
         dsLCD.println(DriverStationLCD.Line.kUser5, 1, " pValue: " + pVal);
+        dsLCD.println(DriverStationLCD.Line.kMain6, 1, "USonic m: " + anaUltraSonic.getVoltage() * 0.3804473);
         dsLCD.updateLCD();
     }
 }
