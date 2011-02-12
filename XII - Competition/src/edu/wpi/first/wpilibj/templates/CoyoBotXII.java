@@ -20,8 +20,8 @@ public class CoyoBotXII extends IterativeRobot {
     Victor vicGripperTop, vicGripperBottom;
     Compressor compressor;
     Solenoid solShifterHigh, solShifterLow;
-    Solenoid solArmStageOneA, solArmStageOneB;
-    Solenoid solArmStageTwoA, solArmStageTwoB;
+    Solenoid solArmStageOneIn, solArmStageOneOut;
+    Solenoid solArmStageTwoIn, solArmStageTwoOut;
     Solenoid solDeploy;
     Joystick joyDriver;
     Joystick joyOperator;
@@ -35,8 +35,11 @@ public class CoyoBotXII extends IterativeRobot {
     double distance;
     int driveMode;
     int joyMode; //Terrible name
+    int armState;
     boolean driveToggle;
     boolean joyToggle; //Terrible name
+    boolean lTriggerToggle;
+    boolean rTriggerToggle;
     boolean cruiseControl;
     double pConstant = 0.1, iConstant = 0, dConstant = 0;
     double leftSpeed, rightSpeed;
@@ -88,15 +91,15 @@ public class CoyoBotXII extends IterativeRobot {
         solShifterHigh = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidHighChannel);
         solShifterLow = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidLowChannel);
 
-        solArmStageOneA = new Solenoid(8, 1);
-        solArmStageOneB = new Solenoid(8, 2);
-        solArmStageTwoA = new Solenoid(8, 3);
-        solArmStageTwoB = new Solenoid(8, 4);
+        solArmStageOneIn = new Solenoid(8, 1);
+        solArmStageOneOut = new Solenoid(8, 2);
+        solArmStageTwoIn = new Solenoid(8, 3);
+        solArmStageTwoOut = new Solenoid(8, 4);
 
-        solArmStageOneA.set(true);
-        solArmStageOneB.set(false);
-        solArmStageTwoA.set(true);
-        solArmStageTwoB.set(false);
+        solArmStageOneIn.set(true);
+        solArmStageOneOut.set(false);
+        solArmStageTwoIn.set(true);
+        solArmStageTwoOut.set(false);
 
 
         joyDriver = new Joystick(ElectricalMap.kJoystickDriverPort);
@@ -119,9 +122,12 @@ public class CoyoBotXII extends IterativeRobot {
         pidLineController.enable();
 
         driveMode = 2; //0 = Tank; 1 = Arcade; 2 = Kaj; 3 = LineTrack
+        armState = 0;//0,1,2 = retracted, middle, extended
         driveToggle = false;
         cruiseControl = false;
         joyToggle = false;
+        rTriggerToggle = false;
+        lTriggerToggle = false;
         joyMode = 0;
         vicGripperTop = new Victor(ElectricalMap.kVictorGripperTopChannel);
         vicGripperBottom = new Victor(ElectricalMap.kVictorGripperBottomChannel);
@@ -162,7 +168,7 @@ public class CoyoBotXII extends IterativeRobot {
             jagLeftMaster.setX(60);
             jagRightMaster.setX(60);
         } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
+            System.out.println(ex.toString());
         }
         if (digLineLeft.get() && digLineMiddle.get() && digLineRight.get()) {
             pidLineError.lineError = 0;
@@ -254,12 +260,9 @@ public class CoyoBotXII extends IterativeRobot {
         }
 
         //GRIPPER: Out, in, or rotate
-        if (joyOperator.getRawButton(4)) {
-            vicGripperTop.set(1);
-            vicGripperBottom.set(1);
-        } else if (joyOperator.getRawButton(1)) {
-            vicGripperTop.set(-1);
-            vicGripperBottom.set(-1);
+        if (joyOperator.getRawAxis(5) > .05 || joyOperator.getRawAxis(5) < -.05) {
+            vicGripperTop.set(joyOperator.getRawAxis(5));
+            vicGripperBottom.set(joyOperator.getRawAxis(5));
         } else {
             vicGripperTop.set(-1 * (joyOperator.getRawAxis(2)));
             vicGripperBottom.set(joyOperator.getRawAxis(2));
@@ -271,8 +274,39 @@ public class CoyoBotXII extends IterativeRobot {
             System.out.println(ex.toString());
         }
 
-
-
+        //Arm States
+        if(!lTriggerToggle && joyOperator.getRawButton(5)){
+            armState = Math.min(armState + 1, 2);
+            lTriggerToggle = true;
+        } else if (lTriggerToggle && !joyOperator.getRawButton(5)) {
+            lTriggerToggle = false;
+        }
+        if(!rTriggerToggle && joyOperator.getRawButton(6)){
+            armState = Math.max(armState - 1, 0);
+            rTriggerToggle = true;
+        } else if (rTriggerToggle && !joyOperator.getRawButton(6)) {
+            rTriggerToggle = false;
+        }
+        switch(armState){
+            case 0:
+                solArmStageOneIn.set(true);
+                solArmStageOneOut.set(false);
+                solArmStageTwoIn.set(true);
+                solArmStageTwoOut.set(false);
+                break;
+            case 1:
+                solArmStageOneIn.set(false);
+                solArmStageOneOut.set(true);
+                solArmStageTwoIn.set(true);
+                solArmStageTwoOut.set(false);
+                break;
+            case 2:
+                solArmStageOneIn.set(false);
+                solArmStageOneOut.set(true);
+                solArmStageTwoIn.set(false);
+                solArmStageTwoOut.set(true);
+                break;
+        }
         if (!driveToggle && joyDriver.getRawButton(2)) {
             driveMode = (driveMode + 1) % 4;
             driveToggle = true;
