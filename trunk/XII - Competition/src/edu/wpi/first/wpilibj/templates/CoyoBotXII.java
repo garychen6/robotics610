@@ -39,6 +39,7 @@ public class CoyoBotXII extends IterativeRobot {
     int driveMode;
     int joyMode; //Terrible name
     int armState;
+    int armFlip; // Reverses up/down on arm depending on last preset pressed
     boolean driveToggle;
     boolean joyToggle; //Terrible name
     boolean lTriggerToggle;
@@ -151,6 +152,8 @@ public class CoyoBotXII extends IterativeRobot {
         armState = 2;
 
         maxSpeed = maxLowSpeed;
+
+        armFlip = 1; // Regular arm up/down
 
         compressor.start();
     }
@@ -269,16 +272,16 @@ public class CoyoBotXII extends IterativeRobot {
             solShifterLow.set(true);
             maxSpeed = maxLowSpeed;
         }
-
+        /* P- Value tuned already
         if (joyDriver.getRawButton(4)) {
-            pVal -= 0.01;
-            pidLineController.setPID(pVal, 0, 0);
+        pVal -= 0.01;
+        pidLineController.setPID(pVal, 0, 0);
 
         } else if (joyDriver.getRawButton(1)) {
-            pVal += 0.01;
-            pidLineController.setPID(pVal, 0, 0);
+        pVal += 0.01;
+        pidLineController.setPID(pVal, 0, 0);
         }
-
+         */
         //GRIPPER: Out, in, or rotate
         if (joyOperator.getRawAxis(3) > .05 || joyOperator.getRawAxis(3) < -.05) {
             vicGripperTop.set(joyOperator.getRawAxis(3));
@@ -287,24 +290,29 @@ public class CoyoBotXII extends IterativeRobot {
             vicGripperTop.set(-1 * (joyOperator.getRawAxis(2)));
             vicGripperBottom.set(joyOperator.getRawAxis(2));
         }
-        if (joyOperator.getRawButton(4)) {
-            setpointVal = 0.416;
-            prevsetpointVal = setpointVal;
-        } else {
-            setpointVal = prevsetpointVal;
+
+        // Map buttons to arm setpoints
+        if (joyOperator.getRawButton(1)) {
+            // Pickup Front
+            setpointVal = 0.0615;
+            shoulderPID = true;
         }
         if (joyOperator.getRawButton(2)) {
-            setpointVal = 0.27;
-            prevsetpointVal = setpointVal;
-        } else {
-            setpointVal = prevsetpointVal;
+            // Pickup Back
+            setpointVal = 0.86516;
+            shoulderPID = true;
         }
         if (joyOperator.getRawButton(3)) {
-            setpointVal = 0.0615;
-            prevsetpointVal = setpointVal;
-        } else {
-            setpointVal = prevsetpointVal;
+            // Top Front
+            setpointVal = 0.416;
+            shoulderPID = true;
         }
+        if (joyOperator.getRawButton(4)) {
+            // Top Back
+            setpointVal = 0.51063;
+            shoulderPID = true;
+        }
+
         //Arm States
         if (!lTriggerToggle && joyOperator.getRawButton(5)) {
             armState = Math.min(armState + 1, 2);
@@ -351,28 +359,39 @@ public class CoyoBotXII extends IterativeRobot {
         } else if (driveToggle && !joyDriver.getRawButton(2)) {
             joyToggle = false;
         }
-
+        /*
         if (joyOperator.getRawButton(1) && shoulderPID == false) {
-            shoulderPID = true;
-            pidShoulderController.enable();
+        shoulderPID = true;
+        pidShoulderController.enable();
         } else if (joyOperator.getRawButton(1) && shoulderPID == true) {
-            shoulderPID = false;
-            pidShoulderController.disable();
+        shoulderPID = false;
+        pidShoulderController.disable();
         }
         try {
 
-            if (shoulderPID == true) {
+        if (shoulderPID == true) {
+         */
 
-                if (jagShoulderOne.getPosition() < 0.067) {
-                    jagShoulderOne.setX(Math.min(0.0, pidShoulderOutput.zValue));
-                } else if (jagShoulderOne.getPosition() > 0.85) {
-                    jagShoulderOne.setX(Math.max(0.0, pidShoulderOutput.zValue));
-                } else {
-                    jagShoulderOne.setX((pidShoulderOutput.zValue));
-                }
+        if (shoulderPID) {
+            if (Math.abs(joyOperator.getRawAxis(5)) > 0.2) {
                 shoulderPID = false;
-            } else if (shoulderPID == false) {
-
+                pidShoulderController.disable();
+            } else {
+                pidShoulderController.enable();
+                try {
+                    if (jagShoulderOne.getPosition() < 0.067) {
+                        jagShoulderOne.setX(Math.min(0.0, pidShoulderOutput.zValue));
+                    } else if (jagShoulderOne.getPosition() > 0.85) {
+                        jagShoulderOne.setX(Math.max(0.0, pidShoulderOutput.zValue));
+                    } else {
+                        jagShoulderOne.setX((pidShoulderOutput.zValue));
+                    }
+                } catch (CANTimeoutException ex) {
+                    System.out.println(ex.toString());
+                }
+            }
+        } else {
+            try {
                 if (jagShoulderOne.getPosition() < 0.067) {
                     jagShoulderOne.setX(Math.min(0.0, joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)));
                 } else if (jagShoulderOne.getPosition() > 0.85) {
@@ -380,13 +399,11 @@ public class CoyoBotXII extends IterativeRobot {
                 } else {
                     jagShoulderOne.setX((joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)));
                 }
+            } catch (CANTimeoutException ex) {
+                System.out.println(ex.toString());
             }
-
-        } catch (CANTimeoutException ex) {
-            System.out.println(ex.toString());
-
-
-        } //Print drive mode to DS & send values to Jaguars
+        }
+        //Print drive mode to DS & send values to Jaguars
         switch (driveMode) {
             case 0:
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
@@ -655,7 +672,7 @@ public class CoyoBotXII extends IterativeRobot {
     public void updateDS() {
         try {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Enc: " + (int) jagLeftMaster.getSpeed() + "     ");
-            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "SetpointVal: " +setpointVal + "     ");
+            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "SetpointVal: " + setpointVal + "     ");
             //dsLCD.println(DriverStationLCD.Line.kUser6, 1, "PIDX: " + pidLineOutput.xValue + "     ");
 
             //dsLCD.println(DriverStationLCD.Line.kUser4, 1, "P: " + pConstant);
