@@ -1,4 +1,4 @@
-/*
+ /*
  * This class contains a number of constants of electrical slots and channels
  * to be referred to instead of in the code - this should directly reflect the
  * electrcial map found at http://projects.zoho.com/portal/dmorrison33 under
