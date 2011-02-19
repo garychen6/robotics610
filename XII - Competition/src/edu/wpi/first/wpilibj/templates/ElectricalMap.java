@@ -39,6 +39,9 @@ public class ElectricalMap {
     public static final int kVictorGripperTopChannel = 5;
     public static final int kVictorGripperBottomChannel = 6;
 
+    public static final int kRelayFluxOneChannel = 2;
+    public static final int kRelayFluxTwoChannel = 3;
+
     public static final int kCompressorRelayChannel = 1;
     public static final int kCompressorPressureSwitchChannel = 1;
 
