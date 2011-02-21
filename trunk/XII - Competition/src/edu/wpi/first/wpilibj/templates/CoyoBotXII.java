@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Watchdog;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
-import java.util.Timer;
 
 public class CoyoBotXII extends IterativeRobot {
 
@@ -39,6 +39,7 @@ public class CoyoBotXII extends IterativeRobot {
     PIDShoulderController pidShoulderController;
     PIDShoulderSource pidShoulderSource;
     PIDShoulderOutput pidShoulderOutput;
+    Timer autoTimer = new Timer();
     int driveMode;
     int joyMode; //Terrible name
     int armState;
@@ -103,10 +104,10 @@ public class CoyoBotXII extends IterativeRobot {
         solShifterHigh = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidHighChannel);
         solShifterLow = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidLowChannel);
 
-        solArmStageOneIn = new Solenoid(8, 1);
-        solArmStageOneOut = new Solenoid(8, 2);
-        solArmStageTwoIn = new Solenoid(8, 3);
-        solArmStageTwoOut = new Solenoid(8, 4);
+        solArmStageOneIn = new Solenoid(ElectricalMap.kSolenoidModulePort, 3);
+        solArmStageOneOut = new Solenoid(ElectricalMap.kSolenoidModulePort, 4);
+        solArmStageTwoIn = new Solenoid(ElectricalMap.kSolenoidModulePort, 5);
+        solArmStageTwoOut = new Solenoid(ElectricalMap.kSolenoidModulePort, 6);
 
         solArmStageOneIn.set(true);
         solArmStageOneOut.set(false);
@@ -146,7 +147,7 @@ public class CoyoBotXII extends IterativeRobot {
         pidShoulderController.enable();
 
 
-        driveMode = 2; //0 = Tank; 1 = Arcade; 2 = Kaj; 3 = LineTrack
+        driveMode = 0; //0 = Tank; 1 = Arcade; 2 = Kaj; 3 = LineTrack
         armState = 2;//0,1,2 = retracted, middle, extended
         joyMode = 0;
         armFlip = 1; // Regular arm up/down
@@ -188,16 +189,24 @@ public class CoyoBotXII extends IterativeRobot {
         pidLineController.enable();
         setpointVal = 0.414;
         shoulderPID = true;
-        solArmStageOneIn.set(true);
-        solArmStageOneOut.set(false);
-        solArmStageTwoIn.set(true);
-        solArmStageTwoOut.set(false);
+        autoTimer.reset();
+        autoTimer.start();
     }
 
     public void autonomousPeriodic() {
         watchdog.feed();
         updateDS();
-
+        if(autoTimer.get() > 3 && autoTimer.get() < 5){
+            vicGripperTop.set(-1);
+            vicGripperBottom.set(1);
+            solArmStageOneIn.set(true);
+            solArmStageOneOut.set(false);
+            solArmStageTwoIn.set(true);
+            solArmStageTwoOut.set(false);
+        } else {
+            //vicGripperTop.set(0);
+            //vicGripperBottom.set(0);
+        }
     }
 
     public void autonomousContinuous() {
@@ -237,7 +246,7 @@ public class CoyoBotXII extends IterativeRobot {
 
         switch (autonomousStage) {
             case 0:
-                if (anaUltraSonic.getVoltage() < 0.5 * vToM)autonomousStage = 1;
+                if (anaUltraSonic.getVoltage() < 0.5 * vToM && autoTimer.get() > 5)autonomousStage = 1;
                 vicGripperTop.set(0);
                 vicGripperBottom.set(0);
                 fluxCapacitorOne.set(Relay.Value.kOff);
@@ -245,7 +254,7 @@ public class CoyoBotXII extends IterativeRobot {
                 try {
                     jagShoulderOne.setX((pidShoulderOutput.zValue));
                     xInput = pidLineOutput.xValue;
-                    yInput = -0.4;
+                    yInput = -0.6;
                     octantJoystick();
                     jagLeftMaster.setX(maxSpeed * leftSpeed);
                     jagRightMaster.setX(maxSpeed * rightSpeed);
@@ -392,19 +401,9 @@ public class CoyoBotXII extends IterativeRobot {
                 solArmStageTwoOut.set(true);
                 break;
         }
-        if (!driveToggle && joyDriver.getRawButton(2)) {
-            driveMode = (driveMode + 1) % 4;
-            driveToggle = true;
-        } else if (driveToggle && !joyDriver.getRawButton(2)) {
-            driveToggle = false;
-        }
+        
 
-        if (!joyToggle && joyDriver.getRawButton(5)) {
-            joyMode = (joyMode + 1) % 2;
-            joyToggle = true;
-        } else if (driveToggle && !joyDriver.getRawButton(2)) {
-            joyToggle = false;
-        }
+        
 
         if (shoulderPID) {
             if (Math.abs(joyOperator.getRawAxis(5)) > 0.2) {
@@ -437,10 +436,11 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Tank  ");
                 try {
-
-                    jagLeftMaster.setX(maxSpeed * (-joyDriver.getRawAxis(2)));
-                    jagRightMaster.setX(maxSpeed * (-joyDriver.getRawAxis(4)));
+                    
+                    jagRightMaster.setX(maxSpeed * (joyDriver.getRawAxis(2)));
+                    jagLeftMaster.setX(maxSpeed * (joyDriver.getRawAxis(4)));
                     pidLineController.disable();
+                  
                 } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                 }
