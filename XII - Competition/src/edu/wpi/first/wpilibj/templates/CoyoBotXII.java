@@ -47,6 +47,7 @@ public class CoyoBotXII extends IterativeRobot {
     boolean joyToggle; //Terrible name
     boolean lTriggerToggle;
     boolean rTriggerToggle;
+    boolean shiftToggle;
     boolean shoulderPID;
     double leftSpeed, rightSpeed;
     double xInput, yInput;
@@ -156,6 +157,7 @@ public class CoyoBotXII extends IterativeRobot {
         joyToggle = false;
         rTriggerToggle = false;
         lTriggerToggle = false;
+        shiftToggle = false;
         shoulderPID = false;
 
         maxSpeed = maxLowSpeed;
@@ -303,10 +305,24 @@ public class CoyoBotXII extends IterativeRobot {
             solShifterHigh.set(true);
             solShifterLow.set(false);
             maxSpeed = maxHighSpeed;
+            shiftToggle = true;
+            try{
+                jagLeftMaster.disableControl();
+                jagRightMaster.disableControl();
+            } catch (CANTimeoutException ex){
+                System.out.println(ex.toString());
+            }
         } else if (joyDriver.getRawButton(7)) {
             solShifterHigh.set(false);
             solShifterLow.set(true);
             maxSpeed = maxLowSpeed;
+            shiftToggle = true;
+            try{
+                jagLeftMaster.disableControl();
+                jagRightMaster.disableControl();
+            } catch (CANTimeoutException ex){
+                System.out.println(ex.toString());
+            }
         }
 
         //GRIPPER: Out, in, or rotate
@@ -512,6 +528,24 @@ public class CoyoBotXII extends IterativeRobot {
     }
 
     public void teleopContinuous() {
+        syncSlaves();
+        if(shiftToggle && (joyDriver.getRawButton(7) || joyDriver.getRawButton(8))){
+            try {
+                jagLeftSlave.setX(0);
+                jagRightSlave.setX(0);
+            } catch (CANTimeoutException ex) {
+                System.out.println(ex.toString());
+            }
+
+        } else if (shiftToggle){
+            try {
+                shiftToggle = false;
+                jagLeftMaster.enableControl();
+                jagRightMaster.enableControl();
+            } catch (CANTimeoutException ex) {
+                System.out.println(ex.toString());
+            }
+        }
         if (digLineLeft.get() && digLineMiddle.get() && digLineRight.get()) {
             pidLineError.lineError = prevLineError * 2;
         } else if (!digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get()) {
@@ -552,7 +586,6 @@ public class CoyoBotXII extends IterativeRobot {
                 System.out.println(ex.toString());
             }
         }
-        syncSlaves();
     }
 
     /**
