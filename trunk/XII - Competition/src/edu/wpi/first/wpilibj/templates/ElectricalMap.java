@@ -28,6 +28,9 @@ public class ElectricalMap {
     public static final int kSolenoidLowChannel = 2;
     public static final int kSolenoidHighChannel = 1;
 
+    public static final int kSolenoidMinibotA = 7;
+    public static final int kSolenoidMinibotB = 8;
+
     //Digital Sidecar
     
     public static final int kDigitalModulePort = 4;
