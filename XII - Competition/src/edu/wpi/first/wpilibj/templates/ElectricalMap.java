@@ -50,12 +50,13 @@ public class ElectricalMap {
 
     //CAN Adapters
 
-    public static final int kJaguarRightMaster = 2;
-    public static final int kJaguarRightSlave = 1;
+    //TODO: Reprogram CAN ID of Jag 1 to 10
+    public static final int kJaguarRightMaster = 10; //TODO: Comp is 2
+    public static final int kJaguarRightSlave = 8; //TODO: Comp is 10
     public static final int kJaguarLeftMaster = 4;
     public static final int kJaguarLeftSlave = 3;
     public static final int kJaguarShoulderOne = 7;
-    public static final int kJaguarShoulderTwo = 8;
+    public static final int kJaguarShoulderTwo = 9; //TODO: Comp is 8
 
     //Driver Station
     
