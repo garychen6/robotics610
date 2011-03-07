@@ -54,6 +54,7 @@ public class CoyoBotXII extends IterativeRobot {
     boolean shiftToggle;
     boolean shoulderPID;
     boolean canInitialized;
+    boolean towerDrive;
     double leftSpeed, rightSpeed;
     double xInput, yInput;
     double maxSpeed;
@@ -70,6 +71,10 @@ public class CoyoBotXII extends IterativeRobot {
     double armP = -800;
     double armI = 0;
     double armD = 0;
+    double tdriveP = 0.01;
+    double tdriveI = 0;
+    double tdriveD = 0;
+
 
     /**
      * This function is run when the robot is first started up and should be
@@ -84,6 +89,8 @@ public class CoyoBotXII extends IterativeRobot {
             jagRightMaster = new CANJaguar(ElectricalMap.kJaguarRightMaster);
             jagLeftMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
             jagRightMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
+            jagLeftMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
+            jagRightMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
             jagLeftMaster.configEncoderCodesPerRev(256);
             jagRightMaster.configEncoderCodesPerRev(256);
             jagLeftSlave = new CANJaguar(ElectricalMap.kJaguarLeftSlave);
@@ -177,6 +184,7 @@ public class CoyoBotXII extends IterativeRobot {
         lTriggerToggle = false;
         shiftToggle = false;
         shoulderPID = false;
+        towerDrive = false;
 
         maxSpeed = maxLowSpeed;
         prevLineError = 0.0;
@@ -339,11 +347,24 @@ public class CoyoBotXII extends IterativeRobot {
         }
          */
 
+         if(towerDrive)
+        {
+           try {
+            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+            jagLeftMaster.setPID(tdriveP, tdriveI, tdriveD);
+            jagRightMaster.setPID(tdriveP, tdriveI, tdriveD);
+        } catch (CANTimeoutException ex) {
+            System.out.println(ex.toString());
+            canInitialized = false;
+        }
+        }
+         if(Math.abs(joyDriver.getRawAxis(5)) >= 0.1||Math.abs(joyDriver.getRawAxis(6)) >= 0.1)towerDrive = true;
         if (joyDriver.getRawButton(5)) {
-            driveI -= 0.001;
+            tdriveP -= 0.001;
         }
         if (joyDriver.getRawButton(6)) {
-            driveI += 0.001;
+            tdriveP += 0.001;
         }
 
         if (joyDriver.getRawButton(8)) {
@@ -598,7 +619,9 @@ public class CoyoBotXII extends IterativeRobot {
                     canInitialized = false;
                 }
                 break;
+
         }
+
         updateDS();
     }
 
@@ -816,7 +839,7 @@ public class CoyoBotXII extends IterativeRobot {
         try {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Speed: " + jagLeftMaster.getSpeed() + "     ");
             dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Speed: " + jagRightMaster.getSpeed() + "     ");
-            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "PID I: " + driveI + "     ");
+            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "TPID P: " + tdriveP + "     ");
 
 
         } catch (CANTimeoutException ex) {
