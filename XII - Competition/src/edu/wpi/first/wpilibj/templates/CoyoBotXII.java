@@ -135,10 +135,11 @@ public class CoyoBotXII extends IterativeRobot {
         solArmStageTwoIn = new Solenoid(ElectricalMap.kSolenoidModulePort, 5);
         solArmStageTwoOut = new Solenoid(ElectricalMap.kSolenoidModulePort, 6);
 
-        solArmStageOneIn.set(true);
-        solArmStageOneOut.set(false);
-        solArmStageTwoIn.set(true);
-        solArmStageTwoOut.set(false);
+        // Initialize at armStage=2
+        solArmStageOneIn.set(false);
+        solArmStageOneOut.set(true);
+        solArmStageTwoIn.set(false);
+        solArmStageTwoOut.set(true);
 
         solMinibotA = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidMinibotA);
         solMinibotB = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidMinibotB);
@@ -168,7 +169,7 @@ public class CoyoBotXII extends IterativeRobot {
         pidLineController.enable();
 
         driveMode = 0; //0 = Tank; 1 = Arcade; 2 = Kaj; 3 = LineTrack
-        armState = 2;//0,1,2 = retracted, middle, extended
+        armState = 2;//2,1,0 = retracted, middle, extended
         joyMode = 0;
         armFlip = 1; // Regular arm up/down
         fluxState = 0;
