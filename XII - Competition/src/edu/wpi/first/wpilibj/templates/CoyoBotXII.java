@@ -46,6 +46,7 @@ public class CoyoBotXII extends IterativeRobot {
     int armFlip; // Reverses up/down on arm depending on last preset pressed
     int fluxState;
     int autonomousStage;
+    int controlModeSwitch;
     boolean driveToggle;
     boolean joyToggle; //Terrible name
     boolean lTriggerToggle;
@@ -71,10 +72,9 @@ public class CoyoBotXII extends IterativeRobot {
     double armP = -800;
     double armI = 0;
     double armD = 0;
-    double tdriveP = 0.01;
+    double tdriveP = 300;
     double tdriveI = 0;
     double tdriveD = 0;
-
 
     /**
      * This function is run when the robot is first started up and should be
@@ -173,6 +173,7 @@ public class CoyoBotXII extends IterativeRobot {
         armFlip = 1; // Regular arm up/down
         fluxState = 0;
         autonomousStage = 0;//MUST GO EEEEVERYWHERE
+        controlModeSwitch = 0;
 
         maxLowSpeed = 200;
         maxHighSpeed = 530;
@@ -247,7 +248,7 @@ public class CoyoBotXII extends IterativeRobot {
 
         syncSlaves();
 
-        if (digLineLeft.get() && digLineMiddle.get() && digLineRight.get()) {
+        /*if (digLineLeft.get() && digLineMiddle.get() && digLineRight.get()) {
             pidLineError.lineError = prevLineError * 2;
         } else if (!digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get()) {
             pidLineError.lineError = 0;
@@ -308,6 +309,15 @@ public class CoyoBotXII extends IterativeRobot {
                     canInitialized = false;
                 }
                 break;
+        }/**/
+        try {
+            if(jagLeftMaster.getPosition() < 5){
+                jagLeftMaster.setX(0.4 * maxSpeed);
+                jagRightMaster.setX(0.4 * maxSpeed);
+            }
+        } catch (CANTimeoutException ex) {
+            System.out.println(ex.toString());
+            canInitialized = false;
         }
     }
 
@@ -347,24 +357,38 @@ public class CoyoBotXII extends IterativeRobot {
         }
          */
 
-         if(towerDrive)
-        {
-           try {
-            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
-            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
-            jagLeftMaster.setPID(tdriveP, tdriveI, tdriveD);
-            jagRightMaster.setPID(tdriveP, tdriveI, tdriveD);
-        } catch (CANTimeoutException ex) {
-            System.out.println(ex.toString());
-            canInitialized = false;
+        if (towerDrive && controlModeSwitch == 1) {
+            driveMode = 4;
+            xInput = 0;
+            yInput = 0;
+            try {
+                jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+                jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+                jagLeftMaster.setX(0);
+                jagRightMaster.setX(0);
+                jagLeftMaster.setPID(-tdriveP, -tdriveI, -tdriveD);
+                jagRightMaster.setPID(tdriveP, tdriveI, tdriveD);
+                jagLeftMaster.enableControl(0);
+                jagRightMaster.enableControl(0);
+                controlModeSwitch++;
+
+            } catch (CANTimeoutException ex) {
+                System.out.println(ex.toString());
+                canInitialized = false;
+            }
         }
+        
+        if (Math.abs(joyDriver.getRawAxis(5)) >= 0.1 || Math.abs(joyDriver.getRawAxis(6)) >= 0.1) {
+            towerDrive = true;
+            controlModeSwitch++;
         }
-         if(Math.abs(joyDriver.getRawAxis(5)) >= 0.1||Math.abs(joyDriver.getRawAxis(6)) >= 0.1)towerDrive = true;
         if (joyDriver.getRawButton(5)) {
-            tdriveP -= 0.001;
+            tdriveI -= 0.1;
+            controlModeSwitch = 1;
         }
         if (joyDriver.getRawButton(6)) {
-            tdriveP += 0.001;
+            tdriveI += 0.1;
+            controlModeSwitch = 1;
         }
 
         if (joyDriver.getRawButton(8)) {
@@ -619,7 +643,26 @@ public class CoyoBotXII extends IterativeRobot {
                     canInitialized = false;
                 }
                 break;
-
+            case 4:
+                dsLCD.println(DriverStationLCD.Line.kMain6, 1,
+                        "Drive mode: Tower   ");
+                /*
+                 if (Math.abs(joyDriver.getRawAxis(5)) > 0.1) {
+                    xInput++;
+                }
+                if (Math.abs(joyDriver.getRawAxis(6)) > 0.1) {
+                    yInput--;
+                }*/
+                xInput += 0.05*joyDriver.getRawAxis(6);
+                yInput += 0.05*joyDriver.getRawAxis(5);
+                try {
+                    jagLeftMaster.setX(-yInput - xInput);
+                    jagRightMaster.setX(-yInput + xInput);
+                } catch (CANTimeoutException ex) {
+                    System.out.println(ex.toString());
+                    canInitialized = false;
+                }
+                break;
         }
 
         updateDS();
@@ -836,26 +879,16 @@ public class CoyoBotXII extends IterativeRobot {
      * Line 6: Ultrasonic distance (in metres)
      */
     public void updateDS() {
+        dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Set: " + xInput + "     ");
+        dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Set: " + yInput + "     ");
+        dsLCD.println(DriverStationLCD.Line.kUser6, 1, "TPID I: " + tdriveI + "     ");
+
         try {
-            dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Speed: " + jagLeftMaster.getSpeed() + "     ");
-            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Speed: " + jagRightMaster.getSpeed() + "     ");
-            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "TPID P: " + tdriveP + "     ");
-
-
-        } catch (CANTimeoutException ex) {
-            System.out.println(ex.toString());
-            canInitialized = false;
-
-
-        }
-        try {
-            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "zValue: " + jagShoulderOne.getOutputVoltage());
-            dsLCD.println(DriverStationLCD.Line.kUser5, 1, " potValue: " + (jagShoulderOne.getPosition()));
+            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Pos: " + jagLeftMaster.getPosition());
+            dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Right Pos: " + jagRightMaster.getPosition());
             dsLCD.updateLCD();
-
-
         } catch (CANTimeoutException ex) {
-            dsLCD.println(DriverStationLCD.Line.kUser5, 1, " p0tValue: problem");
+            dsLCD.println(DriverStationLCD.Line.kUser5, 1, "JagPos Problem");
             dsLCD.updateLCD();
             canInitialized = false;
 
