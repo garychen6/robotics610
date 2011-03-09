@@ -231,20 +231,71 @@ public class CoyoBotXII extends IterativeRobot {
     public void autonomousPeriodic() {
         watchdog.feed();
         updateDS();
-        /*if (autoTimer.get() > 3 && autoTimer.get() < 5) {
+        if (autoTimer.get() > 3 && autoTimer.get() < 5 && autonomousStage == 0) {
             vicGripperTop.set(-1);
             vicGripperBottom.set(1);
             solArmStageOneIn.set(true);
             solArmStageOneOut.set(false);
             solArmStageTwoIn.set(true);
             solArmStageTwoOut.set(false);
-        } /**/
+        }
+        if (autoTimer.get() > 1 && autoTimer.get() < 3 && autonomousStage == 4) {
+        }
     }
+
+    double rotationsToGrid = 10;
+    double speed = 0.7;
 
     public void autonomousContinuous() {
 
         syncSlaves();
-
+        switch(autonomousStage){
+            case 0:
+                try {
+                    if(0.5 * (Math.abs(jagLeftMaster.getPosition()) + Math.abs(jagRightMaster.getPosition())) >= rotationsToGrid){
+                        autonomousStage++;
+                        autoTimer.reset();
+                        autoTimer.start();
+                    }
+                    jagLeftMaster.setX(maxSpeed * speed);
+                    jagRightMaster.setX(maxSpeed * speed);
+                } catch(CANTimeoutException ex){
+                    System.out.println(ex.toString());
+                    canInitialized = false;
+                }
+                break;
+            case 1:
+                if(autoTimer.get() >= 2)autonomousStage++;
+                if(autoTimer.get() > 1){
+                    solArmStageOneIn.set(false);
+                    solArmStageOneOut.set(true);
+                    solArmStageTwoIn.set(true);
+                    solArmStageTwoOut.set(false);
+                }
+                vicGripperTop.set(1);
+                vicGripperBottom.set(1);
+                break;
+            case 2:
+                try {
+                    if(0.5 * (Math.abs(jagLeftMaster.getPosition()) + Math.abs(jagRightMaster.getPosition())) <= 0){
+                        autonomousStage++;
+                        autoTimer.reset();
+                        autoTimer.start();
+                    }
+                    jagLeftMaster.setX(maxSpeed * -speed);
+                    jagRightMaster.setX(maxSpeed * -speed);
+                    jagShoulderOne.setX(0.86);
+                } catch(CANTimeoutException ex){
+                    System.out.println(ex.toString());
+                    canInitialized = false;
+                }
+                break;
+            case 3:
+                if(autoTimer.get() <= 2)autonomousStage++;
+                vicGripperTop.set(-1);
+                vicGripperBottom.set(-1);
+                break;
+        }
         /*if (digLineLeft.get() && digLineMiddle.get() && digLineRight.get()) {
             pidLineError.lineError = prevLineError * 2;
         } else if (!digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get()) {
