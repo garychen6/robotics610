@@ -231,17 +231,14 @@ public class CoyoBotXII extends IterativeRobot {
     public void autonomousPeriodic() {
         watchdog.feed();
         updateDS();
-        if (autoTimer.get() > 3 && autoTimer.get() < 5) {
+        /*if (autoTimer.get() > 3 && autoTimer.get() < 5) {
             vicGripperTop.set(-1);
             vicGripperBottom.set(1);
             solArmStageOneIn.set(true);
             solArmStageOneOut.set(false);
             solArmStageTwoIn.set(true);
             solArmStageTwoOut.set(false);
-        } else {
-            //vicGripperTop.set(0);
-            //vicGripperBottom.set(0);
-        }
+        } /**/
     }
 
     public void autonomousContinuous() {
@@ -311,10 +308,14 @@ public class CoyoBotXII extends IterativeRobot {
                 break;
         }/**/
         try {
-            if(jagLeftMaster.getPosition() < 5){
+            if(Math.abs(jagLeftMaster.getPosition()) < 5){
                 jagLeftMaster.setX(0.4 * maxSpeed);
                 jagRightMaster.setX(0.4 * maxSpeed);
+            } else {
+                jagLeftMaster.setX(0);
+                jagRightMaster.setX(0);
             }
+
         } catch (CANTimeoutException ex) {
             System.out.println(ex.toString());
             canInitialized = false;
@@ -884,7 +885,7 @@ public class CoyoBotXII extends IterativeRobot {
         dsLCD.println(DriverStationLCD.Line.kUser6, 1, "TPID I: " + tdriveI + "     ");
 
         try {
-            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Pos: " + jagLeftMaster.getPosition());
+            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Pos: " + Math.abs(jagLeftMaster.getPosition()));
             dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Right Pos: " + jagRightMaster.getPosition());
             dsLCD.updateLCD();
         } catch (CANTimeoutException ex) {
