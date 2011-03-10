@@ -66,8 +66,9 @@ public class CoyoBotXII extends IterativeRobot {
     //double driveP = 0.9;
     //double driveI = 0.0018;
     //double driveD = 0.0;
-    double driveP = 3.0;
-    double driveI = 0.004;
+    double driveP = 0.65;
+    double driveI = 0;
+    // driveI = 0.004
     double driveD = 0.0;
     double armP = -800;
     double armI = 0;
@@ -232,7 +233,7 @@ public class CoyoBotXII extends IterativeRobot {
     public void autonomousPeriodic() {
         watchdog.feed();
         updateDS();
-        if (autoTimer.get() > 3 && autoTimer.get() < 5 && autonomousStage == 0) {
+        if (autoTimer.get() > 3 && autoTimer.get() < 4.5 && autonomousStage == 0) {
             vicGripperTop.set(-1);
             vicGripperBottom.set(1);
             solArmStageOneIn.set(true);
@@ -240,34 +241,37 @@ public class CoyoBotXII extends IterativeRobot {
             solArmStageTwoIn.set(true);
             solArmStageTwoOut.set(false);
         }
-        if (autoTimer.get() > 1 && autoTimer.get() < 3 && autonomousStage == 4) {
-        }
+        /*if (autoTimer.get() > 1 && autoTimer.get() < 3 && autonomousStage == 4) {
+        }*/
     }
-
-    double rotationsToGrid = 10;
+    double rotationsToGrid = 7;
     double speed = 0.7;
 
     public void autonomousContinuous() {
 
         syncSlaves();
-        switch(autonomousStage){
+        switch (autonomousStage) {
             case 0:
                 try {
-                    if(0.5 * (Math.abs(jagLeftMaster.getPosition()) + Math.abs(jagRightMaster.getPosition())) >= rotationsToGrid){
+                    if (0.5 * (Math.abs(jagLeftMaster.getPosition()) + Math.abs(jagRightMaster.getPosition())) >= rotationsToGrid) {
                         autonomousStage++;
                         autoTimer.reset();
                         autoTimer.start();
+                    jagLeftMaster.setX(0);
+                    jagRightMaster.setX(0);
                     }
                     jagLeftMaster.setX(maxSpeed * speed);
                     jagRightMaster.setX(maxSpeed * speed);
-                } catch(CANTimeoutException ex){
+                } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                     canInitialized = false;
                 }
                 break;
             case 1:
-                if(autoTimer.get() >= 2)autonomousStage++;
-                if(autoTimer.get() > 1){
+                if (autoTimer.get() >= 2) {
+                    autonomousStage++;
+                }
+                if (autoTimer.get() > 1) {
                     solArmStageOneIn.set(false);
                     solArmStageOneOut.set(true);
                     solArmStageTwoIn.set(true);
@@ -278,7 +282,7 @@ public class CoyoBotXII extends IterativeRobot {
                 break;
             case 2:
                 try {
-                    if(0.5 * (Math.abs(jagLeftMaster.getPosition()) + Math.abs(jagRightMaster.getPosition())) <= 0){
+                    if (0.5 * (Math.abs(jagLeftMaster.getPosition()) + Math.abs(jagRightMaster.getPosition())) <= 0) {
                         autonomousStage++;
                         autoTimer.reset();
                         autoTimer.start();
@@ -286,92 +290,94 @@ public class CoyoBotXII extends IterativeRobot {
                     jagLeftMaster.setX(maxSpeed * -speed);
                     jagRightMaster.setX(maxSpeed * -speed);
                     jagShoulderOne.setX(0.86);
-                } catch(CANTimeoutException ex){
+                } catch (CANTimeoutException ex) {
                     System.out.println(ex.toString());
                     canInitialized = false;
                 }
                 break;
             case 3:
-                if(autoTimer.get() <= 2)autonomousStage++;
+                if (autoTimer.get() <= 2) {
+                    autonomousStage++;
+                }
                 vicGripperTop.set(-1);
                 vicGripperBottom.set(-1);
                 break;
         }
         /*if (digLineLeft.get() && digLineMiddle.get() && digLineRight.get()) {
-            pidLineError.lineError = prevLineError * 2;
+        pidLineError.lineError = prevLineError * 2;
         } else if (!digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get()) {
-            pidLineError.lineError = 0;
-            prevLineError = 0;
+        pidLineError.lineError = 0;
+        prevLineError = 0;
         } else if (!digLineLeft.get() && digLineMiddle.get() && !digLineRight.get()) {
-            pidLineError.lineError = 0;
-            prevLineError = 0;
+        pidLineError.lineError = 0;
+        prevLineError = 0;
         } else if (digLineLeft.get() && !digLineMiddle.get() && digLineRight.get()) {
-            pidLineError.lineError = 0;
-            prevLineError = 0;
+        pidLineError.lineError = 0;
+        prevLineError = 0;
         } else if (!digLineLeft.get() && !digLineMiddle.get() && digLineRight.get()) {
-            pidLineError.lineError = -1;
-            prevLineError = -1;
+        pidLineError.lineError = -1;
+        prevLineError = -1;
         } else if (digLineLeft.get() && !digLineMiddle.get() && !digLineRight.get()) {
-            pidLineError.lineError = 1;
-            prevLineError = 1;
+        pidLineError.lineError = 1;
+        prevLineError = 1;
         } else if (!digLineLeft.get() && digLineMiddle.get() && digLineRight.get()) {
-            pidLineError.lineError = -2;
-            prevLineError = -2;
+        pidLineError.lineError = -2;
+        prevLineError = -2;
         } else if (digLineLeft.get() && digLineMiddle.get() && !digLineRight.get()) {
-            pidLineError.lineError = 2;
-            prevLineError = 2;
+        pidLineError.lineError = 2;
+        prevLineError = 2;
         }
 
         switch (autonomousStage) {
-            case 0:
-                if (anaUltraSonic.getVoltage() < 0.5 * vToM && autoTimer.get() > 5) {
-                    autonomousStage = 1;
-                }
-                vicGripperTop.set(0);
-                vicGripperBottom.set(0);
-                fluxCapacitorOne.set(Relay.Value.kOff);
-                fluxCapacitorTwo.set(Relay.Value.kReverse);
-                try {
-                    xInput = pidLineOutput.xValue;
-                    yInput = -0.6;
-                    octantJoystick();
-                    jagLeftMaster.setX(maxSpeed * leftSpeed);
-                    jagRightMaster.setX(maxSpeed * rightSpeed);
-                } catch (CANTimeoutException ex) {
-                    System.out.println(ex.toString());
-                    canInitialized = false;
-                }
-                break;
-            case 1:
-                vicGripperTop.set(1);
-                vicGripperBottom.set(1);
-                fluxCapacitorOne.set(Relay.Value.kOff);
-                fluxCapacitorTwo.set(Relay.Value.kForward);
-                try {
-                    xInput = 0;
-                    yInput = 0.4;
-                    octantJoystick();
-                    jagLeftMaster.setX(maxSpeed * leftSpeed);
-                    jagRightMaster.setX(maxSpeed * rightSpeed);
-                } catch (CANTimeoutException ex) {
-                    System.out.println(ex.toString());
-                    canInitialized = false;
-                }
-                break;
-        }/**/
+        case 0:
+        if (anaUltraSonic.getVoltage() < 0.5 * vToM && autoTimer.get() > 5) {
+        autonomousStage = 1;
+        }
+        vicGripperTop.set(0);
+        vicGripperBottom.set(0);
+        fluxCapacitorOne.set(Relay.Value.kOff);
+        fluxCapacitorTwo.set(Relay.Value.kReverse);
         try {
-            if(Math.abs(jagLeftMaster.getPosition()) < 5){
-                jagLeftMaster.setX(0.4 * maxSpeed);
-                jagRightMaster.setX(0.4 * maxSpeed);
-            } else {
-                jagLeftMaster.setX(0);
-                jagRightMaster.setX(0);
-            }
+        xInput = pidLineOutput.xValue;
+        yInput = -0.6;
+        octantJoystick();
+        jagLeftMaster.setX(maxSpeed * leftSpeed);
+        jagRightMaster.setX(maxSpeed * rightSpeed);
+        } catch (CANTimeoutException ex) {
+        System.out.println(ex.toString());
+        canInitialized = false;
+        }
+        break;
+        case 1:
+        vicGripperTop.set(1);
+        vicGripperBottom.set(1);
+        fluxCapacitorOne.set(Relay.Value.kOff);
+        fluxCapacitorTwo.set(Relay.Value.kForward);
+        try {
+        xInput = 0;
+        yInput = 0.4;
+        octantJoystick();
+        jagLeftMaster.setX(maxSpeed * leftSpeed);
+        jagRightMaster.setX(maxSpeed * rightSpeed);
+        } catch (CANTimeoutException ex) {
+        System.out.println(ex.toString());
+        canInitialized = false;
+        }
+        break;
+        }/**/
+        /* try {
+        if(Math.abs(jagLeftMaster.getPosition()) < 5){
+        jagLeftMaster.setX(0.4 * maxSpeed);
+        jagRightMaster.setX(0.4 * maxSpeed);
+        } else {
+        jagLeftMaster.setX(0);
+        jagRightMaster.setX(0);
+        }
 
         } catch (CANTimeoutException ex) {
-            System.out.println(ex.toString());
-            canInitialized = false;
-        }
+        System.out.println(ex.toString());
+        canInitialized = false;
+        }*/
     }
 
     public void teleopInit() {
@@ -397,18 +403,16 @@ public class CoyoBotXII extends IterativeRobot {
     public void teleopPeriodic() {
         watchdog.feed(); //feed the watchdog
         autonomousStage = 0;
-        /*
+
         //Check buttons & set shift - high is 8, low is 7
-        if (joyDriver.getRawButton(5) && joyDriver.getRawButton(6)){
-        solMinibotA.set(true);
-        solMinibotB.set(true);
+        /*if (joyDriver.getRawButton(5) && joyDriver.getRawButton(6)) {
+            solMinibotA.set(true);
+            solMinibotB.set(true);
+        } else {
+            solMinibotA.set(false);
+            solMinibotB.set(false);
         }
-        else
-        {
-        solMinibotA.set(false);
-        solMinibotB.set(false);
-        }
-         */
+        */
 
         if (towerDrive && controlModeSwitch == 1) {
             driveMode = 4;
@@ -430,20 +434,42 @@ public class CoyoBotXII extends IterativeRobot {
                 canInitialized = false;
             }
         }
-        
+
         if (Math.abs(joyDriver.getRawAxis(5)) >= 0.1 || Math.abs(joyDriver.getRawAxis(6)) >= 0.1) {
             towerDrive = true;
             controlModeSwitch++;
         }
-        if (joyDriver.getRawButton(5)) {
-            tdriveI -= 0.1;
-            controlModeSwitch = 1;
-        }
-        if (joyDriver.getRawButton(6)) {
-            tdriveI += 0.1;
-            controlModeSwitch = 1;
+        if (Math.abs(joyDriver.getRawAxis(2)) >= 0.1 || Math.abs(joyDriver.getRawAxis(4)) >= 0.1) {
+            if (towerDrive = true) {
+                towerDrive = false;
+                controlModeSwitch = 0;
+                driveMode = 0;
+                try {
+                    jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+                    jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+                    jagLeftMaster.setPID(driveP, driveI, driveD);
+                    jagRightMaster.setPID(driveP, driveI, driveD);
+                    jagLeftMaster.setX(0);
+                    jagRightMaster.setX(0);
+                    jagLeftMaster.enableControl();
+                    jagRightMaster.enableControl();
+                } catch (CANTimeoutException ex) {
+                    System.out.println(ex.toString());
+                    canInitialized = false;
+                }
+            }
         }
 
+
+        if (joyDriver.getRawButton(5)) {
+        driveI -= 0.001;
+       // controlModeSwitch = 1;
+        }
+        if (joyDriver.getRawButton(6)) {
+        driveI += 0.001;
+       // controlModeSwitch = 1;
+        }
+         
         if (joyDriver.getRawButton(8)) {
             solShifterHigh.set(true);
             solShifterLow.set(false);
@@ -700,14 +726,14 @@ public class CoyoBotXII extends IterativeRobot {
                 dsLCD.println(DriverStationLCD.Line.kMain6, 1,
                         "Drive mode: Tower   ");
                 /*
-                 if (Math.abs(joyDriver.getRawAxis(5)) > 0.1) {
-                    xInput++;
+                if (Math.abs(joyDriver.getRawAxis(5)) > 0.1) {
+                xInput++;
                 }
                 if (Math.abs(joyDriver.getRawAxis(6)) > 0.1) {
-                    yInput--;
+                yInput--;
                 }*/
-                xInput += 0.05*joyDriver.getRawAxis(6);
-                yInput += 0.05*joyDriver.getRawAxis(5);
+                xInput += 0.05 * joyDriver.getRawAxis(6);
+                yInput += 0.05 * joyDriver.getRawAxis(5);
                 try {
                     jagLeftMaster.setX(-yInput - xInput);
                     jagRightMaster.setX(-yInput + xInput);
@@ -934,11 +960,10 @@ public class CoyoBotXII extends IterativeRobot {
     public void updateDS() {
         dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Set: " + xInput + "     ");
         dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Set: " + yInput + "     ");
-        dsLCD.println(DriverStationLCD.Line.kUser6, 1, "TPID I: " + tdriveI + "     ");
-
         try {
-            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Pos: " + Math.abs(jagLeftMaster.getPosition()));
-            dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Right Pos: " + jagRightMaster.getPosition());
+            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "X-Axis: " + joyDriver.getRawAxis(5) + "     ");
+            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "PIDI: " + driveI);
+            dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Right Speed " + jagRightMaster.getSpeed());
             dsLCD.updateLCD();
         } catch (CANTimeoutException ex) {
             dsLCD.println(DriverStationLCD.Line.kUser5, 1, "JagPos Problem");
