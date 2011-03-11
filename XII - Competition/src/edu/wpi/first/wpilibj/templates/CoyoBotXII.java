@@ -67,7 +67,7 @@ public class CoyoBotXII extends IterativeRobot {
     //double driveI = 0.0018;
     //double driveD = 0.0;
     double driveP = 0;
-    double driveI = 0;
+    double driveI = 0.004;
     // driveI = 0.004
     double driveD = 0.0;
     double armP = -800;
@@ -251,7 +251,7 @@ public class CoyoBotXII extends IterativeRobot {
                 break;
             case 1:
                 // Rotate tube
-                if (autoTimer.get() > 2 && autoTimer.get() < 2.8) {
+                if (autoTimer.get() > 2 && autoTimer.get() < 2.9) {
                     vicGripperTop.set(-1);
                     vicGripperBottom.set(1);
                     solArmStageOneIn.set(true);
@@ -259,7 +259,8 @@ public class CoyoBotXII extends IterativeRobot {
                     solArmStageTwoIn.set(true);
                     solArmStageTwoOut.set(false);
                 }
-                if (autoTimer.get() >= 2.8) {
+
+                if (autoTimer.get() >= 2.9) {
                     vicGripperTop.set(0);
                     vicGripperBottom.set(0);
                 }
@@ -329,8 +330,8 @@ public class CoyoBotXII extends IterativeRobot {
                     canInitialized = false;
                 }
                 break;
-        }
-
+        } 
+       
                 if (!canInitialized) {
             try {
                 jagLeftMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
@@ -467,14 +468,14 @@ public class CoyoBotXII extends IterativeRobot {
         autonomousStage = 0;
 
         //Check buttons & set shift - high is 8, low is 7
-        /*if (joyDriver.getRawButton(5) && joyDriver.getRawButton(6)) {
+        if (joyDriver.getRawButton(5) && joyDriver.getRawButton(6)) {
         solMinibotA.set(true);
         solMinibotB.set(true);
         } else {
         solMinibotA.set(false);
         solMinibotB.set(false);
         }
-         */
+         
 
 
 
@@ -538,7 +539,7 @@ public class CoyoBotXII extends IterativeRobot {
         }
 
 
-        if (joyDriver.getRawButton(5)) {
+       /* if (joyDriver.getRawButton(5)) {
             driveI -= 0.001;
             // controlModeSwitch = 1;
 
@@ -547,9 +548,9 @@ public class CoyoBotXII extends IterativeRobot {
         if (joyDriver.getRawButton(6)) {
             driveI += 0.001;
             // controlModeSwitch = 1;
+         */
 
-
-        }
+       // }
 
         if (joyDriver.getRawButton(8)) {
             solShifterHigh.set(true);
