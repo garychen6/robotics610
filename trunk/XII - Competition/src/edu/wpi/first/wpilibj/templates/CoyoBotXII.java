@@ -66,7 +66,7 @@ public class CoyoBotXII extends IterativeRobot {
     //double driveP = 0.9;
     //double driveI = 0.0018;
     //double driveD = 0.0;
-    double driveP = 0.6;
+    double driveP = 0;
     double driveI = 0;
     // driveI = 0.004
     double driveD = 0.0;
@@ -76,7 +76,7 @@ public class CoyoBotXII extends IterativeRobot {
     double tdriveP = 300;
     double tdriveI = 0;
     double tdriveD = 0;
-    double rotationsToGrid = 7;
+    double rotationsToGrid = 8.2;
     double speed = 0.7;
 
     /**
@@ -214,6 +214,7 @@ public class CoyoBotXII extends IterativeRobot {
             jagLeftMaster.enableControl();
             jagRightMaster.enableControl();
             jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
+            jagShoulderOne.setPID(armP, armI, armD);
             jagShoulderOne.enableControl();
             shoulderPID = true;
         } catch (CANTimeoutException ex) {
@@ -250,7 +251,7 @@ public class CoyoBotXII extends IterativeRobot {
                 break;
             case 1:
                 // Rotate tube
-                if (autoTimer.get() > 2 && autoTimer.get() < 3) {
+                if (autoTimer.get() > 2 && autoTimer.get() < 2.8) {
                     vicGripperTop.set(-1);
                     vicGripperBottom.set(1);
                     solArmStageOneIn.set(true);
@@ -258,17 +259,18 @@ public class CoyoBotXII extends IterativeRobot {
                     solArmStageTwoIn.set(true);
                     solArmStageTwoOut.set(false);
                 }
-                if (autoTimer.get() >= 3) {
+                if (autoTimer.get() >= 2.8) {
                     vicGripperTop.set(0);
                     vicGripperBottom.set(0);
                 }
                 try {
-                    if (0.5 * (Math.abs(jagLeftMaster.getPosition()) + Math.abs(jagRightMaster.getPosition())) >= rotationsToGrid) {
+                    if (Math.abs(jagRightMaster.getPosition()) >= rotationsToGrid) {
                         jagLeftMaster.setX(0);
                         jagRightMaster.setX(0);
                         if (autoTimer.get() > 3) {
                             vicGripperTop.set(0);
                             vicGripperBottom.set(0);
+
                             autonomousStage = 2;
                         }
                     }
@@ -283,16 +285,13 @@ public class CoyoBotXII extends IterativeRobot {
                 vicGripperTop.set(1);
                 vicGripperBottom.set(1);
 
-                if (autoTimer.get() >= 4) {
+                if (autoTimer.get() >= 8) {
                     solArmStageOneIn.set(false);
                     solArmStageOneOut.set(true);
                     solArmStageTwoIn.set(true);
                     solArmStageTwoOut.set(false);
-                }
-
-                if (autoTimer.get() >= 5) {
-                    vicGripperTop.set(0);
-                    vicGripperBottom.set(0);
+                    vicGripperTop.set(1);
+                    vicGripperBottom.set(1);
                     autonomousStage = 3;
                 }
 
@@ -304,13 +303,12 @@ public class CoyoBotXII extends IterativeRobot {
 
             case 3:
                 try {
-                    if (0.5 * (Math.abs(jagLeftMaster.getPosition()) + Math.abs(jagRightMaster.getPosition())) <= 0) {
-
+                    if (jagRightMaster.getPosition() <= 0) {
                         autonomousStage = 4;
                     }
                     jagLeftMaster.setX(maxSpeed * -speed);
                     jagRightMaster.setX(maxSpeed * -speed);
-                    jagShoulderOne.setX(0.86);
+                    jagShoulderOne.setX(0.867);
                     vicGripperTop.set(-1);
                     vicGripperBottom.set(-1);
 
@@ -513,7 +511,7 @@ public class CoyoBotXII extends IterativeRobot {
 
 
         if (Math.abs(joyDriver.getRawAxis(2)) >= 0.1 || Math.abs(joyDriver.getRawAxis(4)) >= 0.1) {
-            if (towerDrive = true) {
+            if (towerDrive == true) {
                 towerDrive = false;
                 controlModeSwitch = 0;
                 driveMode = 0;
@@ -1190,7 +1188,7 @@ public class CoyoBotXII extends IterativeRobot {
         try {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Pos: " + jagLeftMaster.getPosition() + "     ");
             dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Pos: " + jagRightMaster.getPosition() + "     ");
-            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Auton: " + autonomousStage + "     ");
+            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "DriveI " + driveI+ "     ");
             dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Speed: " + jagRightMaster.getSpeed() + "     ");
             dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Right Speed " + jagRightMaster.getSpeed() + "     ");
             dsLCD.updateLCD();
