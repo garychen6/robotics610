@@ -330,9 +330,9 @@ public class CoyoBotXII extends IterativeRobot {
                     canInitialized = false;
                 }
                 break;
-        } 
-       
-                if (!canInitialized) {
+        }
+
+        if (!canInitialized) {
             try {
                 jagLeftMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
                 jagRightMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
@@ -469,13 +469,13 @@ public class CoyoBotXII extends IterativeRobot {
 
         //Check buttons & set shift - high is 8, low is 7
         if (joyDriver.getRawButton(5) && joyDriver.getRawButton(6)) {
-        solMinibotA.set(true);
-        solMinibotB.set(true);
+            solMinibotA.set(true);
+            solMinibotB.set(true);
         } else {
-        solMinibotA.set(false);
-        solMinibotB.set(false);
+            solMinibotA.set(false);
+            solMinibotB.set(false);
         }
-         
+
 
 
 
@@ -539,18 +539,18 @@ public class CoyoBotXII extends IterativeRobot {
         }
 
 
-       /* if (joyDriver.getRawButton(5)) {
-            driveI -= 0.001;
-            // controlModeSwitch = 1;
+        /* if (joyDriver.getRawButton(5)) {
+        driveI -= 0.001;
+        // controlModeSwitch = 1;
 
 
         }
         if (joyDriver.getRawButton(6)) {
-            driveI += 0.001;
-            // controlModeSwitch = 1;
+        driveI += 0.001;
+        // controlModeSwitch = 1;
          */
 
-       // }
+        // }
 
         if (joyDriver.getRawButton(8)) {
             solShifterHigh.set(true);
@@ -1189,7 +1189,7 @@ public class CoyoBotXII extends IterativeRobot {
         try {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Pos: " + jagLeftMaster.getPosition() + "     ");
             dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Pos: " + jagRightMaster.getPosition() + "     ");
-            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "DriveI " + driveI+ "     ");
+            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "DriveI " + driveI + "     ");
             dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Speed: " + jagRightMaster.getSpeed() + "     ");
             dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Right Speed " + jagRightMaster.getSpeed() + "     ");
             dsLCD.updateLCD();
