@@ -400,20 +400,24 @@ public class CoyoBotXII extends IterativeRobot {
         if (!canInitialized) {
             canFaults++;
             try {
-                //Setup Jaguars
+                //Drivetrain
                 jagLeftMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
                 jagRightMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
+                jagLeftMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
+                jagRightMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
                 jagLeftMaster.configEncoderCodesPerRev(256);
                 jagRightMaster.configEncoderCodesPerRev(256);
                 jagLeftSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
                 jagRightSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-                jagShoulderOne.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
-                jagShoulderOne.configPotentiometerTurns(1);
-                //TODO: Comp needs
-                // jagShoulderTwo.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-                //Start various PIDs for autonomous mode
                 jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
                 jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+                jagLeftMaster.setPID(driveP, driveI, driveD);
+                jagRightMaster.setPID(driveP, driveI, driveD);
+                //Shoulder
+                jagShoulderOne.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
+                jagShoulderOne.configPotentiometerTurns(1);
+                //TODO: Comp is jagShoulderTwo.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                //Start various PIDs for autonomous mode
                 jagLeftMaster.setPID(driveP, driveI, driveD);
                 jagRightMaster.setPID(driveP, driveI, driveD);
                 jagLeftMaster.enableControl();
@@ -421,6 +425,7 @@ public class CoyoBotXII extends IterativeRobot {
                 jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
                 jagShoulderOne.setPID(armP, armI, armD);
                 jagShoulderOne.enableControl();
+                shoulderPID = true;
                 canInitialized = true;
             } catch (CANTimeoutException ex) {
                 System.out.println(ex.toString());
@@ -726,8 +731,7 @@ public class CoyoBotXII extends IterativeRobot {
             //Normal driving conditions
             switch (driveMode) {
                 case 0:
-                    dsLCD.println(DriverStationLCD.Line.kMain6, 1,
-                            "Drive mode: Tank  ");
+                    //dsLCD.println(DriverStationLCD.Line.kMain6, 1, "Drive mode: Tank  ");
                     try {
                         //Tank mode
                         jagRightMaster.setX(maxSpeed * (joyDriver.getRawAxis(2)));
@@ -738,12 +742,11 @@ public class CoyoBotXII extends IterativeRobot {
                     }
                     break;
                 case 1:
-                    dsLCD.println(DriverStationLCD.Line.kMain6, 1,
-                            "Drive mode: Arcade");
+                    //dsLCD.println(DriverStationLCD.Line.kMain6, 1, "Drive mode: Arcade");
                     try {
                         //Arcade mode
-                        xInput = joyDriver.getRawAxis(1);
-                        yInput = joyDriver.getRawAxis(2);
+                        xInput = joyDriver.getRawAxis(1) * convertJoy(joyDriver.getRawAxis(1), -joyDriver.getRawAxis(2));
+                        yInput = joyDriver.getRawAxis(2) * convertJoy(joyDriver.getRawAxis(1), -joyDriver.getRawAxis(2));
                         octantJoystick();
                         jagLeftMaster.setX(maxSpeed * leftSpeed);
                         jagRightMaster.setX(maxSpeed * rightSpeed);
@@ -753,12 +756,11 @@ public class CoyoBotXII extends IterativeRobot {
                     }
                     break;
                 case 2:
-                    dsLCD.println(DriverStationLCD.Line.kMain6, 1,
-                            "Drive mode: Kaj   ");
+                    //dsLCD.println(DriverStationLCD.Line.kMain6, 1, "Drive mode: Kaj   ");
                     try {
                         //Kaj mode
-                        xInput = joyDriver.getRawAxis(3);
-                        yInput = -joyDriver.getRawAxis(2);
+                        xInput = joyDriver.getRawAxis(3) * convertJoy(joyDriver.getRawAxis(3), -joyDriver.getRawAxis(2));
+                        yInput = -joyDriver.getRawAxis(2) * convertJoy(joyDriver.getRawAxis(3), -joyDriver.getRawAxis(2));
                         octantJoystick();
                         jagLeftMaster.setX(maxSpeed * leftSpeed);
                         jagRightMaster.setX(maxSpeed * rightSpeed);
@@ -768,8 +770,7 @@ public class CoyoBotXII extends IterativeRobot {
                     }
                     break;
                 case 4:
-                    dsLCD.println(DriverStationLCD.Line.kMain6, 1,
-                            "Drive mode: Tower   ");
+                    //dsLCD.println(DriverStationLCD.Line.kMain6, 1, "Drive mode: Tower   ");
                     //Tower drive
                     xInput += 0.05 * joyDriver.getRawAxis(6);
                     yInput += 0.05 * joyDriver.getRawAxis(5);
@@ -783,6 +784,8 @@ public class CoyoBotXII extends IterativeRobot {
                     break;
             }
         }
+        //Check for CAN Faults
+        checkCANteleop();
         //Update DS
         updateDS();
     }
@@ -792,12 +795,12 @@ public class CoyoBotXII extends IterativeRobot {
         syncSlaves();
         //Line follower drive mode
         if (driveMode == 3) {
-            dsLCD.println(DriverStationLCD.Line.kMain6, 1,
-                    "Drive mode: Line   ");
+            //dsLCD.println(DriverStationLCD.Line.kMain6, 1, "Drive mode: Line   ");
             try {
+                //Make sure to enable pidLineController before calling me!
+                //Follow the line!
                 xInput = pidLineOutput.xValue;
                 yInput = joyDriver.getRawAxis(2);
-                //octantJoystick();
                 leftSpeed = -yInput + xInput;
                 rightSpeed = -yInput - xInput;
                 jagLeftMaster.setX(maxSpeed * leftSpeed);
@@ -807,20 +810,37 @@ public class CoyoBotXII extends IterativeRobot {
                 canInitialized = false;
             }
         }
+    }
 
+    public void checkCANteleop() {
+        //Check to see if CANExceptions occur, if so, reinitialize CAN
         if (!canInitialized) {
             canFaults++;
             try {
+                //Drivetrain
                 jagLeftMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
                 jagRightMaster.setSpeedReference(CANJaguar.SpeedReference.kEncoder);
+                jagLeftMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
+                jagRightMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
                 jagLeftMaster.configEncoderCodesPerRev(256);
                 jagRightMaster.configEncoderCodesPerRev(256);
                 jagLeftSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
                 jagRightSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+                jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+                jagLeftMaster.setPID(driveP, driveI, driveD);
+                jagRightMaster.setPID(driveP, driveI, driveD);
+                jagLeftMaster.enableControl();
+                jagRightMaster.enableControl();
+                towerDrive = false;
+                driveMode = 0;
+                //Shoulder
                 jagShoulderOne.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
                 jagShoulderOne.configPotentiometerTurns(1);
-                //TODO: Comp is
-                // jagShoulderTwo.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                //TODO: Comp is jagShoulderTwo.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                //Start various PIDs for autonomous mode
+                jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                shoulderPID = false;
                 canInitialized = true;
             } catch (CANTimeoutException ex) {
                 System.out.println(ex.toString());
@@ -909,25 +929,25 @@ public class CoyoBotXII extends IterativeRobot {
 
     /**
      * Sends diagnostic information to the driver station.
-     * Line 1: Drive mode
-     * Line 2: Left encoder speed
-     * Line 3: Shoulder PID target
-     * Line 4: Shoulder PID proportional error
-     * Line 5: Shoulder potentiometer value
-     * Line 6: Ultrasonic distance (in metres)
+     * Line 1: CAN Faults
+     * Line 2: Left Encoder Position
+     * Line 3: Right Encoder Position
+     * Line 4: Left Encoder Speed
+     * Line 5: Right Encoder Speed
+     * Line 6: Ultrasonic Range in Metres
      */
     public void updateDS() {
         try {
-            dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Pos: " + jagLeftMaster.getPosition() + "     ");
-            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Pos: " + jagRightMaster.getPosition() + "     ");
-            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "DriveI " + driveI + "     ");
-            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Speed: " + jagRightMaster.getSpeed() + "     ");
-            dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Right Speed " + jagRightMaster.getSpeed() + "     ");
-            dsLCD.updateLCD();
+            dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Pos: " + jagLeftMaster.getPosition() + "          ");
+            dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Pos: " + jagRightMaster.getPosition() + "          ");
+            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "USonic m: " + anaUltraSonic.getVoltage() / vToM + "          ");
+            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Speed: " + jagRightMaster.getSpeed() + "          ");
+            dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Right Speed " + jagRightMaster.getSpeed() + "          ");
+            dsLCD.println(DriverStationLCD.Line.kMain6, 1, "CAN Faults: " + canFaults + "          ");
         } catch (CANTimeoutException ex) {
-            dsLCD.println(DriverStationLCD.Line.kUser5, 1, "CAN Problem");
-            dsLCD.updateLCD();
+            System.out.println(ex.toString());
             canInitialized = false;
-        } //dsLCD.println(DriverStationLCD.Line.kUser6, 1, "USonic m: " + anaUltraSonic.getVoltage() / vToM);
+        }
+        dsLCD.updateLCD();
     }
 }
