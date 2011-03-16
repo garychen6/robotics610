@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStationLCD;
+import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
@@ -24,6 +25,8 @@ public class CoyoBotXII extends IterativeRobot {
     //Camera
     AxisCamera camMinibot;
     ColorImage camImage;
+    //Gyro
+    Gyro gyro;
     //Drivetrain Motors
     CANJaguar jagLeftMaster, jagLeftSlave,
             jagRightMaster, jagRightSlave;
@@ -166,6 +169,9 @@ public class CoyoBotXII extends IterativeRobot {
             //Flag Jaguars for reinitialization
             canInitialized = false;
         }
+        //Gyro
+        gyro = new Gyro(1);
+        gyro.setSensitivity(0.007);
         //Compressor
         compressor = new Compressor(ElectricalMap.kCompressorPressureSwitchChannel, ElectricalMap.kCompressorRelayChannel);
         compressor.start();
@@ -978,7 +984,8 @@ public class CoyoBotXII extends IterativeRobot {
         try {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Pos: " + jagLeftMaster.getPosition() + "          ");
             dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Pos: " + jagRightMaster.getPosition() + "          ");
-            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "USonic m: " + anaUltraSonic.getVoltage() / vToM + "          ");
+            //dsLCD.println(DriverStationLCD.Line.kUser6, 1, "USonic m: " + anaUltraSonic.getVoltage() / vToM + "          ");
+            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Gyro: " + gyro.getAngle() + "          ");
             dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Speed: " + jagLeftMaster.getSpeed() + "          ");
             dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Right Speed " + jagRightMaster.getSpeed() + "          ");
             dsLCD.println(DriverStationLCD.Line.kMain6, 1, "CAN Faults: " + canFaults + "          ");
