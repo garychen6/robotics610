@@ -126,9 +126,9 @@ public class CoyoBotXII extends IterativeRobot {
         camMinibot = AxisCamera.getInstance();
         camMinibot.writeResolution(AxisCamera.ResolutionT.k320x240);
         camMinibot.writeBrightness(0);
-        camMinibot.writeWhiteBalance(AxisCamera.WhiteBalanceT.automatic);
+        camMinibot.writeWhiteBalance(AxisCamera.WhiteBalanceT.fixedFlour1);
         camMinibot.writeColorLevel(50);
-        camMinibot.writeExposureControl(AxisCamera.ExposureT.automatic);
+        camMinibot.writeExposureControl(AxisCamera.ExposureT.hold);
         camMinibot.writeExposurePriority(AxisCamera.ExposurePriorityT.frameRate);
         camMinibot.writeCompression(20);
         camMinibot.writeRotation(AxisCamera.RotationT.k0);
@@ -508,7 +508,7 @@ public class CoyoBotXII extends IterativeRobot {
             }
         }
         //Switch to regular drive if sticks are moved
-        if (Math.abs(joyDriver.getRawAxis(2)) >= 0.05 || Math.abs(joyDriver.getRawAxis(4)) >= 0.05) {
+        if (Math.abs(joyDriver.getRawAxis(2)) >= 0.1 || Math.abs(joyDriver.getRawAxis(4)) >= 0.1) {
             if (towerDrive == true) {
                 towerDrive = false;
                 driveMode = 0;
@@ -756,8 +756,22 @@ public class CoyoBotXII extends IterativeRobot {
                     //dsLCD.println(DriverStationLCD.Line.kMain6, 1, "Drive mode: Tank  ");
                     try {
                         //Tank mode
-                        jagRightMaster.setX(maxSpeed * (joyDriver.getRawAxis(2)));
-                        jagLeftMaster.setX(maxSpeed * (joyDriver.getRawAxis(4)));
+                        if (Math.abs(joyDriver.getRawAxis(2)) > 0.05)
+                        {
+                            jagRightMaster.setX(maxSpeed * (joyDriver.getRawAxis(2)));
+                        }
+                        else
+                        {
+                            jagRightMaster.setX(0);
+                        }
+                        if (Math.abs(joyDriver.getRawAxis(4)) > 0.05)
+                        {
+                            jagLeftMaster.setX(maxSpeed * (joyDriver.getRawAxis(4)));
+                        }
+                        else
+                        {
+                            jagLeftMaster.setX(0);
+                        }
                     } catch (CANTimeoutException ex) {
                         System.out.println(ex.toString());
                         canInitialized = false;
@@ -794,8 +808,8 @@ public class CoyoBotXII extends IterativeRobot {
                 case 4:
                     //dsLCD.println(DriverStationLCD.Line.kMain6, 1, "Drive mode: Tower   ");
                     //Tower drive
-                    xInput += 0.05 * joyDriver.getRawAxis(6);
-                    yInput += 0.05 * joyDriver.getRawAxis(5);
+                    xInput += 0.02 * joyDriver.getRawAxis(6);
+                    yInput += 0.02 * joyDriver.getRawAxis(5);
                     try {
                         jagLeftMaster.setX(-yInput - xInput);
                         jagRightMaster.setX(-yInput + xInput);
@@ -965,7 +979,7 @@ public class CoyoBotXII extends IterativeRobot {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Pos: " + jagLeftMaster.getPosition() + "          ");
             dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Pos: " + jagRightMaster.getPosition() + "          ");
             dsLCD.println(DriverStationLCD.Line.kUser6, 1, "USonic m: " + anaUltraSonic.getVoltage() / vToM + "          ");
-            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Speed: " + jagRightMaster.getSpeed() + "          ");
+            dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Speed: " + jagLeftMaster.getSpeed() + "          ");
             dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Right Speed " + jagRightMaster.getSpeed() + "          ");
             dsLCD.println(DriverStationLCD.Line.kMain6, 1, "CAN Faults: " + canFaults + "          ");
         } catch (CANTimeoutException ex) {
@@ -979,6 +993,9 @@ public class CoyoBotXII extends IterativeRobot {
         if (camMinibot.freshImage()) {
             try {
                 camImage = camMinibot.getImage();
+                if (camImage != null) {
+                        camImage.free();
+                    }
             } catch (Exception ex) {
                 System.out.println(ex.toString());
             }
