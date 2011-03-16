@@ -15,10 +15,15 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
+import edu.wpi.first.wpilibj.image.ColorImage;
 
 public class CoyoBotXII extends IterativeRobot {
 
+    //Camera
+    AxisCamera camMinibot;
+    ColorImage camImage;
     //Drivetrain Motors
     CANJaguar jagLeftMaster, jagLeftSlave,
             jagRightMaster, jagRightSlave;
@@ -117,6 +122,17 @@ public class CoyoBotXII extends IterativeRobot {
         //Watchdog and driver station
         watchdog = Watchdog.getInstance();
         dsLCD = DriverStationLCD.getInstance();
+        //Camera Initialization
+        camMinibot = AxisCamera.getInstance();
+        camMinibot.writeResolution(AxisCamera.ResolutionT.k320x240);
+        camMinibot.writeBrightness(0);
+        camMinibot.writeWhiteBalance(AxisCamera.WhiteBalanceT.automatic);
+        camMinibot.writeColorLevel(50);
+        camMinibot.writeExposureControl(AxisCamera.ExposureT.automatic);
+        camMinibot.writeExposurePriority(AxisCamera.ExposurePriorityT.frameRate);
+        camMinibot.writeCompression(20);
+        camMinibot.writeRotation(AxisCamera.RotationT.k0);
+        camMinibot.writeMaxFPS(30);
         //All Jaguars
         try {
             //Drivetrain
@@ -227,6 +243,9 @@ public class CoyoBotXII extends IterativeRobot {
 
     public void disabledPeriodic() {
         watchdog.feed();
+        //Update Cam
+        updateCam();
+        //Update DS
         updateDS();
         //TODO: Add autonomous selection code
     }
@@ -241,6 +260,9 @@ public class CoyoBotXII extends IterativeRobot {
 
     public void autonomousPeriodic() {
         watchdog.feed();
+        //Update Camera
+        updateCam();
+        //Update DS
         updateDS();
         //Monitor CAN for exceptions and reinitialize if needed
         checkCANauton();
@@ -786,6 +808,8 @@ public class CoyoBotXII extends IterativeRobot {
         }
         //Check for CAN Faults
         checkCANteleop();
+        //Update Camera
+        updateCam();
         //Update DS
         updateDS();
     }
@@ -949,5 +973,15 @@ public class CoyoBotXII extends IterativeRobot {
             canInitialized = false;
         }
         dsLCD.updateLCD();
+    }
+
+    public void updateCam() {
+        if (camMinibot.freshImage()) {
+            try {
+                camImage = camMinibot.getImage();
+            } catch (Exception ex) {
+                System.out.println(ex.toString());
+            }
+        }
     }
 }
