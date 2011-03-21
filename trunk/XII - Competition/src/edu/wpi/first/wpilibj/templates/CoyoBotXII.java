@@ -116,6 +116,9 @@ public class CoyoBotXII extends IterativeRobot {
     double speed = 0.7;
     //CAN Exception Counter
     int canFaults = 0;
+    //Autonomouse Acceleration Control
+    boolean autonAccel = false;
+    double autonSpeed = 0;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -282,12 +285,13 @@ public class CoyoBotXII extends IterativeRobot {
                 autoTimer.start();
                 //Configure Jaguars
                 try {
+                    gyro.reset();
                     jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
                     jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
                     jagLeftMaster.setPID(driveP, driveI, driveD);
                     jagRightMaster.setPID(driveP, driveI, driveD);
-                    jagLeftMaster.enableControl();
-                    jagRightMaster.enableControl();
+                    jagLeftMaster.enableControl(0);
+                    jagRightMaster.enableControl(0);
                     jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
                     jagShoulderOne.setPID(armP, armI, armD);
                     jagShoulderOne.enableControl();
