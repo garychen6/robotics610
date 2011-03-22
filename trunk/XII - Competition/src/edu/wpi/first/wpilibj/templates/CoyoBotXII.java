@@ -392,7 +392,7 @@ public class CoyoBotXII extends IterativeRobot {
                     solArmStageTwoIn.set(false);
                     solArmStageTwoOut.set(true);
                 }
-                if (autoTimer.get() >= 3.0) {
+                if (autoTimer.get() >= 1.7) {
                     autonomousStage = 3;
                     //Arm Pickup
                     solArmStageOneIn.set(false);
@@ -406,13 +406,13 @@ public class CoyoBotXII extends IterativeRobot {
                     if (jagRightMaster.getPosition() > 6.2) {
                         autonUltraFactor = 1;
                     } else {
-                        autonUltraFactor = (1.0 / 2.5) * (jagRightMaster.getPosition() - 3.7);
+                        autonUltraFactor = (1.0 / 2.7) * (jagRightMaster.getPosition() - 3.5);
                     }
                     //Drive backwards
-                    if (autoTimer.get() >= 4.6) {
-                        jagLeftMaster.setX((-1.0 * autonUltraFactor - (gyro.getAngle() + 20) / 30));
-                        jagRightMaster.setX((-1.0 * autonUltraFactor + (gyro.getAngle() + 20) / 30));
-                    }
+                    //if (autoTimer.get() >= 4.6) {
+                    jagLeftMaster.setX((-1.0 * autonUltraFactor - (gyro.getAngle() + 19) / 30));
+                    jagRightMaster.setX((-1.0 * autonUltraFactor + (gyro.getAngle() + 19) / 30));
+                    //}
                     //Check if we have driven back to original position
                     if (jagRightMaster.getPosition() <= 3.8) {
                         autonomousStage = 4;
@@ -444,10 +444,10 @@ public class CoyoBotXII extends IterativeRobot {
                         vicGripperTop.set(1);
                         vicGripperBottom.set(-1);
                     }
-                    if (anaUltraSonic.getVoltage() / vToM > 2.4) {
+                    if (anaUltraSonic.getVoltage() / vToM > 2.3) {
                         autonUltraFactor = 1;
                     } else {
-                        autonUltraFactor = (1.0 / 1.5) * ((anaUltraSonic.getVoltage() / vToM) - 0.9);
+                        autonUltraFactor = (1.0 / 1.5) * ((anaUltraSonic.getVoltage() / vToM) - 0.8);
                     }
                     /*
                     yInput = -autonUltraFactor;
@@ -459,7 +459,7 @@ public class CoyoBotXII extends IterativeRobot {
                     jagLeftMaster.setX(1.0 * autonUltraFactor - gyro.getAngle() / 30);
                     jagRightMaster.setX(1.0 * autonUltraFactor + gyro.getAngle() / 30);
                     if (autoTimer.get() >= 2.0) {
-                        if ((anaUltraSonic.getVoltage() / vToM) < 1.2) {
+                        if ((anaUltraSonic.getVoltage() / vToM) < 1.1) {
                             //Rotate tube
                             vicGripperTop.set(-1);
                             vicGripperBottom.set(1);
@@ -477,7 +477,19 @@ public class CoyoBotXII extends IterativeRobot {
                 }
                 break;
             case 5:
-                if (autoTimer.get() >= 1.2) {
+                if (autoTimer.get() >= 1.7) {
+                    //Stop tube
+                    vicGripperTop.set(0);
+                    vicGripperBottom.set(0);
+                    try {
+                        //Swing arm back over to pick up from back
+                        jagShoulderOne.setX(0.867);
+                        armState = 1;
+                    } catch (CANTimeoutException ex) {
+                        System.out.println(ex.toString());
+                        canInitialized = false;
+                    }
+                } else if (autoTimer.get() >= 1.2) {
                     //Spit tube
                     vicGripperTop.set(1);
                     vicGripperBottom.set(1);
