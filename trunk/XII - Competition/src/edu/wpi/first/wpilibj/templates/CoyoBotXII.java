@@ -122,6 +122,8 @@ public class CoyoBotXII extends IterativeRobot {
     double autonLeftSpeed = 0;
     double autonRightSpeed = 0;
     double autonUltraFactor = 1;
+    //Autonomous switch mode: 1 = Disabled; 2 = 1 tube (line); 3 = 1 tube (deadreckonin6); 4 = 2 tube left; 5 = 2 tube right;
+    int autoSwitch = 2;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -258,10 +260,7 @@ public class CoyoBotXII extends IterativeRobot {
         //Update Cam
         //Update DS
         updateDS();
-        //TODO: Add autonomous selection code
-    }
-
-    public void disabledContinuous() {
+        for (int i = 1; i < 6; i++)if (joyDriver.getRawButton(i))autoSwitch = i;
     }
 
     public void autonomousInit() {
@@ -303,242 +302,564 @@ public class CoyoBotXII extends IterativeRobot {
     }
 
     public void autonomousContinuous() {
-        switch (autonomousStage) {
-            case 0:
-                //Reset Autonomous Timer
-                autoTimer.reset();
-                autoTimer.start();
-                //Configure Jaguars
-                try {
-                    gyro.reset();
-                    jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
-                    jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
-                    jagLeftMaster.enableControl(0);
-                    jagRightMaster.enableControl(0);
-                    jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-                    jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-                    jagLeftMaster.enableControl();
-                    jagRightMaster.enableControl();
-                    jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
-                    jagShoulderOne.setPID(armP, armI, armD);
-                    jagShoulderOne.enableControl();
-                    shoulderPID = true;
-
-                    //Move arm up to top peg
-                    jagShoulderOne.setX(0.414);
-                    /*
-                    //Drive forward (under acceleration control)
-                    autonAccel = false;
-                    autonSpeed = 0;
-                    autonLeftSpeed = 0;
-                    autonRightSpeed = 0;
-                     */
-                    autonomousStage = 1;
-                } catch (CANTimeoutException ex) {
-                    System.out.println(ex.toString());
-                    canInitialized = false;
-                }
-                break;
+        switch (autoSwitch) {
             case 1:
-                if (anaUltraSonic.getVoltage() / vToM > 2.2) {
-                    autonUltraFactor = 1;
-                } else {
-                    autonUltraFactor = (1.0 / 1.5) * ((anaUltraSonic.getVoltage() / vToM) - 0.7);
-                }
-                try {
-                    jagLeftMaster.setX(1.0 * autonUltraFactor - gyro.getAngle() / 40);
-                    jagRightMaster.setX(1.0 * autonUltraFactor + gyro.getAngle() / 40);
-                } catch (CANTimeoutException ex) {
-                    System.out.println(ex.toString());
-                    canInitialized = false;
-                }
-                if (autoTimer.get() > 0.5) {
-                    //Arm Pickup
-                    solArmStageOneIn.set(false);
-                    solArmStageOneOut.set(true);
-                    solArmStageTwoIn.set(true);
-                    solArmStageTwoOut.set(false);
-                }
-                //Check if we have driven far enough
-                try {
-                    if (autoTimer.get() >= 2.0) {
-                        if ((anaUltraSonic.getVoltage() / vToM) < 1.2) {
-                            jagLeftMaster.setX(0);
-                            jagRightMaster.setX(0);
-                            //Rotate tube
-                            vicGripperTop.set(-1);
-                            vicGripperBottom.set(1);
-                            autoTimer.reset();
-                            autoTimer.start();
-                            autonomousStage = 2;
-                        }
-                    }
-                } catch (CANTimeoutException ex) {
-                    System.out.println(ex.toString());
-                    canInitialized = false;
-                }
+                //Nothing
                 break;
             case 2:
-                if (autoTimer.get() >= 1.2) {
-                    //Spit tube
-                    vicGripperTop.set(1);
-                    vicGripperBottom.set(1);
-                    //Fully Retracted
-                    solArmStageOneIn.set(false);
-                    solArmStageOneOut.set(true);
-                    solArmStageTwoIn.set(false);
-                    solArmStageTwoOut.set(true);
-                }
-                if (autoTimer.get() >= 2.0) {
-                    autonomousStage = 3; 
+                //1 tube, line
+                switch (autonomousStage) {
+                    case 0:
+                        try{
+                            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                            jagLeftMaster.enableControl();
+                            jagRightMaster.enableControl();
+                        } catch (CANTimeoutException ex){
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        if (anaUltraSonic.getVoltage() < 0.5 * vToM && autoTimer.get() > 5) {
+                            autonomousStage = 1;
+                        }
+                        vicGripperTop.set(0);
+                        vicGripperBottom.set(0);
+                        fluxCapacitorOne.set(Relay.Value.kOff);
+                        fluxCapacitorTwo.set(Relay.Value.kReverse);
+                        try {
+                            xInput = pidLineOutput.xValue;
+                            yInput = -0.6;
+                            octantJoystick();
+                            jagLeftMaster.setX(leftSpeed);//changed from speed to percentvbus, old was maxSpeed * leftSpeed
+                            jagRightMaster.setX(rightSpeed);
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        break;
+                    case 1:
+                        vicGripperTop.set(1);
+                        vicGripperBottom.set(1);
+                        fluxCapacitorOne.set(Relay.Value.kOff);
+                        fluxCapacitorTwo.set(Relay.Value.kForward);
+                        try {
+                            xInput = 0;
+                            yInput = 0.4;
+                            octantJoystick();
+                            jagLeftMaster.setX(leftSpeed);
+                            jagRightMaster.setX(rightSpeed);
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        break;
                 }
                 break;
             case 3:
-                try {
-                    if (jagRightMaster.getPosition() > 4.9) {
-                        autonUltraFactor = 1;
-                    } else {
-                        autonUltraFactor = (1.0 / 2.7) * (jagRightMaster.getPosition() - 2.2);
-                    }
-                    //Drive backwards
-                    if (autoTimer.get() >= 2.3) {
-                        //Arm Pickup
-                        solArmStageOneIn.set(false);
-                        solArmStageOneOut.set(true);
-                        solArmStageTwoIn.set(true);
-                        solArmStageTwoOut.set(false);
-                    }
-                    //if (autoTimer.get() >= 4.6) {
-                    jagLeftMaster.setX((-1.0 * autonUltraFactor - (gyro.getAngle() + 18) / 40));
-                    jagRightMaster.setX((-1.0 * autonUltraFactor + (gyro.getAngle() + 18) / 40));
-                    //}
-                    //Check if we have driven back to original position
-                    if (jagRightMaster.getPosition() <= 2.5) {
-                        autonomousStage = 4;
+                //1 tube, deadreckonin6
+                switch (autonomousStage) {
+                    case 0:
+                        //Reset Autonomous Timer
                         autoTimer.reset();
-                    }
-                    //Swing arm back over to pick up from back
-                    jagShoulderOne.setX(0.88);
-                    //Suck gripper
-                    vicGripperTop.set(-1);
-                    vicGripperBottom.set(-1);
-                    pidLineController.enable();
-                } catch (CANTimeoutException ex) {
-                    System.out.println(ex.toString());
-                    canInitialized = false;
+                        autoTimer.start();
+                        //Configure Jaguars
+                        try {
+                            gyro.reset();
+                            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+                            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+                            jagLeftMaster.enableControl(0);
+                            jagRightMaster.enableControl(0);
+                            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                            jagLeftMaster.enableControl();
+                            jagRightMaster.enableControl();
+                            jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
+                            jagShoulderOne.setPID(armP, armI, armD);
+                            jagShoulderOne.enableControl();
+                            shoulderPID = true;
+
+                            //Move arm up to top peg
+                            jagShoulderOne.setX(0.414);
+                            /*
+                            //Drive forward (under acceleration control)
+                            autonAccel = false;
+                            autonSpeed = 0;
+                            autonLeftSpeed = 0;
+                            autonRightSpeed = 0;
+                             */
+                            autonomousStage = 1;
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        break;
+                    case 1:
+                        if (anaUltraSonic.getVoltage() / vToM > 2.2) {
+                            autonUltraFactor = 1;
+                        } else {
+                            autonUltraFactor = (1.0 / 1.5) * ((anaUltraSonic.getVoltage() / vToM) - 0.7);
+                        }
+                        try {
+                            jagLeftMaster.setX(1.0 * autonUltraFactor - gyro.getAngle() / 40);
+                            jagRightMaster.setX(1.0 * autonUltraFactor + gyro.getAngle() / 40);
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        if (autoTimer.get() > 0.5) {
+                            //Arm Pickup
+                            solArmStageOneIn.set(false);
+                            solArmStageOneOut.set(true);
+                            solArmStageTwoIn.set(true);
+                            solArmStageTwoOut.set(false);
+                        }
+                        //Check if we have driven far enough
+                        try {
+                            if (autoTimer.get() >= 2.0) {
+                                if ((anaUltraSonic.getVoltage() / vToM) < 1.2) {
+                                    jagLeftMaster.setX(0);
+                                    jagRightMaster.setX(0);
+                                    //Rotate tube
+                                    vicGripperTop.set(-1);
+                                    vicGripperBottom.set(1);
+                                    autoTimer.reset();
+                                    autoTimer.start();
+                                    autonomousStage = 2;
+                                }
+                            }
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        break;
+                    case 2:
+                        if (autoTimer.get() >= 1.2) {
+                            //Spit tube
+                            vicGripperTop.set(1);
+                            vicGripperBottom.set(1);
+                            //Fully Retracted
+                            solArmStageOneIn.set(false);
+                            solArmStageOneOut.set(true);
+                            solArmStageTwoIn.set(false);
+                            solArmStageTwoOut.set(true);
+                        }
+                        if (autoTimer.get() >= 2.0) {
+                            autonomousStage = 3;
+                        }
+                        break;
+                    case 3:
+                        try {
+                                //Swing arm back over to pick up from back
+                                jagShoulderOne.setX(0.867);
+                                armState = 1;
+                            } catch (CANTimeoutException ex) {
+                                System.out.println(ex.toString());
+                                canInitialized = false;
+                        }
+                        break;
                 }
                 break;
             case 4:
-                try {
-                    vicGripperTop.set(0);
-                    vicGripperBottom.set(0);
-                    jagShoulderOne.setX(0.414);
-                    if (autoTimer.get() > 0.5 && autoTimer.get() < 2.0) {
-                        //Extend arm
-                        solArmStageOneIn.set(true);
-                        solArmStageOneOut.set(false);
-                        solArmStageTwoIn.set(true);
-                        solArmStageTwoOut.set(false);
-                        //Rotate Piece Back
-                        vicGripperTop.set(1);
-                        vicGripperBottom.set(-1);
-                    }
-                    if (anaUltraSonic.getVoltage() / vToM > 2.3) {
-                        autonUltraFactor = 1;
-                    } else {
-                        autonUltraFactor = (1.0 / 1.5) * ((anaUltraSonic.getVoltage() / vToM) - 0.8);
-                    }
-                    /*
-                    yInput = -autonUltraFactor;
-                    xInput = pidLineOutput.xValue;
-                    octantJoystick();
-                    jagLeftMaster.setX(leftSpeed);
-                    jagRightMaster.setX(rightSpeed);
-                     */
-                    jagLeftMaster.setX(1.0 * autonUltraFactor - (gyro.getAngle() - 10) / 40);
-                    jagRightMaster.setX(1.0 * autonUltraFactor + (gyro.getAngle() - 10) / 40);
-                    if (autoTimer.get() >= 2.0) {
-                        if ((anaUltraSonic.getVoltage() / vToM) < 1.1) {
-                            //Rotate tube
-                            vicGripperTop.set(-1);
-                            vicGripperBottom.set(1);
-                            autoTimer.reset();
-                            autoTimer.start();
-                            jagLeftMaster.setX(0);
-                            jagRightMaster.setX(0);
-                            autonomousStage = 5;
-                            autoTimer.reset();
+                //2 tubes left - copypasta'd from 5, with signs in gyro commands
+                switch (autonomousStage) {
+                    case 0:
+                        //Reset Autonomous Timer
+                        autoTimer.reset();
+                        autoTimer.start();
+                        //Configure Jaguars
+                        try {
+                            gyro.reset();
+                            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+                            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+                            jagLeftMaster.enableControl(0);
+                            jagRightMaster.enableControl(0);
+                            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                            jagLeftMaster.enableControl();
+                            jagRightMaster.enableControl();
+                            jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
+                            jagShoulderOne.setPID(armP, armI, armD);
+                            jagShoulderOne.enableControl();
+                            shoulderPID = true;
+
+                            //Move arm up to top peg
+                            jagShoulderOne.setX(0.414);
+                            /*
+                            //Drive forward (under acceleration control)
+                            autonAccel = false;
+                            autonSpeed = 0;
+                            autonLeftSpeed = 0;
+                            autonRightSpeed = 0;
+                             */
+                            autonomousStage = 1;
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
                         }
-                    }
-                } catch (CANTimeoutException ex) {
-                    System.out.println(ex.toString());
-                    canInitialized = false;
+                        break;
+                    case 1:
+                        if (anaUltraSonic.getVoltage() / vToM > 2.2) {
+                            autonUltraFactor = 1;
+                        } else {
+                            autonUltraFactor = (1.0 / 1.5) * ((anaUltraSonic.getVoltage() / vToM) - 0.7);
+                        }
+                        try {
+                            jagLeftMaster.setX(1.0 * autonUltraFactor - gyro.getAngle() / 40);
+                            jagRightMaster.setX(1.0 * autonUltraFactor + gyro.getAngle() / 40);
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        if (autoTimer.get() > 0.5) {
+                            //Arm Pickup
+                            solArmStageOneIn.set(false);
+                            solArmStageOneOut.set(true);
+                            solArmStageTwoIn.set(true);
+                            solArmStageTwoOut.set(false);
+                        }
+                        //Check if we have driven far enough
+                        try {
+                            if (autoTimer.get() >= 2.0) {
+                                if ((anaUltraSonic.getVoltage() / vToM) < 1.2) {
+                                    jagLeftMaster.setX(0);
+                                    jagRightMaster.setX(0);
+                                    //Rotate tube
+                                    vicGripperTop.set(-1);
+                                    vicGripperBottom.set(1);
+                                    autoTimer.reset();
+                                    autoTimer.start();
+                                    autonomousStage = 2;
+                                }
+                            }
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        break;
+                    case 2:
+                        if (autoTimer.get() >= 1.2) {
+                            //Spit tube
+                            vicGripperTop.set(1);
+                            vicGripperBottom.set(1);
+                            //Fully Retracted
+                            solArmStageOneIn.set(false);
+                            solArmStageOneOut.set(true);
+                            solArmStageTwoIn.set(false);
+                            solArmStageTwoOut.set(true);
+                        }
+                        if (autoTimer.get() >= 2.0) {
+                            autonomousStage = 3;
+                        }
+                        break;
+                    case 3:
+                        try {
+                            if (jagRightMaster.getPosition() > 4.9) {
+                                autonUltraFactor = 1;
+                            } else {
+                                autonUltraFactor = (1.0 / 2.7) * (jagRightMaster.getPosition() - 2.2);
+                            }
+                            //Drive backwards
+                            if (autoTimer.get() >= 2.3) {
+                                //Arm Pickup
+                                solArmStageOneIn.set(false);
+                                solArmStageOneOut.set(true);
+                                solArmStageTwoIn.set(true);
+                                solArmStageTwoOut.set(false);
+                            }
+                            //if (autoTimer.get() >= 4.6) {
+                            jagLeftMaster.setX((-1.0 * autonUltraFactor - (gyro.getAngle() - 18) / 40));
+                            jagRightMaster.setX((-1.0 * autonUltraFactor + (gyro.getAngle() - 18) / 40));
+                            //}
+                            //Check if we have driven back to original position
+                            if (jagRightMaster.getPosition() <= 2.5) {
+                                autonomousStage = 4;
+                                autoTimer.reset();
+                            }
+                            //Swing arm back over to pick up from back
+                            jagShoulderOne.setX(0.88);
+                            //Suck gripper
+                            vicGripperTop.set(-1);
+                            vicGripperBottom.set(-1);
+                            pidLineController.enable();
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        break;
+                    case 4:
+                        try {
+                            vicGripperTop.set(0);
+                            vicGripperBottom.set(0);
+                            jagShoulderOne.setX(0.414);
+                            if (autoTimer.get() > 0.5 && autoTimer.get() < 2.0) {
+                                //Extend arm
+                                solArmStageOneIn.set(true);
+                                solArmStageOneOut.set(false);
+                                solArmStageTwoIn.set(true);
+                                solArmStageTwoOut.set(false);
+                                //Rotate Piece Back
+                                vicGripperTop.set(1);
+                                vicGripperBottom.set(-1);
+                            }
+                            if (anaUltraSonic.getVoltage() / vToM > 2.3) {
+                                autonUltraFactor = 1;
+                            } else {
+                                autonUltraFactor = (1.0 / 1.5) * ((anaUltraSonic.getVoltage() / vToM) - 0.8);
+                            }
+                            /*
+                            yInput = -autonUltraFactor;
+                            xInput = pidLineOutput.xValue;
+                            octantJoystick();
+                            jagLeftMaster.setX(leftSpeed);
+                            jagRightMaster.setX(rightSpeed);
+                             */
+                            jagLeftMaster.setX(1.0 * autonUltraFactor - (gyro.getAngle() + 10) / 40);
+                            jagRightMaster.setX(1.0 * autonUltraFactor + (gyro.getAngle() + 10) / 40);
+                            if (autoTimer.get() >= 2.0) {
+                                if ((anaUltraSonic.getVoltage() / vToM) < 1.1) {
+                                    //Rotate tube
+                                    vicGripperTop.set(-1);
+                                    vicGripperBottom.set(1);
+                                    autoTimer.reset();
+                                    autoTimer.start();
+                                    jagLeftMaster.setX(0);
+                                    jagRightMaster.setX(0);
+                                    autonomousStage = 5;
+                                    autoTimer.reset();
+                                }
+                            }
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        break;
+                    case 5:
+                        if (autoTimer.get() >= 1.7) {
+                            //Stop tube
+                            vicGripperTop.set(0);
+                            vicGripperBottom.set(0);
+                            try {
+                                //Swing arm back over to pick up from back
+                                jagShoulderOne.setX(0.867);
+                                armState = 1;
+                            } catch (CANTimeoutException ex) {
+                                System.out.println(ex.toString());
+                                canInitialized = false;
+                            }
+                        } else if (autoTimer.get() >= 1.2) {
+                            //Spit tube
+                            vicGripperTop.set(1);
+                            vicGripperBottom.set(1);
+                            //Arm Pickup
+                            solArmStageOneIn.set(false);
+                            solArmStageOneOut.set(true);
+                            solArmStageTwoIn.set(true);
+                            solArmStageTwoOut.set(false);
+                        }
+                        break;
                 }
                 break;
             case 5:
-                if (autoTimer.get() >= 1.7) {
-                    //Stop tube
-                    vicGripperTop.set(0);
-                    vicGripperBottom.set(0);
-                    try {
-                        //Swing arm back over to pick up from back
-                        jagShoulderOne.setX(0.867);
-                        armState = 1;
-                    } catch (CANTimeoutException ex) {
-                        System.out.println(ex.toString());
-                        canInitialized = false;
-                    }
-                } else if (autoTimer.get() >= 1.2) {
-                    //Spit tube
-                    vicGripperTop.set(1);
-                    vicGripperBottom.set(1);
-                    //Arm Pickup
-                    solArmStageOneIn.set(false);
-                    solArmStageOneOut.set(true);
-                    solArmStageTwoIn.set(true);
-                    solArmStageTwoOut.set(false);
+                //2 tubes, right
+                switch (autonomousStage) {
+                    case 0:
+                        //Reset Autonomous Timer
+                        autoTimer.reset();
+                        autoTimer.start();
+                        //Configure Jaguars
+                        try {
+                            gyro.reset();
+                            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+                            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+                            jagLeftMaster.enableControl(0);
+                            jagRightMaster.enableControl(0);
+                            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                            jagLeftMaster.enableControl();
+                            jagRightMaster.enableControl();
+                            jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
+                            jagShoulderOne.setPID(armP, armI, armD);
+                            jagShoulderOne.enableControl();
+                            shoulderPID = true;
+
+                            //Move arm up to top peg
+                            jagShoulderOne.setX(0.414);
+                            /*
+                            //Drive forward (under acceleration control)
+                            autonAccel = false;
+                            autonSpeed = 0;
+                            autonLeftSpeed = 0;
+                            autonRightSpeed = 0;
+                             */
+                            autonomousStage = 1;
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        break;
+                    case 1:
+                        if (anaUltraSonic.getVoltage() / vToM > 2.2) {
+                            autonUltraFactor = 1;
+                        } else {
+                            autonUltraFactor = (1.0 / 1.5) * ((anaUltraSonic.getVoltage() / vToM) - 0.7);
+                        }
+                        try {
+                            jagLeftMaster.setX(1.0 * autonUltraFactor - gyro.getAngle() / 40);
+                            jagRightMaster.setX(1.0 * autonUltraFactor + gyro.getAngle() / 40);
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        if (autoTimer.get() > 0.5) {
+                            //Arm Pickup
+                            solArmStageOneIn.set(false);
+                            solArmStageOneOut.set(true);
+                            solArmStageTwoIn.set(true);
+                            solArmStageTwoOut.set(false);
+                        }
+                        //Check if we have driven far enough
+                        try {
+                            if (autoTimer.get() >= 2.0) {
+                                if ((anaUltraSonic.getVoltage() / vToM) < 1.2) {
+                                    jagLeftMaster.setX(0);
+                                    jagRightMaster.setX(0);
+                                    //Rotate tube
+                                    vicGripperTop.set(-1);
+                                    vicGripperBottom.set(1);
+                                    autoTimer.reset();
+                                    autoTimer.start();
+                                    autonomousStage = 2;
+                                }
+                            }
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        break;
+                    case 2:
+                        if (autoTimer.get() >= 1.2) {
+                            //Spit tube
+                            vicGripperTop.set(1);
+                            vicGripperBottom.set(1);
+                            //Fully Retracted
+                            solArmStageOneIn.set(false);
+                            solArmStageOneOut.set(true);
+                            solArmStageTwoIn.set(false);
+                            solArmStageTwoOut.set(true);
+                        }
+                        if (autoTimer.get() >= 2.0) {
+                            autonomousStage = 3;
+                        }
+                        break;
+                    case 3:
+                        try {
+                            if (jagRightMaster.getPosition() > 4.9) {
+                                autonUltraFactor = 1;
+                            } else {
+                                autonUltraFactor = (1.0 / 2.7) * (jagRightMaster.getPosition() - 2.2);
+                            }
+                            //Drive backwards
+                            if (autoTimer.get() >= 2.3) {
+                                //Arm Pickup
+                                solArmStageOneIn.set(false);
+                                solArmStageOneOut.set(true);
+                                solArmStageTwoIn.set(true);
+                                solArmStageTwoOut.set(false);
+                            }
+                            //if (autoTimer.get() >= 4.6) {
+                            jagLeftMaster.setX((-1.0 * autonUltraFactor - (gyro.getAngle() + 18) / 40));
+                            jagRightMaster.setX((-1.0 * autonUltraFactor + (gyro.getAngle() + 18) / 40));
+                            //}
+                            //Check if we have driven back to original position
+                            if (jagRightMaster.getPosition() <= 2.5) {
+                                autonomousStage = 4;
+                                autoTimer.reset();
+                            }
+                            //Swing arm back over to pick up from back
+                            jagShoulderOne.setX(0.88);
+                            //Suck gripper
+                            vicGripperTop.set(-1);
+                            vicGripperBottom.set(-1);
+                            pidLineController.enable();
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        break;
+                    case 4:
+                        try {
+                            vicGripperTop.set(0);
+                            vicGripperBottom.set(0);
+                            jagShoulderOne.setX(0.414);
+                            if (autoTimer.get() > 0.5 && autoTimer.get() < 2.0) {
+                                //Extend arm
+                                solArmStageOneIn.set(true);
+                                solArmStageOneOut.set(false);
+                                solArmStageTwoIn.set(true);
+                                solArmStageTwoOut.set(false);
+                                //Rotate Piece Back
+                                vicGripperTop.set(1);
+                                vicGripperBottom.set(-1);
+                            }
+                            if (anaUltraSonic.getVoltage() / vToM > 2.3) {
+                                autonUltraFactor = 1;
+                            } else {
+                                autonUltraFactor = (1.0 / 1.5) * ((anaUltraSonic.getVoltage() / vToM) - 0.8);
+                            }
+                            /*
+                            yInput = -autonUltraFactor;
+                            xInput = pidLineOutput.xValue;
+                            octantJoystick();
+                            jagLeftMaster.setX(leftSpeed);
+                            jagRightMaster.setX(rightSpeed);
+                             */
+                            jagLeftMaster.setX(1.0 * autonUltraFactor - (gyro.getAngle() - 10) / 40);
+                            jagRightMaster.setX(1.0 * autonUltraFactor + (gyro.getAngle() - 10) / 40);
+                            if (autoTimer.get() >= 2.0) {
+                                if ((anaUltraSonic.getVoltage() / vToM) < 1.1) {
+                                    //Rotate tube
+                                    vicGripperTop.set(-1);
+                                    vicGripperBottom.set(1);
+                                    autoTimer.reset();
+                                    autoTimer.start();
+                                    jagLeftMaster.setX(0);
+                                    jagRightMaster.setX(0);
+                                    autonomousStage = 5;
+                                    autoTimer.reset();
+                                }
+                            }
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        break;
+                    case 5:
+                        if (autoTimer.get() >= 1.7) {
+                            //Stop tube
+                            vicGripperTop.set(0);
+                            vicGripperBottom.set(0);
+                            try {
+                                //Swing arm back over to pick up from back
+                                jagShoulderOne.setX(0.867);
+                                armState = 1;
+                            } catch (CANTimeoutException ex) {
+                                System.out.println(ex.toString());
+                                canInitialized = false;
+                            }
+                        } else if (autoTimer.get() >= 1.2) {
+                            //Spit tube
+                            vicGripperTop.set(1);
+                            vicGripperBottom.set(1);
+                            //Arm Pickup
+                            solArmStageOneIn.set(false);
+                            solArmStageOneOut.set(true);
+                            solArmStageTwoIn.set(true);
+                            solArmStageTwoOut.set(false);
+                        }
+                        break;
                 }
                 break;
-
         }
-        /*TODO: Reintegrate original ultrasonic autonomous code
-        switch (autonomousStage) {
-        case 0:
-        if (anaUltraSonic.getVoltage() < 0.5 * vToM && autoTimer.get() > 5) {
-        autonomousStage = 1;
-        }
-        vicGripperTop.set(0);
-        vicGripperBottom.set(0);
-        fluxCapacitorOne.set(Relay.Value.kOff);
-        fluxCapacitorTwo.set(Relay.Value.kReverse);
-        try {
-        xInput = pidLineOutput.xValue;
-        yInput = -0.6;
-        octantJoystick();
-        jagLeftMaster.setX(maxSpeed * leftSpeed);
-        jagRightMaster.setX(maxSpeed * rightSpeed);
-        } catch (CANTimeoutException ex) {
-        System.out.println(ex.toString());
-        canInitialized = false;
-        }
-        break;
-        case 1:
-        vicGripperTop.set(1);
-        vicGripperBottom.set(1);
-        fluxCapacitorOne.set(Relay.Value.kOff);
-        fluxCapacitorTwo.set(Relay.Value.kForward);
-        try {
-        xInput = 0;
-        yInput = 0.4;
-        octantJoystick();
-        jagLeftMaster.setX(maxSpeed * leftSpeed);
-        jagRightMaster.setX(maxSpeed * rightSpeed);
-        } catch (CANTimeoutException ex) {
-        System.out.println(ex.toString());
-        canInitialized = false;
-        }
-        break;
-        }*/
 
         //Synchronize slave Jaguars with Master values
         syncSlaves();
@@ -1073,7 +1394,24 @@ public class CoyoBotXII extends IterativeRobot {
             dsLCD.println(DriverStationLCD.Line.kUser2, 1, "Left Pos: " + jagLeftMaster.getPosition() + "          ");
             dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Pos: " + jagRightMaster.getPosition() + "          ");
             dsLCD.println(DriverStationLCD.Line.kUser6, 1, "USonic m: " + anaUltraSonic.getVoltage() / vToM + "          ");
-            dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Gyro: " + gyro.getAngle() + "          ");
+            //dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Gyro: " + gyro.getAngle() + "          ");
+            switch(autoSwitch){
+                case 1:
+                    dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Auto mode: " + "Disabled       ");
+                    break;
+                case 2:
+                    dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Auto mode: " + "1 tube, line   ");
+                    break;
+                case 3:
+                    dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Auto mode: " + "1 tube, d/r    ");
+                    break;
+                case 4:
+                    dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Auto mode: " + "2 tubes, l rack");
+                    break;
+                case 5:
+                    dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Auto mode: " + "2 tubes, r rack");
+                    break;
+            }
             dsLCD.println(DriverStationLCD.Line.kUser4, 1, "Left Speed: " + jagLeftMaster.getSpeed() + "          ");
             dsLCD.println(DriverStationLCD.Line.kUser5, 1, "Right Speed " + jagRightMaster.getSpeed() + "          ");
             //dsLCD.println(DriverStationLCD.Line.kMain6, 1, "CAN Faults: " + autonomousStage + "          ");
