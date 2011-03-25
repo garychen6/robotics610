@@ -42,14 +42,13 @@ public class ElectricalMap {
     public static final int kCompressorPressureSwitchChannel = 1;
     //CAN Adapters
     //Drivetrain Motors
-    //TODO: Reprogram CAN ID of Jag 1 to 10
-    public static final int kJaguarRightMaster = 10; //TODO: Comp is 2
-    public static final int kJaguarRightSlave = 8; //TODO: Comp is 10
+    public static final int kJaguarRightMaster = 2;
+    public static final int kJaguarRightSlave = 1;
     public static final int kJaguarLeftMaster = 4;
     public static final int kJaguarLeftSlave = 3;
     //Shoulder Motors
     public static final int kJaguarShoulderOne = 7;
-    public static final int kJaguarShoulderTwo = 9; //TODO: Comp is 8
+    public static final int kJaguarShoulderTwo = 8;
     //Driver Station
     public static final int kJoystickDriverPort = 1;
     public static final int kJoystickOperatorPort = 2;
