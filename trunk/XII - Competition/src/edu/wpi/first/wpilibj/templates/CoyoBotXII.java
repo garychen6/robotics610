@@ -74,6 +74,8 @@ public class CoyoBotXII extends IterativeRobot {
     //Autonomous Program Stage
     int autonomousStage;
     //Arm Extend Trigger States
+    int gripreleaseStage;
+    //Gripper Scoring Stage
     boolean lTriggerToggle;
     boolean rTriggerToggle;
     //Shifting State: True = Shifting, False = Shift Complete
@@ -122,6 +124,10 @@ public class CoyoBotXII extends IterativeRobot {
     double autonLeftSpeed = 0;
     double autonRightSpeed = 0;
     double autonUltraFactor = 1;
+    // Grip Scoring Shoulder Position
+    double shoulderpos;
+    boolean autonTubeRelease;
+    int posSet;
     //Autonomous switch mode: 1 = Disabled; 2 = 1 tube (line); 3 = 1 tube (deadreckonin6); 4 = 2 tube left; 5 = 2 tube right;
     int autoSwitch = 2;
 
@@ -230,6 +236,12 @@ public class CoyoBotXII extends IterativeRobot {
         fluxState = 0;
         //Reset Autonomous Mode
         autonomousStage = 0;
+        // Release Scoring Stage
+        gripreleaseStage = 0;
+        // Set Position Once
+        posSet = 0;
+        // Run Auton Grip Release
+        autonTubeRelease = false;
         //Max Robot Low Gear Speed = 200 RPM
         maxLowSpeed = 200;
         //Max Robot High Gear Speed = 530 RPM
@@ -260,7 +272,11 @@ public class CoyoBotXII extends IterativeRobot {
         //Update Cam
         //Update DS
         updateDS();
-        for (int i = 1; i < 6; i++)if (joyDriver.getRawButton(i))autoSwitch = i;
+        for (int i = 1; i < 6; i++) {
+            if (joyDriver.getRawButton(i)) {
+                autoSwitch = i;
+            }
+        }
     }
 
     public void autonomousInit() {
@@ -310,12 +326,12 @@ public class CoyoBotXII extends IterativeRobot {
                 //1 tube, line
                 switch (autonomousStage) {
                     case 0:
-                        try{
+                        try {
                             jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
                             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
                             jagLeftMaster.enableControl();
                             jagRightMaster.enableControl();
-                        } catch (CANTimeoutException ex){
+                        } catch (CANTimeoutException ex) {
                             System.out.println(ex.toString());
                             canInitialized = false;
                         }
@@ -449,12 +465,12 @@ public class CoyoBotXII extends IterativeRobot {
                         break;
                     case 3:
                         try {
-                                //Swing arm back over to pick up from back
-                                jagShoulderOne.setX(0.867);
-                                armState = 1;
-                            } catch (CANTimeoutException ex) {
-                                System.out.println(ex.toString());
-                                canInitialized = false;
+                            //Swing arm back over to pick up from back
+                            jagShoulderOne.setX(0.867);
+                            armState = 1;
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
                         }
                         break;
                 }
@@ -1000,6 +1016,182 @@ public class CoyoBotXII extends IterativeRobot {
                 vicGripperBottom.set(-1 * (joyOperator.getRawAxis(2)));
             }
         }
+        // Run automated gripper release if Austin presses analog stick
+        if (joyOperator.getRawButton(10) && autonTubeRelease == false) {
+            // Start automated gripper release
+            autonTubeRelease = true;
+            try {
+                shoulderpos = jagShoulderOne.getPosition();
+            } catch (CANTimeoutException ex) {
+                System.out.println(ex.toString());
+                canInitialized = false;
+            }
+            gripreleaseStage = 0;
+        }
+        if (autonTubeRelease == true) {
+            switch (gripreleaseStage) {
+                case 0:
+                    // Push the tube out
+                    vicGripperTop.set(-1);
+                    vicGripperBottom.set(-1);
+                    try {
+                        //Move arm down 5 degrees
+                        jagShoulderOne.setX(jagShoulderOne.getPosition() - 0.0138 * armFlip);
+                        // Check if arm is down
+                        if (jagShoulderOne.getPosition() <= shoulderpos - 0.013 || jagShoulderOne.getPosition() >= shoulderpos + 0.013) {  // If down 5 degrees switch to next case
+                            gripreleaseStage = 1;
+                            //start a timer
+                            autoTimer.reset();
+                            autoTimer.start();
+                        }
+                    } catch (CANTimeoutException ex) {
+                        System.out.println(ex.toString());
+                        canInitialized = false;
+                    }
+                    break;
+                case 1:
+                    // Still pushing tube out just in case
+                    vicGripperTop.set(-1);
+                    vicGripperBottom.set(-1);
+                    // Retract once
+                    solArmStageOneIn.set(false);
+                    solArmStageOneOut.set(true);
+                    solArmStageTwoIn.set(true);
+                    solArmStageTwoOut.set(false);
+                    // Stop the automated gripper release
+                    //check timer if > 0.5 secs
+                    if (autoTimer.get() > 0.5) {
+                        autonTubeRelease = false;
+                    }
+                    break;
+            }
+        } else {
+            //Map buttons to arm setpoints
+            if (joyOperator.getRawButton(1)) {
+                //Pickup Front
+                try {
+                    jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
+                    jagShoulderOne.setPID(armP, armI, armD);
+                    jagShoulderOne.enableControl();
+                    jagShoulderOne.setX(0.08);
+                    shoulderPID = true;
+                    armFlip = 1;
+                    armState = 2;
+                } catch (CANTimeoutException ex) {
+                    System.out.println(ex.toString());
+                    canInitialized = false;
+                }
+            }
+            if (joyOperator.getRawButton(2)) {
+                //Pickup Back
+                try {
+                    jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
+                    jagShoulderOne.setPID(armP, armI, armD);
+                    jagShoulderOne.enableControl();
+                    jagShoulderOne.setX(0.88);
+                    shoulderPID = true;
+                    armFlip = -1;
+                    armState = 2;
+                } catch (CANTimeoutException ex) {
+                    System.out.println(ex.toString());
+                    canInitialized = false;
+                }
+            }
+            if (joyOperator.getRawButton(3)) {
+                //Top Front
+                try {
+                    jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
+                    jagShoulderOne.setPID(armP, armI, armD);
+                    jagShoulderOne.enableControl();
+                    jagShoulderOne.setX(0.414);
+                    shoulderPID = true;
+                    armFlip = 1;
+                } catch (CANTimeoutException ex) {
+                    System.out.println(ex.toString());
+                    canInitialized = false;
+                }
+            }
+            if (joyOperator.getRawButton(4)) {
+                //Top Back
+                try {
+                    jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
+                    jagShoulderOne.setPID(armP, armI, armD);
+                    jagShoulderOne.enableControl();
+                    jagShoulderOne.setX(0.585);
+                    shoulderPID = true;
+                    armFlip = -1;
+                } catch (CANTimeoutException ex) {
+                    System.out.println(ex.toString());
+                    canInitialized = false;
+                }
+            }
+            //Update Arm Extension States from operator buttons 5+6
+            if (!lTriggerToggle && joyOperator.getRawButton(5)) {
+                armState = Math.min(armState + 1, 2);
+                lTriggerToggle = true;
+            } else if (lTriggerToggle && !joyOperator.getRawButton(5)) {
+                lTriggerToggle = false;
+            }
+            if (!rTriggerToggle && joyOperator.getRawButton(6)) {
+                armState = Math.max(armState - 1, 0);
+                rTriggerToggle = true;
+            } else if (rTriggerToggle && !joyOperator.getRawButton(6)) {
+                rTriggerToggle = false;
+            }
+            //Move Arm Extension to specified arm state
+            //NOTE: comments are right, solenoid object names are wrong
+            switch (armState) {
+                case 0: //Fully Extended
+                    solArmStageOneIn.set(true);
+                    solArmStageOneOut.set(false);
+                    solArmStageTwoIn.set(true);
+                    solArmStageTwoOut.set(false);
+                    break;
+                case 1: //Pickup
+                    solArmStageOneIn.set(false);
+                    solArmStageOneOut.set(true);
+                    solArmStageTwoIn.set(true);
+                    solArmStageTwoOut.set(false);
+                    break;
+                case 2: //Fully Retracted
+                    solArmStageOneIn.set(false);
+                    solArmStageOneOut.set(true);
+                    solArmStageTwoIn.set(false);
+                    solArmStageTwoOut.set(true);
+                    break;
+            }
+            //Disable shoulder PID if shoulder joystick is moved
+            if (shoulderPID) {
+                try {
+                    if (Math.abs(joyOperator.getRawAxis(5)) > 0.05) {
+                        jagShoulderOne.disableControl();
+                        jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                        shoulderPID = false;
+                    }
+                } catch (CANTimeoutException ex) {
+                    System.out.println(ex.toString());
+                    canInitialized = false;
+                }
+            } else {
+                try {
+                    //Shoulder joint soft limits
+                    //Competition: if (jagShoulderOne.getPosition() < 0.1) {
+                    if (jagShoulderOne.getPosition() < 0.08) {
+                        jagShoulderOne.setX(Math.min(0.0, armFlip * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5))));
+                        //Competition: } else if (jagShoulderOne.getPosition() > 0.9) {
+                    } else if (jagShoulderOne.getPosition() > 0.88) {
+                        jagShoulderOne.setX(Math.max(0.0, armFlip * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5))));
+                    } else {
+                        //Manual shoulder control
+                        jagShoulderOne.setX(armFlip * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)));
+                    }
+                } catch (CANTimeoutException ex) {
+                    System.out.println(ex.toString());
+                    canInitialized = false;
+                }
+            }
+        }
+
         //Update flux capacitor
         for (int i = 1; i < 5; i++) {
             if (joyDriver.getRawButton(i)) {
@@ -1024,130 +1216,7 @@ public class CoyoBotXII extends IterativeRobot {
                 fluxCapacitorTwo.set(Relay.Value.kOff);
                 break;
         }
-        //Map buttons to arm setpoints
-        if (joyOperator.getRawButton(1)) {
-            //Pickup Front
-            try {
-                jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
-                jagShoulderOne.setPID(armP, armI, armD);
-                jagShoulderOne.enableControl();
-                jagShoulderOne.setX(0.08);
-                shoulderPID = true;
-                armFlip = 1;
-                armState = 2;
-            } catch (CANTimeoutException ex) {
-                System.out.println(ex.toString());
-                canInitialized = false;
-            }
-        }
-        if (joyOperator.getRawButton(2)) {
-            //Pickup Back
-            try {
-                jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
-                jagShoulderOne.setPID(armP, armI, armD);
-                jagShoulderOne.enableControl();
-                jagShoulderOne.setX(0.88);
-                shoulderPID = true;
-                armFlip = -1;
-                armState = 2;
-            } catch (CANTimeoutException ex) {
-                System.out.println(ex.toString());
-                canInitialized = false;
-            }
-        }
-        if (joyOperator.getRawButton(3)) {
-            //Top Front
-            try {
-                jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
-                jagShoulderOne.setPID(armP, armI, armD);
-                jagShoulderOne.enableControl();
-                jagShoulderOne.setX(0.414);
-                shoulderPID = true;
-                armFlip = 1;
-            } catch (CANTimeoutException ex) {
-                System.out.println(ex.toString());
-                canInitialized = false;
-            }
-        }
-        if (joyOperator.getRawButton(4)) {
-            //Top Back
-            try {
-                jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPosition);
-                jagShoulderOne.setPID(armP, armI, armD);
-                jagShoulderOne.enableControl();
-                jagShoulderOne.setX(0.585);
-                shoulderPID = true;
-                armFlip = -1;
-            } catch (CANTimeoutException ex) {
-                System.out.println(ex.toString());
-                canInitialized = false;
-            }
-        }
-        //Update Arm Extension States from operator buttons 5+6
-        if (!lTriggerToggle && joyOperator.getRawButton(5)) {
-            armState = Math.min(armState + 1, 2);
-            lTriggerToggle = true;
-        } else if (lTriggerToggle && !joyOperator.getRawButton(5)) {
-            lTriggerToggle = false;
-        }
-        if (!rTriggerToggle && joyOperator.getRawButton(6)) {
-            armState = Math.max(armState - 1, 0);
-            rTriggerToggle = true;
-        } else if (rTriggerToggle && !joyOperator.getRawButton(6)) {
-            rTriggerToggle = false;
-        }
-        //Move Arm Extension to specified arm state
-        //NOTE: comments are right, solenoid object names are wrong
-        switch (armState) {
-            case 0: //Fully Extended
-                solArmStageOneIn.set(true);
-                solArmStageOneOut.set(false);
-                solArmStageTwoIn.set(true);
-                solArmStageTwoOut.set(false);
-                break;
-            case 1: //Pickup
-                solArmStageOneIn.set(false);
-                solArmStageOneOut.set(true);
-                solArmStageTwoIn.set(true);
-                solArmStageTwoOut.set(false);
-                break;
-            case 2: //Fully Retracted
-                solArmStageOneIn.set(false);
-                solArmStageOneOut.set(true);
-                solArmStageTwoIn.set(false);
-                solArmStageTwoOut.set(true);
-                break;
-        }
-        //Disable shoulder PID if shoulder joystick is moved
-        if (shoulderPID) {
-            try {
-                if (Math.abs(joyOperator.getRawAxis(5)) > 0.05) {
-                    jagShoulderOne.disableControl();
-                    jagShoulderOne.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-                    shoulderPID = false;
-                }
-            } catch (CANTimeoutException ex) {
-                System.out.println(ex.toString());
-                canInitialized = false;
-            }
-        } else {
-            try {
-                //Shoulder joint soft limits
-                //Competition: if (jagShoulderOne.getPosition() < 0.1) {
-                if (jagShoulderOne.getPosition() < 0.08) {
-                    jagShoulderOne.setX(Math.min(0.0, armFlip * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5))));
-                    //Competition: } else if (jagShoulderOne.getPosition() > 0.9) {
-                } else if (jagShoulderOne.getPosition() > 0.88) {
-                    jagShoulderOne.setX(Math.max(0.0, armFlip * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5))));
-                } else {
-                    //Manual shoulder control
-                    jagShoulderOne.setX(armFlip * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)) * (joyOperator.getRawAxis(5)));
-                }
-            } catch (CANTimeoutException ex) {
-                System.out.println(ex.toString());
-                canInitialized = false;
-            }
-        }
+
         //Check to see if a shift is in progress
         //If so, cut drivetrain power
         if (shiftToggle && (joyDriver.getRawButton(7) || joyDriver.getRawButton(8))) {
@@ -1395,7 +1464,7 @@ public class CoyoBotXII extends IterativeRobot {
             dsLCD.println(DriverStationLCD.Line.kUser3, 1, "Right Pos: " + jagRightMaster.getPosition() + "          ");
             dsLCD.println(DriverStationLCD.Line.kUser6, 1, "USonic m: " + anaUltraSonic.getVoltage() / vToM + "          ");
             //dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Gyro: " + gyro.getAngle() + "          ");
-            switch(autoSwitch){
+            switch (autoSwitch) {
                 case 1:
                     dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Auto mode: " + "Disabled       ");
                     break;
