@@ -127,7 +127,6 @@ public class CoyoBotXII extends IterativeRobot {
     // Grip Scoring Shoulder Position
     double shoulderpos;
     boolean autonTubeRelease;
-    int posSet;
     //Autonomous switch mode: 1 = Disabled; 2 = 1 tube (line); 3 = 1 tube (deadreckonin6); 4 = 2 tube left; 5 = 2 tube right;
     int autoSwitch = 2;
 
@@ -238,8 +237,6 @@ public class CoyoBotXII extends IterativeRobot {
         autonomousStage = 0;
         // Release Scoring Stage
         gripreleaseStage = 0;
-        // Set Position Once
-        posSet = 0;
         // Run Auton Grip Release
         autonTubeRelease = false;
         //Max Robot Low Gear Speed = 200 RPM
