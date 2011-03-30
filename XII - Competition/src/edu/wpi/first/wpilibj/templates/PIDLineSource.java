@@ -26,6 +26,7 @@ public class PIDLineSource implements PIDSource {
     }
 
     public double pidGet() {
+        //System.out.println("Left: " + digLineLeft.get() + "Right: " + digLineRight.get() + "Middle: " + digLineMiddle.get());
         //Read and update line follower error
         if (digLineLeft.get() && digLineMiddle.get() && digLineRight.get()) {
             lineError = prevLineError * 2;
