@@ -24,7 +24,9 @@ public class ElectricalMap {
     public static final int kSolenoidHighChannel = 1;
     //Minibot Deployment
     public static final int kSolenoidMinibotA = 7;
-    public static final int kSolenoidMinibotB = 8;
+    public static final int kSolenoidMinibotB = 8;//TODO: NO
+    //Gripper Release
+    public static final int kSolenoidGripperChannel = 8;
     //Digital Sidecar
     public static final int kDigitalModulePort = 4;
     //Line Follower Light Sensors
