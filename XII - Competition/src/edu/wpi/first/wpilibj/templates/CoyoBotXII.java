@@ -406,7 +406,7 @@ public class CoyoBotXII extends IterativeRobot {
                         fluxCapacitorTwo.set(Relay.Value.kReverse);
                         try {
                             xInput = pidLineOutput.xValue;
-                            yInput = -0.4;
+                            yInput = -0.8;
                             octantJoystick();
                             jagLeftMaster.setX(leftSpeed);//changed from speed to percentvbus, old was maxSpeed * leftSpeed
                             jagRightMaster.setX(rightSpeed);
