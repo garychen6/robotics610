@@ -526,41 +526,63 @@ public class CoyoBotXII extends IterativeRobot {
                             solArmStageTwoIn.set(true);
                             solArmStageTwoOut.set(false);
                         }
-                        //Check if we have driven far enough
+                        break;
+                    case 2:
+                        //Roll tube forward
+                        vicGripperTop.set(-1);
+                        vicGripperBottom.set(0.7);
                         try {
-                            if (autoTimer.get() >= 2.0) {
-                                if ((anaUltraSonic.getAverageVoltage() / vToM) < 1.2) {
-                                    jagLeftMaster.setX(0);
-                                    jagRightMaster.setX(0);
-                                    //Rotate tube
-                                    vicGripperTop.set(-1);
-                                    vicGripperBottom.set(0.7);
-                                    autoTimer.reset();
-                                    autoTimer.start();
-                                    autonomousStage = 2;
-                                }
+                            //Stop driving
+                            jagLeftMaster.setX(0);
+                            jagRightMaster.setX(0);
+                        } catch (CANTimeoutException ex) {
+                            System.out.println(ex.toString());
+                            canInitialized = false;
+                        }
+                        //Roll tube for only 1.35s
+                        if (autoTimer.get() > 1.35) {
+                            autonomousStage = 3;
+                            autoTimer.reset();
+                        }
+                        break;
+                    case 3:
+                        //Spit + release
+                        vicGripperTop.set(1);
+                        vicGripperBottom.set(1);
+                        gripperRelease.set(true);
+                        //retract
+                        solArmStageOneIn.set(true);
+                        solArmStageOneOut.set(false);
+                        solArmStageTwoIn.set(false);
+                        solArmStageTwoOut.set(true);
+                        fluxCapacitorOne.set(Relay.Value.kOff);
+                        fluxCapacitorTwo.set(Relay.Value.kForward);
+                        try {
+                            //Drive backwards slowly after 2s for 3 s
+                            xInput = 0;
+                            yInput = 0.4;
+                            octantJoystick();
+                            if (autoTimer.get() > 2 && autoTimer.get() < 5) {
+                                jagLeftMaster.setX(leftSpeed);
+                                jagRightMaster.setX(rightSpeed);
+                            } else {
+                                jagLeftMaster.setX(0);
+                                jagRightMaster.setX(0);
+                            }
+                            //After 3s, bring the arm to the other side, retract
+                            if (autoTimer.get() > 3) {
+                                solArmStageOneIn.set(false);
+                                solArmStageOneOut.set(true);
+                                solArmStageTwoIn.set(false);
+                                solArmStageTwoOut.set(true);
+                                armState = 2;
+                                jagShoulderOne.setX(0.875);
                             }
                         } catch (CANTimeoutException ex) {
                             System.out.println(ex.toString());
                             canInitialized = false;
                         }
-                        break;
-                    case 2:
-                        if (autoTimer.get() >= 1.2) {
-                            //Spit tube
-                            vicGripperTop.set(1);
-                            vicGripperBottom.set(1);
-                            //Fully Retracted
-                            solArmStageOneIn.set(false);
-                            solArmStageOneOut.set(true);
-                            solArmStageTwoIn.set(false);
-                            solArmStageTwoOut.set(true);
-                        }
-                        if (autoTimer.get() >= 2.0) {
-                            autonomousStage = 3;
-                        }
-                        break;
-                    case 3:
+
                         try {
                             //Swing arm back over to pick up from back
                             jagShoulderOne.setX(0.867);
