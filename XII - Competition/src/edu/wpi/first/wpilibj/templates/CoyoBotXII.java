@@ -48,7 +48,6 @@ public class CoyoBotXII extends IterativeRobot {
     Solenoid solArmStageTwoIn, solArmStageTwoOut;
     //Minibot Deployment
     Solenoid solMinibotA;
-    Solenoid solMinibotB;
     //Gripper release
     Solenoid gripperRelease;
     //Driver Station Joysticks
@@ -202,7 +201,6 @@ public class CoyoBotXII extends IterativeRobot {
         solArmStageTwoOut = new Solenoid(ElectricalMap.kSolenoidModulePort, 6);
         //Minibot Deployment
         solMinibotA = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidMinibotA);
-        //solMinibotB = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidMinibotB);
         //Gripper release
         gripperRelease = new Solenoid(ElectricalMap.kSolenoidModulePort, ElectricalMap.kSolenoidGripperChannel);
         //Gripper Tread Victors
