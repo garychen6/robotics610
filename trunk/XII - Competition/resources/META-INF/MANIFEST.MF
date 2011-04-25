@@ -1,6 +1,6 @@
-MIDlet-Name: CoyoBotXII
+MIDlet-Name: XII - Competition
 MIDlet-Version: 1.0.0
 MIDlet-Vendor: FIRST
-MIDlet-1: CoyoBotXII, ,  edu.wpi.first.wpilibj.templates.CoyoBotXII
+MIDlet-1: CoyobotXII, , edu.wpi.first.wpilibj.templates.CoyobotXII
 MicroEdition-Profile: IMP-1.0
 MicroEdition-Configuration: CLDC-1.1
