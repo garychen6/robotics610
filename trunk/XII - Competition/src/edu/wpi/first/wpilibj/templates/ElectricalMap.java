@@ -26,19 +26,19 @@ public class ElectricalMap {
     public static final int kSolenoidMinibotA = 7;
     public static final int kSolenoidMinibotB = 8;//TODO: NO
     //Gripper Release
-    public static final int kSolenoidGripperChannel = 8;
+    public static final int kSolenoidGripperChannel = 8;//practice robot has none
     //Digital Sidecar
     public static final int kDigitalModulePort = 4;
     //Line Follower Light Sensors
-    public static final int kLightSensorRChannel = 2;
-    public static final int kLightSensorMChannel = 3;
-    public static final int kLightSensorLChannel = 4;
+    public static final int kLightSensorRChannel = 2;//practice robot has none
+    public static final int kLightSensorMChannel = 3;//practice robot has none
+    public static final int kLightSensorLChannel = 4;//practice robot has none
     //Gripper Treads
     public static final int kVictorGripperTopChannel = 5;
     public static final int kVictorGripperBottomChannel = 6;
     //Flux Capacitor
-    public static final int kRelayFluxOneChannel = 2;
-    public static final int kRelayFluxTwoChannel = 3;
+    public static final int kRelayFluxOneChannel = 2;//practice robot has none
+    public static final int kRelayFluxTwoChannel = 3;//practice robot has none
     //Compressor
     public static final int kCompressorRelayChannel = 1;
     public static final int kCompressorPressureSwitchChannel = 1;
@@ -50,7 +50,7 @@ public class ElectricalMap {
     public static final int kJaguarLeftSlave = 3;
     //Shoulder Motors
     public static final int kJaguarShoulderOne = 7;
-    public static final int kJaguarShoulderTwo = 8;
+    public static final int kJaguarShoulderTwo = 8;//practice robot has none
     //Driver Station
     public static final int kJoystickDriverPort = 1;
     public static final int kJoystickOperatorPort = 2;
