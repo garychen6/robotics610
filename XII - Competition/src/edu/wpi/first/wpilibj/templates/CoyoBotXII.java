@@ -310,10 +310,10 @@ public class CoyoBotXII extends IterativeRobot {
         //Acceleration Control
         if (autonAccel) {
             if (accelSpeed < autonSpeed) {
-                accelSpeed += 0.02; //About 1s to top speed from 0
+                accelSpeed += 0.04; //About 1s to top speed from 0
             }
             if (accelSpeed > autonSpeed) {
-                accelSpeed -= 0.02; //About 1s to bottom speed from 0
+                accelSpeed -= 0.04; //About 1s to bottom speed from 0
             }
         }
     }
@@ -436,18 +436,19 @@ public class CoyoBotXII extends IterativeRobot {
                         if (autoTimer.get() > Constants.tRollTime) {
                             autonomousStage = 2;
                             autoTimer.reset();
+                            //retract
+                            solArmStageOneIn.set(true);
+                            solArmStageOneOut.set(false);
+                            solArmStageTwoIn.set(false);
+                            solArmStageTwoOut.set(true);
+                            //Spit + release
+                            vicGripperTop.set(1);
+                            vicGripperBottom.set(1);
+                            gripperRelease.set(true);
+
                         }
                         break;
                     case 2:
-                        //Spit + release
-                        vicGripperTop.set(1);
-                        vicGripperBottom.set(1);
-                        gripperRelease.set(true);
-                        //retract
-                        solArmStageOneIn.set(true);
-                        solArmStageOneOut.set(false);
-                        solArmStageTwoIn.set(false);
-                        solArmStageTwoOut.set(true);
                         fluxCapacitorOne.set(Relay.Value.kOff);
                         fluxCapacitorTwo.set(Relay.Value.kForward);
                         try {
@@ -509,7 +510,7 @@ public class CoyoBotXII extends IterativeRobot {
 
                             //Drive forward (under acceleration control)
                             autonAccel = true;
-                            autonSpeed = -Constants.sGyro;
+                            autonSpeed = Constants.sGyro;
                             accelSpeed = 0;
                             autonomousStage = 1;
                         } catch (CANTimeoutException ex) {
@@ -559,18 +560,18 @@ public class CoyoBotXII extends IterativeRobot {
                         if (autoTimer.get() > Constants.tRollTime) {
                             autonomousStage = 3;
                             autoTimer.reset();
+                            //retract
+                            solArmStageOneIn.set(true);
+                            solArmStageOneOut.set(false);
+                            solArmStageTwoIn.set(false);
+                            solArmStageTwoOut.set(true);
+                            //Spit + release
+                            vicGripperTop.set(1);
+                            vicGripperBottom.set(1);
+                            gripperRelease.set(true);
                         }
                         break;
                     case 3:
-                        //Spit + release
-                        vicGripperTop.set(1);
-                        vicGripperBottom.set(1);
-                        gripperRelease.set(true);
-                        //retract
-                        solArmStageOneIn.set(true);
-                        solArmStageOneOut.set(false);
-                        solArmStageTwoIn.set(false);
-                        solArmStageTwoOut.set(true);
                         //Update lights to show auton state
                         fluxCapacitorOne.set(Relay.Value.kOff);
                         fluxCapacitorTwo.set(Relay.Value.kForward);
@@ -724,9 +725,9 @@ public class CoyoBotXII extends IterativeRobot {
                                     gripperRelease.set(false);
                                     autoTimer.reset();
                                     autonomousStage = 4;
-                                autonAccel = true;
-                                autonSpeed = Constants.sGyro;
-                                accelSpeed = 0;
+                                    autonAccel = true;
+                                    autonSpeed = -Constants.sGyro;
+                                    accelSpeed = 0;
                                 }
                                 break;
                         }
@@ -743,8 +744,8 @@ public class CoyoBotXII extends IterativeRobot {
                                 jagLeftMaster.setX((accelSpeed * autonUltraFactor - (gyro.getAngle() - Constants.aTurn) / Constants.kGyroFactor));
                                 jagRightMaster.setX((accelSpeed * autonUltraFactor + (gyro.getAngle() - Constants.aTurn) / Constants.kGyroFactor));
                             } else {
-                                jagLeftMaster.setX((accelSpeed * autonUltraFactor - (gyro.getAngle()) / 30));
-                                jagRightMaster.setX((accelSpeed * autonUltraFactor + (gyro.getAngle()) / 30));
+                                jagLeftMaster.setX((accelSpeed * autonUltraFactor - (gyro.getAngle()) / Constants.kGyroFactor));
+                                jagRightMaster.setX((accelSpeed * autonUltraFactor + (gyro.getAngle()) / Constants.kGyroFactor));
                             }
                             //Check if we have driven back to tube pickup position
                             if (jagRightMaster.getPosition() <= Constants.dStartToRack - Constants.dRackToTurn - Constants.dTurnToTube) {
@@ -752,8 +753,7 @@ public class CoyoBotXII extends IterativeRobot {
                                 autoTimer.reset();
                                 autoTimer.start();
                                 autonAccel = true;
-                                //TODO: positive?
-                                autonSpeed = -Constants.sGyro;
+                                autonSpeed = Constants.sGyro;
                                 accelSpeed = 0;
                             }
                             if (autoTimer.get() > 1) {
@@ -772,9 +772,9 @@ public class CoyoBotXII extends IterativeRobot {
                         //rotate arm and drive forward
                         try {
                             jagShoulderOne.setX(Constants.pArmFrontRaised);
-                            if(jagRightMaster.getPosition() < Constants.dTubeToRack){
-                                jagLeftMaster.setX(accelSpeed);
-                                jagRightMaster.setX(accelSpeed);
+                            if (jagRightMaster.getPosition() < Constants.dTubeToRack) {
+                                jagLeftMaster.setX(accelSpeed - (gyro.getAngle()) / Constants.kGyroFactor);
+                                jagRightMaster.setX(accelSpeed + (gyro.getAngle()) / Constants.kGyroFactor);
                             } else {
                                 autonomousStage = 6;
                                 autoTimer.reset();
@@ -1428,7 +1428,11 @@ public class CoyoBotXII extends IterativeRobot {
                 break;
         }
         //Update flux capacitor
-        for (int i = 1; i < 5; i++) if (joyDriver.getRawButton(i)) fluxState = i - 1;
+        for (int i = 1; i < 5; i++) {
+            if (joyDriver.getRawButton(i)) {
+                fluxState = i - 1;
+            }
+        }
         switch (fluxState) {
             case 0:
                 fluxCapacitorOne.set(Relay.Value.kOff);
@@ -1664,11 +1668,15 @@ public class CoyoBotXII extends IterativeRobot {
     public double convertJoy(double x, double y) {
         return Math.sqrt(1.0 + (x / y) * (x / y));
     }
-    public double pow(double x, int y){
+
+    public double pow(double x, int y) {
         double result = 1;
-        for(int i = 0; i < y; i++)result *= x;
+        for (int i = 0; i < y; i++) {
+            result *= x;
+        }
         return result;
     }
+
     /**
      * Sends diagnostic information to the driver station.
      * Line 1: CAN Faults
