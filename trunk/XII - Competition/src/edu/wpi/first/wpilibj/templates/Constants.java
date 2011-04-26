@@ -15,7 +15,7 @@ public class Constants {
     /**
      * The factor by which to scale down the gyro's influence during turns
      */
-    public static final double kGyroFactor = 30;
+    public static final double kGyroFactor = 60;
     /**
      * The potentiometer value representing the position of the arm at the front raised position
      */
@@ -27,7 +27,7 @@ public class Constants {
     /**
      * The number of encoder turns from the position at the start of the autonomous to the scoring rack.
      */
-    public static final double dStartToRack = 10.3;
+    public static final double dStartToRack = 10.0;
     /**
      * The number of encoder turns to back up from the rack to the turning position
      */
@@ -59,7 +59,7 @@ public class Constants {
     /**
      * The time for which to drive backwards during 1-tube dead reckoning
      */
-    public static final double tBackUpDuration = 3;
+    public static final double tBackUpDuration = 5;
     /**
      * The time to wait before bringing the arm around in 1-tube dead reckoning
      */
@@ -79,7 +79,7 @@ public class Constants {
     /**
      * The speed at which to back up during the final phase of autonomous
      */
-    public static final double sFinalBackUp = 0.4;
+    public static final double sFinalBackUp = 0.8;
     /**
      * The angle of the turn
      */
