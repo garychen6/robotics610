@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="utlBSAPI.cs" />
     <Compile Include="utlFullScreen.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>

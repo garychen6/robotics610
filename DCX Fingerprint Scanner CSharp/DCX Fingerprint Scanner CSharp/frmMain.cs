@@ -15,7 +15,7 @@ namespace DCX_Fingerprint_Scanner_CSharp
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-
+            Console.Write("Test\n");
         }
 
         private void frmMain_Load(object sender, EventArgs e)
