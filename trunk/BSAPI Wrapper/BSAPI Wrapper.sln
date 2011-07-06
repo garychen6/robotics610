@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BSAPI Wrapper", "BSAPI Wrapper\BSAPI Wrapper.vcxproj", "{24365273-A215-4E5E-BE32-95E37DBF71D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{89C6CF07-4B13-491B-BDF0-90BDEA81CBAC}"
+	ProjectSection(SolutionItems) = preProject
+		BSAPI Wrapper\lib\32-bit\bsapi.dll = BSAPI Wrapper\lib\32-bit\bsapi.dll
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{24365273-A215-4E5E-BE32-95E37DBF71D4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{24365273-A215-4E5E-BE32-95E37DBF71D4}.Debug|Win32.Build.0 = Debug|Win32
+		{24365273-A215-4E5E-BE32-95E37DBF71D4}.Release|Win32.ActiveCfg = Release|Win32
+		{24365273-A215-4E5E-BE32-95E37DBF71D4}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
