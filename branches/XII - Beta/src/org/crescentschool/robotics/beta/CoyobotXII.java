@@ -11,8 +11,7 @@ package org.crescentschool.robotics.beta;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import org.crescentschool.robotics.beta.commands.ExampleCommand;
-import org.crescentschool.robotics.beta.subsystems.ExampleSubsystem;
+import org.crescentschool.robotics.beta.subsystems.DriveTrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,7 +30,7 @@ public class CoyobotXII extends IterativeRobot {
      */
     public void robotInit() {
         // instantiate the command used for the autonomous period
-        autonomousCommand = new ExampleCommand();
+        //autonomousCommand = new ExampleCommand();
 
         // create the instance of the operator interface class
         // this will associate all the buttons with the appropriate commands
@@ -39,7 +38,7 @@ public class CoyobotXII extends IterativeRobot {
 
         // initialize all subsystems here. The result of getInstance() is
         // intentionally ignored.
-        ExampleSubsystem.getInstance();
+        DriveTrain.getInstance();
     }
 
     public void autonomousInit() {

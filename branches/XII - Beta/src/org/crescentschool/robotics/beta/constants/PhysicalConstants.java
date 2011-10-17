@@ -8,7 +8,7 @@ package org.crescentschool.robotics.beta.constants;
  *
  * @author Patrick
  */
-public class ElectricalBoard {
+public class PhysicalConstants {
     //Jaguars
     public static final int kJaguarRightMaster = 2;
     public static final int kJaguarRightSlave = 1;
@@ -20,4 +20,10 @@ public class ElectricalBoard {
     //Shifter Solenoids
     public static final int kSolenoidLowChannel = 2;
     public static final int kSolenoidHighChannel = 1;
+    //Joysticks
+    public static final int kDriverLeftXAxis = 4;
+    public static final int kDriverLeftYAxis = -1;
+    public static final int kDriverRightXAxis = 2;
+    public static final int kDriverRightYAxis = -1;
+    public static final int kJoyDriverPort = 1;
 }
