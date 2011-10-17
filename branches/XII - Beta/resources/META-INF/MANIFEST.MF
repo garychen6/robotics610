@@ -1,0 +1,6 @@
+MIDlet-Name: XII - Basic Operator Control
+MIDlet-Version: 1.0.0
+MIDlet-Vendor: FIRST
+MIDlet-1: CoyobotXII, , org.crescentschool.robotics.beta.CoyobotXII
+MicroEdition-Profile: IMP-1.0
+MicroEdition-Configuration: CLDC-1.1
