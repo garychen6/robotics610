@@ -27,6 +27,7 @@ public class DriveTrain extends Subsystem {
     //Shifter Solenoids
     private Solenoid shifterHigh;
     private Solenoid shifterLow;
+    public boolean isHighGear;
     
     public static DriveTrain getInstance() {
         if (instance == null) {
@@ -42,16 +43,17 @@ public class DriveTrain extends Subsystem {
     private DriveTrain() {
         //Initialize Jaguars
         try {
-            jaguarLeftMaster = new edu.wpi.first.wpilibj.CANJaguar(PhysicalConstants.kJaguarLeftMaster);
-            jaguarLeftSlave = new edu.wpi.first.wpilibj.CANJaguar(PhysicalConstants.kJaguarLeftSlave);
-            jaguarRightMaster = new edu.wpi.first.wpilibj.CANJaguar(PhysicalConstants.kJaguarRightMaster);
-            jaguarRightSlave = new edu.wpi.first.wpilibj.CANJaguar(PhysicalConstants.kJaguarRightSlave);
+            jaguarLeftMaster = new CANJaguar(PhysicalConstants.kJaguarLeftMaster);
+            jaguarLeftSlave = new CANJaguar(PhysicalConstants.kJaguarLeftSlave);
+            jaguarRightMaster = new CANJaguar(PhysicalConstants.kJaguarRightMaster);
+            jaguarRightSlave = new CANJaguar(PhysicalConstants.kJaguarRightSlave);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
        //Initialize shifter solenoids
        shifterHigh = new Solenoid(PhysicalConstants.kSolenoidHighChannel);
        shifterLow = new Solenoid(PhysicalConstants.kSolenoidLowChannel);
+       isHighGear = shifterHigh.get();
     }
     public void tankDrive(){
         try{
@@ -60,6 +62,11 @@ public class DriveTrain extends Subsystem {
         } catch(CANTimeoutException ex){
             ex.printStackTrace();
         }
+    }
+    public void shift(boolean high){
+        shifterHigh.set(high);
+        shifterLow.set(!high);
+        isHighGear = high;
     }
     private void syncSlaves(){
         try {
