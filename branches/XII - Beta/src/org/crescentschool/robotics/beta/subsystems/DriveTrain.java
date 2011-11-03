@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Solenoid;
 import org.crescentschool.robotics.beta.OI;
 import org.crescentschool.robotics.beta.commands.TankDrive;
-import org.crescentschool.robotics.beta.constants.PhysicalConstants;
+import org.crescentschool.robotics.beta.constants.InputConstants;
+import org.crescentschool.robotics.beta.constants.ElectricalConstants;
 
 /**
  *
@@ -43,22 +44,23 @@ public class DriveTrain extends Subsystem {
     private DriveTrain() {
         //Initialize Jaguars
         try {
-            jaguarLeftMaster = new CANJaguar(PhysicalConstants.kJaguarLeftMaster);
-            jaguarLeftSlave = new CANJaguar(PhysicalConstants.kJaguarLeftSlave);
-            jaguarRightMaster = new CANJaguar(PhysicalConstants.kJaguarRightMaster);
-            jaguarRightSlave = new CANJaguar(PhysicalConstants.kJaguarRightSlave);
+            jaguarLeftMaster = new CANJaguar(ElectricalConstants.kJaguarLeftMaster);
+            jaguarLeftSlave = new CANJaguar(ElectricalConstants.kJaguarLeftSlave);
+            jaguarRightMaster = new CANJaguar(ElectricalConstants.kJaguarRightMaster);
+            jaguarRightSlave = new CANJaguar(ElectricalConstants.kJaguarRightSlave);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
        //Initialize shifter solenoids
-       shifterHigh = new Solenoid(PhysicalConstants.kSolenoidHighChannel);
-       shifterLow = new Solenoid(PhysicalConstants.kSolenoidLowChannel);
+       shifterHigh = new Solenoid(ElectricalConstants.kSolenoidHighChannel);
+       shifterLow = new Solenoid(ElectricalConstants.kSolenoidLowChannel);
        isHighGear = shifterHigh.get();
     }
     public void tankDrive(){
         try{
-            jaguarLeftMaster.setX(OI.getInstance().getJoyDriver().getRawAxis(PhysicalConstants.kDriverLeftXAxis));
-            jaguarRightMaster.setX(OI.getInstance().getJoyDriver().getRawAxis(PhysicalConstants.kDriverRightXAxis));
+            jaguarLeftMaster.setX(OI.getInstance().getJoyDriver().getRawAxis(InputConstants.kDriverLeftXAxis));
+            jaguarRightMaster.setX(OI.getInstance().getJoyDriver().getRawAxis(InputConstants.kDriverRightXAxis));
+            syncSlaves();
         } catch(CANTimeoutException ex){
             ex.printStackTrace();
         }

@@ -8,12 +8,16 @@ package org.crescentschool.robotics.beta.constants;
  *
  * @author Patrick
  */
-public class PhysicalConstants {
+public class ElectricalConstants {
     //Jaguars
+    //Drive
     public static final int kJaguarRightMaster = 2;
     public static final int kJaguarRightSlave = 1;
     public static final int kJaguarLeftMaster = 4;
     public static final int kJaguarLeftSlave = 3;
+    //Arm
+    public static final int kJaguarArmMaster = 7;
+    public static final int kJaguarArmSlave = 8;
     //Compressor
     public static final int kCompressorRelayChannel = 1;
     public static final int kCompressorPressureSwitchChannel = 1;
@@ -21,9 +25,7 @@ public class PhysicalConstants {
     public static final int kSolenoidLowChannel = 2;
     public static final int kSolenoidHighChannel = 1;
     //Joysticks
-    public static final int kDriverLeftXAxis = 4;
-    public static final int kDriverLeftYAxis = -1;
-    public static final int kDriverRightXAxis = 2;
-    public static final int kDriverRightYAxis = -1;
     public static final int kJoyDriverPort = 1;
+    public static final int kJoyOperatorPort = 2;
+    
 }

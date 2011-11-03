@@ -11,7 +11,9 @@ package org.crescentschool.robotics.beta;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import org.crescentschool.robotics.beta.subsystems.DriveTrain;
+import org.crescentschool.robotics.beta.commands.*;
+import org.crescentschool.robotics.beta.constants.*;
+import org.crescentschool.robotics.beta.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -60,6 +62,11 @@ public class CoyobotXII extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+        if(OI.getInstance().getJoyDriver().getRawButton(InputConstants.kShiftHigh)){
+            Scheduler.getInstance().add(new ShiftGears(true));
+        } else if(OI.getInstance().getJoyDriver().getRawButton(InputConstants.kShiftLow)){
+            Scheduler.getInstance().add(new ShiftGears(false));
+        }
         Scheduler.getInstance().run();
     }
 }

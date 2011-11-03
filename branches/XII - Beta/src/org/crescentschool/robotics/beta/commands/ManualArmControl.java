@@ -5,24 +5,21 @@
 package org.crescentschool.robotics.beta.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.beta.subsystems.DriveTrain;
+import org.crescentschool.robotics.beta.OI;
+import org.crescentschool.robotics.beta.constants.InputConstants;
+import org.crescentschool.robotics.beta.subsystems.*;
 
 /**
  *
  * @author Patrick
  */
-public class ShiftGears extends Command {
+public class ManualArmControl extends Command {
     
-    DriveTrain m_driveTrain;
-    boolean target;
+    Arm m_arm;
     
-    /**
-     * Creates a new ShiftGears command
-     * @param high For choosing which to shift to. true will shift to high, false will shift to low.
-     */
-    public ShiftGears(boolean high) {
-        this.target = high;
-        m_driveTrain = DriveTrain.getInstance();
+    public ManualArmControl() {
+        m_arm = Arm.getInstance();
+        requires(m_arm);
     }
 
     // Called just before this Command runs the first time
@@ -31,12 +28,12 @@ public class ShiftGears extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        m_driveTrain.shift(target);
+        m_arm.moveArm(OI.getInstance().getJoyOperator().getRawAxis(InputConstants.kOperatorLeftYAxis));
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return m_driveTrain.isHighGear == target;
+        return false;
     }
 
     // Called once after isFinished returns true
