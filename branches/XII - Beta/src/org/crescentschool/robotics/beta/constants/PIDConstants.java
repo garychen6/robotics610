@@ -21,4 +21,6 @@ public class PIDConstants {
     public static final double tdriveP = 300;
     public static final double tdriveI = 0;
     public static final double tdriveD = 0;
+    //How many counts to increment each button press
+    public static final double tdriveTicks = 0.02;
 }

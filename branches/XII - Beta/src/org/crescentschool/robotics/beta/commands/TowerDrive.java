@@ -9,25 +9,29 @@ import org.crescentschool.robotics.beta.subsystems.DriveTrain;
 
 /**
  *
- * @author Patrick
+ * @author slim
  */
-public class TankDrive extends Command {
-    
+public class TowerDrive extends Command {
+
     DriveTrain m_driveTrain;
-    
-    public TankDrive() {
+    double xInput = 0;
+    double yInput = 0;
+
+    public TowerDrive() {
         m_driveTrain = DriveTrain.getInstance();
         requires(m_driveTrain);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        m_driveTrain.towerDriveOff();
+        double xInput = 0;
+        double yInput = 0;
+        m_driveTrain.towerDriveOn();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        m_driveTrain.tankDrive();
+        m_driveTrain.towerDrive(xInput, yInput);
     }
 
     // Make this return true when this Command no longer needs to run execute()
