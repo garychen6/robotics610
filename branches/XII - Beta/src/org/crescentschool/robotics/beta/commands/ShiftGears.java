@@ -23,6 +23,7 @@ public class ShiftGears extends Command {
     public ShiftGears(boolean high) {
         this.target = high;
         m_driveTrain = DriveTrain.getInstance();
+        requires(m_driveTrain);
     }
 
     // Called just before this Command runs the first time

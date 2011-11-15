@@ -12,6 +12,7 @@ import org.crescentschool.robotics.beta.OI;
 import org.crescentschool.robotics.beta.commands.TankDrive;
 import org.crescentschool.robotics.beta.constants.InputConstants;
 import org.crescentschool.robotics.beta.constants.ElectricalConstants;
+import org.crescentschool.robotics.beta.constants.PIDConstants;
 
 /**
  *
@@ -20,6 +21,8 @@ import org.crescentschool.robotics.beta.constants.ElectricalConstants;
 public class DriveTrain extends Subsystem {
 
     private static DriveTrain instance = null;
+    //Tower Mode
+    private static boolean towerEnabled = false;
     //Jaguars
     private CANJaguar jaguarLeftMaster;
     private CANJaguar jaguarLeftSlave;
@@ -29,7 +32,9 @@ public class DriveTrain extends Subsystem {
     private Solenoid shifterHigh;
     private Solenoid shifterLow;
     public boolean isHighGear;
-    
+    //CAN Error Flag
+    boolean canInitialized = true;
+
     public static DriveTrain getInstance() {
         if (instance == null) {
             instance = new DriveTrain();
@@ -51,31 +56,56 @@ public class DriveTrain extends Subsystem {
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
-       //Initialize shifter solenoids
-       shifterHigh = new Solenoid(ElectricalConstants.kSolenoidHighChannel);
-       shifterLow = new Solenoid(ElectricalConstants.kSolenoidLowChannel);
-       isHighGear = shifterHigh.get();
+        //Initialize shifter solenoids
+        shifterHigh = new Solenoid(ElectricalConstants.kSolenoidHighChannel);
+        shifterLow = new Solenoid(ElectricalConstants.kSolenoidLowChannel);
+        isHighGear = shifterHigh.get();
     }
-    public void tankDrive(){
-        try{
+
+    public void tankDrive() {
+        try {
             jaguarLeftMaster.setX(OI.getInstance().getJoyDriver().getRawAxis(InputConstants.kDriverLeftXAxis));
             jaguarRightMaster.setX(OI.getInstance().getJoyDriver().getRawAxis(InputConstants.kDriverRightXAxis));
             syncSlaves();
-        } catch(CANTimeoutException ex){
+        } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     }
-    public void shift(boolean high){
+
+    public void shift(boolean high) {
         shifterHigh.set(high);
         shifterLow.set(!high);
         isHighGear = high;
     }
-    private void syncSlaves(){
+
+    private void syncSlaves() {
         try {
             jaguarLeftSlave.setX(jaguarLeftMaster.getX());
             jaguarRightSlave.setX(jaguarRightMaster.getX());
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void towerDriveOn() {
+        towerEnabled = true;
+        try {
+            jaguarLeftMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+            jaguarRightMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+            jaguarLeftMaster.setX(0);
+            jaguarRightMaster.setX(0);
+            jaguarLeftMaster.setPID(-PIDConstants.tdriveP, -PIDConstants.tdriveI, -PIDConstants.tdriveD);
+            jaguarRightMaster.setPID(PIDConstants.tdriveP, PIDConstants.tdriveI, PIDConstants.tdriveD);
+            jaguarLeftMaster.enableControl(0);
+            jaguarRightMaster.enableControl(0);
+        } catch (CANTimeoutException ex) {
+            System.out.println(ex.toString());
+            canInitialized = false;
+        }
+    }
+    
+    public void recoverCAN()
+    {
+        
     }
 }
