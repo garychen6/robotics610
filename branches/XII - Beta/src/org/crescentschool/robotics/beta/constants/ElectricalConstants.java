@@ -18,6 +18,9 @@ public class ElectricalConstants {
     //Arm
     public static final int kJaguarArmMaster = 7;
     public static final int kJaguarArmSlave = 8;
+    //Gripper
+    public static final int kVictorGripperTopChannel = 5;
+    public static final int kVictorGripperBottomChannel = 6;
     //Compressor
     public static final int kCompressorRelayChannel = 1;
     public static final int kCompressorPressureSwitchChannel = 1;

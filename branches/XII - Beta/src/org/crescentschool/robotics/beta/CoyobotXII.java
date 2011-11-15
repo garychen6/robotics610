@@ -8,6 +8,7 @@
 package org.crescentschool.robotics.beta;
 
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -25,6 +26,10 @@ import org.crescentschool.robotics.beta.subsystems.*;
 public class CoyobotXII extends IterativeRobot {
 
     Command autonomousCommand;
+    
+    //Compressor
+    Compressor compressor;
+    
 
     /**
      * This function is run when the robot is first started up and should be
@@ -41,6 +46,10 @@ public class CoyobotXII extends IterativeRobot {
         // initialize all subsystems here. The result of getInstance() is
         // intentionally ignored.
         DriveTrain.getInstance();
+        
+        //Compressor
+        compressor = new Compressor(ElectricalConstants.kCompressorPressureSwitchChannel, ElectricalConstants.kCompressorRelayChannel);
+        compressor.start();
     }
 
     public void autonomousInit() {
