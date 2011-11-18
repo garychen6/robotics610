@@ -46,6 +46,7 @@ public class CoyobotXII extends IterativeRobot {
         // initialize all subsystems here. The result of getInstance() is
         // intentionally ignored.
         DriveTrain.getInstance();
+        Gripper.getInstance();
         
         //Compressor
         compressor = new Compressor(ElectricalConstants.kCompressorPressureSwitchChannel, ElectricalConstants.kCompressorRelayChannel);
