@@ -1,13 +1,9 @@
-// New Commit
-//*HERRO!
 /*
  * Competition code for 2011 Team 610 - CoyoBot XII
  * Written by Patrick White, Warfa Jibril, and Mr. Lim
  */
-//Ian Lo
-package edu.wpi.first.wpilibj.templates;
 
-//hi this is adam murai
+package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.CANJaguar;
