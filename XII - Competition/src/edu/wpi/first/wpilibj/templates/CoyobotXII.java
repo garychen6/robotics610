@@ -1220,6 +1220,15 @@ public class CoyobotXII extends IterativeRobot {
             maxSpeed = maxLowSpeed;
             shiftToggle = true;
         }
+        //Switch between Tank and Arcade depending on driver top triggers
+        if (joyDriver.getRawButton(6)) {
+            //Tank drive
+            driveMode = 0;
+        } else if (joyDriver.getRawButton(5)) {
+            //Kaj drive
+            driveMode = 2;
+        }
+        
         // Run automated gripper release if Austin presses analog stick
         if (joyOperator.getRawButton(10) && autonTubeRelease == false) {
             // Start automated gripper release
@@ -1485,12 +1494,12 @@ public class CoyobotXII extends IterativeRobot {
                     try {
                         //Tank mode
                         if (Math.abs(joyDriver.getRawAxis(2)) > 0.05) {
-                            jagRightMaster.setX(joyDriver.getRawAxis(2) * joyDriver.getRawAxis(2) * joyDriver.getRawAxis(2));
+                            jagRightMaster.setX(joyDriver.getRawAxis(2)*joyDriver.getRawAxis(2)*joyDriver.getRawAxis(2));
                         } else {
                             jagRightMaster.setX(0);
                         }
                         if (Math.abs(joyDriver.getRawAxis(4)) > 0.05) {
-                            jagLeftMaster.setX(joyDriver.getRawAxis(4) * joyDriver.getRawAxis(4) * joyDriver.getRawAxis(4));
+                                jagLeftMaster.setX(joyDriver.getRawAxis(4)*joyDriver.getRawAxis(4)*joyDriver.getRawAxis(4));
                         } else {
                             jagLeftMaster.setX(0);
                         }
@@ -1517,11 +1526,17 @@ public class CoyobotXII extends IterativeRobot {
                     //dsLCD.println(DriverStationLCD.Line.kMain6, 1, "Drive mode: Kaj   ");
                     try {
                         //Kaj mode
+                        /*
                         xInput = joyDriver.getRawAxis(3) * convertJoy(joyDriver.getRawAxis(3), -joyDriver.getRawAxis(2));
                         yInput = -joyDriver.getRawAxis(2) * convertJoy(joyDriver.getRawAxis(3), -joyDriver.getRawAxis(2));
                         octantJoystick();
                         jagLeftMaster.setX(leftSpeed);
                         jagRightMaster.setX(rightSpeed);
+                         */
+                        jagLeftMaster.setX(joyDriver.getRawAxis(2)*joyDriver.getRawAxis(2)*joyDriver.getRawAxis(2)
+                                + joyDriver.getRawAxis(3)*joyDriver.getRawAxis(3)*joyDriver.getRawAxis(3));
+                        jagRightMaster.setX(joyDriver.getRawAxis(2)*joyDriver.getRawAxis(2)*joyDriver.getRawAxis(2)
+                                - joyDriver.getRawAxis(3)*joyDriver.getRawAxis(3)*joyDriver.getRawAxis(3));
                     } catch (CANTimeoutException ex) {
                         System.out.println(ex.toString());
                         canInitialized = false;
