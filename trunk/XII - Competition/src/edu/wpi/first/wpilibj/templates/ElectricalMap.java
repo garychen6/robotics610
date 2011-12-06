@@ -18,7 +18,7 @@ public class ElectricalMap {
     //Ultrasonic
     public static final int kUltrasonicChannel = 4;
     //Solenoid Module
-    public static final int kSolenoidModulePort = 7;
+    public static final int kSolenoidModulePort = 2;
     //Shifter
     public static final int kSolenoidLowChannel = 2;
     public static final int kSolenoidHighChannel = 1;
@@ -27,7 +27,7 @@ public class ElectricalMap {
     //Gripper Release
     public static final int kSolenoidGripperChannel = 8;//practice robot has none
     //Digital Sidecar
-    public static final int kDigitalModulePort = 4;
+    public static final int kDigitalModulePort = 1;
     //Line Follower Light Sensors
     public static final int kLightSensorRChannel = 2;//practice robot has none
     public static final int kLightSensorMChannel = 3;//practice robot has none
