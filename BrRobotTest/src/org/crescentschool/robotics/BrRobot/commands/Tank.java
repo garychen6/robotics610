@@ -11,12 +11,12 @@ import org.crescentschool.robotics.BrRobot.subsystems.DriveTrain;
  * @author Warfa
  */
 public class Tank extends CommandBase {
-     DriveTrain m_drive;
+     DriveTrain m_driveTrain;
     public Tank() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        m_drive = DriveTrain.getInstance();
-        requires(m_drive);
+        m_driveTrain = CommandBase.m_drive;
+        requires(m_driveTrain);
     }
 
     // Called just before this Command runs the first time
@@ -25,7 +25,7 @@ public class Tank extends CommandBase {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        m_drive.tank();
+        m_driveTrain.tank();
     }
 
     // Make this return true when this Command no longer needs to run execute()
