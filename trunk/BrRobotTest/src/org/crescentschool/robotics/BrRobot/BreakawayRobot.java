@@ -32,9 +32,10 @@ public class BreakawayRobot extends IterativeRobot {
         autonomousCommand.start();
 
         // Initialize all subsystems
+        CommandBase.init();
         DriveTrain.getInstance();
         OI.getInstance();
-        CommandBase.init();
+        
     }
 
     public void autonomousInit() {
