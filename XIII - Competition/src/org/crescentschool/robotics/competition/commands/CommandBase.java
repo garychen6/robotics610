@@ -3,7 +3,7 @@ package org.crescentschool.robotics.competition.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.DriveTrainX;
 
 /**
  * The base for all commands. All atomic commands should subclass CommandBase.
@@ -15,7 +15,7 @@ public abstract class CommandBase extends Command {
 
     public static OI oi;
     // Create a single static instance of all of your subsystems
-    public static DriveTrain exampleSubsystem = new DriveTrain();
+    public static DriveTrainX exampleSubsystem = new DriveTrainX();
 
     public static void init() {
         // This MUST be here. If the OI creates Commands (which it very likely
@@ -23,7 +23,7 @@ public abstract class CommandBase extends Command {
         // which commands extend), subsystems are not guaranteed to be
         // yet. Thus, their requires() statements may grab null pointers. Bad
         // news. Don't move it.
-        oi = new OI();
+        oi = OI.getInstance();
 
         // Show what command your subsystem is running on the SmartDashboard
         SmartDashboard.putData(exampleSubsystem);

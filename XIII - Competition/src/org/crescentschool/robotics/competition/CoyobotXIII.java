@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.crescentschool.robotics.competition.commands.CommandBase;
 import org.crescentschool.robotics.competition.commands.TankDrive;
-import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.DriveTrainX;
 
 /**
  * The VM is configured to automatically run this class, and to call the
