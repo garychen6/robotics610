@@ -17,14 +17,14 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.Timer;
-//import edu.wpi.first.wpilibj.camera.AxisCamera;
+import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.image.ColorImage;
 
 public class CoyobotXII extends IterativeRobot {
 
     //Camera
-    //AxisCamera camMinibot;
+    AxisCamera camMinibot;
     ColorImage camImage;
     //Gyro
     Gyro gyro;
@@ -143,7 +143,7 @@ public class CoyobotXII extends IterativeRobot {
         watchdog = Watchdog.getInstance();
         dsLCD = DriverStationLCD.getInstance();
         //Camera Initialization
-        /*
+        
         camMinibot = AxisCamera.getInstance();
         camMinibot.writeResolution(AxisCamera.ResolutionT.k320x240);
         camMinibot.writeBrightness(0);
@@ -154,7 +154,7 @@ public class CoyobotXII extends IterativeRobot {
         camMinibot.writeCompression(20);
         camMinibot.writeRotation(AxisCamera.RotationT.k0);
         camMinibot.writeMaxFPS(30);
-        */
+        
         //All Jaguars
         try {
             //Drivetrain
