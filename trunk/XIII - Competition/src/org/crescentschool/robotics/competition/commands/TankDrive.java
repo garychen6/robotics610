@@ -1,11 +1,13 @@
 
 package org.crescentschool.robotics.competition.commands;
 
+import edu.wpi.first.wpilibj.command.Command;
+
 /**
  *
  * @author bradmiller
  */
-public class TankDrive extends CommandBase {
+public class TankDrive extends Command {
 
     public TankDrive() {
         // Use requires() here to declare subsystem dependencies
