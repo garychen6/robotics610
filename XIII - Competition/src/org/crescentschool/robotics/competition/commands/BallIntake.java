@@ -4,11 +4,13 @@
  */
 package org.crescentschool.robotics.competition.commands;
 
+import edu.wpi.first.wpilibj.command.Command;
+
 /**
  *
  * @author Warfa
  */
-public class BallIntake extends CommandBase {
+public class BallIntake extends Command {
     
     public BallIntake() {
         // Use requires() here to declare subsystem dependencies

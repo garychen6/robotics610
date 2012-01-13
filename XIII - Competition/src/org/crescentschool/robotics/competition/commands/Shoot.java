@@ -4,11 +4,13 @@
  */
 package org.crescentschool.robotics.competition.commands;
 
+import edu.wpi.first.wpilibj.command.Command;
+
 /**
  *
  * @author Warfa
  */
-public class Shoot extends CommandBase {
+public class Shoot extends Command {
     
     public Shoot() {
         // Use requires() here to declare subsystem dependencies

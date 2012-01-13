@@ -11,9 +11,6 @@ package org.crescentschool.robotics.competition;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import org.crescentschool.robotics.competition.commands.CommandBase;
-import org.crescentschool.robotics.competition.commands.TankDrive;
-import org.crescentschool.robotics.competition.subsystems.DriveTrainX;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,10 +29,10 @@ public class CoyobotXIII extends IterativeRobot {
      */
     public void robotInit() {
         // instantiate the command used for the autonomous period
-        autonomousCommand = new TankDrive();
+        //autonomousCommand = new TankDrive();
 
         // Initialize all subsystems
-        CommandBase.init();
+        //CommandBase.init();
     }
 
     public void autonomousInit() {
