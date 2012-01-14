@@ -1,12 +1,14 @@
 
 package org.crescentschool.robotics.competition;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class OI {
 
     public static OI instance = null;
     public static Joystick joyDriver;
+    public static DriverStation drStation;
     public static OI getInstance(){
         
         
@@ -22,6 +24,7 @@ public class OI {
     
     private OI(){        
          joyDriver = new Joystick(1);
+         
     }
 }
     
