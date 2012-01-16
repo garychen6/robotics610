@@ -8,8 +8,9 @@ package org.crescentschool.robotics.competition;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.commands.PIDDriveTuning;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
@@ -32,7 +33,8 @@ public class CoyobotXIII extends IterativeRobot {
         //autonomousCommand = new TankDrive();
 
         // Initialize all subsystems
-        //CommandBase.init();
+        //CommandBase.init
+        SmartDashboard.putString("message", "FFFFUUUUUUUUUUUCK YOOOUUUUUUUU");
         OI.getInstance();
         DriveTrain.getInstance();
         compressor = new Compressor(ElectricalConstants.kCompressorPressureSwitchChannel, ElectricalConstants.kCompressorRelayChannel);
@@ -56,7 +58,7 @@ public class CoyobotXIII extends IterativeRobot {
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
         // this line or comment it out.
-
+        Scheduler.getInstance().add(new PIDDriveTuning());
     }
 
     /**

@@ -11,11 +11,11 @@ package org.crescentschool.robotics.competition.constants;
 public class PIDConstants {
     public static final boolean pidTuneMode = true;
     
-    public static final double posP = 0;
-    public static final double posI = 0;
+    public static final double posP = 500;
+    public static final double posI = 500;
     public static final double posD = 0;
-    public static final double speedP = 0;
-    public static final double speedI = 0.008;
+    public static final double speedP = -0.0020;
+    public static final double speedI = 0.006;
     public static final double speedD = 0;
     public static final double gyroP = 0;
     
