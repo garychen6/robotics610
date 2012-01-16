@@ -23,17 +23,35 @@ public class Camera extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
-    AxisCamera camera;
     private ColorImage colorImage;
     private ParticleAnalysisReport s_particles[];
     private final ParticleComparer particleComparer = new ParticleComparer();
+    private static Camera instance = null;
+    private static AxisCamera camera = AxisCamera.getInstance();
 
     /**
      * Constructor for the sample program.
      * Get an instance of the axis camera.
      */
     public Camera() {
-        camera = AxisCamera.getInstance();
+        camera.writeResolution(AxisCamera.ResolutionT.k320x240);
+        camera.writeCompression(30);
+        camera.writeWhiteBalance(AxisCamera.WhiteBalanceT.fixedOutdoor1);
+        camera.writeExposureControl(AxisCamera.ExposureT.flickerfree60);
+        camera.writeExposurePriority(AxisCamera.ExposurePriorityT.frameRate);
+        camera.writeBrightness(0);
+        camera.writeColorLevel(50);
+        camera.writeMaxFPS(30);
+        camera.writeRotation(AxisCamera.RotationT.k0);
+        //sharp0
+        
+    }
+
+    public static Camera getInstance() {
+        if (instance == null) {
+            instance = new Camera();
+        }
+        return instance;
     }
 
     /**
@@ -54,12 +72,12 @@ public class Camera extends Subsystem {
                  * when the corresponding pixels in the source (HSL) image are in the specified
                  * range of H, S, and L values.
                  */
-                BinaryImage binImage = colorImage.thresholdHSL(242, 255, 36, 255, 25, 255);
+                BinaryImage binImage = colorImage.thresholdHSL(50, 100, 0, 255, 179, 255);
 
                 /**
                  * Find blobs (groupings) of pixels that were identified in the color threshold operation
                  */
-                s_particles = binImage.getOrderedParticleAnalysisReports();
+                s_particles = binImage.getOrderedParticleAnalysisReports(4);
 
                 /**
                  * Free the underlying color and binary images.
@@ -72,13 +90,14 @@ public class Camera extends Subsystem {
                 /**
                  * print the number of detected particles (color blobs)
                  */
-                System.out.println("Particles: " + s_particles.length);
+                System.out.println("Particles (max 4): " + s_particles.length);
 
                 if (s_particles.length > 0) {
                     /**
                      * sort the particles using the custom comparitor class (see below)
                      */
-                    Arrays.sort(s_particles, particleComparer);
+                    //Particles already sorted by area
+                    //Arrays.sort(s_particles, particleComparer);
 
                     for (int i = 0; i < s_particles.length; i++) {
                         ParticleAnalysisReport circ = s_particles[i];
@@ -86,39 +105,35 @@ public class Camera extends Subsystem {
                         /**
                          * Compute the number of degrees off center based on the camera image size
                          */
-                        double degreesOff = -((54.0 / 640.0) * ((circ.imageWidth / 2.0) - circ.center_mass_x));
+                        //double degreesOff = -((54.0 / 640.0) * ((circ.imageWidth / 2.0) - circ.center_mass_x));
                         switch (i) {
                             case 0:
-                                System.out.print("Best Particle:     ");
+                                System.out.print("1st Particle: ");
                                 break;
                             case 1:
-                                System.out.print("2nd Best Particle: ");
+                                System.out.print("2nd Particle: ");
                                 break;
                             case 2:
-                                System.out.print("3rd Best Particle: ");
+                                System.out.print("3rd Particle: ");
                                 break;
                             default:
-                                System.out.print((i + 1) + "th Best Particle: ");
+                                System.out.print((i + 1) + "th Particle: ");
                                 break;
                         }
-                        System.out.print("    X: " + circ.center_mass_x
-                                + "     Y: " + circ.center_mass_y
-                                + "     Degrees off Center: " + degreesOff
-                                + "     Size: " + circ.particleArea);
+                        System.out.print("X: " + circ.center_mass_x
+                                + " Y: " + circ.center_mass_y
+                                + " Size: " + circ.particleArea
+                                + " Width: " + circ.boundingRectWidth
+                                + " Height: " + circ.boundingRectHeight);
                         System.out.println();
-
                     }
                 }
-                System.out.println();
-                System.out.println();
-                Timer.delay(4);
             } catch (AxisCameraException ex) {
                 ex.printStackTrace();
             } catch (NIVisionException ex) {
                 ex.printStackTrace();
             }
         }
-        Timer.delay(0.01);
     }
 
     public void initDefaultCommand() {
