@@ -410,7 +410,7 @@ public class DriveTrain extends Subsystem {
             initVBusMode();
         }
         try {
-            System.out.print("Left " + jagLeftMaster.getSpeed());
+            //System.out.print("Left " + jagLeftMaster.getSpeed());
             jagLeftMaster.setX(setpoint);
 
         } catch (CANTimeoutException ex) {
@@ -427,7 +427,7 @@ public class DriveTrain extends Subsystem {
         }
         try {
 
-            System.out.println("Right " + jagRightMaster.getSpeed());
+            //System.out.println("Right " + jagRightMaster.getSpeed());
 
             jagRightMaster.setX(setpoint);
 

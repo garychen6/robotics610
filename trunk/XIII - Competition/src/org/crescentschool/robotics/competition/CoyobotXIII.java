@@ -47,6 +47,7 @@ public class CoyobotXIII extends IterativeRobot {
         // schedule the autonomous command (example)
        
     }
+    
 
     /**
      * This function is called periodically during autonomous
@@ -68,6 +69,9 @@ public class CoyobotXIII extends IterativeRobot {
      */
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+    }
+    public void teleopContinuous()
+    {
         camera.processCamera();
     }
 }
