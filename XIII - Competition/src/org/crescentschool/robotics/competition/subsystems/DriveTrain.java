@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendablePIDController;
+import org.crescentschool.robotics.competition.commands.TankDrive;
 import org.crescentschool.robotics.competition.commands.TowerDrive;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
@@ -39,7 +40,8 @@ public class DriveTrain extends Subsystem {
 
         public double pidGet() {
             try {
-                return jagRightMaster.getPosition() - PIDConstants.gyroP * gyro.getAngle();
+                //return jagRightMaster.getPosition() - PIDConstants.gyroP * gyro.getAngle();
+                return jagRightMaster.getPosition();
             } catch (CANTimeoutException ex) {
                 canError = true;
                 handleCANError();
@@ -48,14 +50,19 @@ public class DriveTrain extends Subsystem {
             }
         }
     };
+    int count1 = 0;
     private PIDOutput rightPosOut = new PIDOutput() {
 
         public void pidWrite(double output) {
             try {
                 // Jag is in Speed Control Mode
                 // Output should be in rpm
+                if(count % 100 == 0){
+                System.out.println("Output Right: "+output);
+                }
                 jagRightMaster.setX(output);
                 syncSlaves();
+                count++;
             } catch (CANTimeoutException ex) {
                 canError = true;
                 handleCANError();
@@ -67,7 +74,8 @@ public class DriveTrain extends Subsystem {
 
         public double pidGet() {
             try {
-                return jagLeftMaster.getPosition() + PIDConstants.gyroP * gyro.getAngle();
+                //return jagLeftMaster.getPosition() + PIDConstants.gyroP * gyro.getAngle();
+                return jagLeftMaster.getPosition() ;
             } catch (CANTimeoutException ex) {
                 canError = true;
                 handleCANError();
@@ -80,6 +88,9 @@ public class DriveTrain extends Subsystem {
 
         public void pidWrite(double output) {
             try {
+                  if(count % 150 == 0){
+                  System.out.println("Output Left: "+output);
+                  }
                 jagLeftMaster.setX(output);
                 syncSlaves();
             } catch (CANTimeoutException ex) {
@@ -91,7 +102,7 @@ public class DriveTrain extends Subsystem {
     };
 
     public void initDefaultCommand() {
-        setDefaultCommand(new TowerDrive());
+        setDefaultCommand(new TankDrive());
     }
 
     public static DriveTrain getInstance() {
@@ -112,13 +123,11 @@ public class DriveTrain extends Subsystem {
             jagLeftMaster = new CANJaguar(ElectricalConstants.DriveLeftMaster);
             jagRightSlave = new CANJaguar(ElectricalConstants.DriveRightSlave);
             jagLeftSlave = new CANJaguar(ElectricalConstants.DriveLeftSlave);
-
             //TODO: These PID Controllers may need to run faster than 50ms
             posControllerRight = new SendablePIDController(PIDConstants.posP,
                     PIDConstants.posI, PIDConstants.posD, rightPosIn, rightPosOut);
             posControllerLeft = new SendablePIDController(PIDConstants.posP,
                     PIDConstants.posI, PIDConstants.posD, leftPosIn, leftPosOut);
-
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();
@@ -134,12 +143,8 @@ public class DriveTrain extends Subsystem {
     public void initPosMode() {
         System.out.println("Pos Mode");
         controlMode = 3;
-        posControllerLeft.reset();
-        posControllerRight.reset();
         posControllerRight.setPID(p, i, d);
         posControllerLeft.setPID(p, i, d);
-        posControllerLeft.enable();
-        posControllerRight.enable();
         try {
             jagLeftMaster.configFaultTime(0.5);
             jagRightMaster.configFaultTime(0.5);
@@ -157,6 +162,8 @@ public class DriveTrain extends Subsystem {
             jagRightMaster.setX(0);
             jagLeftMaster.setPID(PIDConstants.speedP, PIDConstants.speedI, PIDConstants.speedD);
             jagRightMaster.setPID(-PIDConstants.speedP, -PIDConstants.speedI, -PIDConstants.speedD);
+            //jagLeftMaster.setPID(p, i, d);
+            //jagRightMaster.setPID(-p, -i, -d);
             jagLeftMaster.enableControl(0);
             jagRightMaster.enableControl(0);
             jagLeftSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
@@ -173,8 +180,6 @@ public class DriveTrain extends Subsystem {
     public void initSpeedMode() {
         System.out.println("Speed Mode");
         controlMode = 2;
-        posControllerLeft.reset();
-        posControllerRight.reset();
         try {
             jagLeftMaster.configFaultTime(0.5);
             jagRightMaster.configFaultTime(0.5);
@@ -210,8 +215,6 @@ public class DriveTrain extends Subsystem {
     private void initVBusMode() {
         System.out.println("VBus Mode");
         controlMode = 1;
-        posControllerLeft.reset();
-        posControllerRight.reset();
         try {
             jagLeftMaster.configFaultTime(0.5);
             jagRightMaster.configFaultTime(0.5);
@@ -463,22 +466,22 @@ public class DriveTrain extends Subsystem {
     }
 
     public void incP() {
-        p += 1;
+        p += 10;
         printPID();
     }
 
     public void decP() {
-        p -= 1;
+        p -= 10;
          printPID();
     }
 
     public void incI() {
-        i += 1;
+        i += 10;
          printPID();
     }
 
     public void decI() {
-        i -= 1;
+        i -= 10;
          printPID();
     }
 
