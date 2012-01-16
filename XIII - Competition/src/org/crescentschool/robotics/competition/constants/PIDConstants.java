@@ -14,8 +14,8 @@ public class PIDConstants {
     public static final double posP = 0;
     public static final double posI = 0;
     public static final double posD = 0;
-    public static final double speedP = -0.0020;
-    public static final double speedI = 0.006;
+    public static final double speedP = -0.0010;
+    public static final double speedI = 0.003;
     public static final double speedD = 0;
     public static final double gyroP = 0;
     

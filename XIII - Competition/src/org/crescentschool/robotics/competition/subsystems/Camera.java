@@ -28,10 +28,12 @@ public class Camera extends Subsystem {
     private final ParticleComparer particleComparer = new ParticleComparer();
     private static Camera instance = null;
     private static AxisCamera camera = AxisCamera.getInstance();
+    int frames = 0;
+    long time = 0;
+    long lastTime = 0;
 
     /**
-     * Constructor for the sample program.
-     * Get an instance of the axis camera.
+     * Constructor for the sample program. Get an instance of the axis camera.
      */
     public Camera() {
         camera.writeResolution(AxisCamera.ResolutionT.k320x240);
@@ -44,7 +46,7 @@ public class Camera extends Subsystem {
         camera.writeMaxFPS(30);
         camera.writeRotation(AxisCamera.RotationT.k0);
         //sharp0
-        
+
     }
 
     public static Camera getInstance() {
@@ -64,75 +66,92 @@ public class Camera extends Subsystem {
          * Run while the robot is enabled
          */
         if (camera.freshImage()) {	    // check if there is a new image
-            try {
+            if (frames > 30) {
+                System.out.println(frames);
+                frames = 0;
+            }
+            frames++;
+            //            long curTime = System.currentTimeMillis();
+//            time += curTime - lastTime;
+//            lastTime = curTime;
+//            frames++;
+           try {
                 colorImage = camera.getImage(); // get the image from the camera
-
-                /**
-                 * The color threshold operation returns a bitmap (BinaryImage) where pixels are present
-                 * when the corresponding pixels in the source (HSL) image are in the specified
-                 * range of H, S, and L values.
-                 */
-                BinaryImage binImage = colorImage.thresholdHSL(50, 100, 0, 255, 179, 255);
-
-                /**
-                 * Find blobs (groupings) of pixels that were identified in the color threshold operation
-                 */
-                s_particles = binImage.getOrderedParticleAnalysisReports(4);
-
-                /**
-                 * Free the underlying color and binary images.
-                 * You must do this since the image is actually stored
-                 * as a C++ data structure in the underlying implementation to maximize processing speed.
-                 */
+//
+//                /**
+//                 * The color threshold operation returns a bitmap (BinaryImage)
+//                 * where pixels are present when the corresponding pixels in the
+//                 * source (HSL) image are in the specified range of H, S, and L
+//                 * values.
+//                 */
+//                BinaryImage binImage = colorImage.thresholdHSL(50, 100, 0, 255, 179, 255);
+//
+//                /**
+//                 * Find blobs (groupings) of pixels that were identified in the
+//                 * color threshold operation
+//                 */
+//                s_particles = binImage.getOrderedParticleAnalysisReports(4);
+//
+//                /**
+//                 * Free the underlying color and binary images. You must do this
+//                 * since the image is actually stored as a C++ data structure in
+//                 * the underlying implementation to maximize processing speed.
+//                 */
                 colorImage.free();
-                binImage.free();
-
-                /**
-                 * print the number of detected particles (color blobs)
-                 */
-                System.out.println("Particles (max 4): " + s_particles.length);
-
-                if (s_particles.length > 0) {
-                    /**
-                     * sort the particles using the custom comparitor class (see below)
-                     */
-                    //Particles already sorted by area
-                    //Arrays.sort(s_particles, particleComparer);
-
-                    for (int i = 0; i < s_particles.length; i++) {
-                        ParticleAnalysisReport circ = s_particles[i];
-
-                        /**
-                         * Compute the number of degrees off center based on the camera image size
-                         */
-                        //double degreesOff = -((54.0 / 640.0) * ((circ.imageWidth / 2.0) - circ.center_mass_x));
-                        switch (i) {
-                            case 0:
-                                System.out.print("1st Particle: ");
-                                break;
-                            case 1:
-                                System.out.print("2nd Particle: ");
-                                break;
-                            case 2:
-                                System.out.print("3rd Particle: ");
-                                break;
-                            default:
-                                System.out.print((i + 1) + "th Particle: ");
-                                break;
-                        }
-                        System.out.print("X: " + circ.center_mass_x
-                                + " Y: " + circ.center_mass_y
-                                + " Size: " + circ.particleArea
-                                + " Width: " + circ.boundingRectWidth
-                                + " Height: " + circ.boundingRectHeight);
-                        System.out.println();
-                    }
-                }
+//                binImage.free();
+//
+//                /**
+//                 * print the number of detected particles (color blobs)
+//                 */
+//                //System.out.println("Particles (max 4): " + s_particles.length);
+//                if (s_particles.length > 0) {
+//                    /**
+//                     * sort the particles using the custom comparitor class (see
+//                     * below)
+//                     */
+//                    //Particles already sorted by area
+//                    //Arrays.sort(s_particles, particleComparer);
+//                    for (int i = 0; i < s_particles.length; i++) {
+//                        ParticleAnalysisReport circ = s_particles[i];
+//
+//                        /**
+//                         * Compute the number of degrees off center based on the
+//                         * camera image size
+//                         */
+//                        //double degreesOff = -((54.0 / 640.0) * ((circ.imageWidth / 2.0) - circ.center_mass_x));
+////                        switch (i) {
+////                            case 0:
+////                                System.out.print("1st Particle: ");
+////                                break;
+////                            case 1:
+////                                System.out.print("2nd Particle: ");
+////                                break;
+////                            case 2:
+////                                System.out.print("3rd Particle: ");
+////                                break;
+////                            default:
+////                                System.out.print((i + 1) + "th Particle: ");
+////                                break;
+////                        }
+////                        System.out.print("X: " + circ.center_mass_x
+////                                + " Y: " + circ.center_mass_y
+////                                + " Size: " + circ.particleArea
+////                                + " Width: " + circ.boundingRectWidth
+////                                + " Height: " + circ.boundingRectHeight);
+////                        System.out.println();
+//                    }
+//                    if (frames == 100) {
+//                        frames = 0;
+//                        System.out.println(time / 100);
+//                        time = 0;
+//                    }
+            //      }
             } catch (AxisCameraException ex) {
                 ex.printStackTrace();
             } catch (NIVisionException ex) {
                 ex.printStackTrace();
             }
+            //    }
         }
     }
 
