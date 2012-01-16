@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.commands.PIDDriveTuning;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
+import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
@@ -24,6 +25,7 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 public class CoyobotXIII extends IterativeRobot {
 
    Compressor compressor;
+   Camera camera = Camera.getInstance();
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -66,5 +68,6 @@ public class CoyobotXIII extends IterativeRobot {
      */
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+        camera.processCamera();
     }
 }
