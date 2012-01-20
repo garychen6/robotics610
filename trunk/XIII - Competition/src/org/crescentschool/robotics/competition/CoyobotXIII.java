@@ -39,6 +39,7 @@ public class CoyobotXIII extends IterativeRobot {
         SmartDashboard.putString("message", "FFFFUUUUUUUUUUUCK YOOOUUUUUUUU");
         OI.getInstance();
         DriveTrain.getInstance();
+        Camera.getInstance();
         compressor = new Compressor(ElectricalConstants.kCompressorPressureSwitchChannel, ElectricalConstants.kCompressorRelayChannel);
         compressor.start();
     }
