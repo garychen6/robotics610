@@ -41,8 +41,8 @@ public class DriveTrain extends Subsystem {
         public double pidGet() {
             try {
                 //System.out.println(jagRightMaster.getPosition());
-                //return jagRightMaster.getPosition() + gyro.getAngle() / PIDConstants.gyroP;
                 return jagRightMaster.getPosition();
+                //return jagRightMaster.getPosition();
             } catch (CANTimeoutException ex) {
                 canError = true;
                 handleCANError();
@@ -59,7 +59,7 @@ public class DriveTrain extends Subsystem {
                 // Jag is in Speed Control Mode
                 // Output should be in rpm
                 //SmartDashboard.putData("right", posControllerRight);
-                jagRightMaster.setX(-2*output);
+                jagRightMaster.setX(-2*output + gyro.getAngle() / PIDConstants.gyroP);
                 syncSlaves();
             } catch (CANTimeoutException ex) {
                 canError = true;
@@ -75,8 +75,8 @@ public class DriveTrain extends Subsystem {
         public double pidGet() {
             try {
 
-                //return jagLeftMaster.getPosition() - gyro.getAngle() / PIDConstants.gyroP;
                 return jagLeftMaster.getPosition();
+                //return jagLeftMaster.getPosition();
             } catch (CANTimeoutException ex) {
                 canError = true;
                 handleCANError();
@@ -91,7 +91,7 @@ public class DriveTrain extends Subsystem {
             try {
                 //SmartDashboard.putData("left", posControllerLeft);
                 //PIDLeftOutput = 300 * output;
-                jagLeftMaster.setX(2*output);
+                jagLeftMaster.setX(2*output - gyro.getAngle() / PIDConstants.gyroP);
                 syncSlaves();
             } catch (CANTimeoutException ex) {
                 ex.printStackTrace();
@@ -155,6 +155,7 @@ public class DriveTrain extends Subsystem {
         controlMode = 3;
         posControllerRight.setPID(-pPos, -iPos, -dPos);
         posControllerLeft.setPID(pPos, iPos, dPos);
+        gyro.reset();
         try {
             jagLeftMaster.configFaultTime(0.5);
             jagRightMaster.configFaultTime(0.5);
