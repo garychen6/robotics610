@@ -44,18 +44,18 @@ public class PIDDriveTuning extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         
-          dsLCD.println(DriverStationLCD.Line.kMain6, 1, "RSetPoint: " +
-            driveTrain.getRightPosSetpoint());
-          dsLCD.println(DriverStationLCD.Line.kUser2, 1, "PosR: " +
-          driveTrain.getRPos());
-          dsLCD.println(DriverStationLCD.Line.kUser3, 1,
-          "LSetPoint: " + driveTrain.getLeftPosSetpoint());
-          dsLCD.println(DriverStationLCD.Line.kUser4, 1, "PosL "
-          + driveTrain.getLPos());
+//          dsLCD.println(DriverStationLCD.Line.kMain6, 1, "RSetPoint: " +
+//            driveTrain.getRightPosSetpoint());
+//          dsLCD.println(DriverStationLCD.Line.kUser2, 1, "PosR: " +
+//          driveTrain.getRPos());
+//          dsLCD.println(DriverStationLCD.Line.kUser3, 1,
+//          "LSetPoint: " + driveTrain.getLeftPosSetpoint());
+//          dsLCD.println(DriverStationLCD.Line.kUser4, 1, "PosL "
+//          + driveTrain.getLPos());
           //dsLCD.println(DriverStationLCD.Line.kUser5, 1, "PIDPosOutputLeft: " +
           //driveTrain.PIDPosLOutput());
-          //dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Gyro: " +
-          //driveTrain.getGyro().getAngle());
+          dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Gyro: " +
+          driveTrain.getGyro().getAngle());
         dsLCD.updateLCD();
          
         if (driverJoy.getRawButton(1) && !btn1) {
