@@ -36,17 +36,20 @@ public class TowerDrive extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         if(oi.getDriver().getRawAxis(6) == -1 && !dPadUp){
-            set++;
+            set=10;
+            driveTrain.posSetpoint(set);
             dPadUp = true;
         }else if(oi.getDriver().getRawAxis(6) == 1 && !dPadDown){
-            set--;
+            set=0;
+            driveTrain.posSetpoint(set);
             dPadDown = true;
         }
         if(oi.getDriver().getRawAxis(6) == 0){
             dPadDown = false;
             dPadUp = false;
         }
-        driveTrain.posSetpoint(set);
+        //driveTrain.posControllerLeft.getSetpoint();
+        //driveTrain.posControllerRight.getSetpoint();
     }
 
     // Make this return true when this Command no longer needs to run execute()

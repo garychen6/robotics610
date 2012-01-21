@@ -27,8 +27,11 @@ public class TankDrive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        driveTrain.rightVBusSetpoint(oi.getDriver().getRawAxis(InputConstants.kDriverRightYAxis));
-        driveTrain.leftVBusSetpoint(oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis));
+        //driveTrain.rightVBusSetpoint(oi.getDriver().getRawAxis(InputConstants.kDriverRightYAxis));
+        //driveTrain.leftVBusSetpoint(oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis));
+        driveTrain.rightSpeedSetpoint(300*oi.getDriver().getRawAxis(InputConstants.kDriverRightYAxis));
+        driveTrain.leftSpeedSetpoint(300*oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis));
+       
     }
 
     // Make this return true when this Command no longer needs to run execute()

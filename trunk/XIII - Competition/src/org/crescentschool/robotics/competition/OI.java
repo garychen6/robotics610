@@ -7,6 +7,7 @@ public class OI {
 
     public static OI instance = null;
     public static Joystick joyDriver;
+    public static Joystick joyOperator;
     public static DriverStationLCD drStationLCD;
 
     public static OI getInstance() {
@@ -21,6 +22,9 @@ public class OI {
     public Joystick getDriver() {
         return joyDriver;
     }
+    public Joystick getOperator(){
+        return joyOperator;
+    }
 
     public DriverStationLCD getDSLCD() {
         return drStationLCD;
@@ -28,6 +32,7 @@ public class OI {
 
     private OI() {
         joyDriver = new Joystick(1);
+        joyOperator = new Joystick(2);
         drStationLCD = DriverStationLCD.getInstance();
     }
 }

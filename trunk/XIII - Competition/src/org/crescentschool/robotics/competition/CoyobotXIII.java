@@ -36,7 +36,7 @@ public class CoyobotXIII extends IterativeRobot {
 
         // Initialize all subsystems
         //CommandBase.init
-        SmartDashboard.putString("message", "FFFFUUUUUUUUUUUCK YOOOUUUUUUUU");
+        //SmartDashboard.putString("message", "FFFFUUUUUUUUUUUCK YOOOUUUUUUUU");
         OI.getInstance();
         DriveTrain.getInstance();
         Camera.getInstance();
@@ -62,7 +62,7 @@ public class CoyobotXIII extends IterativeRobot {
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        Scheduler.getInstance().add(new PIDDriveTuning());
+       Scheduler.getInstance().add(new PIDDriveTuning());
     }
 
     /**
