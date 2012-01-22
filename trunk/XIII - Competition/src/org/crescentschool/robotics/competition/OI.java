@@ -19,13 +19,26 @@ public class OI {
         return instance;
     }
 
+    /**
+     * Returns the Joystick object that corresponds to the driver's gamepad.
+     * @return the driver Joystick object.
+     */
     public Joystick getDriver() {
         return joyDriver;
     }
+    
+    /**
+     * Returns the Joystick object that corresponds to the operator's gamepad.
+     * @return the operator Joystick object.
+     */
     public Joystick getOperator(){
         return joyOperator;
     }
 
+    /**
+     * 
+     * @return the DriverStationLCD object
+     */
     public DriverStationLCD getDSLCD() {
         return drStationLCD;
     }

@@ -36,7 +36,6 @@ public class CoyobotXIII extends IterativeRobot {
 
         // Initialize all subsystems
         //CommandBase.init
-        //SmartDashboard.putString("message", "FFFFUUUUUUUUUUUCK YOOOUUUUUUUU");
         OI.getInstance();
         DriveTrain.getInstance();
         Camera.getInstance();
@@ -50,9 +49,6 @@ public class CoyobotXIII extends IterativeRobot {
     }
     
 
-    /**
-     * This function is called periodically during autonomous
-     */
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
     }
@@ -65,9 +61,6 @@ public class CoyobotXIII extends IterativeRobot {
        Scheduler.getInstance().add(new PIDDriveTuning());
     }
 
-    /**
-     * This function is called periodically during operator control
-     */
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
     }
