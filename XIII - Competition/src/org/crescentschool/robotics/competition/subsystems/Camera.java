@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.constants.ImagingConstants;
 
 /**
  *
@@ -57,8 +58,7 @@ public class Camera extends Subsystem {
                 colorImage = camera.getImage(); // get the image from the camera
 
                 //TODO: Tune these HSL values at the venue!
-                BinaryImage binImage = colorImage.thresholdHSL(50, 100, 0, 255, 179, 255);
-
+                BinaryImage binImage = colorImage.thresholdHSL(ImagingConstants.kHThresholdMin, ImagingConstants.kHThresholdMax, ImagingConstants.kSThresholdMin, ImagingConstants.kSThresholdMax, ImagingConstants.kLThresholdMin, ImagingConstants.kLThresholdMax);
                 s_particles = binImage.getOrderedParticleAnalysisReports(4);
                 colorImage.free();
                 binImage.free();
