@@ -9,11 +9,11 @@ package org.crescentschool.robotics.competition;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.commands.PIDDriveTuning;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
-import org.crescentschool.robotics.competition.subsystems.Camera;
+import org.crescentschool.robotics.competition.subsystems.CoyoBotGyro;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,8 +24,8 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  */
 public class CoyobotXIII extends IterativeRobot {
 
-   Compressor compressor;
-   Camera camera = Camera.getInstance();
+    Compressor compressor;
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -38,16 +38,16 @@ public class CoyobotXIII extends IterativeRobot {
         //CommandBase.init
         OI.getInstance();
         DriveTrain.getInstance();
-        Camera.getInstance();
+       
+
+        //Camera.getInstance();
         compressor = new Compressor(ElectricalConstants.kCompressorPressureSwitchChannel, ElectricalConstants.kCompressorRelayChannel);
         compressor.start();
     }
 
     public void autonomousInit() {
         // schedule the autonomous command (example)
-       
     }
-    
 
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
@@ -58,14 +58,14 @@ public class CoyobotXIII extends IterativeRobot {
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
         // this line or comment it out.
-       Scheduler.getInstance().add(new PIDDriveTuning());
+        Scheduler.getInstance().add(new PIDDriveTuning());
     }
 
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
     }
-    public void teleopContinuous()
-    {
-        camera.processCamera();
+
+    public void teleopContinuous() {
+        //camera.processCamera();
     }
 }

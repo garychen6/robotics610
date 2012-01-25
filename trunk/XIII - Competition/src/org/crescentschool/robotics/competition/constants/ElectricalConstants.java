@@ -37,4 +37,8 @@ public class ElectricalConstants {
      * The digital I/O channel that the compressor's pressure switch is plugged in to
      */
     public static final int kCompressorPressureSwitchChannel = 1;
+
+    
+    public static final int GyroAccumulatorCenter = 16;
+    
 }
