@@ -30,7 +30,7 @@ public class DriveTrain extends Subsystem {
     private CANJaguar jagLeftSlave;
     private Solenoid shifterHigh;
     private Solenoid shifterLow;
-    private Gyro gyro;
+    private CoyoBotGyro gyro;
     private double PIDRightOutput;
     private double PIDLeftOutput;
     public PIDController posControllerRight;
@@ -59,7 +59,7 @@ public class DriveTrain extends Subsystem {
                 // Jag is in Speed Control Mode
                 // Output should be in rpm
                 //SmartDashboard.putData("right", posControllerRight);
-                jagRightMaster.setX(-2*output + gyro.getAngle() / PIDConstants.gyroP);
+                jagRightMaster.setX(-2*output + gyro.getAngle()/ PIDConstants.gyroP);
                 syncSlaves();
             } catch (CANTimeoutException ex) {
                 canError = true;
@@ -91,7 +91,7 @@ public class DriveTrain extends Subsystem {
             try {
                 //SmartDashboard.putData("left", posControllerLeft);
                 //PIDLeftOutput = 300 * output;
-                jagLeftMaster.setX(2*output - gyro.getAngle() / PIDConstants.gyroP);
+                jagLeftMaster.setX(2*output + gyro.getAngle()/ PIDConstants.gyroP);
                 syncSlaves();
             } catch (CANTimeoutException ex) {
                 ex.printStackTrace();
@@ -140,7 +140,7 @@ public class DriveTrain extends Subsystem {
             handleCANError();
             ex.printStackTrace();
         }
-        gyro = new Gyro(1);
+        gyro = new CoyoBotGyro(1);
         gyro.setSensitivity(0.007);
         shifterHigh = new Solenoid(2);
         shifterLow = new Solenoid(3);
@@ -587,7 +587,7 @@ public class DriveTrain extends Subsystem {
         printPIDSpeed();
     }
 
-    public Gyro getGyro() {
+    public CoyoBotGyro getGyro() {
         return gyro;
     }
 
