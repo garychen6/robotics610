@@ -11,9 +11,10 @@ package org.crescentschool.robotics.kitBot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import org.crescentschool.robotics.kitBot.commands.CommandBase;
+import org.crescentschool.robotics.kitBot.commands.Camera;
 import org.crescentschool.robotics.kitBot.commands.TankDrive;
-import org.crescentschool.robotics.kitBot.subsystems.DriveTrain;
+import org.crescentschool.robotics.kitBot.subsystems.Shooter;
+import org.crescentschool.robotics.kitBot.subsystems.Ultrasonic;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -37,7 +38,10 @@ public class KitBotXIII extends IterativeRobot {
 
        
         OI.getInstance();
-        DriveTrain.getInstance();
+        //DriveTrain.getInstance();
+        Shooter.getInstance();
+        Ultrasonic.getInstance();
+        Camera.getInstance();
         
     }
 
@@ -65,9 +69,12 @@ public class KitBotXIII extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        if(buttonPressed && tankDrive){
-            Scheduler.getInstance().add(Ka);
-        }
+        /*if(buttonPressed && tankDrive){
+            Scheduler.getInstance().add(new KajDrive());
+        }*/
+        System.out.println("Ultrasonic: " + Ultrasonic.getInstance().findRange());
         Scheduler.getInstance().run();
+        Camera.getInstance().processCamera();
+        
     }
 }
