@@ -18,6 +18,9 @@ public class PIDConstants {
     public static final double speedI = 0;
     public static final double speedD = 0;
     public static final double gyroP = 0.04;
+    public static final double flipP = 0.01;
+    public static final double flipI = 0;
+    public static final double flipD = 0;
     
     // Dimensions in inches
     public static final double wheelCircumference = 4 * Math.PI;

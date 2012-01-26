@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class Autonomous extends CommandGroup {
     
     public Autonomous() {
-        addSequential(new DriveForward(10));
+        addSequential(new DriveForward(5.5));
         addSequential(new DriveForward(0));
         // Add Commands here:
         // e.g. addSequential(new Command1());
