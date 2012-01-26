@@ -32,7 +32,7 @@ public class DriveForward extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        if(Math.abs(driveTrain.getLPos()+10)/Math.abs(setPoint+10) >0.9 || Math.abs(driveTrain.getLPos()+10)/Math.abs(setPoint+10) > 1.1){
+        if(Math.abs(driveTrain.getLPos()+10)/Math.abs(setPoint+10) >0.9 && Math.abs(driveTrain.getLPos()+10)/Math.abs(setPoint+10) < 1.1){
             return true;
         }else return false;
     }
