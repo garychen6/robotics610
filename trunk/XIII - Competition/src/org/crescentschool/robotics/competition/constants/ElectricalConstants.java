@@ -28,6 +28,9 @@ public class ElectricalConstants {
     /**
      * The number of lines on the encoder
      */
+    public static final int JagFlipper = 6;
+    
+    
     public static final int DriveEncoderCounts = 256;
     /**
      * The digital channel that the relay for the compressor is plugged in to

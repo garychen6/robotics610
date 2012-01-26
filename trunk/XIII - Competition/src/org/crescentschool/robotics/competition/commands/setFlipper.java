@@ -5,20 +5,17 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Flipper;
 
 /**
  *
  * @author Warfa
  */
-public class DriveForward extends Command {
-    DriveTrain driveTrain = DriveTrain.getInstance();
-    double setPoint = 0;
-    public DriveForward(double setPoint) {
+public class setFlipper extends Command {
+    
+    public setFlipper() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        this.setPoint = setPoint;
-        requires(driveTrain);
     }
 
     // Called just before this Command runs the first time
@@ -27,14 +24,12 @@ public class DriveForward extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        driveTrain.posSetpoint(setPoint);
+        
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        if(Math.abs(Math.abs(driveTrain.getLPos())-Math.abs(setPoint)) <0.1){
-            return true;
-        }else return false;
+        return false;
     }
 
     // Called once after isFinished returns true
