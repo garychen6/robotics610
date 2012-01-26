@@ -8,12 +8,12 @@ package org.crescentschool.robotics.competition;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.PIDDriveTuning;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
-import org.crescentschool.robotics.competition.subsystems.CoyoBotGyro;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
-import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -25,7 +25,7 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
 public class CoyobotXIII extends IterativeRobot {
 
     Compressor compressor;
-
+    Command autonomous = new Autonomous();
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -47,6 +47,7 @@ public class CoyobotXIII extends IterativeRobot {
 
     public void autonomousInit() {
         // schedule the autonomous command (example)
+        autonomous.start();
     }
 
     public void autonomousPeriodic() {
@@ -58,6 +59,7 @@ public class CoyobotXIII extends IterativeRobot {
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
         // this line or comment it out.
+        autonomous.cancel();
         Scheduler.getInstance().add(new PIDDriveTuning());
     }
 
