@@ -32,6 +32,7 @@ public class KitBot extends IterativeRobot {
     int topPower;
     int bottomPower;
     boolean buttonPressed = false;
+    double mToF;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -65,9 +66,10 @@ public class KitBot extends IterativeRobot {
         // this line or comment it out.
         
         vToM = 0.38582677165354330708661417322835;
+        mToF = 3.2808399;
         ultraSonic.setAverageBits(4);
         topPower = 700;
-        bottomPower = -1200;
+        bottomPower = -1220;
         
 
     }
@@ -107,25 +109,27 @@ public class KitBot extends IterativeRobot {
                 buttonPressed = false;
             }
             
+            
             if (OI.getInstance().getDriver().getRawButton(4) == true) {
                 
+                //shoot.topJaguar.setX(23.85 * (realRange));
+                //shoot.bottomJaguar.setX(-12.02 * (realRange) - 1089.9);
                 
-                //shoot.topJaguar.setX(realRange*180);
-                //shoot.bottomJaguar.setX(realRange*-350);
-                //System.out.println("Button Pressed " + (int)realRange);
+                System.out.println("Button Pressed " + (int)(realRange));
                 
             } else {
-                
+                realRange = ultraSonic.getAverageVoltage() / vToM*mToF;
+                //shoot.topJaguar.setX(23.85 * (realRange));
+                //shoot.bottomJaguar.setX(-12.02 * (realRange) - 1089.9);
                 shoot.topJaguar.setX(topPower);
                 shoot.bottomJaguar.setX(bottomPower);
-                System.out.print("Distance = " + (int) (ultraSonic.getAverageVoltage()/vToM*3.28));
+                System.out.print("Distance = " + (realRange));
                 System.out.print(" bottom = "+ (int)shoot.bottomJaguar.getSpeed());
                 System.out.println(" top = " + (int)shoot.topJaguar.getSpeed());
                
                 
-              //  shoot.topJaguar.setX(realRange*180);
-              //  shoot.bottomJaguar.setX(realRange*-350);
-              //  realRange = ultraSonic.getAverageVoltage() / vToM;
+              //  
+                
               //  System.out.println(
               //      "top = " + (int) (shoot.topJaguar.getSpeed()) + " goal = " + (int) (180 * ultraSonic.getAverageVoltage()
               //      / vToM));
