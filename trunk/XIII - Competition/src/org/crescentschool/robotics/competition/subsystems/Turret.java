@@ -33,7 +33,7 @@ public class Turret extends Subsystem {
         try {
             turretJag = new CANJaguar(ElectricalConstants.TurretJaguar);
             turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
-            turretJag.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
+            turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
             turretJag.configEncoderCodesPerRev(256);
             turretJag.setPID(PIDConstants.tP, PIDConstants.tI, PIDConstants.tD);
             turretJag.changeControlMode(CANJaguar.ControlMode.kSpeed);
@@ -45,15 +45,23 @@ public class Turret extends Subsystem {
         }
     }
 
-    public void setAng(double ang) {
+    public void setX(double ang) {
         try {
-            turretJag.setX(ang*PIDConstants.enc2T);
+            turretJag.setX(ang);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     
     }
-
+    public double getPos() {
+        try {
+           return turretJag.getX();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+            return 0;
+        }
+    
+    }
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());

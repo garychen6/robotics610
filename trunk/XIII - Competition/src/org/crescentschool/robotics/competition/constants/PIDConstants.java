@@ -32,6 +32,7 @@ public class PIDConstants {
     public static final double tI = 0;
     public static final double tD = 0;
     public static final double enc2T =  (7.2/360);
+    public static final double tLockP = 0;
     // Dimensions in inches
     public static final double wheelCircumference = 4 * Math.PI;
     // Speeds in feet/second
