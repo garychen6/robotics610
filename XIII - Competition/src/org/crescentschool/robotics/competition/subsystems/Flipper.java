@@ -18,12 +18,12 @@ public class Flipper extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
     CANJaguar jagFlip;
-    Flipper instance = null;
+    static Flipper instance = null;
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
-    public Flipper getInstance(){
+    public static Flipper getInstance(){
         if(instance == null){
             instance = new Flipper();
         }
@@ -45,10 +45,18 @@ public class Flipper extends Subsystem {
     }
     public void setFlippers(double angle){
         try {
-            double potT = 0.0028;
-            jagFlip.setX(angle*potT);
+            
+            jagFlip.setX(angle*PIDConstants.potT);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
+        }
+    }
+      public double getPos(){
+        try {
+            return jagFlip.getPosition();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+            return 0;
         }
     }
 }
