@@ -17,41 +17,48 @@ import org.crescentschool.robotics.competition.constants.PIDConstants;
 public class Flipper extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
+
     CANJaguar jagFlip;
     static Flipper instance = null;
+
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
-    public static Flipper getInstance(){
-        if(instance == null){
+
+    public static Flipper getInstance() {
+        if (instance == null) {
             instance = new Flipper();
         }
         return instance;
     }
-    private Flipper(){
+
+    private Flipper() {
         try {
             jagFlip = new CANJaguar(ElectricalConstants.JagFlipper);
+            jagFlip.changeControlMode(CANJaguar.ControlMode.kPosition);
+            jagFlip.enableControl(0);
+             jagFlip.changeControlMode(CANJaguar.ControlMode.kPosition);
             jagFlip.configFaultTime(0.5);
             jagFlip.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             jagFlip.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
-            jagFlip.changeControlMode(CANJaguar.ControlMode.kPosition);
             jagFlip.setPID(PIDConstants.flipP, PIDConstants.flipI, PIDConstants.flipD);
             jagFlip.enableControl(0);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
-    
+
     }
-    public void setFlippers(double angle){
+
+    public void setFlippers(double angle) {
         try {
-            
-            jagFlip.setX(angle*PIDConstants.potT);
+            jagFlip.setX(angle * PIDConstants.potT);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     }
-      public double getPos(){
+
+    public double getPos() {
         try {
             return jagFlip.getPosition();
         } catch (CANTimeoutException ex) {

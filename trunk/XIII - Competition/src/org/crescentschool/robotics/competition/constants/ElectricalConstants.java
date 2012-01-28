@@ -16,15 +16,15 @@ public class ElectricalConstants {
     /**
      * The CAN ID of the left drivetrain slave Jaguar
      */
-    public static final int DriveLeftSlave = 1;
+    public static final int DriveLeftSlave = 3;
     /**
      * The CAN ID of the right drivetrain master Jaguar
      */
-    public static final int DriveRightMaster = 4;
+    public static final int DriveRightMaster = 5;
     /**
      * The CAN ID of the right drivetrain slave Jaguar
      */
-    public static final int DriveRightSlave = 3;
+    public static final int DriveRightSlave = 4;
     /**
      * The number of lines on the encoder
      */
@@ -43,5 +43,7 @@ public class ElectricalConstants {
 
     
     public static final int GyroAccumulatorCenter = 16;
+    
+    public static final int TurretJaguar = 8;
     
 }
