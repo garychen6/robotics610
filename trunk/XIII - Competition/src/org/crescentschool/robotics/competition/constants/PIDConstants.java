@@ -21,7 +21,13 @@ public class PIDConstants {
     public static final double flipP = 0.01;
     public static final double flipI = 0;
     public static final double flipD = 0;
-    
+    public static final double potT = 0.0028;
+    public static final double shooterTopP = -0.17;
+    public static final double shooterTopI = -0.003;
+    public static final double shooterBottomP = -0.17;
+    public static final double shooterBottomI = -0.004;
+    public static final double uConv = 1/(0.38582677165354330708661417322835*3.2808399);
+    public static final double rPD = 0.0545415391;
     // Dimensions in inches
     public static final double wheelCircumference = 4 * Math.PI;
     

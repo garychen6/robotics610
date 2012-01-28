@@ -5,22 +5,22 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.competition.constants.PIDConstants;
-import org.crescentschool.robotics.competition.subsystems.Flipper;
+import org.crescentschool.robotics.competition.subsystems.Camera;
+import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Ultrasonic;
 
 /**
  *
  * @author Warfa
  */
-public class setFlipper extends Command {
-    
-    double angle;
-    Flipper flip = Flipper.getInstance();
-    public setFlipper(double angle) {
+public class CameraDrive extends Command{
+    DriveTrain driveT = DriveTrain.getInstance();
+    Ultrasonic uSonic = Ultrasonic.getInstance();
+    Camera cam = Camera.getInstance();
+    public CameraDrive() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        requires(flip);
-        this.angle = angle;
+        requires(driveT);
         
     }
 
@@ -30,16 +30,11 @@ public class setFlipper extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        flip.setFlippers(angle);
-        
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-         if(Math.abs(Math.abs(flip.getPos())-Math.abs(angle* PIDConstants.potT)) < 0.1){
-             return true;
-         }
-         return false;
+        return false;
     }
 
     // Called once after isFinished returns true
