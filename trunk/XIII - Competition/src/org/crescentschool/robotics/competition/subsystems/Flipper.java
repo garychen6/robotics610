@@ -37,10 +37,9 @@ public class Flipper extends Subsystem {
         try {
             jagFlip = new CANJaguar(ElectricalConstants.JagFlipper);
             jagFlip.changeControlMode(CANJaguar.ControlMode.kPosition);
-            jagFlip.enableControl(0);
-            jagFlip.changeControlMode(CANJaguar.ControlMode.kPosition);
             jagFlip.configFaultTime(0.5);
             jagFlip.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            jagFlip.configPotentiometerTurns(10);
             jagFlip.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
             jagFlip.setPID(PIDConstants.flipperP, PIDConstants.flipperI, PIDConstants.flipperD);
             jagFlip.enableControl(0);

@@ -7,6 +7,7 @@ package org.crescentschool.robotics.competition.subsystems;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.crescentschool.robotics.competition.commands.TankDrive;
 import org.crescentschool.robotics.competition.commands.TowerDrive;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
@@ -101,7 +102,7 @@ public class DriveTrain extends Subsystem {
     };
 
     public void initDefaultCommand() {
-        setDefaultCommand(new TowerDrive());
+        setDefaultCommand(new TankDrive());
     }
 
     public static DriveTrain getInstance() {
