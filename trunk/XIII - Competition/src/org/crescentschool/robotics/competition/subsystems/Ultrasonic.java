@@ -28,7 +28,7 @@ public class Ultrasonic extends Subsystem {
        ultrasonic.setAverageBits(4);
    }
    public double getDistance(){
-       return ultrasonic.getAverageVoltage()*PIDConstants.uConv;
+       return ultrasonic.getAverageVoltage()*PIDConstants.ultrasonicVtoF;
    }
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
