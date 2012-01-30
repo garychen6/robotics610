@@ -16,7 +16,8 @@ public class Autonomous extends CommandGroup {
         addSequential(new DriveForward(5.5));
         addSequential(new setFlipper(20));
         addSequential(new DriveForward(6.5));
-        addSequential(new setFlipper(60));
+        addParallel(new setFlipper(44.9));
+        
 
         // Add Commands here:
         // e.g. addSequential(new Command1());

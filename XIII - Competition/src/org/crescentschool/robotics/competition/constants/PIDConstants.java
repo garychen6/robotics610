@@ -36,7 +36,7 @@ public class PIDConstants {
      */
     public static final double driveSpeedD = 0;
     public static final double gyroP = 0.04;
-    public static final double flipperP = 0.01;
+    public static final double flipperP = -1000;
     public static final double flipperI = 0;
     public static final double flipperD = 0;
     public static final double potT = 0.00911111111;

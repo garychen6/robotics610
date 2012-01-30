@@ -52,7 +52,6 @@ public class FlipperPresets extends Command {
       }
       if(!oi.getDriver().getRawButton(2)){
           button2 = false;
-          
       }
       
       if(oi.getDriver().getRawButton(3)){
