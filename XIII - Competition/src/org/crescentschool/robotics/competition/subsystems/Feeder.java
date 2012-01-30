@@ -26,7 +26,7 @@ public class Feeder extends Subsystem {
     }
 
     private Feeder() {
-        feed = new Victor(ElectricalConstants.feederVictor);
+        feed = new Victor(ElectricalConstants.FeederVictor);
     }
     
     public void setFeeder(double speed){

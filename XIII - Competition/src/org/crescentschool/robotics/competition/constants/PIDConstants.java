@@ -39,7 +39,7 @@ public class PIDConstants {
     public static final double flipperP = 0.01;
     public static final double flipperI = 0;
     public static final double flipperD = 0;
-    public static final double potT = 0.0028;
+    public static final double potT = 0.00911111111;
     public static final double shooterTopP = -0.17;
     public static final double shooterTopI = -0.003;
     public static final double shooterBottomP = -0.17;
@@ -65,3 +65,4 @@ public class PIDConstants {
 // flipper facing straight up = 5.62
 // flipper straight down = 3.98
 // flipper straight forward =4.84
+// bridge dropping angle is 44.9 degrees

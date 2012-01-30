@@ -51,4 +51,6 @@ public class ElectricalConstants {
      * The number of volts the potentiometer changes by per degree of revolution
      */
     public static final double encToV =  (7.2/360);
+    
+    public static final int FeederVictor = 0;
 }
