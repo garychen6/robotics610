@@ -42,7 +42,7 @@ public class Flipper extends Subsystem {
             jagFlip.configFaultTime(0.5);
             jagFlip.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             jagFlip.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
-            jagFlip.setPID(PIDConstants.flipP, PIDConstants.flipI, PIDConstants.flipD);
+            jagFlip.setPID(PIDConstants.flipperP, PIDConstants.flipperI, PIDConstants.flipperD);
             jagFlip.enableControl(0);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();

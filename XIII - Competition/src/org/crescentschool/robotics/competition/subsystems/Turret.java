@@ -35,7 +35,7 @@ public class Turret extends Subsystem {
             turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
             turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
             turretJag.configEncoderCodesPerRev(256);
-            turretJag.setPID(PIDConstants.tP, PIDConstants.tI, PIDConstants.tD);
+            turretJag.setPID(PIDConstants.turretP, PIDConstants.turretI, PIDConstants.turretD);
             turretJag.changeControlMode(CANJaguar.ControlMode.kSpeed);
             turretJag.enableControl(0);
             turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);

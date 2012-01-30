@@ -113,22 +113,22 @@ public class DriveTrain extends Subsystem {
 
     private DriveTrain() {
 
-        pPos = PIDConstants.posP;
-        iPos = PIDConstants.posI;
-        dPos = PIDConstants.posD;
-        pSpeed = PIDConstants.speedP;
-        iSpeed = PIDConstants.speedI;
-        dSpeed = PIDConstants.speedD;
+        pPos = PIDConstants.drivePositionP;
+        iPos = PIDConstants.drivePositionI;
+        dPos = PIDConstants.drivePositionD;
+        pSpeed = PIDConstants.driveSpeedP;
+        iSpeed = PIDConstants.driveSpeedI;
+        dSpeed = PIDConstants.driveSpeedD;
         try {
             jagRightMaster = new CANJaguar(ElectricalConstants.DriveRightMaster);
             jagLeftMaster = new CANJaguar(ElectricalConstants.DriveLeftMaster);
             jagRightSlave = new CANJaguar(ElectricalConstants.DriveRightSlave);
             jagLeftSlave = new CANJaguar(ElectricalConstants.DriveLeftSlave);
             //TODO: These PID Controllers may need to run faster than 50ms
-            posControllerRight = new PIDController(PIDConstants.posP,
-                    PIDConstants.posI, PIDConstants.posD, rightPosIn, rightPosOut, 0.020);
-            posControllerLeft = new PIDController(PIDConstants.posP,
-                    PIDConstants.posI, PIDConstants.posD, leftPosIn, leftPosOut, 0.020);
+            posControllerRight = new PIDController(PIDConstants.drivePositionP,
+                    PIDConstants.drivePositionI, PIDConstants.drivePositionD, rightPosIn, rightPosOut, 0.020);
+            posControllerLeft = new PIDController(PIDConstants.drivePositionP,
+                    PIDConstants.drivePositionI, PIDConstants.drivePositionD, leftPosIn, leftPosOut, 0.020);
             posControllerRight.setInputRange(-20, 20);
             posControllerRight.setOutputRange(-200, 200);
             posControllerLeft.setInputRange(-20, 20);
@@ -179,8 +179,8 @@ public class DriveTrain extends Subsystem {
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
             //jagLeftMaster.setX(0);
             //jagRightMaster.setX(0);
-            //jagLeftMaster.setPID(PIDConstants.speedP, PIDConstants.speedI, PIDConstants.speedD);
-            //jagRightMaster.setPID(-PIDConstants.speedP, -PIDConstants.speedI, -PIDConstants.speedD);
+            //jagLeftMaster.setPID(PIDConstants.driveSpeedP, PIDConstants.driveSpeedI, PIDConstants.driveSpeedD);
+            //jagRightMaster.setPID(-PIDConstants.driveSpeedP, -PIDConstants.driveSpeedI, -PIDConstants.driveSpeedD);
             jagLeftMaster.setPID(pSpeed, iSpeed, dSpeed);
             jagRightMaster.setPID(-pSpeed, -iSpeed, -dSpeed);
             jagLeftMaster.enableControl(0);
@@ -220,8 +220,8 @@ public class DriveTrain extends Subsystem {
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
             jagLeftMaster.setX(0);
             jagRightMaster.setX(0);
-            //jagLeftMaster.setPID(PIDConstants.speedP, PIDConstants.speedI, PIDConstants.speedD);
-            //jagRightMaster.setPID(-PIDConstants.speedP, -PIDConstants.speedI, -PIDConstants.speedD);
+            //jagLeftMaster.setPID(PIDConstants.driveSpeedP, PIDConstants.driveSpeedI, PIDConstants.driveSpeedD);
+            //jagRightMaster.setPID(-PIDConstants.driveSpeedP, -PIDConstants.driveSpeedI, -PIDConstants.driveSpeedD);
             jagLeftMaster.setPID(pSpeed, iSpeed, dSpeed);
             jagRightMaster.setPID(-pSpeed, -iSpeed, -dSpeed);
             jagLeftMaster.enableControl(0);
@@ -259,8 +259,8 @@ public class DriveTrain extends Subsystem {
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagLeftMaster.setX(0);
             jagRightMaster.setX(0);
-            jagLeftMaster.setPID(PIDConstants.speedP, PIDConstants.speedI, PIDConstants.speedD);
-            jagRightMaster.setPID(-PIDConstants.speedP, -PIDConstants.speedI, -PIDConstants.speedD);
+            jagLeftMaster.setPID(PIDConstants.driveSpeedP, PIDConstants.driveSpeedI, PIDConstants.driveSpeedD);
+            jagRightMaster.setPID(-PIDConstants.driveSpeedP, -PIDConstants.driveSpeedI, -PIDConstants.driveSpeedD);
             jagLeftMaster.enableControl(0);
             jagRightMaster.enableControl(0);
             //jagRightMaster.

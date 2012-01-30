@@ -5,6 +5,8 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import org.crescentschool.robotics.competition.OI;
+import org.crescentschool.robotics.competition.subsystems.Feeder;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.subsystems.Ultrasonic;
 
@@ -14,7 +16,9 @@ import org.crescentschool.robotics.competition.subsystems.Ultrasonic;
  */
 public class Shoot extends Command {
     Shooter shooter = Shooter.getInstance();
+    Feeder feed = Feeder.getInstance();
     Ultrasonic uSonic = Ultrasonic.getInstance();
+    OI oi = OI.getInstance();
     public Shoot() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -32,6 +36,9 @@ public class Shoot extends Command {
     protected void execute() {
          shooter.setTopShooter((int)(23.88*uSonic.getDistance() + 442.952));
          shooter.setBottomShooter((int)(-13.519*uSonic.getDistance() - 1071.91));
+         feed.setFeeder(-oi.getOperator().getRawAxis(6));
+         
+         
     }
 
     // Make this return true when this Command no longer needs to run execute()

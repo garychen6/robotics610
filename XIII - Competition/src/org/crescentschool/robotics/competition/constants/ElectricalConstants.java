@@ -28,10 +28,11 @@ public class ElectricalConstants {
     /**
      * The number of lines on the encoder
      */
-    public static final int JagFlipper = 6;
-    
-    
     public static final int DriveEncoderCounts = 256;
+    /**
+     * The CAN ID of the flipper Jaguar
+     */
+    public static final int JagFlipper = 6;
     /**
      * The digital channel that the relay for the compressor is plugged in to
      */
@@ -40,10 +41,14 @@ public class ElectricalConstants {
      * The digital I/O channel that the compressor's pressure switch is plugged in to
      */
     public static final int kCompressorPressureSwitchChannel = 1;
-
-    
+    //TODO: Javadoc
     public static final int GyroAccumulatorCenter = 16;
-    
+    /**
+     * The CAN ID of the turret Jaguar
+     */
     public static final int TurretJaguar = 8;
-    
+    /**
+     * The number of volts the potentiometer changes by per degree of revolution
+     */
+    public static final double encToV =  (7.2/360);
 }
