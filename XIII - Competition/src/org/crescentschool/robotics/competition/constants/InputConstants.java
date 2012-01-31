@@ -5,8 +5,8 @@
 package org.crescentschool.robotics.competition.constants;
 
 /**
- *
- * @author Warfa
+ * Constants related to operator and driver input
+ * @author Warfa Jibril, Patrick White
  */
 public class InputConstants {
     

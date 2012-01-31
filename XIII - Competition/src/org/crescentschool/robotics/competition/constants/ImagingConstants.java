@@ -5,7 +5,7 @@
 package org.crescentschool.robotics.competition.constants;
 
 /**
- * 
+ * Constants related to capturing and processing images
  * @author Patrick
  */
 public class ImagingConstants {

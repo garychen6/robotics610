@@ -1,6 +1,5 @@
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.OI;
@@ -20,7 +19,6 @@ public class PIDDriveTuning extends Command {
     Joystick driverJoy = oi.getDriver();
     Joystick OperJoy = oi.getOperator();
     DriveTrain driveTrain = DriveTrain.getInstance();
-    DriverStationLCD dsLCD = oi.getDSLCD();
     boolean btn1 = false;
     boolean btn2 = false;
     boolean btn3 = false;
@@ -54,9 +52,7 @@ public class PIDDriveTuning extends Command {
 //          + driveTrain.getLPos());
           //dsLCD.println(DriverStationLCD.Line.kUser5, 1, "PIDPosOutputLeft: " +
           //driveTrain.PIDPosLOutput());
-          dsLCD.println(DriverStationLCD.Line.kUser6, 1, "Gyro: " +
-          driveTrain.getGyro().getAngle());
-        dsLCD.updateLCD();
+          OI.printToDS(0, "Gyro: " + driveTrain.getGyro().getAngle());
          
         if (driverJoy.getRawButton(1) && !btn1) {
             driveTrain.incIPos();

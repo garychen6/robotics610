@@ -5,8 +5,8 @@
 package org.crescentschool.robotics.competition.constants;
 
 /**
- *
- * @author Warfa
+ * Constants related to the electrical system and electrical conversion constants
+ * @author Warfa Jibril, Patrick White
  */
 public class ElectricalConstants {
     /**
@@ -51,6 +51,12 @@ public class ElectricalConstants {
      * The number of volts the potentiometer changes by per degree of revolution
      */
     public static final double encToV =  (7.2/360);
-    
+    /**
+     * The number of volts per degree of revolution of the potentiometer
+     */
+    public static final double potDtoV = 0.00911111111;
+    /**
+     * The channel of the victor that controls the feeder
+     */
     public static final int FeederVictor = 0;
 }

@@ -51,7 +51,7 @@ public class Flipper extends Subsystem {
 
     public void setFlippers(double angle) {
         try {
-            jagFlip.setX(4.84 + PIDConstants.potT*angle);
+            jagFlip.setX(4.84 + ElectricalConstants.potDtoV*angle);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
