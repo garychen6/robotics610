@@ -5,7 +5,7 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.competition.constants.PIDConstants;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.subsystems.Flipper;
 
 /**
@@ -36,7 +36,7 @@ public class setFlipper extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-         if(Math.abs(Math.abs(flip.getPos())-Math.abs(angle* PIDConstants.potT)) < 0.1){
+         if(Math.abs(Math.abs(flip.getPos())-Math.abs(angle* ElectricalConstants.potDtoV)) < 0.1){
              return true;
          }
          return false;

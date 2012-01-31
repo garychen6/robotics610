@@ -5,41 +5,52 @@
 package org.crescentschool.robotics.competition.constants;
 
 /**
- *
- * @author Warfa
+ * Constants related to PID tuning and control
+ * @author Warfa Jibril, Patrick White
  */
 public class PIDConstants {
 
     public static final boolean pidTuneMode = true;
     /**
-     * The P constant of the drive train position mode 
+     * The proportional constant of the drive train position mode 
      */
     public static final double drivePositionP = 130;
     /**
-     * The I constant of the drive train position mode 
+     * The integral constant of the drive train position mode 
      */
     public static final double drivePositionI = 0;
     /**
-     * The D constant of the drive train position mode 
+     * The derivative constant of the drive train position mode 
      */
     public static final double drivePositionD = 0;
     /**
-     * The P constant of the drive train speed mode 
+     * The proportional constant of the drive train speed mode 
      */
     public static final double driveSpeedP = 0.29;
     /**
-     * The I constant of the drive train speed mode 
+     * The integral constant of the drive train speed mode 
      */
     public static final double driveSpeedI = 0;
     /**
-     * The D constant of the drive train speed mode 
+     * The derivative constant of the drive train speed mode 
      */
     public static final double driveSpeedD = 0;
+    /**
+     * The proportional constant of the gyroscope position mode
+     */
     public static final double gyroP = 0.04;
+    /**
+     * The proportional constant of the flipper position control
+     */
     public static final double flipperP = -1000;
+    /**
+     * The integral constant of the flipper position control
+     */
     public static final double flipperI = 0;
+    /**
+     * The derivative constant of the flipper position control
+     */
     public static final double flipperD = 0;
-    public static final double potT = 0.00911111111;
     public static final double shooterTopP = -0.17;
     public static final double shooterTopI = -0.003;
     public static final double shooterBottomP = -0.17;
