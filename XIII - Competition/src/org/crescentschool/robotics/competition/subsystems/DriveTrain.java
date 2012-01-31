@@ -143,12 +143,13 @@ public class DriveTrain extends Subsystem {
         }
         gyro = new CoyoBotGyro(1);
         gyro.setSensitivity(0.007);
-        shifterHigh = new Solenoid(2);
-        shifterLow = new Solenoid(3);
-        shifterLow.set(false);
-        shifterHigh.set(true);
-        initPosMode();
+        //shifterHigh = new Solenoid(2);
+        //shifterLow = new Solenoid(3);
+        //shifterLow.set(false);
+        //shifterHigh.set(true);
+        //initPosMode();
         //initSpeedMode();
+        initVBusMode();
     }
 
     public void initPosMode() {
@@ -258,10 +259,6 @@ public class DriveTrain extends Subsystem {
             jagRightMaster.configEncoderCodesPerRev(ElectricalConstants.DriveEncoderCounts);
             jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-            jagLeftMaster.setX(0);
-            jagRightMaster.setX(0);
-            jagLeftMaster.setPID(PIDConstants.driveSpeedP, PIDConstants.driveSpeedI, PIDConstants.driveSpeedD);
-            jagRightMaster.setPID(-PIDConstants.driveSpeedP, -PIDConstants.driveSpeedI, -PIDConstants.driveSpeedD);
             jagLeftMaster.enableControl(0);
             jagRightMaster.enableControl(0);
             //jagRightMaster.
@@ -269,6 +266,8 @@ public class DriveTrain extends Subsystem {
             jagRightSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagLeftSlave.enableControl(0);
             jagRightSlave.enableControl(0);
+            jagLeftMaster.setX(0);
+            jagRightMaster.setX(0);
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();

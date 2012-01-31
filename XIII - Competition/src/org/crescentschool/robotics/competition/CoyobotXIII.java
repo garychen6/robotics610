@@ -25,8 +25,8 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  */
 public class CoyobotXIII extends IterativeRobot {
 
-    Compressor compressor;
-    Command autonomous = new Autonomous();
+    //Compressor compressor;
+    //Command autonomous = new Autonomous();
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -42,13 +42,13 @@ public class CoyobotXIII extends IterativeRobot {
        
 
         //Camera.getInstance();
-        compressor = new Compressor(ElectricalConstants.kCompressorPressureSwitchChannel, ElectricalConstants.kCompressorRelayChannel);
-        compressor.start();
+      //  compressor = new Compressor(ElectricalConstants.kCompressorPressureSwitchChannel, ElectricalConstants.kCompressorRelayChannel);
+        //compressor.start();
     }
 
     public void autonomousInit() {
         // schedule the autonomous command (example)
-        autonomous.start();
+       // autonomous.start();
     }
 
     public void autonomousPeriodic() {
@@ -60,7 +60,7 @@ public class CoyobotXIII extends IterativeRobot {
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        autonomous.cancel();
+        //autonomous.cancel();
         //Scheduler.getInstance().add(new PIDDriveTuning());
         Scheduler.getInstance().add(new FlipperPresets());
     }
