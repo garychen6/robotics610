@@ -49,6 +49,7 @@ public class CoyobotXIII extends IterativeRobot {
     public void autonomousInit() {
         // schedule the autonomous command (example)
        // autonomous.start();
+        
     }
 
     public void autonomousPeriodic() {

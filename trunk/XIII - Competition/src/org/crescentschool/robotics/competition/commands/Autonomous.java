@@ -13,9 +13,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class Autonomous extends CommandGroup {
 
     public Autonomous() {
-        addSequential(new DriveForward(5.5));
+        addSequential(new DriveDistance(5.5));
         addSequential(new setFlipper(20));
-        addSequential(new DriveForward(6.5));
+        addSequential(new DriveDistance(6.5));
         addParallel(new setFlipper(44.9));
         
 
