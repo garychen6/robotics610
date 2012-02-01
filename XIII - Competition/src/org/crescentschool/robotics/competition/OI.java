@@ -73,13 +73,8 @@ public class OI {
         joyDriver = new Joystick(1);
         joyOperator = new Joystick(2);
         drStationLCD = DriverStationLCD.getInstance();
-        Buttons.register(1, joyDriver);
-        Buttons.register(2, joyDriver);
-        Buttons.register(3, joyDriver);
-        Buttons.register(4, joyDriver);
-        Buttons.register(1, joyOperator);
-        Buttons.register(2, joyOperator);
-        Buttons.register(3, joyOperator);
-        Buttons.register(4, joyOperator);
+        for(int i = 1; i <= 10; i++)Buttons.register(i, joyDriver);
+        for(int i = 1; i <= 10; i++)Buttons.register(i, joyOperator);
+        
     }
 }
