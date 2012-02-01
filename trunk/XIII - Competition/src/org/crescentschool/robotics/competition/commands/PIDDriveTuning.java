@@ -2,7 +2,9 @@ package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
+import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Flipper;
 
@@ -17,20 +19,7 @@ import org.crescentschool.robotics.competition.subsystems.Flipper;
 public class PIDDriveTuning extends Command {
 
     OI oi = OI.getInstance();
-    Joystick driverJoy = oi.getDriver();
-    Joystick OperJoy = oi.getOperator();
     DriveTrain driveTrain = DriveTrain.getInstance();
-    Flipper flip = Flipper.getInstance();
-    boolean btn1 = false;
-    boolean btn2 = false;
-    boolean btn3 = false;
-    boolean btn4 = false;
-    boolean btn10 = false;
-    boolean btn1a = false;
-    boolean btn2a = false;
-    boolean btn3a = false;
-    boolean btn4a = false;
-    boolean btn10a = false;
 
     public PIDDriveTuning() {
         // Use requires() here to declare subsystem dependencies
@@ -43,84 +32,38 @@ public class PIDDriveTuning extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        OI.printToDS(0, "Speed SetPoint: " + driveTrain.getSpeedSetpoint());
+        OI.printToDS(1, "Speed: " + driveTrain.getSpeed());
+        OI.printToDS(2, "Pos SetPoint: " + driveTrain.getPosSetpoint());
+        OI.printToDS(3, "Pos: " + driveTrain.getPos());
+        OI.printToDS(4, "Gyro: " + driveTrain.getGyro());
 
-//          dsLCD.println(DriverStationLCD.Line.kMain6, 1, "RSetPoint: " +
-//            driveTrain.getRightPosSetpoint());
-//          dsLCD.println(DriverStationLCD.Line.kUser2, 1, "PosR: " +
-//          driveTrain.getRPos());
-//          dsLCD.println(DriverStationLCD.Line.kUser3, 1,
-//          "LSetPoint: " + driveTrain.getLeftPosSetpoint());
-//          dsLCD.println(DriverStationLCD.Line.kUser4, 1, "PosL "
-//          + driveTrain.getLPos());
-        //dsLCD.println(DriverStationLCD.Line.kUser5, 1, "PIDPosOutputLeft: " +
-        //driveTrain.PIDPosLOutput());
-        OI.printToDS(0, "Flipper Pot: " + flip.getPos());
-        OI.printToDS(1, "P: " + flip.getPID()[0] + " D: "+ flip.getPID()[2]);
-        OI.printToDS(2, "Speed SetPoint: " + driveTrain.getSpeedSetpoint());
-        OI.printToDS(3, "Speed: " + driveTrain.getSpeed());
-        
-        if (driverJoy.getRawButton(6) && !btn1) {
-            flip.setP(1);
-            btn1 = true;
-        } else if (!driverJoy.getRawButton(6)) {
-            btn1 = false;
-        }
-        if (driverJoy.getRawButton(7) && !btn2) {
-            flip.setD(-0.1);
-            btn2 = true;
-        } else if (!driverJoy.getRawButton(7)) {
-            btn2 = false;
-        }
-        if (driverJoy.getRawButton(8) && !btn3) {
-            flip.setP(-1);
-            btn3 = true;
-        } else if (!driverJoy.getRawButton(8)) {
-            btn3 = false;
-        }
-        if (driverJoy.getRawButton(5)) {
-            flip.setD(0.1);
-            btn4 = true;
-        } else if (!driverJoy.getRawButton(5)) {
-            btn4 = false;
-        }
-        if (driverJoy.getRawButton(10)) {
-            flip.resetPID();
-            btn10 = true;
-        } else if (!driverJoy.getRawButton(10)) {
-            btn10 = false;
-        }
-
-        if (OperJoy.getRawButton(1) && !btn1a) {
-            driveTrain.incISpeed();
-            btn1a = true;
-        } else if (!OperJoy.getRawButton(1)) {
-            btn1a = false;
-        }
-        if (OperJoy.getRawButton(2) && !btn2a) {
-            driveTrain.decISpeed();
-            btn2a = true;;
-        } else if (!OperJoy.getRawButton(2)) {
-            btn2a = false;
-        }
-        if (OperJoy.getRawButton(3) && !btn3a) {
-            driveTrain.decPSpeed();
-            btn3a = true;;
-        } else if (!OperJoy.getRawButton(3)) {
-            btn3a = false;
-        }
-        if (OperJoy.getRawButton(4)) {
+        if (Buttons.isPressed(InputConstants.kR1button, oi.getDriver())) {
             driveTrain.incPSpeed();
-            btn4a = true;
-        } else if (!OperJoy.getRawButton(4)) {
-            btn4a = false;
+        } else if (Buttons.isPressed(InputConstants.kR2button, oi.getDriver())) {
+            driveTrain.decPSpeed();
         }
-        if (OperJoy.getRawButton(10)) {
+        if (Buttons.isPressed(InputConstants.kL1button, oi.getDriver())) {
+            driveTrain.incISpeed();
+        } else if (Buttons.isPressed(InputConstants.kL2button, oi.getDriver())) {
+            driveTrain.decISpeed();
+        }
+        if (Buttons.isPressed(InputConstants.kStartbutton, oi.getDriver())) {
             driveTrain.initSpeedMode();
-            btn10a = true;
-        } else if (!OperJoy.getRawButton(10)) {
-            btn10a = false;
         }
-
+        if (Buttons.isPressed(InputConstants.kR1button, oi.getOperator())) {
+            driveTrain.incPPos();
+        } else if (Buttons.isPressed(InputConstants.kR2button, oi.getOperator())) {
+            driveTrain.decPPos();
+        }
+        if (Buttons.isPressed(InputConstants.kL1button, oi.getOperator())) {
+            driveTrain.incPPos();
+        } else if (Buttons.isPressed(InputConstants.kL2button, oi.getOperator())) {
+            driveTrain.decPPos();
+        }
+        if (Buttons.isPressed(InputConstants.kStartbutton, oi.getOperator())) {
+            driveTrain.initPosMode();
+        }
     }
 
     // Make this return true when this Command no longer needs to run execute()
