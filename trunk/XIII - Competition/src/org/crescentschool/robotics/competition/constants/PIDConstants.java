@@ -42,7 +42,7 @@ public class PIDConstants {
     /**
      * The proportional constant of the flipper position control
      */
-    public static final double flipperP = -1000;
+    public static final double flipperP = -500;
     /**
      * The integral constant of the flipper position control
      */

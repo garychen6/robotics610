@@ -2,6 +2,7 @@ package org.crescentschool.robotics.competition;
 
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Joystick;
+import org.crescentschool.robotics.competition.Buttons;
 
 public class OI {
 
@@ -20,6 +21,7 @@ public class OI {
         }
         return instance;
     }
+
     /**
      * Returns the Joystick object that corresponds to the driver's gamepad.
      * @return the driver Joystick object.
@@ -35,15 +37,15 @@ public class OI {
     public Joystick getOperator() {
         return joyOperator;
     }
-    
+
     /**
      * Prints a message to the driver station console.
      * @param line The zero-indexed line to print to. Valid numbers are 0 to 5.
      * @param message The message to print.
      */
-    public static void printToDS(int line, String message){
+    public static void printToDS(int line, String message) {
         DriverStationLCD.Line index = null;
-        switch(line){
+        switch (line) {
             case 0:
                 index = DriverStationLCD.Line.kMain6;
                 break;
@@ -71,5 +73,13 @@ public class OI {
         joyDriver = new Joystick(1);
         joyOperator = new Joystick(2);
         drStationLCD = DriverStationLCD.getInstance();
+        Buttons.register(1, joyDriver);
+        Buttons.register(2, joyDriver);
+        Buttons.register(3, joyDriver);
+        Buttons.register(4, joyDriver);
+        Buttons.register(1, joyOperator);
+        Buttons.register(2, joyOperator);
+        Buttons.register(3, joyOperator);
+        Buttons.register(4, joyOperator);
     }
 }
