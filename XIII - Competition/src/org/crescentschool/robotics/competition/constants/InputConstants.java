@@ -24,6 +24,16 @@ public class InputConstants {
      * The button number of the driver's 180-turn button
      */
     public static final int k180button = -1;
+    public static final int kTributton = 4;
+    public static final int kCirclebutton = 3;
+    public static final int kSquarebutton = 1;
+    public static final int kXbutton = 2;
+    public static final int kR1button = 6 ;
+    public static final int kR2button = 8;
+    public static final int kL1button = 5;
+    public static final int kL2button = 7;
+    public static final int kStartbutton = 10;
+    public static final int kSelectbutton = 9;
     
     //OPERATOR
     

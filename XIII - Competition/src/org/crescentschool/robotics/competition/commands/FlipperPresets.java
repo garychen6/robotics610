@@ -7,7 +7,9 @@ package org.crescentschool.robotics.competition.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.command.Command;
+import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
+import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Flipper;
 
 /**
@@ -17,11 +19,7 @@ import org.crescentschool.robotics.competition.subsystems.Flipper;
 public class FlipperPresets extends Command {
     OI oi = OI.getInstance();
     Flipper flipper = Flipper.getInstance();
-    Joystick driver = oi.getDriver();
-    boolean button1 = false;
-    boolean button2 = false;
-    boolean button3 = false;
-    boolean button4 = false;
+    
     
     public FlipperPresets() {
         // Use requires() here to declare subsystem dependencies
@@ -38,37 +36,29 @@ public class FlipperPresets extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
       
-      if(oi.getDriver().getRawButton(1) && !button1){
+      if(Buttons.isPressed(InputConstants.kXbutton, oi.getDriver())){
           flipper.setFlippers(0);
-          button1 = true;
-      }
-      if(!oi.getDriver().getRawButton(1)){
-          button1 = false;
+         
       }
       
-      if(oi.getDriver().getRawButton(2)){
+      
+      if(Buttons.isPressed(InputConstants.kSquarebutton, oi.getDriver())){
           flipper.setFlippers(15);
-          button1 = true;
+         
       }
-      if(!oi.getDriver().getRawButton(2)){
-          button2 = false;
-      }
+    
       
-      if(oi.getDriver().getRawButton(3)){
+      if(Buttons.isPressed(InputConstants.kCirclebutton, oi.getDriver())){
           flipper.setFlippers(45);
-          button1 = true;
-      }
-      if(!oi.getDriver().getRawButton(3)){
-          button3 = false;
+          
       }
       
-      if(oi.getDriver().getRawButton(4)){
+      
+      if(Buttons.isPressed(InputConstants.kTributton, oi.getDriver())){
           flipper.setFlippers(90);
-          button1 = true;
+          
       }
-      if(!oi.getDriver().getRawButton(4)){
-          button4 = false;
-      }
+     
     }
 
     // Make this return true when this Command no longer needs to run execute()
