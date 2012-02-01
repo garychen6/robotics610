@@ -43,6 +43,7 @@ public class ElectricalConstants {
     public static final int kCompressorPressureSwitchChannel = 1;
     //TODO: Javadoc
     public static final int GyroAccumulatorCenter = 16;
+    public static final int GyroPort = 1;
     /**
      * The CAN ID of the turret Jaguar
      */

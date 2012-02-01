@@ -11,10 +11,10 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  *
  * @author Warfa
  */
-public class DriveForward extends Command {
+public class DriveDistance extends Command {
     DriveTrain driveTrain = DriveTrain.getInstance();
     double setPoint = 0;
-    public DriveForward(double setPoint) {
+    public DriveDistance(double setPoint) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         this.setPoint = setPoint;
@@ -32,9 +32,8 @@ public class DriveForward extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        if(Math.abs(Math.abs(driveTrain.getLPos())-Math.abs(setPoint)) <0.1){
-            return true;
-        }else return false;
+        if(Math.abs(Math.abs(driveTrain.getLeftPos()) - Math.abs(setPoint)) < 0.1) return true;
+        return false;
     }
 
     // Called once after isFinished returns true

@@ -22,15 +22,13 @@ public class DriveTrain extends Subsystem {
 
     private double pPos, iPos, dPos, pSpeed, iSpeed, dSpeed;
     // 1 = %VBus, 2 = Speed, 3 = Position
-    public int controlMode = 1;
+    private int controlMode = 1;
     private boolean canError = false;
     private CANJaguar jagRightMaster;
     private int count = 0;
     private CANJaguar jagLeftMaster;
     private CANJaguar jagRightSlave;
     private CANJaguar jagLeftSlave;
-    private Solenoid shifterHigh;
-    private Solenoid shifterLow;
     private CoyoBotGyro gyro;
     private double PIDRightOutput;
     private double PIDLeftOutput;
@@ -43,7 +41,6 @@ public class DriveTrain extends Subsystem {
             try {
                 //System.out.println(jagRightMaster.getPosition());
                 return jagRightMaster.getPosition();
-                //return jagRightMaster.getPosition();
             } catch (CANTimeoutException ex) {
                 canError = true;
                 handleCANError();
@@ -60,7 +57,7 @@ public class DriveTrain extends Subsystem {
                 // Jag is in Speed Control Mode
                 // Output should be in rpm
                 //SmartDashboard.putData("right", posControllerRight);
-                jagRightMaster.setX(-2*output + gyro.getAngle()/ PIDConstants.gyroP);
+                jagRightMaster.setX(-2 * output + gyro.getAngle() / PIDConstants.gyroP);
                 syncSlaves();
             } catch (CANTimeoutException ex) {
                 canError = true;
@@ -75,9 +72,7 @@ public class DriveTrain extends Subsystem {
 
         public double pidGet() {
             try {
-
                 return jagLeftMaster.getPosition();
-                //return jagLeftMaster.getPosition();
             } catch (CANTimeoutException ex) {
                 canError = true;
                 handleCANError();
@@ -92,7 +87,7 @@ public class DriveTrain extends Subsystem {
             try {
                 //SmartDashboard.putData("left", posControllerLeft);
                 //PIDLeftOutput = 300 * output;
-                jagLeftMaster.setX(2*output + gyro.getAngle()/ PIDConstants.gyroP);
+                jagLeftMaster.setX(2 * output + gyro.getAngle() / PIDConstants.gyroP);
                 syncSlaves();
             } catch (CANTimeoutException ex) {
                 ex.printStackTrace();
@@ -141,7 +136,7 @@ public class DriveTrain extends Subsystem {
             handleCANError();
             ex.printStackTrace();
         }
-        gyro = new CoyoBotGyro(1);
+        gyro = new CoyoBotGyro(ElectricalConstants.GyroPort);
         gyro.setSensitivity(0.007);
         //shifterHigh = new Solenoid(2);
         //shifterLow = new Solenoid(3);
@@ -149,7 +144,7 @@ public class DriveTrain extends Subsystem {
         //shifterHigh.set(true);
         //initPosMode();
         initSpeedMode();
-        
+
     }
 
     public void initPosMode() {
@@ -288,15 +283,15 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    public void runJagRight(double speed) {
-        try {
-            jagRightMaster.setX(speed);
-        } catch (CANTimeoutException ex) {
-            canError = true;
-            handleCANError();
-            ex.printStackTrace();
-        }
-    }
+//    public void runJagRight(double speed) {
+//        try {
+//            jagRightMaster.setX(speed);
+//        } catch (CANTimeoutException ex) {
+//            canError = true;
+//            handleCANError();
+//            ex.printStackTrace();
+//        }
+//    }
 
     public double PIDPosROutput() {
         return PIDRightOutput;
@@ -306,15 +301,15 @@ public class DriveTrain extends Subsystem {
         return PIDLeftOutput;
     }
 
-    public void runJagLeft(double speed) {
-        try {
-            jagLeftMaster.setX(speed);
-        } catch (CANTimeoutException ex) {
-            canError = true;
-            handleCANError();
-            ex.printStackTrace();
-        }
-    }
+//    public void runJagLeft(double speed) {
+//        try {
+//            jagLeftMaster.setX(speed);
+//        } catch (CANTimeoutException ex) {
+//            canError = true;
+//            handleCANError();
+//            ex.printStackTrace();
+//        }
+//    }
 
     public void rightPosSetpoint(double setpoint) {
         if (controlMode != 3) {
@@ -333,7 +328,7 @@ public class DriveTrain extends Subsystem {
     public void posSetpoint(double setpoint) {
         leftPosSetpoint(setpoint);
         rightPosSetpoint(setpoint);
-        System.out.println("SetPoint "+setpoint );
+        System.out.println("SetPoint " + setpoint);
     }
 
     public double getRightPosSetpoint() {
@@ -359,7 +354,7 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    public double getRPos() {
+    public double getRightPos() {
         try {
             return (jagRightMaster.getPosition());
         } catch (CANTimeoutException ex) {
@@ -370,7 +365,7 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    public double getLPos() {
+    public double getLeftPos() {
         try {
             return (jagLeftMaster.getPosition());
         } catch (CANTimeoutException ex) {
@@ -388,7 +383,7 @@ public class DriveTrain extends Subsystem {
         try {
             //System.out.print(setpoint);
             //System.out.print("," + jagRightMaster.getSpeed());
-            jagRightMaster.setX(-2*setpoint);
+            jagRightMaster.setX(-2 * setpoint);
             syncSlaves();
             count++;
         } catch (CANTimeoutException ex) {
@@ -406,7 +401,7 @@ public class DriveTrain extends Subsystem {
             //System.out.print("," + setpoint);
             //System.out.println("," + jagLeftMaster.getSpeed());
 
-            jagLeftMaster.setX(2*setpoint);
+            jagLeftMaster.setX(2 * setpoint);
             syncSlaves();
             count++;
         } catch (CANTimeoutException ex) {
@@ -465,7 +460,7 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    public double getLSpeed() {
+    public double getLeftSpeed() {
         try {
             return (jagLeftMaster.getSpeed());
         } catch (CANTimeoutException ex) {
@@ -476,7 +471,7 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    public double getRSpeed() {
+    public double getRightSpeed() {
         try {
             return (jagRightMaster.getSpeed());
         } catch (CANTimeoutException ex) {
@@ -591,7 +586,7 @@ public class DriveTrain extends Subsystem {
         return gyro;
     }
 
-   private void printPIDPos() {
+    private void printPIDPos() {
         System.out.println("Pos P: " + pPos + " Pos I: " + iPos + " Pos D: " + dPos);
     }
 
