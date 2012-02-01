@@ -20,6 +20,7 @@ public class Flipper extends Subsystem {
 
     CANJaguar jagFlip;
     static Flipper instance = null;
+    double p, i, d;
 
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
@@ -34,6 +35,9 @@ public class Flipper extends Subsystem {
     }
 
     private Flipper() {
+        p = PIDConstants.flipperP;
+        i = PIDConstants.flipperI;
+        d = PIDConstants.flipperD;
         try {
             jagFlip = new CANJaguar(ElectricalConstants.JagFlipper);
             jagFlip.changeControlMode(CANJaguar.ControlMode.kPosition);
@@ -41,7 +45,7 @@ public class Flipper extends Subsystem {
             jagFlip.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             jagFlip.configPotentiometerTurns(10);
             jagFlip.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
-            jagFlip.setPID(PIDConstants.flipperP, PIDConstants.flipperI, PIDConstants.flipperD);
+            jagFlip.setPID(p, i, d);
             jagFlip.enableControl(0);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
@@ -49,9 +53,36 @@ public class Flipper extends Subsystem {
 
     }
 
+    public void setP(double inc) {
+        p += inc;
+    }
+
+    public void setI(double inc) {
+        i += inc;
+    }
+
+    public void setD(double inc) {
+        d += inc;
+    }
+    public double[] getPID(){
+        double[] pid = new double[3];
+        pid[0] = p;
+        pid[1] = i;
+        pid[2] = d;
+        return pid;
+    }
+    public void resetPID() {
+        try {
+            jagFlip.setPID(p, i, d);
+            jagFlip.enableControl(0);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void setFlippers(double angle) {
         try {
-            jagFlip.setX(4.84 + ElectricalConstants.potDtoV*angle);
+            jagFlip.setX(4.84 + ElectricalConstants.potDtoV * angle);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }

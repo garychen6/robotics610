@@ -148,8 +148,8 @@ public class DriveTrain extends Subsystem {
         //shifterLow.set(false);
         //shifterHigh.set(true);
         //initPosMode();
-        //initSpeedMode();
-        initVBusMode();
+        initSpeedMode();
+        
     }
 
     public void initPosMode() {
@@ -591,7 +591,7 @@ public class DriveTrain extends Subsystem {
         return gyro;
     }
 
-    private void printPIDPos() {
+   private void printPIDPos() {
         System.out.println("Pos P: " + pPos + " Pos I: " + iPos + " Pos D: " + dPos);
     }
 
