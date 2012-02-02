@@ -34,15 +34,12 @@ public class ElectricalConstants {
      */
     public static final int JagFlipper = 6;
     /**
-     * The digital channel that the relay for the compressor is plugged in to
+     * The offset for the gyro's voltage to prevent it from drifting
      */
-    public static final int kCompressorRelayChannel = 1;
-    /**
-     * The digital I/O channel that the compressor's pressure switch is plugged in to
-     */
-    public static final int kCompressorPressureSwitchChannel = 1;
-    //TODO: Javadoc
     public static final int GyroAccumulatorCenter = 16;
+    /**
+     * The anslog port of the gyro
+     */
     public static final int GyroPort = 1;
     /**
      * The CAN ID of the turret Jaguar
@@ -57,7 +54,15 @@ public class ElectricalConstants {
      */
     public static final double potDtoV = 0.00911111111;
     /**
-     * The channel of the victor that controls the feeder
+     * The channel of the victor that controls the Intake
      */
-    public static final int FeederVictor = 0;
+    public static final int IntakeVictor = 1;
+    /**
+     * The channel of the first victor that controls the feeder
+     */
+    public static final int FeederVictor1 = 2;
+    /**
+     * The channel of the second victor that controls the feeder
+     */
+    public static final int FeederVictor2 = 3;
 }

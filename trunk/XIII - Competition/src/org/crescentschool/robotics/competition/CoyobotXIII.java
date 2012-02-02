@@ -6,15 +6,14 @@
 /*----------------------------------------------------------------------------*/
 package org.crescentschool.robotics.competition;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.FlipperPresets;
 import org.crescentschool.robotics.competition.commands.PIDDriveTuning;
-import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Feeder;
+import org.crescentschool.robotics.competition.subsystems.Flipper;
+import org.crescentschool.robotics.competition.subsystems.Intake;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -39,11 +38,10 @@ public class CoyobotXIII extends IterativeRobot {
         //CommandBase.init
         OI.getInstance();
         DriveTrain.getInstance();
-       
-
+        Flipper.getInstance();
+        Intake.getInstance();
+        Feeder.getInstance();
         //Camera.getInstance();
-      //  compressor = new Compressor(ElectricalConstants.kCompressorPressureSwitchChannel, ElectricalConstants.kCompressorRelayChannel);
-        //compressor.start();
     }
 
     public void autonomousInit() {
