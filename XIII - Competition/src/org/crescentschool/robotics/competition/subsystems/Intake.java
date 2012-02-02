@@ -5,7 +5,9 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
 /**
  *
@@ -15,7 +17,7 @@ public class Intake extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
-    Relay inBot;
+    Victor intake;
     static Intake instance = null;
 
     public static Intake getInstance() {
@@ -26,16 +28,11 @@ public class Intake extends Subsystem {
     }
 
     private Intake() {
-        inBot = new Relay(1);
+        intake = new Victor(ElectricalConstants.IntakeVictor);
     }
     
-    public void setInbotForward(boolean on){
-        if(on)inBot.set(Relay.Value.kForward);
-        else inBot.set(Relay.Value.kOff);
-    }
-       public void setInbotBackward(boolean on){
-        if(on)inBot.set(Relay.Value.kReverse);
-        else inBot.set(Relay.Value.kOff);
+    public void setInbotForward(double speed){
+        intake.set(speed);
     }
 
     public void initDefaultCommand() {

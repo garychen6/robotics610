@@ -17,7 +17,7 @@ public class Feeder extends Subsystem {
     // here. Call these from Commands.
 
     static Feeder instance = null;
-    Victor feed;
+    Victor feed1, feed2;
     public static Feeder getInstance() {
         if (instance == null) {
             instance = new Feeder();
@@ -26,11 +26,14 @@ public class Feeder extends Subsystem {
     }
 
     private Feeder() {
-        feed = new Victor(ElectricalConstants.FeederVictor);
+        feed1 = new Victor(ElectricalConstants.FeederVictor1);
+        feed2 = new Victor(ElectricalConstants.FeederVictor2);
     }
     
     public void setFeeder(double speed){
-        feed.set(speed);
+        //TODO: check direction of feeder
+        feed1.set(speed);
+        feed2.set(-speed);
     }
 
     public void initDefaultCommand() {
