@@ -9,6 +9,7 @@ package org.crescentschool.robotics.competition.constants;
  * @author Warfa Jibril, Patrick White
  */
 public class ElectricalConstants {
+
     /**
      * The CAN ID of the left drivetrain master Jaguar
      */
@@ -48,7 +49,7 @@ public class ElectricalConstants {
     /**
      * The number of volts the potentiometer changes by per degree of revolution
      */
-    public static final double encToV =  (7.2/360);
+    public static final double encToV = (7.2 / 360);
     /**
      * The number of volts per degree of revolution of the potentiometer
      */
