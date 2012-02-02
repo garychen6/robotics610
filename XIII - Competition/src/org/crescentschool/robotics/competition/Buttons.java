@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class Buttons {
 
-    private static Button[] buttons;
+    private static Button[] buttons = new Button[0];
 
     private static class Button {
         int id;
@@ -34,7 +34,7 @@ public class Buttons {
             if(button.isReleased)button.isReleased = false;
             if(button.gamepad.getRawButton(button.id) && !button.isHeld){
                 button.isHeld = true;
-                button.isPressed = false;
+                button.isPressed = true;
             } else if (!button.gamepad.getRawButton(button.id) && button.isHeld){
                 button.isHeld = false;
                 button.isReleased = true;
@@ -48,7 +48,7 @@ public class Buttons {
      * @param gamepad the gamepad the button is on
      */
     public static void register(int buttonID, Joystick gamepad){
-        System.arraycopy(buttons, 0, buttons, 0, buttons.length + 1);
+        System.arraycopy(buttons, 0, buttons, 0, buttons.length);
         buttons[buttons.length - 1] = new Button(buttonID, gamepad);
     }
 
