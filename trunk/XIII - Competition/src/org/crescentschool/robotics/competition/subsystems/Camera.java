@@ -51,8 +51,8 @@ public class Camera extends Subsystem {
     }
 
     /**
-     * Returns the x offset.
-     * @return The x offset.
+     * Gets the normalized position for the top square on the net.
+     * @return The normalized position for the top square as a value between -1 and 1.
      */
     public double getX() {
         return xOffset;

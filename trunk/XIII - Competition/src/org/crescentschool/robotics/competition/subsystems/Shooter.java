@@ -9,27 +9,24 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.commands.Shoot;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 
-
-/**
- *
- */
 public class Shooter extends Subsystem {
 
     public CANJaguar topJaguar;
     public CANJaguar bottomJaguar;
     private static Shooter instance = null;
 
+    /**
+     * Ensures that only one shooter is instantiated.
+     * @return The singleton shooter instance.
+     */
     public static Shooter getInstance() {
         if (instance == null) {
             instance = new Shooter();
 
-            // Set default command here, like this:
-            // instance.setDefaultCommand(new CommandIWantToRun());
         }
         return instance;
     }
 
-    // Initialize your subsystem here
     public Shooter() {
         try {
             topJaguar = new CANJaguar(6);
@@ -42,13 +39,13 @@ public class Shooter extends Subsystem {
             bottomJaguar.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
             topJaguar.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
             bottomJaguar.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
-            
+
             topJaguar.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             bottomJaguar.configNeutralMode(CANJaguar.NeutralMode.kCoast);
-            
+
 
             topJaguar.setPID(PIDConstants.shooterTopP, PIDConstants.shooterTopI, 0);
-            bottomJaguar.setPID(PIDConstants.shooterBottomP,PIDConstants.shooterBottomI, 0);
+            bottomJaguar.setPID(PIDConstants.shooterBottomP, PIDConstants.shooterBottomI, 0);
 
             topJaguar.enableControl(0);
             bottomJaguar.enableControl(0);
@@ -59,6 +56,10 @@ public class Shooter extends Subsystem {
         }
     }
 
+    /**
+     * Sets the target speed for the top shooter.
+     * @param rpm 
+     */
     public void setTopShooter(int rpm) {
         try {
             topJaguar.setX(rpm);
@@ -66,11 +67,13 @@ public class Shooter extends Subsystem {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    
+
     }
 
-    
-
+    /**
+     * Sets the target speed for the bottom shooter.
+     * @param rpm 
+     */
     public void setBottomShooter(int rpm) {
         try {
 
@@ -80,6 +83,9 @@ public class Shooter extends Subsystem {
         }
     }
 
+    /**
+     * The default command for the shooter.
+     */
     protected void initDefaultCommand() {
         setDefaultCommand(new Shoot());
     }
