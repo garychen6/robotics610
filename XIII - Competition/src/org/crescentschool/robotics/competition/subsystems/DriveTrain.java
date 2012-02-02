@@ -615,19 +615,25 @@ public class DriveTrain extends Subsystem {
         dSpeed -= 0.1;
         printPIDSpeed();
     }
-    /**
-     * 
-     * @return
-     */
 
+    /**
+     * Returns the drivetrain's gyro.
+     * @return The drivetrain's gyro.
+     */
     public CoyoBotGyro getGyro() {
         return gyro;
     }
 
+    /**
+     * Prints the current PID constants for position mode.
+     */
     public void printPIDPos() {
         System.out.println("Pos P: " + pPos + " Pos I: " + iPos + " Pos D: " + dPos);
     }
 
+    /**
+     * Prints the current PID constants for speed mode.
+     */
     public void printPIDSpeed() {
         System.out.println("Speed P: " + pSpeed + " Speed I: " + iSpeed + " Speed D: " + dSpeed);
     }
