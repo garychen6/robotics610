@@ -39,6 +39,10 @@ public class Camera extends Subsystem {
         //sharpness should be 0, but there is no method for it
     }
 
+    /**
+     * Ensures only one camera is instantiated.
+     * @return The singleton camera instance.
+     */
     public static Camera getInstance() {
         if (instance == null) {
             instance = new Camera();
@@ -46,10 +50,17 @@ public class Camera extends Subsystem {
         return instance;
     }
 
+    /**
+     * Returns the x offset.
+     * @return The x offset.
+     */
     public double getX() {
         return xOffset;
     }
 
+    /**
+     * Updates the camera image if there is a new image and displays the binary image.
+     */
     public void processCamera() {
 
 
@@ -84,6 +95,9 @@ public class Camera extends Subsystem {
         }
     }
 
+    /**
+     * The default command for the camera.
+     */
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());

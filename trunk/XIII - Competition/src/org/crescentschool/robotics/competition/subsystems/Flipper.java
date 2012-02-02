@@ -15,18 +15,23 @@ import org.crescentschool.robotics.competition.constants.PIDConstants;
  * @author Warfa
  */
 public class Flipper extends Subsystem {
-    // Put methods for controlling this subsystem
-    // here. Call these from Commands.
 
     CANJaguar jagFlip;
     static Flipper instance = null;
     double p, i, d;
 
+    /**
+     * Sets the default command for the flipper.
+     */
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
 
+    /**
+     * Ensures only one flipper is instantiated.
+     * @return The singleton flipper instance.
+     */
     public static Flipper getInstance() {
         if (instance == null) {
             instance = new Flipper();
@@ -53,24 +58,45 @@ public class Flipper extends Subsystem {
 
     }
 
+    /**
+     * Sets the P value of the victors on the flipper.
+     * @param inc The increment for the P Value.
+     */
     public void setP(double inc) {
         p += inc;
     }
 
+    /**
+     * Sets the I value of the victors on the flipper.
+     * @param inc The increment for the I Value.
+     */
     public void setI(double inc) {
         i += inc;
     }
 
+    /**
+     * Sets the D value of the victors on the flipper.
+     * @param inc The increment for the D Value.
+     */
     public void setD(double inc) {
         d += inc;
     }
-    public double[] getPID(){
+
+    /**
+     * Gets the array of PID values for the flipper.
+     * @return The array of PID values for the flipper. pid[0] = P, pid[1] = I, pid[2] = d.
+     */
+    public double[] getPID() {
         double[] pid = new double[3];
         pid[0] = p;
         pid[1] = i;
         pid[2] = d;
         return pid;
     }
+
+    /**
+     * Resets the PID values to the values previously set.
+     */
     public void resetPID() {
         try {
             jagFlip.setPID(p, i, d);
@@ -80,6 +106,10 @@ public class Flipper extends Subsystem {
         }
     }
 
+    /**
+     * Sets the target angle of the flipper in degrees. 0 is parallel to the ground.
+     * @param angle The target angle of the flipper.
+     */
     public void setFlippers(double angle) {
         try {
             jagFlip.setX(4.84 + ElectricalConstants.potDtoV * angle);
@@ -88,6 +118,10 @@ public class Flipper extends Subsystem {
         }
     }
 
+    /**
+     * Gets the current angle of the flipper.
+     * @return The current angle of the flipper.
+     */
     public double getPos() {
         try {
             return jagFlip.getPosition();
