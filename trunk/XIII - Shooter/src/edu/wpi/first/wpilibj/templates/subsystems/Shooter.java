@@ -30,7 +30,7 @@ public class Shooter extends Subsystem {
     // Initialize your subsystem here
     public Shooter() {
         p = -0.17;
-        i = -0.003;
+        i = -0.004;
         try {
             topJaguar = new CANJaguar(6);
             bottomJaguar = new CANJaguar(7);
