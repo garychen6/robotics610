@@ -48,7 +48,9 @@ public class Buttons {
      * @param gamepad the gamepad the button is on
      */
     public static void register(int buttonID, Joystick gamepad){
-        System.arraycopy(buttons, 0, buttons, 0, buttons.length);
+        Button[] newButtons = new Button[buttons.length + 1];
+        System.arraycopy(buttons, 0, newButtons, 0, buttons.length);
+        buttons = newButtons;
         buttons[buttons.length - 1] = new Button(buttonID, gamepad);
     }
 
