@@ -13,9 +13,17 @@ public class InputConstants {
     //DRIVER
     
     /**
+     * The axis number of the driver's left X axis
+     */
+    public static final int kDriverLeftXAxis = 1;
+    /**
      * The axis number of the driver's left Y axis
      */
     public static final int kDriverLeftYAxis = 2;
+    /**
+     * The axis number of the driver's right X axis
+     */
+    public static final int kDriverRightXAxis = 3;
     /**
      * The axis number of the driver's right Y axis
      */

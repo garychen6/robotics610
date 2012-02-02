@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
+import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
@@ -12,20 +8,16 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
  *
- * @author Robotics
+ * @author bradmiller
  */
-public class TowerDrive extends Command {
+public class KajDrive extends Command {
 
-    OI oi;
-    DriveTrain driveTrain;
-    int set = 0;
-    boolean dPadUp = false;
-    boolean dPadDown = false;
-    public TowerDrive() {
+    DriveTrain driveTrain = DriveTrain.getInstance();
+    OI oi = OI.getInstance();
+
+    public KajDrive() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        oi = OI.getInstance();
-        driveTrain = DriveTrain.getInstance();
         requires(driveTrain);
     }
 
@@ -35,21 +27,14 @@ public class TowerDrive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if(oi.getDriver().getRawAxis(6) == -1 && !dPadUp){
-            set=10;
-            driveTrain.setPos(set);
-            dPadUp = true;
-        }else if(oi.getDriver().getRawAxis(6) == 1 && !dPadDown){
-            set=0;
-            driveTrain.setPos(set);
-            dPadDown = true;
-        }
-        if(oi.getDriver().getRawAxis(6) == 0){
-            dPadDown = false;
-            dPadUp = false;
-        }
-        //driveTrain.posControllerLeft.getSetpoint();
-        //driveTrain.posControllerRight.getSetpoint();
+        double x,y;
+        double left, right;
+        x = oi.getDriver().getRawAxis(InputConstants.kDriverRightXAxis);
+        y = oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis);
+        left = y - x;
+        right = y + x;
+        driveTrain.rightVBusSetpoint(right);
+        driveTrain.leftVBusSetpoint(left);       
     }
 
     // Make this return true when this Command no longer needs to run execute()

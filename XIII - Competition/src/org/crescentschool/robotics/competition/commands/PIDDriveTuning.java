@@ -20,6 +20,7 @@ public class PIDDriveTuning extends Command {
 
     OI oi = OI.getInstance();
     DriveTrain driveTrain = DriveTrain.getInstance();
+    int count = 0;
 
     public PIDDriveTuning() {
         // Use requires() here to declare subsystem dependencies
@@ -32,12 +33,15 @@ public class PIDDriveTuning extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        OI.printToDS(0, "Speed SetPoint: " + driveTrain.getSpeedSetpoint());
-        OI.printToDS(1, "Speed: " + driveTrain.getSpeed());
-        OI.printToDS(2, "Pos SetPoint: " + driveTrain.getPosSetpoint());
-        OI.printToDS(3, "Pos: " + driveTrain.getPos());
-        OI.printToDS(4, "Gyro: " + driveTrain.getGyro());
-
+        if (count % 5 == 0) {
+            //OI.printToDS(0, "Speed SetPoint: " + driveTrain.getLeftSpeedSetpoint());
+            //OI.printToDS(1, "Speed: " + driveTrain.getLeftSpeed());
+            OI.printToDS(2, "Pos SetPoint: " + driveTrain.getLeftPosSetpoint());
+            OI.printToDS(3, "Pos: " + driveTrain.getLeftPos());
+            OI.printToDS(1, "Gyro: "+driveTrain.getGyro().getAngle());
+            count = 0;
+        }
+        count++;
         if (Buttons.isPressed(InputConstants.kR1button, oi.getDriver())) {
             driveTrain.incPSpeed();
         } else if (Buttons.isPressed(InputConstants.kR2button, oi.getDriver())) {
@@ -49,7 +53,7 @@ public class PIDDriveTuning extends Command {
             driveTrain.decISpeed();
         }
         if (Buttons.isPressed(InputConstants.kStartbutton, oi.getDriver())) {
-            driveTrain.initSpeedMode();
+            driveTrain.reInit();
         }
         if (Buttons.isPressed(InputConstants.kR1button, oi.getOperator())) {
             driveTrain.incPPos();
@@ -62,7 +66,7 @@ public class PIDDriveTuning extends Command {
             driveTrain.decPPos();
         }
         if (Buttons.isPressed(InputConstants.kStartbutton, oi.getOperator())) {
-            driveTrain.initPosMode();
+            driveTrain.reInit();
         }
     }
 

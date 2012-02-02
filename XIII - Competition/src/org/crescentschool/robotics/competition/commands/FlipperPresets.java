@@ -43,7 +43,7 @@ public class FlipperPresets extends Command {
       
       
       if(Buttons.isPressed(InputConstants.kSquarebutton, oi.getDriver())){
-          flipper.setFlippers(15);
+          flipper.setFlippers(12);
          
       }
     
