@@ -8,8 +8,6 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.crescentschool.robotics.competition.commands.TankDrive;
-import org.crescentschool.robotics.competition.commands.TowerDrive;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 
@@ -91,15 +89,15 @@ public class DriveTrain extends Subsystem {
     };
 
     /**
-     * Sets the default command for the drivetrain
+     * Sets the default command for the drivetrain.
      */
     public void initDefaultCommand() {
         // No default command for the drivetrain
     }
 
     /**
-     * Ensures only one drivetrain is instantiated
-     * @return The singleton drivetrain instance
+     * Ensures only one drivetrain is instantiated.
+     * @return The singleton drivetrain instance.
      */
     public static DriveTrain getInstance() {
         if (instance == null) {
@@ -263,7 +261,18 @@ public class DriveTrain extends Subsystem {
     }
 
     /**
-     * Sets the target position for the right side of the drivetrain
+     * Sets the target position for the left side of the drivetrain.
+     * @param setpoint 
+     */
+    public void setLeftPos(double setpoint) {
+        if (controlMode != 3) {
+            initPosMode();
+        }
+        posControllerLeft.setSetpoint(setpoint);
+    }
+
+    /**
+     * Sets the target position for the right side of the drivetrain.
      * @param setpoint 
      */
     public void setRightPos(double setpoint) {
@@ -273,53 +282,40 @@ public class DriveTrain extends Subsystem {
         posControllerRight.setSetpoint(-setpoint);
     }
 
-    public void setLeftPos(double setpoint) {
-        if (controlMode != 3) {
-            initPosMode();
-        }
-        posControllerLeft.setSetpoint(setpoint);
-    }
-
+    /**
+     * Sets the target position for the both sides of the drivetrain.
+     * @param setpoint 
+     */
     public void setPos(double setpoint) {
         setLeftPos(setpoint);
         setRightPos(setpoint);
         System.out.println("SetPoint " + setpoint);
     }
 
-    public double getRightPosSetpoint() {
-        return posControllerRight.getSetpoint();
-    }
-
+    /**
+     * Gets the target position for the right side of the drivetrain.
+     */
     public double getLeftPosSetpoint() {
         return posControllerLeft.getSetpoint();
     }
 
+    /**
+     * Gets the target position for the right side of the drivetrain.
+     */
+    public double getRightPosSetpoint() {
+        return posControllerRight.getSetpoint();
+    }
+
+    /**
+     * Gets the target position for the left side of the drivetrain.
+     */
     public double getPosSetpoint() {
         return (posControllerRight.getSetpoint() + posControllerLeft.getSetpoint()) / 2;
     }
 
-    public double getPos() {
-        try {
-            return (jagLeftMaster.getPosition() + jagLeftMaster.getPosition()) / 2;
-        } catch (CANTimeoutException ex) {
-            canError = true;
-            handleCANError();
-            ex.printStackTrace();
-            return 0;
-        }
-    }
-
-    public double getRightPos() {
-        try {
-            return (jagRightMaster.getPosition());
-        } catch (CANTimeoutException ex) {
-            canError = true;
-            handleCANError();
-            ex.printStackTrace();
-            return 0;
-        }
-    }
-
+    /**
+     * Gets the current position for left side of the drivetrain.
+     */
     public double getLeftPos() {
         try {
             return (jagLeftMaster.getPosition());
@@ -331,31 +327,43 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    public void rightSpeedSetpoint(double setpoint) {
-        if (controlMode != 2) {
-            initSpeedMode();
-        }
+    /**
+     * Gets the current position for right side of the drivetrain.
+     */
+    public double getRightPos() {
         try {
-            //System.out.print(setpoint);
-            //System.out.print("," + jagRightMaster.getSpeed());
-            jagRightMaster.setX(-2 * setpoint);
-            syncSlaves();
-            count++;
+            return (jagRightMaster.getPosition());
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();
             ex.printStackTrace();
+            return 0;
         }
     }
 
-    public void leftSpeedSetpoint(double setpoint) {
+    /**
+     * Gets the current position for both sides of the drivetrain.
+     */
+    public double getPos() {
+        try {
+            return (jagLeftMaster.getPosition() + jagRightMaster.getPosition()) / 2;
+        } catch (CANTimeoutException ex) {
+            canError = true;
+            handleCANError();
+            ex.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * Sets the target speed for the left side of the drivetrain.
+     * @param setpoint The target speed in ft/s.
+     */
+    public void setLeftSpeed(double setpoint) {
         if (controlMode != 2) {
             initSpeedMode();
         }
         try {
-            //System.out.print("," + setpoint);
-            //System.out.println("," + jagLeftMaster.getSpeed());
-
             jagLeftMaster.setX(2 * setpoint);
             syncSlaves();
             count++;
@@ -366,22 +374,37 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    public void speedSetpoint(double setpoint) {
-        leftSpeedSetpoint(setpoint);
-        rightSpeedSetpoint(setpoint);
-    }
-
-    public double getRightSpeedSetpoint() {
+    /**
+     * Sets the target speed for the right side of the drivetrain.
+     * @param setpoint The target speed in ft/s.
+     */
+    public void setRightSpeed(double setpoint) {
+        if (controlMode != 2) {
+            initSpeedMode();
+        }
         try {
-            return jagRightMaster.getX();
+            jagRightMaster.setX(-2 * setpoint);
+            syncSlaves();
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();
             ex.printStackTrace();
-            return 0;
         }
     }
 
+    /**
+     * Sets the target speed for the both sides of the drivetrain.
+     * @param setpoint The target speed in ft/s.
+     */
+    public void setSpeed(double setpoint) {
+        setLeftSpeed(setpoint);
+        setRightSpeed(setpoint);
+    }
+
+    /**
+     * Gets the target speed for the left side of the drivetrain.
+     * @return The target speed in ft/s.
+     */
     public double getLeftSpeedSetpoint() {
         try {
             return jagLeftMaster.getX();
@@ -393,6 +416,25 @@ public class DriveTrain extends Subsystem {
         }
     }
 
+    /**
+     * Gets the target speed for the right side of the drivetrain.
+     * @return The target speed in ft/s.
+     */
+    public double getRightSpeedSetpoint() {
+        try {
+            return jagRightMaster.getX();
+        } catch (CANTimeoutException ex) {
+            canError = true;
+            handleCANError();
+            ex.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * Gets the target speed for both sides of the drivetrain.
+     * @return The target speed in ft/s.
+     */
     public double getSpeedSetpoint() {
         try {
             return (jagLeftMaster.getX() + jagRightMaster.getX()) / 2;
@@ -404,17 +446,10 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    public double getSpeed() {
-        try {
-            return (jagLeftMaster.getSpeed() + jagLeftMaster.getPosition()) / 2;
-        } catch (CANTimeoutException ex) {
-            canError = true;
-            handleCANError();
-            ex.printStackTrace();
-            return 0;
-        }
-    }
-
+    /**
+     * Gets the current speed for the left side of the drivetrain.
+     * @return The target speed in ft/s.
+     */
     public double getLeftSpeed() {
         try {
             return (jagLeftMaster.getSpeed());
@@ -426,6 +461,10 @@ public class DriveTrain extends Subsystem {
         }
     }
 
+    /**
+     * Gets the current speed for the right side of the drivetrain.
+     * @return The target speed in ft/s.
+     */
     public double getRightSpeed() {
         try {
             return (jagRightMaster.getSpeed());
@@ -437,12 +476,30 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    public void leftVBusSetpoint(double setpoint) {
+    /**
+     * Gets the current speed for both sides of the drivetrain.
+     * @return The target speed in ft/s.
+     */
+    public double getSpeed() {
+        try {
+            return (jagLeftMaster.getSpeed() + jagRightMaster.getPosition()) / 2;
+        } catch (CANTimeoutException ex) {
+            canError = true;
+            handleCANError();
+            ex.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * Sets the target normalized voltage for the left side of the drivetrain.
+     * @param setpoint The target normalized voltage from -1 to 1.
+     */
+    public void setLeftVBus(double setpoint) {
         if (controlMode != 1) {
             initVBusMode();
         }
         try {
-            //System.out.print("Left " + jagLeftMaster.getSpeed());
             jagLeftMaster.setX(setpoint);
 
         } catch (CANTimeoutException ex) {
@@ -453,14 +510,15 @@ public class DriveTrain extends Subsystem {
         syncSlaves();
     }
 
-    public void rightVBusSetpoint(double setpoint) {
+    /**
+     * Sets the target normalized voltage for the left side of the drivetrain.
+     * @param setpoint The target normalized voltage from -1 to 1.
+     */
+    public void setRightVBus(double setpoint) {
         if (controlMode != 1) {
             initVBusMode();
         }
         try {
-
-            //System.out.println("Right " + jagRightMaster.getSpeed());
-
             jagRightMaster.setX(setpoint);
 
         } catch (CANTimeoutException ex) {
@@ -474,6 +532,11 @@ public class DriveTrain extends Subsystem {
     public void handleCANError() {
         if (canError) {
             System.out.println("CAN Error!");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
             canError = false;
             switch (controlMode) {
                 case 1:
@@ -486,71 +549,91 @@ public class DriveTrain extends Subsystem {
                     initPosMode();
                     break;
             }
-            if (canError) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-                handleCANError();
-            }
         }
     }
 
+    /**
+     * Increments the position mode P constant.
+     */
     public void incPPos() {
         pPos += 1;
         printPIDPos();
     }
 
+    /**
+     * Decrements the position mode P constant.
+     */
     public void decPPos() {
         pPos -= 1;
         printPIDPos();
     }
 
+    /**
+     * Increments the position mode I constant.
+     */
     public void incIPos() {
         iPos += 0.1;
         printPIDPos();
     }
 
+    /**
+     * Decrements the position mode I constant.
+     */
     public void decIPos() {
         iPos -= 0.1;
         printPIDPos();
     }
 
+    /**
+     * Increments the speed mode P constant.
+     */
     public void incPSpeed() {
         pSpeed += 0.01;
         printPIDSpeed();
     }
 
+    /**
+     * Decrements the speed mode P constant.
+     */
     public void decPSpeed() {
         pSpeed -= 0.01;
         printPIDSpeed();
     }
 
+    /**
+     * Increments the speed mode P constant.
+     */
     public void incISpeed() {
         dSpeed += 0.1;
         printPIDSpeed();
     }
 
+    /**
+     * Decrements the speed mode P constant.
+     */
     public void decISpeed() {
         dSpeed -= 0.1;
         printPIDSpeed();
     }
+    /**
+     * 
+     * @return
+     */
 
     public CoyoBotGyro getGyro() {
         return gyro;
     }
 
-    private void printPIDPos() {
+    public void printPIDPos() {
         System.out.println("Pos P: " + pPos + " Pos I: " + iPos + " Pos D: " + dPos);
     }
 
-    private void printPIDSpeed() {
+    public void printPIDSpeed() {
         System.out.println("Speed P: " + pSpeed + " Speed I: " + iSpeed + " Speed D: " + dSpeed);
     }
 
     /**
-     * Re-initializes the drivetrain based on the current drive mode
+     * Re-initializes the drivetrain based on the current drive mode.
      */
     public void reInit() {
         switch (controlMode) {

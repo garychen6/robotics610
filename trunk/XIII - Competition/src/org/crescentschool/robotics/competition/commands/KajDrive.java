@@ -33,8 +33,8 @@ public class KajDrive extends Command {
         y = oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis);
         left = y - x;
         right = y + x;
-        driveTrain.rightVBusSetpoint(right);
-        driveTrain.leftVBusSetpoint(left);       
+        driveTrain.setRightVBus(right);
+        driveTrain.setLeftVBus(left);  
     }
 
     // Make this return true when this Command no longer needs to run execute()
