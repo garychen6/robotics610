@@ -28,13 +28,13 @@ import org.crescentschool.robotics.competition.subsystems.Intake;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-
 public class CoyobotXIII extends IterativeRobot {
 
     //Compressor compressor;
     Command autonomous;
     KinectStick leftArm;
     int autonMode = 1;
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -57,33 +57,33 @@ public class CoyobotXIII extends IterativeRobot {
 
     public void autonomousInit() {
         // schedule the autonomous command (example)
-       // autonomous.start();
+        // autonomous.start();
         autonomous.start();
     }
 
     public void autonomousPeriodic() {
-        if(leftArm.getY(Hand.kLeft) > 0.7){
-            if(autonMode == 3)autonMode=1;
-            else {
+        if (leftArm.getY(Hand.kLeft) > 0.7) {
+            if (autonMode == 3) {
+                autonMode = 1;
+            } else {
                 autonomous.cancel();
                 autonMode++;
-                switch(autonMode){
-                    default:
-                    case 1: 
-                        autonomous = new AutonomousShoot();
-                        break;
-                    case 2:
-                        autonomous = new Autonomous();
-                        break;
-                    case 3: 
-                        autonomous= new KinectAuton();
-                        break;
-                }
-                autonomous.start();
             }
+            switch (autonMode) {
+                default:
+                case 1:
+                    autonomous = new AutonomousShoot();
+                    break;
+                case 2:
+                    autonomous = new Autonomous();
+                    break;
+                case 3:
+                    autonomous = new KinectAuton();
+                    break;
+            }
+            autonomous.start();
         }
-        
-        
+
         Scheduler.getInstance().run();
     }
 
