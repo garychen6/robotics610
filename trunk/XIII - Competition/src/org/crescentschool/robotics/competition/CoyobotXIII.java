@@ -66,6 +66,7 @@ public class CoyobotXIII extends IterativeRobot {
 
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+        Buttons.update();
     }
 
     public void teleopContinuous() {
