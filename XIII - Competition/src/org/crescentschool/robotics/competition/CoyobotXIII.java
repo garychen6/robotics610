@@ -30,7 +30,6 @@ import org.crescentschool.robotics.competition.subsystems.Intake;
  */
 public class CoyobotXIII extends IterativeRobot {
 
-    //Compressor compressor;
     Command autonomous;
     KinectStick leftArm;
     int autonMode = 1;
@@ -40,11 +39,7 @@ public class CoyobotXIII extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-        // instantiate the command used for the autonomous period
-        //autonomousCommand = new TankDrive();
-
         // Initialize all subsystems
-        //CommandBase.init
         OI.getInstance();
         DriveTrain.getInstance();
         Flipper.getInstance();
@@ -57,7 +52,6 @@ public class CoyobotXIII extends IterativeRobot {
 
     public void autonomousInit() {
         // schedule the autonomous command (example)
-        // autonomous.start();
         autonomous.start();
     }
 
@@ -83,7 +77,6 @@ public class CoyobotXIII extends IterativeRobot {
             }
             autonomous.start();
         }
-
         Scheduler.getInstance().run();
     }
 

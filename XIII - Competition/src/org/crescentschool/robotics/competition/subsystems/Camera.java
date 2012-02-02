@@ -26,7 +26,7 @@ public class Camera extends Subsystem {
     private static AxisCamera camera = AxisCamera.getInstance();
     private double xOffset = 0;
 
-    public Camera() {
+    private Camera() {
         camera.writeResolution(AxisCamera.ResolutionT.k320x240);
         camera.writeCompression(30);
         camera.writeWhiteBalance(AxisCamera.WhiteBalanceT.fixedOutdoor1);
@@ -59,7 +59,7 @@ public class Camera extends Subsystem {
     }
 
     /**
-     * Updates the camera image if there is a new image and displays the binary image.
+     * Updates the camera image if there is a new image. Identifies reflective rectangles. Calculates X offset of highest rectangle.
      */
     public void processCamera() {
 
