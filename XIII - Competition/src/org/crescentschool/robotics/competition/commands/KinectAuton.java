@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  * @author Warfa
  */
-public class BallIntake extends Command {
-
-    public BallIntake() {
+public class KinectAuton extends Command {
+    
+    public KinectAuton() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
