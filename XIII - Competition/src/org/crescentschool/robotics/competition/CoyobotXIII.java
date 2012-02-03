@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.AutonomousShoot;
 import org.crescentschool.robotics.competition.commands.FlipperPresets;
+import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
 import org.crescentschool.robotics.competition.commands.PIDDriveTuning;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
@@ -88,6 +89,7 @@ public class CoyobotXIII extends IterativeRobot {
         autonomous.cancel();
         Scheduler.getInstance().add(new PIDDriveTuning());
         Scheduler.getInstance().add(new FlipperPresets());
+        Scheduler.getInstance().add(new KajDrive());
     }
 
     public void teleopPeriodic() {
