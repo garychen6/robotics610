@@ -31,6 +31,7 @@ public class DriveTrain extends Subsystem {
     private Accelerometer accel;
     private PIDController posControllerRight;
     private PIDController posControllerLeft;
+    private Gyro vertGyro;
     private PIDSource rightPosIn = new PIDSource() {
 
         public double pidGet() {
@@ -108,6 +109,7 @@ public class DriveTrain extends Subsystem {
     }
 
     private DriveTrain() {
+
         pPos = PIDConstants.drivePositionP;
         iPos = PIDConstants.drivePositionI;
         dPos = PIDConstants.drivePositionD;
@@ -135,6 +137,7 @@ public class DriveTrain extends Subsystem {
         }
         gyro = new CoyoBotGyro(ElectricalConstants.GyroPort);
         gyro.setSensitivity(0.007);
+        vertGyro = new Gyro(ElectricalConstants.VertGyroPort);
         accel = new Accelerometer(2);
         initPosMode();
     }
@@ -362,11 +365,12 @@ public class DriveTrain extends Subsystem {
             return 0;
         }
     }
-     /**
+
+    /**
      * Gets the current Acceleration of the drivetrain.
      */
     public double getAccel() {
-      return accel.getAcceleration();
+        return accel.getAcceleration();
     }
 
     /**
@@ -668,5 +672,13 @@ public class DriveTrain extends Subsystem {
                 initVBusMode();
                 break;
         }
+    }
+    /**
+     * Gets the value of the vertical gyro.
+     * @return The angle of the vertical gyro.
+     */
+    public double getVertAngle() {
+
+        return vertGyro.getAngle();
     }
 }

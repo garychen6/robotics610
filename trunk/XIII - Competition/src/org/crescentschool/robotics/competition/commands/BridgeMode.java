@@ -12,25 +12,32 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  * @author Warfa
  */
 public class BridgeMode extends Command {
+
     DriveTrain driveTrain = DriveTrain.getInstance();
-    
+    double maxAngle;
+
     public BridgeMode() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
+        maxAngle = driveTrain.getVertAngle();
     }
 
-    // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        
+
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        if (Math.abs(driveTrain.getVertAngle()) == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Called once after isFinished returns true
