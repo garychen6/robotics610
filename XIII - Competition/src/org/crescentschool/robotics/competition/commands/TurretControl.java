@@ -5,7 +5,9 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
+import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Turret;
 
 /**
@@ -13,8 +15,14 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
  * @author Warfa
  */
 public class TurretControl extends Command {
+
     Turret turret = Turret.getInstance();
     OI oi = OI.getInstance();
+    double pTurret = 0;
+    double iTurret = 0;
+    double dTurret = 0;
+    boolean buttonPressed = false;
+
     public TurretControl() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -28,6 +36,18 @@ public class TurretControl extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         turret.setX(oi.getOperator().getRawAxis(2));
+        if (Buttons.isPressed(InputConstants.kR1button, oi.getDriver())) {
+            turret.incTurretP(1);
+        } else if (Buttons.isPressed(InputConstants.kL1button, oi.getDriver())){
+            turret.decTurretP(-1);
+        } else if (Buttons.isPressed(InputConstants.kR2button, oi.getDriver())) {
+            turret.incTurretI(0.001);
+        } else if (Buttons.isPressed(InputConstants.kL2button, oi.getDriver())) {
+            turret.decTurretI(-0.001);
+        }
+        if (Buttons.isPressed(InputConstants.kStartbutton,oi.getDriver())){
+            turret.resetTurretPID();
+        }
     }
 
     // Make this return true when this Command no longer needs to run execute()

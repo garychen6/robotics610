@@ -90,7 +90,7 @@ public class Shooter extends Subsystem {
         try {
             shootJaguar.setPID(p, i, d);
             shootJaguar.enableControl();
-             shootJaguarSlave.setX(shootJaguar.getOutputVoltage()/shootJaguar.getBusVoltage());
+            shootJaguarSlave.setX(shootJaguar.getOutputVoltage()/shootJaguar.getBusVoltage());
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
