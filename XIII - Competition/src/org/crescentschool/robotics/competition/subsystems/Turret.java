@@ -16,12 +16,14 @@ import org.crescentschool.robotics.competition.constants.PIDConstants;
  * @author Warfa
  */
 public class Turret extends Subsystem {
-    // Put methods for controlling this subsystem
-    // here. Call these from Commands.
 
     CANJaguar turretJag;
     static Turret instance = null;
-
+    
+    /**
+     * Ensures that only one turret is instantiated.
+     * @return The singleton turret instance.
+     */
     public static Turret getInstance() {
         if (instance == null) {
             instance = new Turret();
@@ -44,7 +46,10 @@ public class Turret extends Subsystem {
             ex.printStackTrace();
         }
     }
-
+    /**
+     * Sets the target angle of the turret.
+     * @param ang The target angle of the turret.
+     */
     public void setX(double ang) {
         try {
             turretJag.setX(ang);
@@ -53,6 +58,10 @@ public class Turret extends Subsystem {
         }
     
     }
+    /**
+     * Gets the target position of the turret.
+     * @return The target position of the turret as an angle.
+     */
     public double getPos() {
         try {
            return turretJag.getX();
@@ -62,6 +71,9 @@ public class Turret extends Subsystem {
         }
     
     }
+    /**
+     * The default command for the turret.
+     */
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
