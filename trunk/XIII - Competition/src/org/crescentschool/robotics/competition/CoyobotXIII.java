@@ -8,6 +8,7 @@ package org.crescentschool.robotics.competition;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.KinectStick;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -16,6 +17,7 @@ import org.crescentschool.robotics.competition.commands.AutonomousShoot;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
 import org.crescentschool.robotics.competition.commands.PIDTuning;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Turret;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -25,17 +27,20 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  * directory.
  */
 public class CoyobotXIII extends IterativeRobot {
-
+    
+    
     Command autonomous;
     KinectStick leftArm;
     int autonMode = 1;
-
+    Joystick driver;
+    Turret turret;
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
         // Initialize all subsystems
+        driver = new Joystick(1);
         OI.getInstance();
         //Turret.getInstance();
         //Shooter.getInstance();
@@ -93,7 +98,17 @@ public class CoyobotXIII extends IterativeRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         Buttons.update();
+        Buttons.register(1, driver);
+        Buttons.register(2, driver);
+        Buttons.register(3, driver);
+        Buttons.register(4, driver);
+        Buttons.register(5, driver);
+        Buttons.register(6, driver);
+        Buttons.register(7, driver);
+        Buttons.register(8, driver);
+           
     }
+    
 
     public void teleopContinuous() {
         //camera.processCamera();

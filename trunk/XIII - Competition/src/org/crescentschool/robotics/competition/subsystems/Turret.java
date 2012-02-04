@@ -19,7 +19,8 @@ public class Turret extends Subsystem {
 
     CANJaguar turretJag;
     static Turret instance = null;
-    
+    double p, i, d;
+
     /**
      * Ensures that only one turret is instantiated.
      * @return The singleton turret instance.
@@ -32,24 +33,29 @@ public class Turret extends Subsystem {
     }
 
     private Turret() {
+        p = PIDConstants.turretP;
+        i = PIDConstants.turretI;
+        d = 0;
         try {
             turretJag = new CANJaguar(ElectricalConstants.TurretJaguar);
-            /*
             turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
             turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
             turretJag.configEncoderCodesPerRev(256);
-            turretJag.setPID(PIDConstants.turretP, PIDConstants.turretI, PIDConstants.turretD);
-            turretJag.changeControlMode(CANJaguar.ControlMode.kSpeed);
-            turretJag.enableControl(0);
+            turretJag.setPID(p, i, d);
+            //turretJag.changeControlMode(CANJaguar.ControlMode.kSpeed);
+            //turretJag.enableControl(0);
             turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
             turretJag.enableControl(0);
-             */
-            turretJag.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-            turretJag.enableControl(0);
+            turretJag.configSoftPositionLimits(135, -135);
+
+
+            // turretJag.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            // turretJag.enableControl(0);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     }
+
     /**
      * Sets the target angle of the turret.
      * @param ang The target angle of the turret.
@@ -60,21 +66,23 @@ public class Turret extends Subsystem {
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
-    
+
     }
+
     /**
      * Gets the target position of the turret.
      * @return The target position of the turret as an angle.
      */
     public double getPos() {
         try {
-           return turretJag.getX();
+            return turretJag.getX();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
             return 0;
         }
-    
+
     }
+
     /**
      * The default command for the turret.
      */
@@ -82,4 +90,36 @@ public class Turret extends Subsystem {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
+
+    public void incTurretP(double x) {
+        p += x;
+    }
+
+    public void decTurretP(double x) {
+        p -= x;
+    }
+
+    public void incTurretI(double x) {
+        i += x;
+    }
+
+    public void decTurretI(double x) {
+        i -= x;
+    }
+
+    public void resetTurretPID() {
+        try {
+            turretJag.setPID(p, i, d);
+            turretJag.enableControl();
+
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+
+        }
+    }
+    //public void incD() {
+    //d += 0.01;
+    //public void decD() {
+    //d -= 0.01;
+    //}
 }
