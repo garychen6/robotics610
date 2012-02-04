@@ -19,25 +19,28 @@ public class BridgeMode extends Command {
     public BridgeMode() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
+        requires(driveTrain);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
         maxAngle = driveTrain.getVertAngle();
+        driveTrain.setSpeed(50);
     }
 
     protected void execute() {
-        
+        if (maxAngle < driveTrain.getVertAngle()) {
+            maxAngle = driveTrain.getVertAngle();
+           
+        } else if (driveTrain.getVertAngle() < (maxAngle - 5)) {
+            driveTrain.setPos(-1/6);
+        }
 
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        if (Math.abs(driveTrain.getVertAngle()) == 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return false;
     }
 
     // Called once after isFinished returns true

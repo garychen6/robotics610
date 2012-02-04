@@ -13,11 +13,9 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.AutonomousShoot;
-import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
 import org.crescentschool.robotics.competition.commands.PIDTuning;
-import org.crescentschool.robotics.competition.subsystems.Shooter;
-import org.crescentschool.robotics.competition.subsystems.Turret;
+import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -39,9 +37,9 @@ public class CoyobotXIII extends IterativeRobot {
     public void robotInit() {
         // Initialize all subsystems
         OI.getInstance();
-        Turret.getInstance();
-        Shooter.getInstance();
-       // DriveTrain.getInstance();
+        //Turret.getInstance();
+        //Shooter.getInstance();
+        DriveTrain.getInstance();
        // Flipper.getInstance();
        // Intake.getInstance();
        // Feeder.getInstance();
@@ -89,7 +87,7 @@ public class CoyobotXIII extends IterativeRobot {
         Scheduler.getInstance().add(new PIDTuning());
         //Scheduler.getInstance().add(new FlipperPresets());
         //Scheduler.getInstance().add(new TurretControl());
-        Scheduler.getInstance().add(new KajDrive());
+        //.getInstance().add(new KajDrive());
     }
 
     public void teleopPeriodic() {

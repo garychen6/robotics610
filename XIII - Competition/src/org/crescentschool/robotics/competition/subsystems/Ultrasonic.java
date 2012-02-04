@@ -6,6 +6,7 @@ package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 
 /**
@@ -28,7 +29,7 @@ public class Ultrasonic extends Subsystem {
        return instance;
    }
    private Ultrasonic(){
-       ultrasonic = new AnalogChannel(1);
+       ultrasonic = new AnalogChannel(ElectricalConstants.USonic);
        ultrasonic.setAverageBits(4);
    }
    /**

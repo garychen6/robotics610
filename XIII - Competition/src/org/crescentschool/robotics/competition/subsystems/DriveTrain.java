@@ -31,7 +31,7 @@ public class DriveTrain extends Subsystem {
     private Accelerometer accel;
     private PIDController posControllerRight;
     private PIDController posControllerLeft;
-    private Gyro vertGyro;
+    private CoyoBotGyro vertGyro;
     private PIDSource rightPosIn = new PIDSource() {
 
         public double pidGet() {
@@ -137,8 +137,7 @@ public class DriveTrain extends Subsystem {
         }
         gyro = new CoyoBotGyro(ElectricalConstants.GyroPort);
         gyro.setSensitivity(0.007);
-        vertGyro = new Gyro(ElectricalConstants.VertGyroPort);
-        accel = new Accelerometer(2);
+        vertGyro = new CoyoBotGyro(ElectricalConstants.VertGyroPort);
         initPosMode();
     }
 
