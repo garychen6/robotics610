@@ -46,6 +46,10 @@ public class ElectricalConstants {
      * The anslog port of the vertical gyro
      */
     public static final int VertGyroPort = 2;
+     /**
+     * The anslog port of the ultrasonic
+     */
+    public static final int USonic = 3;
     /**
      * The CAN ID of the turret Jaguar
      */

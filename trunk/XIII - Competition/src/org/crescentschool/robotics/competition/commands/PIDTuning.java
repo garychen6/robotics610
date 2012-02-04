@@ -40,13 +40,14 @@ public class PIDTuning extends Command {
             //OI.printToDS(2, "Pos SetPoint: " + driveTrain.getLeftPosSetpoint());
             //OI.printToDS(3, "Pos: " + driveTrain.getLeftPos());
             //OI.printToDS(4, "Accel: "+driveTrain.getAccel());
-            OI.printToDS(0, "ShooterSet: " + shooter.getShooterSetPoint());
-            OI.printToDS(1, "ShooterSpeed: " + shooter.getShooterSpeed());
-
+          //  OI.printToDS(0, "ShooterSet: " + shooter.getShooterSetPoint());
+          //  OI.printToDS(1, "ShooterSpeed: " + shooter.getShooterSpeed());
+            OI.printToDS(2, "Vertical Gyro: " + driveTrain.getVertAngle());
+            OI.printToDS(3, "Horizontal Gyro: " + driveTrain.getGyro().getAngle());
             count = 0;
         }
         count++;
-        if (Buttons.isPressed(InputConstants.kR1button, oi.getDriver())) {
+     /*   if (Buttons.isPressed(InputConstants.kR1button, oi.getDriver())) {
             shooter.incP(1);
         } else if (Buttons.isPressed(InputConstants.kR2button, oi.getDriver())) {
             shooter.incP(-1);
@@ -66,6 +67,7 @@ public class PIDTuning extends Command {
             rpm -= 10;
             shooter.setShooter(rpm);
         }
+      */
     }
 
     // Make this return true when this Command no longer needs to run execute()
