@@ -5,16 +5,21 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.CANJaguar;
+import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.commands.Shoot;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 
+/**
+ *
+ */
 public class Shooter extends Subsystem {
-
-    public CANJaguar topJaguar;
-    public CANJaguar bottomJaguar;
+    
+    public CANJaguar shootJaguar;
+    public CANJaguar shootJaguarSlave;
     private static Shooter instance = null;
-
+    double p,i,d;
     /**
      * Ensures that only one shooter is instantiated.
      * @return The singleton shooter instance.
@@ -28,61 +33,68 @@ public class Shooter extends Subsystem {
     }
 
     public Shooter() {
+        p = PIDConstants.shooterP;
+        i = PIDConstants.shooterI;
+        d = 0;
         try {
-            topJaguar = new CANJaguar(6);
-            bottomJaguar = new CANJaguar(7);
-            topJaguar.changeControlMode(CANJaguar.ControlMode.kSpeed);
-            bottomJaguar.changeControlMode(CANJaguar.ControlMode.kSpeed);
-            topJaguar.configEncoderCodesPerRev(256);
-            bottomJaguar.configEncoderCodesPerRev(256);
-            topJaguar.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
-            bottomJaguar.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
-            topJaguar.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
-            bottomJaguar.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
-
-            topJaguar.configNeutralMode(CANJaguar.NeutralMode.kCoast);
-            bottomJaguar.configNeutralMode(CANJaguar.NeutralMode.kCoast);
-
-
-            topJaguar.setPID(PIDConstants.shooterTopP, PIDConstants.shooterTopI, 0);
-            bottomJaguar.setPID(PIDConstants.shooterBottomP, PIDConstants.shooterBottomI, 0);
-
-            topJaguar.enableControl(0);
-            bottomJaguar.enableControl(0);
-
-
+            shootJaguar = new CANJaguar(ElectricalConstants.shootJaguar);
+            shootJaguarSlave = new CANJaguar(ElectricalConstants.shootJaguarSlave);
+            shootJaguar.changeControlMode(CANJaguar.ControlMode.kSpeed);
+            shootJaguar.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            shootJaguar.configEncoderCodesPerRev(256);
+            shootJaguar.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
+            shootJaguar.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
+            shootJaguar.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            shootJaguarSlave.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            shootJaguar.setPID(p, i, d);
+            //shootJaguar.setPID(PIDConstants.shooterP, PIDConstants.shooterI, 0);
+            shootJaguar.enableControl(0);
+            shootJaguarSlave.enableControl();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Sets the target speed for the top shooter.
-     * @param rpm 
-     */
-    public void setTopShooter(int rpm) {
+    
+    public void setShooter(int rpm) {
         try {
-            topJaguar.setX(rpm);
-
+            shootJaguar.setX(rpm);
+            shootJaguarSlave.setX(shootJaguar.getOutputVoltage()/shootJaguar.getBusVoltage());
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
     }
-
-    /**
-     * Sets the target speed for the bottom shooter.
-     * @param rpm 
-     */
-    public void setBottomShooter(int rpm) {
+    public double getShooterSetPoint(){
         try {
-
-            bottomJaguar.setX(rpm);
-        } catch (Exception e) {
-            e.printStackTrace();
+            return shootJaguar.getX();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+            return 0;
         }
     }
-
+    public double getShooterSpeed(){
+        try {
+            return shootJaguar.getSpeed();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+            return 0;
+        }
+    }
+    public void incP(double x){
+        p+= x;
+    }
+    public void incI(double x){
+        i+= x;
+    }
+    public void resetPID(){
+        try {
+            shootJaguar.setPID(p, i, d);
+            shootJaguar.enableControl();
+             shootJaguarSlave.setX(shootJaguar.getOutputVoltage()/shootJaguar.getBusVoltage());
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+    }
     /**
      * The default command for the shooter.
      */

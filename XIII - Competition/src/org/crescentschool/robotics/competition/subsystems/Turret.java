@@ -34,6 +34,7 @@ public class Turret extends Subsystem {
     private Turret() {
         try {
             turretJag = new CANJaguar(ElectricalConstants.TurretJaguar);
+            /*
             turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
             turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
             turretJag.configEncoderCodesPerRev(256);
@@ -41,6 +42,9 @@ public class Turret extends Subsystem {
             turretJag.changeControlMode(CANJaguar.ControlMode.kSpeed);
             turretJag.enableControl(0);
             turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
+            turretJag.enableControl(0);
+             */
+            turretJag.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             turretJag.enableControl(0);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();

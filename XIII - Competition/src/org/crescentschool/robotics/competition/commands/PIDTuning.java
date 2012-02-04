@@ -1,12 +1,11 @@
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
-import org.crescentschool.robotics.competition.subsystems.Flipper;
+import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /*
  * To change this template, choose Tools | Templates and open the template in
@@ -16,13 +15,15 @@ import org.crescentschool.robotics.competition.subsystems.Flipper;
  *
  * @author Robotics
  */
-public class PIDDriveTuning extends Command {
+public class PIDTuning extends Command {
 
     OI oi = OI.getInstance();
     DriveTrain driveTrain = DriveTrain.getInstance();
+    Shooter shooter = Shooter.getInstance();
     int count = 0;
+    int rpm = 0;
 
-    public PIDDriveTuning() {
+    public PIDTuning() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -36,37 +37,34 @@ public class PIDDriveTuning extends Command {
         if (count % 5 == 0) {
             //OI.printToDS(0, "Speed SetPoint: " + driveTrain.getLeftSpeedSetpoint());
             //OI.printToDS(1, "Speed: " + driveTrain.getLeftSpeed());
-            OI.printToDS(2, "Pos SetPoint: " + driveTrain.getLeftPosSetpoint());
-            OI.printToDS(3, "Pos: " + driveTrain.getLeftPos());
-            OI.printToDS(1, "Gyro: "+driveTrain.getGyro().getAngle());
+            //OI.printToDS(2, "Pos SetPoint: " + driveTrain.getLeftPosSetpoint());
+            //OI.printToDS(3, "Pos: " + driveTrain.getLeftPos());
+            //OI.printToDS(4, "Accel: "+driveTrain.getAccel());
+            OI.printToDS(0, "ShooterSet: " + shooter.getShooterSetPoint());
+            OI.printToDS(1, "ShooterSpeed: " + shooter.getShooterSpeed());
+
             count = 0;
         }
         count++;
         if (Buttons.isPressed(InputConstants.kR1button, oi.getDriver())) {
-            driveTrain.incPSpeed();
+            shooter.incP(1);
         } else if (Buttons.isPressed(InputConstants.kR2button, oi.getDriver())) {
-            driveTrain.decPSpeed();
+            shooter.incP(-1);
         }
         if (Buttons.isPressed(InputConstants.kL1button, oi.getDriver())) {
-            driveTrain.incISpeed();
+            shooter.incI(0.001);
         } else if (Buttons.isPressed(InputConstants.kL2button, oi.getDriver())) {
-            driveTrain.decISpeed();
+            shooter.incI(-0.001);
         }
         if (Buttons.isPressed(InputConstants.kStartbutton, oi.getDriver())) {
-            driveTrain.reInit();
+            shooter.resetPID();
         }
         if (Buttons.isPressed(InputConstants.kR1button, oi.getOperator())) {
-            driveTrain.incPPos();
+            rpm += 10;
+            shooter.setShooter(rpm);
         } else if (Buttons.isPressed(InputConstants.kR2button, oi.getOperator())) {
-            driveTrain.decPPos();
-        }
-        if (Buttons.isPressed(InputConstants.kL1button, oi.getOperator())) {
-            driveTrain.incPPos();
-        } else if (Buttons.isPressed(InputConstants.kL2button, oi.getOperator())) {
-            driveTrain.decPPos();
-        }
-        if (Buttons.isPressed(InputConstants.kStartbutton, oi.getOperator())) {
-            driveTrain.reInit();
+            rpm -= 10;
+            shooter.setShooter(rpm);
         }
     }
 

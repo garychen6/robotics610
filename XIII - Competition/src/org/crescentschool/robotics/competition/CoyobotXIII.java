@@ -13,14 +13,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.AutonomousShoot;
-import org.crescentschool.robotics.competition.commands.FlipperPresets;
 import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
-import org.crescentschool.robotics.competition.commands.PIDDriveTuning;
-import org.crescentschool.robotics.competition.subsystems.DriveTrain;
-import org.crescentschool.robotics.competition.subsystems.Feeder;
-import org.crescentschool.robotics.competition.subsystems.Flipper;
-import org.crescentschool.robotics.competition.subsystems.Intake;
+import org.crescentschool.robotics.competition.commands.PIDTuning;
+import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.subsystems.Turret;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -42,12 +39,14 @@ public class CoyobotXIII extends IterativeRobot {
     public void robotInit() {
         // Initialize all subsystems
         OI.getInstance();
-        DriveTrain.getInstance();
-        Flipper.getInstance();
-        Intake.getInstance();
-        Feeder.getInstance();
-        leftArm = new KinectStick(1);
-        autonomous = new AutonomousShoot();
+        Turret.getInstance();
+        Shooter.getInstance();
+       // DriveTrain.getInstance();
+       // Flipper.getInstance();
+       // Intake.getInstance();
+       // Feeder.getInstance();
+        //leftArm = new KinectStick(1);
+        //autonomous = new AutonomousShoot();
         //Camera.getInstance();
     }
 
@@ -86,9 +85,10 @@ public class CoyobotXIII extends IterativeRobot {
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        autonomous.cancel();
-        Scheduler.getInstance().add(new PIDDriveTuning());
-        Scheduler.getInstance().add(new FlipperPresets());
+        //autonomous.cancel();
+        Scheduler.getInstance().add(new PIDTuning());
+        //Scheduler.getInstance().add(new FlipperPresets());
+        //Scheduler.getInstance().add(new TurretControl());
         Scheduler.getInstance().add(new KajDrive());
     }
 

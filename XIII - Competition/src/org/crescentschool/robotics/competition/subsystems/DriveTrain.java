@@ -28,8 +28,9 @@ public class DriveTrain extends Subsystem {
     private CANJaguar jagRightSlave;
     private CANJaguar jagLeftSlave;
     private CoyoBotGyro gyro;
-    private PIDController posRightController;
-    private PIDController posLeftController;
+    private Accelerometer accel;
+    private PIDController posControllerRight;
+    private PIDController posControllerLeft;
     private PIDSource rightPosIn = new PIDSource() {
 
         public double pidGet() {
@@ -118,15 +119,15 @@ public class DriveTrain extends Subsystem {
             jagLeftMaster = new CANJaguar(ElectricalConstants.DriveLeftMaster);
             jagRightSlave = new CANJaguar(ElectricalConstants.DriveRightSlave);
             jagLeftSlave = new CANJaguar(ElectricalConstants.DriveLeftSlave);
-            posRightController = new PIDController(PIDConstants.drivePositionP,
+            posControllerRight = new PIDController(PIDConstants.drivePositionP,
                     PIDConstants.drivePositionI, PIDConstants.drivePositionD, rightPosIn, rightPosOut, 0.020);
-            posLeftController = new PIDController(PIDConstants.drivePositionP,
+            posControllerLeft = new PIDController(PIDConstants.drivePositionP,
                     PIDConstants.drivePositionI, PIDConstants.drivePositionD, leftPosIn, leftPosOut, 0.020);
-            posRightController.setInputRange(-20, 20);
-            posRightController.setOutputRange(-200, 200);
-            posLeftController.setInputRange(-20, 20);
-            posLeftController.setOutputRange(-200, 200);
-            posLeftController.setTolerance(5);
+            posControllerRight.setInputRange(-20, 20);
+            posControllerRight.setOutputRange(-200, 200);
+            posControllerLeft.setInputRange(-20, 20);
+            posControllerLeft.setOutputRange(-200, 200);
+            posControllerLeft.setTolerance(5);
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();
@@ -134,14 +135,15 @@ public class DriveTrain extends Subsystem {
         }
         gyro = new CoyoBotGyro(ElectricalConstants.GyroPort);
         gyro.setSensitivity(0.007);
+        accel = new Accelerometer(2);
         initPosMode();
     }
 
     private void initPosMode() {
         SmartDashboard.putString("DriveMode", "Position");
         controlMode = 3;
-        posRightController.setPID(-pPos, -iPos, -dPos);
-        posLeftController.setPID(pPos, iPos, dPos);
+        posControllerRight.setPID(-pPos, -iPos, -dPos);
+        posControllerLeft.setPID(pPos, iPos, dPos);
         gyro.reset();
         try {
             jagLeftMaster.configFaultTime(0.5);
@@ -177,15 +179,15 @@ public class DriveTrain extends Subsystem {
             handleCANError();
             ex.printStackTrace();
         }
-        posLeftController.reset();
-        posRightController.reset();
-        posLeftController.enable();
-        posRightController.enable();
+        posControllerLeft.reset();
+        posControllerRight.reset();
+        posControllerLeft.enable();
+        posControllerRight.enable();
     }
 
     private void initSpeedMode() {
-        posLeftController.disable();
-        posRightController.disable();
+        posControllerLeft.disable();
+        posControllerRight.disable();
         SmartDashboard.putString("DriveMode", "Speed Mode");
         controlMode = 2;
         try {
@@ -221,8 +223,8 @@ public class DriveTrain extends Subsystem {
     }
 
     private void initVBusMode() {
-        posLeftController.disable();
-        posRightController.disable();
+        posControllerLeft.disable();
+        posControllerRight.disable();
         SmartDashboard.putString("DriveMode", "VBus");
         controlMode = 1;
         try {
@@ -274,7 +276,7 @@ public class DriveTrain extends Subsystem {
         if (controlMode != 3) {
             initPosMode();
         }
-        posLeftController.setSetpoint(setpoint);
+        posControllerLeft.setSetpoint(setpoint);
     }
 
     /**
@@ -285,7 +287,7 @@ public class DriveTrain extends Subsystem {
         if (controlMode != 3) {
             initPosMode();
         }
-        posRightController.setSetpoint(-setpoint);
+        posControllerRight.setSetpoint(-setpoint);
     }
 
     /**
@@ -302,21 +304,21 @@ public class DriveTrain extends Subsystem {
      * Gets the target position for the right side of the drivetrain.
      */
     public double getLeftPosSetpoint() {
-        return posLeftController.getSetpoint();
+        return posControllerLeft.getSetpoint();
     }
 
     /**
      * Gets the target position for the right side of the drivetrain.
      */
     public double getRightPosSetpoint() {
-        return posRightController.getSetpoint();
+        return posControllerRight.getSetpoint();
     }
 
     /**
      * Gets the target position for the left side of the drivetrain.
      */
     public double getPosSetpoint() {
-        return (posRightController.getSetpoint() + posLeftController.getSetpoint()) / 2;
+        return (posControllerRight.getSetpoint() + posControllerLeft.getSetpoint()) / 2;
     }
 
     /**
@@ -359,6 +361,12 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
             return 0;
         }
+    }
+     /**
+     * Gets the current Acceleration of the drivetrain.
+     */
+    public double getAccel() {
+      return accel.getAcceleration();
     }
 
     /**
