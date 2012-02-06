@@ -104,26 +104,45 @@ public class Turret extends Subsystem {
         //setDefaultCommand(new MySpecialCommand());
     }
 
+    /**
+     * Increments the turret's P value.
+     * @param x The amount to increment the P value by.
+     */
     public void incTurretP(double x) {
         p += x;
         System.out.println("Turret P: " + p + " I: " + i);
     }
 
+    /**
+     * Decrements the turret's P value.
+     * @param x The amount to decrement the P value by.
+     */
     public void decTurretP(double x) {
         p -= x;
         System.out.println("Turret P: " + p + " I: " + i);
     }
 
+    /**
+     * Increments the turret's I value.
+     * @param x The amount to increment the I value by.
+     */
     public void incTurretI(double x) {
         i += x;
         System.out.println("Turret P: " + p + " I: " + i);
     }
 
+    /**
+     * Decrements the turret's I value.
+     * @param x The amount to decrement the I value by.
+     */
     public void decTurretI(double x) {
         i -= x;
         System.out.println("Turret P: " + p + " I: " + i);
     }
 
+    /**
+     * Resets the turret's P and I values to the values in PID constants.
+     */
     public void resetTurretPID() {
         try {
             turretJag.setPID(p, i, d);
