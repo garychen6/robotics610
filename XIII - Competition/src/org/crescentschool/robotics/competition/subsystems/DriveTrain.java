@@ -186,7 +186,9 @@ public class DriveTrain extends Subsystem {
         posControllerLeft.enable();
         posControllerRight.enable();
     }
-
+    /**
+     * Initializes speed mode for the Drivetrain.
+     */
     private void initSpeedMode() {
         posControllerLeft.disable();
         posControllerRight.disable();
@@ -223,7 +225,9 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
-
+/**
+     * Initializes Vbus mode for the Drivetrain.
+     */
     private void initVBusMode() {
         posControllerLeft.disable();
         posControllerRight.disable();
@@ -258,7 +262,10 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
-
+    
+    /**
+     * Sets the slaves at the same voltage as the masters.
+     */
     private void syncSlaves() {
         try {
             jagLeftSlave.setX(jagLeftMaster.getOutputVoltage() / 12);
@@ -672,6 +679,7 @@ public class DriveTrain extends Subsystem {
                 break;
         }
     }
+
     /**
      * Gets the value of the vertical gyro.
      * @return The angle of the vertical gyro.
