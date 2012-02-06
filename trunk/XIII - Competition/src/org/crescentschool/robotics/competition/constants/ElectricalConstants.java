@@ -57,7 +57,7 @@ public class ElectricalConstants {
      /**
      * The CAN ID of the shooter Master Jaguar
      */
-    public static final int shootJaguar = 7;
+    public static final int shootJaguar = 10;
     /**
      * The CAN ID of the shooter Slave Jaguar
      */

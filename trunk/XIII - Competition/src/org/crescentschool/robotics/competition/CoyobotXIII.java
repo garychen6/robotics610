@@ -8,15 +8,18 @@ package org.crescentschool.robotics.competition;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.KinectStick;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.AutonomousShoot;
+import org.crescentschool.robotics.competition.commands.FlipperPresets;
+import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
 import org.crescentschool.robotics.competition.commands.PIDTuning;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Flipper;
+import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.subsystems.Turret;
 
 /**
@@ -27,30 +30,32 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
  * directory.
  */
 public class CoyobotXIII extends IterativeRobot {
-    
-    
+
     Command autonomous;
     KinectStick leftArm;
+    Shooter shoot;
+    OI oi;
     int autonMode = 1;
-    Joystick driver;
     Turret turret;
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
         // Initialize all subsystems
-        driver = new Joystick(1);
         OI.getInstance();
-        //Turret.getInstance();
-        //Shooter.getInstance();
-        DriveTrain.getInstance();
-       // Flipper.getInstance();
-       // Intake.getInstance();
-       // Feeder.getInstance();
+        Turret.getInstance();
+        Shooter.getInstance();
+         DriveTrain.getInstance();
+         Flipper.getInstance();
+        // Intake.getInstance();
+        // Feeder.getInstance();
         //leftArm = new KinectStick(1);
         //autonomous = new AutonomousShoot();
         //Camera.getInstance();
+        shoot = Shooter.getInstance();
+        oi = OI.getInstance();
     }
 
     public void autonomousInit() {
@@ -83,6 +88,10 @@ public class CoyobotXIII extends IterativeRobot {
         Scheduler.getInstance().run();
     }
 
+    public void disabledPeriodic() {
+        OI.printToDS(4, "Shooter Enc: " + shoot.getShooterSpeed());
+    }
+
     public void teleopInit() {
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to 
@@ -90,25 +99,16 @@ public class CoyobotXIII extends IterativeRobot {
         // this line or comment it out.
         //autonomous.cancel();
         Scheduler.getInstance().add(new PIDTuning());
-        //Scheduler.getInstance().add(new FlipperPresets());
+        Scheduler.getInstance().add(new FlipperPresets());
         //Scheduler.getInstance().add(new TurretControl());
-        //.getInstance().add(new KajDrive());
+        Scheduler.getInstance().add(new KajDrive());
     }
 
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         Buttons.update();
-        Buttons.register(1, driver);
-        Buttons.register(2, driver);
-        Buttons.register(3, driver);
-        Buttons.register(4, driver);
-        Buttons.register(5, driver);
-        Buttons.register(6, driver);
-        Buttons.register(7, driver);
-        Buttons.register(8, driver);
-           
+
     }
-    
 
     public void teleopContinuous() {
         //camera.processCamera();
