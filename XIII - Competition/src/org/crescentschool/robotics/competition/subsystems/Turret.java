@@ -40,7 +40,6 @@ public class Turret extends Subsystem {
             turretJag = new CANJaguar(ElectricalConstants.TurretJaguar);
             turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
             turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
-            turretJag.configEncoderCodesPerRev(256);
             turretJag.setPID(p, i, d);
             //turretJag.changeControlMode(CANJaguar.ControlMode.kSpeed);
             //turretJag.enableControl(0);
@@ -73,9 +72,23 @@ public class Turret extends Subsystem {
      * Gets the target position of the turret.
      * @return The target position of the turret as an angle.
      */
-    public double getPos() {
+    public double getPosSet() {
         try {
             return turretJag.getX();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+            return 0;
+        }
+
+    }
+
+    /**
+     * Gets the  position of the turret.
+     * @return The position of the turret as an angle.
+     */
+    public double getPos() {
+        try {
+            return turretJag.getPosition();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
             return 0;
@@ -93,18 +106,22 @@ public class Turret extends Subsystem {
 
     public void incTurretP(double x) {
         p += x;
+        System.out.println("Turret P: " + p + " I: " + i);
     }
 
     public void decTurretP(double x) {
         p -= x;
+        System.out.println("Turret P: " + p + " I: " + i);
     }
 
     public void incTurretI(double x) {
         i += x;
+        System.out.println("Turret P: " + p + " I: " + i);
     }
 
     public void decTurretI(double x) {
         i -= x;
+        System.out.println("Turret P: " + p + " I: " + i);
     }
 
     public void resetTurretPID() {
@@ -117,9 +134,4 @@ public class Turret extends Subsystem {
 
         }
     }
-    //public void incD() {
-    //d += 0.01;
-    //public void decD() {
-    //d -= 0.01;
-    //}
 }
