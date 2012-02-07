@@ -361,6 +361,7 @@ public class DriveTrain extends Subsystem {
     /**
      * Gets the current position for both sides of the drivetrain.
      */
+    
     public double getPos() {
         try {
             return (jagLeftMaster.getPosition() + jagRightMaster.getPosition()) / 2;
@@ -688,4 +689,16 @@ public class DriveTrain extends Subsystem {
 
         return vertGyro.getAngle();
     }
-}
+   /* public void danceOverride() {
+        try {
+        if (robot was disabled for more than 5 seconds){
+           DANCE;
+        } else {
+     if (EmergencyStopButton = true){
+         Terminator t1000 = new Terminator();
+         t1000.killAllReferees();
+         
+     }
+}*/
+    }
+

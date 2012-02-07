@@ -3,48 +3,38 @@
  * and open the template in the editor.
  */
 package org.crescentschool.robotics.competition.commands;
-
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.subsystems.Feeder;
-import org.crescentschool.robotics.competition.subsystems.Shooter;
-import org.crescentschool.robotics.competition.subsystems.Ultrasonic;
-
+import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 /**
  *
- * @author Warfa
+ * @author Robotics
  */
-public class Shoot extends Command {
-    private double m_timeout;
-    Shooter shooter = Shooter.getInstance();
-    Feeder feed = Feeder.getInstance();
-    Ultrasonic uSonic = Ultrasonic.getInstance();
-    OI oi = OI.getInstance();
-    public Shoot(double timeout) {
+public class AutoTurn extends Command {
+    DriveTrain driveTrain = DriveTrain.getInstance();
+    private double setPoint;
+    
+    public AutoTurn(double setPoint) {
+        this.setPoint = setPoint;
+        requires(driveTrain);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        m_timeout = timeout;
-        requires(shooter);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(m_timeout);
-         
-
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        
-         feed.setFeeder(-oi.getOperator().getRawAxis(6));
-         
-         
+        driveTrain.setLeftPos(setPoint);
+        driveTrain.setRightPos(-setPoint);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return isTimedOut();
+        if(Math.abs(Math.abs(driveTrain.getLeftPos()) - Math.abs(setPoint)) < 0.1) return true;
+        return false;
+       
     }
 
     // Called once after isFinished returns true

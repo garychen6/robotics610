@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.CANJaguar;
@@ -33,6 +29,9 @@ public class Shooter extends Subsystem {
         return instance;
     }
 
+    /**
+     * Initializes Shooter and sets the Jaguars in vBus mode.
+     */
     public Shooter() {
         p = PIDConstants.shooterP;
         i = PIDConstants.shooterI;
@@ -46,7 +45,7 @@ public class Shooter extends Subsystem {
             shootJaguarSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             shootJaguar.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shootJaguarSlave.configNeutralMode(CANJaguar.NeutralMode.kCoast);
-           // shootJaguar.setPID(p, i, d);
+            // shootJaguar.setPID(p, i, d);
             //shootJaguar.setPID(PIDConstants.shooterP, PIDConstants.shooterI, 0);
             shootJaguar.enableControl(0);
             shootJaguarSlave.enableControl();
@@ -55,6 +54,10 @@ public class Shooter extends Subsystem {
         }
     }
 
+    /**
+     * Sets master Jaguar and syncs slave Jaguar.
+     * @param rpm The speed to set the target speed for the shooter at in rpm.
+     */
     public void setShooter(double rpm) {
         try {
             shootJaguar.setX(rpm);
@@ -64,7 +67,11 @@ public class Shooter extends Subsystem {
         }
 
     }
-
+    
+    /**
+     * Gets the shooter's target speed.
+     * @return  The target speed.
+     */
     public double getShooterSetPoint() {
         try {
             return shootJaguar.getX();
@@ -74,6 +81,10 @@ public class Shooter extends Subsystem {
         }
     }
 
+    /**
+     * Return the shooter's speed.
+     * @return Return shooter speed.
+     */
     public double getShooterSpeed() {
         try {
             return shootJaguar.getSpeed();
@@ -83,16 +94,27 @@ public class Shooter extends Subsystem {
         }
     }
 
+    /**
+     * Adjust the P value.
+     * @param x The value with which to increment "P".
+     */
     public void incP(double x) {
         p += x;
         System.out.println("Shooter P: " + p + " I: " + i);
     }
 
+    /**
+     * Adjust the I value.
+     * @param x The value with which to increment "I".
+     */
     public void incI(double x) {
         i += x;
         System.out.println("Shooter P: " + p + " I: " + i);
     }
 
+    /**
+     * Resets Shooter P, I, and D, and syncs slave.
+     */
     public void resetPID() {
         try {
             shootJaguar.setPID(p, i, d);
