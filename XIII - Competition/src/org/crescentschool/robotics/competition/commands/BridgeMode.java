@@ -14,6 +14,7 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 public class BridgeMode extends Command {
 
     DriveTrain driveTrain = DriveTrain.getInstance();
+    // Zis is zee maximum angre that vee vill reach
     double maxAngle;
 
     public BridgeMode() {
@@ -32,11 +33,21 @@ public class BridgeMode extends Command {
         if (maxAngle < driveTrain.getVertAngle()) {
             maxAngle = driveTrain.getVertAngle();
            
-        } else if (driveTrain.getVertAngle() < (maxAngle - 5)) {
+        } /*else if (driveTrain.getVertAngle() < (maxAngle - 5)) {
             driveTrain.setPos(-1/6);
-        }
+        }*/ else if (driveTrain.getVertAngle() < -5){
+            driveTrain.setPos(-1);
+            
+        } else if (driveTrain.getVertAngle() > 5){
+            driveTrain.setPos(1);
+        }/* else if (driveTrain.getVertAngle() < 5 && driveTrain.getVertAngle() > -5){
+            driveTrain.dance();
+        }*/
+        
+        
 
     }
+    
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
