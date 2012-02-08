@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
@@ -29,8 +30,8 @@ public class TankDrive extends Command {
     protected void execute() {
         //driveTrain.rightVBusSetpoint(oi.getDriver().getRawAxis(InputConstants.kDriverRightYAxis));
         //driveTrain.leftVBusSetpoint(oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis));
-        driveTrain.setRightSpeed(1000* oi.getDriver().getRawAxis(InputConstants.kDriverRightYAxis));
-        driveTrain.setLeftSpeed(1000* oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis));
+        driveTrain.setRightSpeed(1000 * oi.getDriver().getRawAxis(InputConstants.kDriverRightYAxis)/ 60 * PIDConstants.wheelDiameter * Math.PI);
+        driveTrain.setLeftSpeed(1000 * oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis)/ 60 * PIDConstants.wheelDiameter * Math.PI);
        
     }
 

@@ -19,6 +19,7 @@ import org.crescentschool.robotics.competition.commands.KinectAuton;
 import org.crescentschool.robotics.competition.commands.PIDTuning;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Flipper;
+import org.crescentschool.robotics.competition.subsystems.Intake;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.subsystems.Turret;
 
@@ -32,8 +33,10 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
 public class CoyobotXIII extends IterativeRobot {
 
     Command autonomous;
+    
     KinectStick leftArm;
     Shooter shoot;
+   
     OI oi;
     int autonMode = 1;
     Turret turret;
@@ -47,9 +50,9 @@ public class CoyobotXIII extends IterativeRobot {
         OI.getInstance();
         Turret.getInstance();
         Shooter.getInstance();
-         DriveTrain.getInstance();
-         Flipper.getInstance();
-        // Intake.getInstance();
+        DriveTrain.getInstance();
+        Flipper.getInstance();
+        //Intake.getInstance();
         // Feeder.getInstance();
         //leftArm = new KinectStick(1);
         //autonomous = new AutonomousShoot();
@@ -107,6 +110,8 @@ public class CoyobotXIII extends IterativeRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         Buttons.update();
+        
+               
 
     }
 

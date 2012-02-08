@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 
@@ -53,7 +54,7 @@ public class DriveTrain extends Subsystem {
                 // Output should be in rpm
                 // PID is tuned to only reach 1/2 the setpoint
                 // Setpoint should be twice the desire mount
-                jagRightMaster.setX(-2 * output + gyro.getAngle() / PIDConstants.gyroP);
+                jagRightMaster.setX(-2 * output + gyro.getAngle() / PIDConstants.gyroP / 60 * PIDConstants.wheelDiameter * Math.PI);
                 syncSlaves();
             } catch (CANTimeoutException ex) {
                 canError = true;
@@ -94,7 +95,8 @@ public class DriveTrain extends Subsystem {
      * Sets the default command for the drivetrain.
      */
     public void initDefaultCommand() {
-        // No default command for the drivetrain
+        
+        setDefaultCommand(new KajDrive());
     }
 
     /**
@@ -389,6 +391,7 @@ public class DriveTrain extends Subsystem {
             initSpeedMode();
         }
         try {
+            setpoint = setpoint* 60 / PIDConstants.wheelDiameter / Math.PI;
             jagLeftMaster.setX(2 * setpoint);
             syncSlaves();
             count++;
@@ -408,7 +411,8 @@ public class DriveTrain extends Subsystem {
             initSpeedMode();
         }
         try {
-            jagRightMaster.setX(-2 * setpoint);
+            setpoint = setpoint* 60 / PIDConstants.wheelDiameter / Math.PI;
+            jagRightMaster.setX(-2 * setpoint / 60 * PIDConstants.wheelCircumference * Math.PI);
             syncSlaves();
         } catch (CANTimeoutException ex) {
             canError = true;

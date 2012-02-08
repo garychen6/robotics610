@@ -5,36 +5,45 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import org.crescentschool.robotics.competition.*;
 import org.crescentschool.robotics.competition.subsystems.Intake;
+import org.crescentschool.robotics.competition.OI;
+import org.crescentschool.robotics.competition.constants.InputConstants;
+
 /**
  *
- * @author Warfa
+ * @author ian
  */
-public class BallIntake extends Command {
-    public double m_timeout;
+public class ManualBallIntake extends Command {
     Intake intake = Intake.getInstance();
     double speed = 1;
+    OI oi = OI.getInstance();
     
-    public BallIntake(double timeout) {
-        m_timeout = timeout;
-        requires(intake);
+    public ManualBallIntake() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(m_timeout);
     }
-      
+
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        intake.setInbotForward(speed);
+        if(Buttons.isPressed(InputConstants.kCirclebutton, oi.getOperator())){
+            intake.setInbotForward(speed);
+        } if(Buttons.isReleased(InputConstants.kCirclebutton, oi.getOperator())){
+            intake.setInbotForward(0);
+        } if(Buttons.isPressed(InputConstants.kSquarebutton, oi.getOperator())){
+            intake.setInbotForward(-speed);
+        } if(Buttons.isReleased(InputConstants.kSquarebutton, oi.getOperator())){
+            intake.setInbotForward(0);
+        } 
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return isTimedOut();
+        return false;
     }
 
     // Called once after isFinished returns true

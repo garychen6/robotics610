@@ -10,6 +10,8 @@ package org.crescentschool.robotics.competition.constants;
  */
 public class PIDConstants {
 
+    
+    
     public static final boolean pidTuneMode = true;
     /**
      * The proportional constant of the drive train position mode 
@@ -64,11 +66,16 @@ public class PIDConstants {
     /**
      * The circumference of the wheel, in inches
      */
-    public static final double wheelCircumference = 4 * Math.PI;
+    public static final double wheelCircumference = 5.9 * Math.PI;
     /**
      * The maximum drive speed of the drivetrain, in feet per second
      */
     public static final double maxDriveSpeed = 10;
+    
+    /**
+     * The diameter of the wheel in inches.
+     */
+    public static final double wheelDiameter = 5.9;
 }
 // flipper rev to degree = 0.00911111111
 // flipper facing straight up = 5.62
