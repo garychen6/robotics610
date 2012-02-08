@@ -53,8 +53,8 @@ public class PIDConstants {
      * The derivative constant of the flipper position control
      */
     public static final double flipperD = 0;
-    public static final double shooterP = 0.00;
-    public static final double shooterI = 0.00;
+    public static final double shooterP = 0.048;
+    public static final double shooterI = 0.005;
     public static final double ultrasonicVtoF = 1 / (0.38582677165354330708661417322835 * 3.2808399);
     //TODO: Javadoc
     public static final double rPD = 0.0545415391;

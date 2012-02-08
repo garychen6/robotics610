@@ -20,16 +20,15 @@ public class Shoot extends Command {
     Feeder feed = Feeder.getInstance();
     Ultrasonic uSonic = Ultrasonic.getInstance();
     OI oi = OI.getInstance();
-    public Shoot(double timeout) {
+    public Shoot() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        m_timeout = timeout;
-        requires(shooter);
+       // requires(shooter);
+        requires(feed);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(m_timeout);
          
 
     }
@@ -37,7 +36,7 @@ public class Shoot extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         
-         feed.setFeeder(-oi.getOperator().getRawAxis(6));
+         feed.setFeeder(oi.getOperator().getRawAxis(2));
          
          
     }
