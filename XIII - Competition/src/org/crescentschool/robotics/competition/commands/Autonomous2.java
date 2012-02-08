@@ -19,7 +19,7 @@ public class Autonomous2 extends CommandGroup {
         addParallel(new setFlipper(45));
         addSequential(new DriveDistance(5.03990653700226));
         addSequential(new setFlipper(10));
-        addSequential(new BallIntake(2));
+        addSequential(new TimedBallIntake(2));
         addSequential(new setFlipper(45));
         addSequential(new AutoTurn(150));
         addSequential(new Shoot(2.5));

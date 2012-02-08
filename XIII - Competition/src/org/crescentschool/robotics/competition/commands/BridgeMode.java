@@ -32,8 +32,13 @@ public class BridgeMode extends Command {
     protected void execute() {
         if (maxAngle < driveTrain.getVertAngle()) {
             maxAngle = driveTrain.getVertAngle();
+            driveTrain.setSpeed(50);
            
-        } /*else if (driveTrain.getVertAngle() < (maxAngle - 5)) {
+        }
+        if(maxAngle - 10 > driveTrain.getVertAngle()){
+            driveTrain.setSpeed(50);
+        }
+        /*else if (driveTrain.getVertAngle() < (maxAngle - 5)) {
             driveTrain.setPos(-1/6);
         }*/ else if (driveTrain.getVertAngle() < -5){
             driveTrain.setPos(-1);
