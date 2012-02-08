@@ -42,7 +42,7 @@ public class Feeder extends Subsystem {
     public void setFeeder(double speed) {
         //TODO: check direction of feeder
         feed1.set(speed);
-        feed2.set(-speed);
+        feed2.set(speed);
     }
 
     /**

@@ -57,7 +57,7 @@ public class ElectricalConstants {
      /**
      * The CAN ID of the shooter Master Jaguar
      */
-    public static final int shootJaguar = 10;
+    public static final int shootJaguar = 7;
     /**
      * The CAN ID of the shooter Slave Jaguar
      */
@@ -77,9 +77,9 @@ public class ElectricalConstants {
     /**
      * The channel of the first victor that controls the feeder
      */
-    public static final int FeederVictor1 = 2;
+    public static final int FeederVictor1 = 1;
     /**
      * The channel of the second victor that controls the feeder
      */
-    public static final int FeederVictor2 = 3;
+    public static final int FeederVictor2 = 2;
 }

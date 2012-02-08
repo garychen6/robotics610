@@ -26,6 +26,7 @@ public class PIDTuning extends Command {
     public PIDTuning() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
+        //requires(shooter);
     }
 
     // Called just before this Command runs the first time
@@ -41,14 +42,15 @@ public class PIDTuning extends Command {
             //OI.printToDS(3, "Pos: " + driveTrain.getLeftPos());
             //OI.printToDS(4, "Accel: "+driveTrain.getAccel());
             OI.printToDS(0, "ShooterSet: " + shooter.getShooterSetPoint());
-            System.out.println("Shooter Speed " + shooter.getShooterSpeed());
+            OI.printToDS(1,"Shooter Speed " + shooter.getShooterSpeed());
             OI.printToDS(2, "Vertical Gyro: " + driveTrain.getVertAngle());
             //  OI.printToDS(3, "Horizontal Gyro: " + driveTrain.getGyro().getAngle());
             count = 0;
         }
         count++;
-        shooter.setShooter(oi.getOperator().getRawAxis(2));
-        if (Buttons.isPressed(InputConstants.kR1button, oi.getDriver())) {
+        shooter.syncSlaves();
+       // shooter.setShooter(oi.getOperator().getRawAxis(2));
+        /*if (Buttons.isPressed(InputConstants.kR1button, oi.getDriver())) {
             shooter.incP(0.01);
         } else if (Buttons.isPressed(InputConstants.kR2button, oi.getDriver())) {
             shooter.incP(-0.01);
@@ -57,7 +59,7 @@ public class PIDTuning extends Command {
             shooter.incI(0.001);
         } else if (Buttons.isPressed(InputConstants.kL2button, oi.getDriver())) {
             shooter.incI(-0.001);
-        }
+        }*/
         if (Buttons.isPressed(InputConstants.kStartbutton, oi.getDriver())) {
             shooter.resetPID();
         }
