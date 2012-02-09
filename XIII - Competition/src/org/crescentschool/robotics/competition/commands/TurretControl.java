@@ -32,8 +32,8 @@ public class TurretControl extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        OI.printToDS(0, "Turret SetPoint: " + turret.getPosSet());
-        OI.printToDS(1, "Turret Position: " + turret.getPos());
+       // OI.printToDS(0, "Turret SetPoint: " + turret.getPosSet());
+       // OI.printToDS(1, "Turret Position: " + turret.getPos());
 
         if (Buttons.isPressed(InputConstants.kTributton, oi.getDriver())) {
             tPos += 5;

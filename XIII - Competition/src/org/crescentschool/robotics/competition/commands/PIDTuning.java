@@ -64,10 +64,10 @@ public class PIDTuning extends Command {
             shooter.resetPID();
         }
         if (Buttons.isPressed(InputConstants.kR1button, oi.getOperator())) {
-            rpm += 10;
+            rpm += 50;
             shooter.setShooter(rpm);
         } else if (Buttons.isPressed(InputConstants.kR2button, oi.getOperator())) {
-            rpm -= 10;
+            rpm -= 50;
             shooter.setShooter(rpm);
         }
 

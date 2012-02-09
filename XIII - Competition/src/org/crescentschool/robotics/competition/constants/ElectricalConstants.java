@@ -73,7 +73,7 @@ public class ElectricalConstants {
     /**
      * The channel of the victor that controls the Intake
      */
-    public static final int IntakeVictor = 1;
+    public static final int IntakeVictor = 3;
     /**
      * The channel of the first victor that controls the feeder
      */

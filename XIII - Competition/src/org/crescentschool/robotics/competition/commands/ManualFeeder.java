@@ -31,9 +31,9 @@ public class ManualFeeder extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if (Buttons.isPressed(InputConstants.kTributton, operator)) {
+        if (Buttons.isHeld(InputConstants.kTributton, operator)) {
             feeder.setFeeder(1);
-        } else if (Buttons.isPressed(InputConstants.kXbutton, operator)) {
+        } else if (Buttons.isHeld(InputConstants.kXbutton, operator)) {
             feeder.setFeeder(-1);
         } else {
             feeder.setFeeder(0);

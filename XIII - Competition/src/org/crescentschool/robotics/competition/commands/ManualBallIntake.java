@@ -21,7 +21,8 @@ public class ManualBallIntake extends Command {
     
     public ManualBallIntake() {
         // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+        // eg. requires(chassis
+        requires(intake);
     }
 
     // Called just before this Command runs the first time
