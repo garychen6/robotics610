@@ -13,12 +13,15 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.AutonomousShoot;
+import org.crescentschool.robotics.competition.commands.FlipperPresets;
 import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
 import org.crescentschool.robotics.competition.commands.PIDTuning;
 import org.crescentschool.robotics.competition.commands.Shoot;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Feeder;
 import org.crescentschool.robotics.competition.subsystems.Flipper;
+import org.crescentschool.robotics.competition.subsystems.Intake;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.subsystems.Turret;
 
@@ -51,8 +54,8 @@ public class CoyobotXIII extends IterativeRobot {
         Shooter.getInstance();
         DriveTrain.getInstance();
         Flipper.getInstance();
-        //Intake.getInstance();
-        // Feeder.getInstance();
+        Intake.getInstance();
+        Feeder.getInstance();
         //leftArm = new KinectStick(1);
         //autonomous = new AutonomousShoot();
         //Camera.getInstance();
@@ -102,7 +105,7 @@ public class CoyobotXIII extends IterativeRobot {
         //autonomous.cancel();
         Scheduler.getInstance().add(new PIDTuning());
         Scheduler.getInstance().add(new Shoot());
-        //Scheduler.getInstance().add(new FlipperPresets());
+        Scheduler.getInstance().add(new FlipperPresets());
         //Scheduler.getInstance().add(new TurretControl());
         Scheduler.getInstance().add(new KajDrive());
     }
