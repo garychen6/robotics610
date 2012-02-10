@@ -38,28 +38,29 @@ public class PIDTuning extends Command {
     protected void execute() {
         if (count % 5 == 0) {
             //OI.printToDS(0, "Speed SetPoint: " + driveTrain.getLeftSpeedSetpoint());
-            //OI.printToDS(1, "Speed: " + driveTrain.getLeftSpeed());
-            //OI.printToDS(2, "Pos SetPoint: " + driveTrain.getLeftPosSetpoint());
-            //OI.printToDS(3, "Pos: " + driveTrain.getLeftPos());
+            //OI.printToDS(1, "Speed: " + driveTrain.getRightSpeed());
+            OI.printToDS(0, "Pos SetPoint: " + driveTrain.getLeftPosSetpoint());
+            OI.printToDS(1, "Pos: " + driveTrain.getLeftPos());
+            OI.printToDS(2, "Gyro: " + driveTrain.getGyro().getAngle());
             //OI.printToDS(4, "Accel: "+driveTrain.getAccel());
-            OI.printToDS(0, "ShooterSet: " + shooter.getShooterSetPoint());
-            OI.printToDS(1,"Shooter Speed " + shooter.getShooterSpeed());
-            OI.printToDS(2, "Vertical Gyro: " + driveTrain.getVertAngle());
+            //OI.printToDS(0, "ShooterSet: " + shooter.getShooterSetPoint());
+           //OI.printToDS(1, "Shooter Speed " + shooter.getShooterSpeed());
+            //OI.printToDS(2, "Vertical Gyro: " + driveTrain.getVertAngle());
             //  OI.printToDS(3, "Horizontal Gyro: " + driveTrain.getGyro().getAngle());
             count = 0;
         }
         count++;
         shooter.syncSlaves();
-       // shooter.setShooter(oi.getOperator().getRawAxis(2));
+        // shooter.setShooter(oi.getOperator().getRawAxis(2));
         if (Buttons.isPressed(InputConstants.kBButton, oi.getOperator())) {
             shooter.incP(0.001);
         } else if (Buttons.isPressed(InputConstants.kAButton, oi.getOperator())) {
             shooter.incP(-0.001);
         }
         if (Buttons.isPressed(InputConstants.kYButton, oi.getOperator())) {
-            shooter.incI(0.001);
+        shooter.incI(0.001);
         } else if (Buttons.isPressed(InputConstants.kXButton, oi.getOperator())) {
-            shooter.incI(-0.001);
+        shooter.incI(-0.001);
         }
         if (Buttons.isPressed(InputConstants.kStartButton, oi.getOperator())) {
             shooter.resetPID();

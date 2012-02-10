@@ -40,7 +40,7 @@ public class PIDConstants {
     /**
      * The proportional constant of the gyroscope position mode
      */
-    public static final double gyroP = 0.04;
+    public static final double gyroP = 0.025;
     /**
      * The proportional constant of the flipper position control
      */
