@@ -30,8 +30,8 @@ public class TankDrive extends Command {
     protected void execute() {
         //driveTrain.rightVBusSetpoint(oi.getDriver().getRawAxis(InputConstants.kDriverRightYAxis));
         //driveTrain.leftVBusSetpoint(oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis));
-        driveTrain.setRightSpeed(1000 * oi.getDriver().getRawAxis(InputConstants.kDriverRightYAxis)/ 60 * PIDConstants.wheelDiameter * Math.PI);
-        driveTrain.setLeftSpeed(1000 * oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis)/ 60 * PIDConstants.wheelDiameter * Math.PI);
+        driveTrain.setRightSpeed(1000 * oi.getDriver().getRawAxis(InputConstants.kRightYAxis)/ 60 * PIDConstants.wheelDiameter * Math.PI);
+        driveTrain.setLeftSpeed(1000 * oi.getDriver().getRawAxis(InputConstants.kLeftYAxis)/ 60 * PIDConstants.wheelDiameter * Math.PI);
        
     }
 
