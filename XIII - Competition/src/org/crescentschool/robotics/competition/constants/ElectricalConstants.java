@@ -57,11 +57,11 @@ public class ElectricalConstants {
      /**
      * The CAN ID of the shooter Master Jaguar
      */
-    public static final int shootJaguar = 7;
+    public static final int shootJaguar = 8;
     /**
      * The CAN ID of the shooter Slave Jaguar
      */
-    public static final int shootJaguarSlave = 8;
+    public static final int shootJaguarSlave = 7;
     /**
      * The number of volts the potentiometer changes by per degree of revolution
      */

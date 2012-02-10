@@ -14,7 +14,7 @@ import org.crescentschool.robotics.competition.subsystems.Flipper;
 
 /**
  *
- * @author Warfa
+ * @author Warfa, Mr. Lim
  */
 public class FlipperPresets extends Command {
     OI oi = OI.getInstance();
@@ -36,29 +36,16 @@ public class FlipperPresets extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
       
-      if(Buttons.isPressed(InputConstants.kXbutton, oi.getDriver())){
-          flipper.setFlippers(0);
+      if(Buttons.isPressed(InputConstants.kR2button, oi.getDriver())){
+          flipper.decFlipper();
          
       }
       
       
-      if(Buttons.isPressed(InputConstants.kSquarebutton, oi.getDriver())){
-          flipper.setFlippers(12);
+      if(Buttons.isPressed(InputConstants.kR1button, oi.getDriver())){
+          flipper.incFlipper();
          
       }
-    
-      
-      if(Buttons.isPressed(InputConstants.kCirclebutton, oi.getDriver())){
-          flipper.setFlippers(45);
-          
-      }
-      
-      
-      if(Buttons.isPressed(InputConstants.kTributton, oi.getDriver())){
-          flipper.setFlippers(90);
-          
-      }
-     
     }
 
     // Make this return true when this Command no longer needs to run execute()

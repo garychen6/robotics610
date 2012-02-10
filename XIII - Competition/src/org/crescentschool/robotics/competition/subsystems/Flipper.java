@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
+import org.crescentschool.robotics.competition.constants.PotConstants;
 
 /**
  *
@@ -19,6 +20,8 @@ public class Flipper extends Subsystem {
     CANJaguar jagFlip;
     static Flipper instance = null;
     double p, i, d;
+    // -1 = balance assist, 0 = ball collection, 1 = barrier, 2 = bridge, 3 = retract
+    int flipperPosition = 3;
 
     /**
      * Sets the default command for the flipper.
@@ -55,7 +58,7 @@ public class Flipper extends Subsystem {
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
-
+        gotoPosition(flipperPosition);
     }
 
     /**
@@ -128,6 +131,49 @@ public class Flipper extends Subsystem {
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
             return 0;
+        }
+    }
+
+    /**
+     * Moves flipper to next higher position
+     */
+    public void incFlipper() {
+        flipperPosition++;
+        if (flipperPosition > 3) {
+            flipperPosition = 3;
+        }
+        gotoPosition(flipperPosition);
+    }
+
+    /**
+     * Moves flipper to next lower position
+     */
+    public void decFlipper() {
+        flipperPosition--;
+        if (flipperPosition < -1) {
+            flipperPosition = -1;
+        }
+        gotoPosition(flipperPosition);
+    }
+
+    private void gotoPosition(int position) {
+        switch (position) {
+            case -1:
+                setFlippers(PotConstants.flipperBridgeAssist);
+                break;
+            case 0:
+                setFlippers(PotConstants.flipperBallPickup);
+                break;
+            case 1:
+                setFlippers(PotConstants.flipperBarrier);
+                break;
+            case 2:
+                setFlippers(PotConstants.flipperBridge);
+                break;
+            case 3:
+                setFlippers(PotConstants.flipperRetract);
+                break;
+
         }
     }
 }
