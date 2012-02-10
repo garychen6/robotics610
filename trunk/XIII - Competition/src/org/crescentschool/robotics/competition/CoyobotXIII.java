@@ -15,10 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.AutonomousShoot;
 import org.crescentschool.robotics.competition.commands.FlipperPresets;
-import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
 import org.crescentschool.robotics.competition.commands.PIDTuning;
-import org.crescentschool.robotics.competition.commands.Shoot;
+import org.crescentschool.robotics.competition.commands.BridgeMode;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Feeder;
@@ -63,7 +62,7 @@ public class CoyobotXIII extends IterativeRobot {
         feeder = Feeder.getInstance();
         //leftArm = new KinectStick(1);
         //autonomous = new AutonomousShoot();
-        camera = Camera.getInstance();
+        //Camera.getInstance();
     }
 
     public void autonomousInit() {
@@ -97,7 +96,8 @@ public class CoyobotXIII extends IterativeRobot {
     }
 
     public void disabledPeriodic() {
-        printDiagnostics();
+        System.out.println("Driver EncL: " + driveTrain.getLeftSpeed());
+        System.out.println("Driver EncR: " + driveTrain.getRightSpeed());
     }
 
     public void teleopInit() {
@@ -106,17 +106,20 @@ public class CoyobotXIII extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         //autonomous.cancel();
-        Scheduler.getInstance().add(new PIDTuning());
-        Scheduler.getInstance().add(new Shoot());
+        //Scheduler.getInstance().add(new PIDTuning());
+        //Scheduler.getInstance().add(new Shoot());
         Scheduler.getInstance().add(new FlipperPresets());
         //Scheduler.getInstance().add(new TurretControl());
-        Scheduler.getInstance().add(new KajDrive());
+        //Scheduler.getInstance().add(new BridgeMode());
     }
 
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+        if(Buttons.isPressed(autonMode, null))
         Buttons.update();
-        printDiagnostics();
+
+
+
     }
 
     public void teleopContinuous() {

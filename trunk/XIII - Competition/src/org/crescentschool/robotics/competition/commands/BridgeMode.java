@@ -4,67 +4,59 @@
  */
 package org.crescentschool.robotics.competition.commands;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import org.crescentschool.robotics.competition.Buttons;
+import org.crescentschool.robotics.competition.OI;
+import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
+// Make this return true when this Command no longer needs to run execute()
+// Called when another command which requires one or more of the same
+// subsystems is scheduled to run
 /**
  *
- * @author Warfa
+ * @author Robotics
  */
 public class BridgeMode extends Command {
 
-    DriveTrain driveTrain = DriveTrain.getInstance();
-    // Zis is zee maximum angre that vee vill reach
-    double maxAngle;
+    OI oi;
+    DriveTrain driveTrain;
+    double set;
 
     public BridgeMode() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
+        oi = OI.getInstance();
+        driveTrain = DriveTrain.getInstance();
         requires(driveTrain);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        maxAngle = driveTrain.getVertAngle();
-        driveTrain.setSpeed(50);
+        set = 0;
+        driveTrain.setPos(set);
+        driveTrain.reInit();
     }
 
+    // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if (maxAngle < driveTrain.getVertAngle()) {
-            maxAngle = driveTrain.getVertAngle();
-            driveTrain.setSpeed(50);
-           
+        if (Buttons.isHeld(InputConstants.kBButton, oi.getDriver())) {
+            set += 0.02;
+            driveTrain.setPos(set);
+        } else if (Buttons.isHeld(InputConstants.kAButton, oi.getDriver())) {
+            set -= 0.02;
+            driveTrain.setPos(set);
         }
-        if(maxAngle - 10 > driveTrain.getVertAngle()){
-            driveTrain.setSpeed(50);
-        }
-        /*else if (driveTrain.getVertAngle() < (maxAngle - 5)) {
-            driveTrain.setPos(-1/6);
-        }*/ else if (driveTrain.getVertAngle() < -5){
-            driveTrain.setPos(-1);
-            
-        } else if (driveTrain.getVertAngle() > 5){
-            driveTrain.setPos(1);
-        }/* else if (driveTrain.getVertAngle() < 5 && driveTrain.getVertAngle() > -5){
-            driveTrain.dance();
-        }*/
-        
-        
-
-    }
-    
-
-    // Make this return true when this Command no longer needs to run execute()
-    protected boolean isFinished() {
-        return false;
     }
 
-    // Called once after isFinished returns true
     protected void end() {
     }
 
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
     protected void interrupted() {
+    }
+
+    protected boolean isFinished() {
+        return false;
     }
 }
