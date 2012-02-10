@@ -84,7 +84,7 @@ public class Camera extends Subsystem {
                         }
                     }
                     //Send bounding rectangle info to SmartDashboard
-                    //SmartDashboard.putString("bounddata", s_particles[lowestY].boundingRectLeft + ";" + s_particles[lowestY].boundingRectTop + ";" + s_particles[lowestY].boundingRectWidth + ";" + s_particles[lowestY].boundingRectHeight);
+                    SmartDashboard.putString("bounddata", s_particles[lowestY].boundingRectLeft + ";" + s_particles[lowestY].boundingRectTop + ";" + s_particles[lowestY].boundingRectWidth + ";" + s_particles[lowestY].boundingRectHeight);
                     xOffset = s_particles[lowestY].center_mass_x_normalized;
                 }
             } catch (AxisCameraException ex) {
