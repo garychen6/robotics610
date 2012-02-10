@@ -15,10 +15,11 @@ import org.crescentschool.robotics.competition.constants.InputConstants;
  * @author ian
  */
 public class ManualBallIntake extends Command {
+
     Intake intake = Intake.getInstance();
     double speed = 1;
     OI oi = OI.getInstance();
-    
+
     public ManualBallIntake() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis
@@ -31,15 +32,15 @@ public class ManualBallIntake extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if(Buttons.isPressed(InputConstants.kCirclebutton, oi.getOperator())){
+        if (Buttons.isHeld(InputConstants.kR1Button, oi.getOperator())
+                || Buttons.isHeld(InputConstants.kL1Button, oi.getDriver())) {
             intake.setInbotForward(speed);
-        } if(Buttons.isReleased(InputConstants.kCirclebutton, oi.getOperator())){
-            intake.setInbotForward(0);
-        } if(Buttons.isPressed(InputConstants.kSquarebutton, oi.getOperator())){
+        } else if (Buttons.isHeld(InputConstants.kL1Button, oi.getOperator())
+                || Buttons.isHeld(InputConstants.kL2Button, oi.getDriver())) {
             intake.setInbotForward(-speed);
-        } if(Buttons.isReleased(InputConstants.kSquarebutton, oi.getOperator())){
+        } else {
             intake.setInbotForward(0);
-        } 
+        }
     }
 
     // Make this return true when this Command no longer needs to run execute()

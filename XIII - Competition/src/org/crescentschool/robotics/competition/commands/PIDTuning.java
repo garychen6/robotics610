@@ -1,5 +1,6 @@
 package org.crescentschool.robotics.competition.commands;
 
+import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
@@ -50,27 +51,23 @@ public class PIDTuning extends Command {
         count++;
         shooter.syncSlaves();
        // shooter.setShooter(oi.getOperator().getRawAxis(2));
-        /*if (Buttons.isPressed(InputConstants.kR1button, oi.getDriver())) {
-            shooter.incP(0.01);
-        } else if (Buttons.isPressed(InputConstants.kR2button, oi.getDriver())) {
-            shooter.incP(-0.01);
+        if (Buttons.isPressed(InputConstants.kBButton, oi.getOperator())) {
+            shooter.incP(0.001);
+        } else if (Buttons.isPressed(InputConstants.kAButton, oi.getOperator())) {
+            shooter.incP(-0.001);
         }
-        if (Buttons.isPressed(InputConstants.kL1button, oi.getDriver())) {
+        if (Buttons.isPressed(InputConstants.kYButton, oi.getOperator())) {
             shooter.incI(0.001);
-        } else if (Buttons.isPressed(InputConstants.kL2button, oi.getDriver())) {
+        } else if (Buttons.isPressed(InputConstants.kXButton, oi.getOperator())) {
             shooter.incI(-0.001);
-        }*/
-        if (Buttons.isPressed(InputConstants.kStartbutton, oi.getDriver())) {
+        }
+        if (Buttons.isPressed(InputConstants.kStartButton, oi.getOperator())) {
             shooter.resetPID();
         }
-        if (Buttons.isPressed(InputConstants.kR1button, oi.getOperator())) {
-            rpm += 50;
-            shooter.setShooter(rpm);
-        } else if (Buttons.isPressed(InputConstants.kR2button, oi.getOperator())) {
-            rpm -= 50;
+        if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis)) > 0.1) {
+            rpm += 20 * oi.getOperator().getRawAxis(InputConstants.kLeftYAxis);
             shooter.setShooter(rpm);
         }
-
     }
 
     // Make this return true when this Command no longer needs to run execute()

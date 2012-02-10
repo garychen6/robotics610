@@ -2,7 +2,6 @@ package org.crescentschool.robotics.competition;
 
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Joystick;
-import org.crescentschool.robotics.competition.Buttons;
 
 public class OI {
 
@@ -73,8 +72,12 @@ public class OI {
         joyDriver = new Joystick(1);
         joyOperator = new Joystick(2);
         drStationLCD = DriverStationLCD.getInstance();
-        for(int i = 1; i <= 10; i++)Buttons.register(i, joyDriver);
-        for(int i = 1; i <= 10; i++)Buttons.register(i, joyOperator);
-        
+        for (int i = 1; i <= 10; i++) {
+            Buttons.register(i, joyDriver);
+        }
+        for (int i = 1; i <= 10; i++) {
+            Buttons.register(i, joyOperator);
+        }
+
     }
 }

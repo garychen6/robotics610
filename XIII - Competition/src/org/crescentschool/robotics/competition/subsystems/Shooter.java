@@ -35,7 +35,7 @@ public class Shooter extends Subsystem {
     public Shooter() {
         p = PIDConstants.shooterP;
         i = PIDConstants.shooterI;
-        d = 0;
+        d = PIDConstants.shooterD;
         try {
             shootJaguar = new CANJaguar(ElectricalConstants.shootJaguar);
             shootJaguarSlave = new CANJaguar(ElectricalConstants.shootJaguarSlave);
@@ -57,7 +57,7 @@ public class Shooter extends Subsystem {
      */
     public void setShooter(double rpm) {
         try {
-            shootJaguar.setX(-rpm);
+            shootJaguar.setX(-2*rpm);
             System.out.println("ShooterSet: " + rpm);
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,6 +111,16 @@ public class Shooter extends Subsystem {
         i += x;
         System.out.println("Shooter P: " + p + " I: " + i);
     }
+
+        /**
+     * Adjust the I value.
+     * @param x The value with which to increment "I".
+     */
+    public void incD(double x) {
+        d += x;
+        System.out.println("Shooter P: " + p + " I: " + i + " D:" + d);
+    }
+
     public void syncSlaves(){
         try {
             shootJaguarSlave.setX(shootJaguar.getOutputVoltage() / 12);

@@ -36,13 +36,13 @@ public class FlipperPresets extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
       
-      if(Buttons.isPressed(InputConstants.kR2button, oi.getDriver())){
+      if(Buttons.isPressed(InputConstants.kR2Button, oi.getDriver())){
           flipper.decFlipper();
          
       }
       
       
-      if(Buttons.isPressed(InputConstants.kR1button, oi.getDriver())){
+      if(Buttons.isPressed(InputConstants.kR1Button, oi.getDriver())){
           flipper.incFlipper();
          
       }

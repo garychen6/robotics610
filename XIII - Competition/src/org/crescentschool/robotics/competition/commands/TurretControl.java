@@ -35,24 +35,24 @@ public class TurretControl extends Command {
        // OI.printToDS(0, "Turret SetPoint: " + turret.getPosSet());
        // OI.printToDS(1, "Turret Position: " + turret.getPos());
 
-        if (Buttons.isPressed(InputConstants.kTributton, oi.getDriver())) {
+        if (Buttons.isPressed(InputConstants.kYButton, oi.getDriver())) {
             tPos += 5;
             turret.setX(tPos);
         }
-        if (Buttons.isPressed(InputConstants.kXbutton, oi.getDriver())) {
+        if (Buttons.isPressed(InputConstants.kAButton, oi.getDriver())) {
             tPos -= 5;
             turret.setX(tPos);
         }
-        if (Buttons.isPressed(InputConstants.kR1button, oi.getDriver())) {
+        if (Buttons.isPressed(InputConstants.kR1Button, oi.getDriver())) {
             turret.incTurretP(1);
-        } else if (Buttons.isPressed(InputConstants.kL1button, oi.getDriver())) {
+        } else if (Buttons.isPressed(InputConstants.kL1Button, oi.getDriver())) {
             turret.decTurretP(-1);
-        } else if (Buttons.isPressed(InputConstants.kR2button, oi.getDriver())) {
+        } else if (Buttons.isPressed(InputConstants.kR2Button, oi.getDriver())) {
             turret.incTurretI(0.001);
-        } else if (Buttons.isPressed(InputConstants.kL2button, oi.getDriver())) {
+        } else if (Buttons.isPressed(InputConstants.kL2Button, oi.getDriver())) {
             turret.decTurretI(-0.001);
         }
-        if (Buttons.isPressed(InputConstants.kStartbutton, oi.getDriver())) {
+        if (Buttons.isPressed(InputConstants.kStartButton, oi.getDriver())) {
             turret.resetTurretPID();
         }
     }

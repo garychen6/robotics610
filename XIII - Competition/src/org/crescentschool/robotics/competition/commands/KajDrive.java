@@ -1,6 +1,7 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
@@ -26,14 +27,17 @@ public class KajDrive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        double x,y;
+        double x, y;
         double left, right;
-        x = oi.getDriver().getRawAxis(InputConstants.kDriverRightXAxis);
-        y = oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis);
+        x = oi.getDriver().getRawAxis(InputConstants.kRightXAxis);
+        y = oi.getDriver().getRawAxis(InputConstants.kLeftYAxis);
         left = y - x;
         right = y + x;
         driveTrain.setRightVBus(right);
-        driveTrain.setLeftVBus(left);  
+        driveTrain.setLeftVBus(left);
+        if (Buttons.isPressed(InputConstants.kStartButton, oi.getDriver())) {
+            driveTrain.reInit();
+        }
     }
 
     // Make this return true when this Command no longer needs to run execute()
