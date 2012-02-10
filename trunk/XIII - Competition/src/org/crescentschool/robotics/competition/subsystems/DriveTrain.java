@@ -95,7 +95,7 @@ public class DriveTrain extends Subsystem {
      * Sets the default command for the drivetrain.
      */
     public void initDefaultCommand() {
-        
+
         setDefaultCommand(new KajDrive());
     }
 
@@ -188,6 +188,7 @@ public class DriveTrain extends Subsystem {
         posControllerLeft.enable();
         posControllerRight.enable();
     }
+
     /**
      * Initializes speed mode for the Drivetrain.
      */
@@ -227,7 +228,8 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
-/**
+
+    /**
      * Initializes Vbus mode for the Drivetrain.
      */
     private void initVBusMode() {
@@ -264,7 +266,7 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
-    
+
     /**
      * Sets the slaves at the same voltage as the masters.
      */
@@ -363,7 +365,6 @@ public class DriveTrain extends Subsystem {
     /**
      * Gets the current position for both sides of the drivetrain.
      */
-    
     public double getPos() {
         try {
             return (jagLeftMaster.getPosition() + jagRightMaster.getPosition()) / 2;
@@ -391,7 +392,7 @@ public class DriveTrain extends Subsystem {
             initSpeedMode();
         }
         try {
-            setpoint = setpoint* 60 / PIDConstants.wheelDiameter / Math.PI;
+            setpoint = setpoint * 60 / PIDConstants.wheelDiameter / Math.PI;
             jagLeftMaster.setX(2 * setpoint);
             syncSlaves();
             count++;
@@ -411,7 +412,7 @@ public class DriveTrain extends Subsystem {
             initSpeedMode();
         }
         try {
-            setpoint = setpoint* 60 / PIDConstants.wheelDiameter / Math.PI;
+            setpoint = setpoint * 60 / PIDConstants.wheelDiameter / Math.PI;
             jagRightMaster.setX(-2 * setpoint / 60 * PIDConstants.wheelCircumference * Math.PI);
             syncSlaves();
         } catch (CANTimeoutException ex) {
@@ -693,16 +694,24 @@ public class DriveTrain extends Subsystem {
 
         return vertGyro.getAngle();
     }
-   /* public void danceOverride() {
-        try {
-        if (robot was disabled for more than 5 seconds){
-           DANCE;
-        } else {
-     if (EmergencyStopButton = true){
-         Terminator t1000 = new Terminator();
-         t1000.killAllReferees();
-         
-     }
-}*/
-    }
 
+    /**
+     * Gets the value of the horizontal gyro.
+     * @return The angle of the horizontal gyro.
+     */
+    public double getHorizAngle() {
+
+        return gyro.getAngle();
+    }
+    /* public void danceOverride() {
+    try {
+    if (robot was disabled for more than 5 seconds){
+    DANCE;
+    } else {
+    if (EmergencyStopButton = true){
+    Terminator t1000 = new Terminator();
+    t1000.killAllReferees();
+    
+    }
+    }*/
+}

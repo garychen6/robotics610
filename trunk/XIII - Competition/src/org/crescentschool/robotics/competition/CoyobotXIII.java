@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.KinectStick;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.AutonomousShoot;
 import org.crescentschool.robotics.competition.commands.FlipperPresets;
@@ -18,6 +19,7 @@ import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
 import org.crescentschool.robotics.competition.commands.PIDTuning;
 import org.crescentschool.robotics.competition.commands.Shoot;
+import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Feeder;
 import org.crescentschool.robotics.competition.subsystems.Flipper;
@@ -35,13 +37,16 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
 public class CoyobotXIII extends IterativeRobot {
 
     Command autonomous;
-    
     KinectStick leftArm;
-    Shooter shoot;
-   
+    Shooter shooter;
+    DriveTrain driveTrain;
+    Flipper flipper;
+    Intake intake;
+    Feeder feeder;
     OI oi;
     int autonMode = 1;
     Turret turret;
+    Camera camera;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -49,18 +54,16 @@ public class CoyobotXIII extends IterativeRobot {
      */
     public void robotInit() {
         // Initialize all subsystems
-        OI.getInstance();
-        Turret.getInstance();
-        Shooter.getInstance();
-        DriveTrain.getInstance();
-        Flipper.getInstance();
-        Intake.getInstance();
-        Feeder.getInstance();
+        oi = OI.getInstance();
+        turret = Turret.getInstance();
+        shooter = Shooter.getInstance();
+        driveTrain = DriveTrain.getInstance();
+        flipper = Flipper.getInstance();
+        intake = Intake.getInstance();
+        feeder = Feeder.getInstance();
         //leftArm = new KinectStick(1);
         //autonomous = new AutonomousShoot();
-        //Camera.getInstance();
-        shoot = Shooter.getInstance();
-        oi = OI.getInstance();
+        camera = Camera.getInstance();
     }
 
     public void autonomousInit() {
@@ -94,7 +97,7 @@ public class CoyobotXIII extends IterativeRobot {
     }
 
     public void disabledPeriodic() {
-        System.out.println("Shooter Enc: " + shoot.getShooterSpeed());
+        printDiagnostics();
     }
 
     public void teleopInit() {
@@ -113,12 +116,21 @@ public class CoyobotXIII extends IterativeRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         Buttons.update();
-        
-               
-
+        printDiagnostics();
     }
 
     public void teleopContinuous() {
         //camera.processCamera();
+    }
+
+    private void printDiagnostics() {
+        SmartDashboard.putDouble("Shooter Speed", shooter.getShooterSpeed());
+        SmartDashboard.putDouble("Left Drive Speed", driveTrain.getLeftSpeed());
+        SmartDashboard.putDouble("Right Drive Speed", driveTrain.getRightSpeed());
+        SmartDashboard.putDouble("Horiz Gyro", driveTrain.getHorizAngle());
+        SmartDashboard.putDouble("Vert Gyro", driveTrain.getVertAngle());
+        SmartDashboard.putDouble("Camera Offset", camera.getX());
+        SmartDashboard.putDouble("Flipper Pot", flipper.getPos());
+        SmartDashboard.putDouble("Turret Pot", turret.getPos());
     }
 }
