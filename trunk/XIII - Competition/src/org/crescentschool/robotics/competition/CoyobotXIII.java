@@ -69,7 +69,7 @@ public class CoyobotXIII extends IterativeRobot {
         feeder = Feeder.getInstance();
         //leftArm = new KinectStick(1);
         //autonomous = new AutonomousShoot();
-        //camera = Camera.getInstance();
+        camera = Camera.getInstance();
         ultrasonic = CoyoBotUltrasonic.getInstance();
     }
 
@@ -106,7 +106,7 @@ public class CoyobotXIII extends IterativeRobot {
     public void disabledPeriodic() {
         //System.out.println("Driver EncL: " + driveTrain.getLeftSpeed());
         //System.out.println("Driver EncR: " + driveTrain.getRightSpeed());
-        //printDiagnostics();
+        printDiagnostics();
     }
 
     public void teleopInit() {
@@ -151,14 +151,13 @@ public class CoyobotXIII extends IterativeRobot {
                 Scheduler.getInstance().add(new AutoBridge());
             }
         }
+        camera.processCamera();
         Buttons.update();
-       // printDiagnostics();
-
-
+        printDiagnostics();
     }
 
     public void teleopContinuous() {
-        //camera.processCamera();
+        
     }
 
     private void printDiagnostics() {

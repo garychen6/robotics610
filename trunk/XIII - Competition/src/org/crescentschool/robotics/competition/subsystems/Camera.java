@@ -60,7 +60,7 @@ public class Camera extends Subsystem {
                 colorImage = camera.getImage(); // get the image from the camera
 
                 //TODO: Tune these HSL values at the venue!
-                BinaryImage binImage = colorImage.thresholdHSL(ImagingConstants.kHThresholdMin, ImagingConstants.kHThresholdMax, ImagingConstants.kSThresholdMin, ImagingConstants.kSThresholdMax, ImagingConstants.kLThresholdMin, ImagingConstants.kLThresholdMax);
+                BinaryImage binImage = colorImage.thresholdHSV(ImagingConstants.kHThresholdMin, ImagingConstants.kHThresholdMax, ImagingConstants.kSThresholdMin, ImagingConstants.kSThresholdMax, ImagingConstants.kLThresholdMin, ImagingConstants.kLThresholdMax);
                 s_particles = binImage.getOrderedParticleAnalysisReports(4);
                 colorImage.free();
                 binImage.free();
@@ -98,6 +98,7 @@ public class Camera extends Subsystem {
      * 
      */
     public void resetCamera() {
+        // Do not configure the camera, it SHOULD be persistent!!!
 //        camera.writeResolution(AxisCamera.ResolutionT.k320x240);
 //        camera.writeCompression(30);
 //        camera.writeWhiteBalance(AxisCamera.WhiteBalanceT.fixedOutdoor1);
