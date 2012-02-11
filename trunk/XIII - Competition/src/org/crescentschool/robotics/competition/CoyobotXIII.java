@@ -133,24 +133,25 @@ public class CoyobotXIII extends IterativeRobot {
                 kajMode = true;
             }
         } else {
-            if (Buttons.isPressed(InputConstants.kBButton, oi.getDriver())) {
+            if (oi.getDriver().getRawAxis(6) == 1) {
                 Scheduler.getInstance().add(new BridgeMode());
                 kajMode = false;
-            } else if (Buttons.isPressed(InputConstants.kAButton, oi.getDriver())) {
-                Scheduler.getInstance().add(new BridgeMode());
-                kajMode = false;
-            }
-            if (Buttons.isPressed(InputConstants.kXButton, oi.getDriver())) {
-                Scheduler.getInstance().add(new BridgeMode());
-                kajMode = false;
-            } else if (Buttons.isPressed(InputConstants.kYButton, oi.getDriver())) {
+            } else if (oi.getDriver().getRawAxis(5) == -1) {
                 Scheduler.getInstance().add(new BridgeMode());
                 kajMode = false;
             }
-            if (Buttons.isPressed(InputConstants.kSelectButton, oi.getDriver())) {
-                Scheduler.getInstance().add(new AutoBridge());
+            if (oi.getDriver().getRawAxis(6) == -1) {
+                Scheduler.getInstance().add(new BridgeMode());
+                kajMode = false;
+            } else if (oi.getDriver().getRawAxis(5) == 1) {
+                Scheduler.getInstance().add(new BridgeMode());
+                kajMode = false;
             }
         }
+         if (Buttons.isPressed(InputConstants.kXButton, oi.getDriver())) {
+                Scheduler.getInstance().add(new AutoBridge());
+                kajMode = false;
+            }
         camera.processCamera();
         Buttons.update();
         printDiagnostics();

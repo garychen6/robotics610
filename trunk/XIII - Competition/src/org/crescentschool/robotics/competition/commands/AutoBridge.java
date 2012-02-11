@@ -5,7 +5,9 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import org.crescentschool.robotics.competition.constants.PotConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Flipper;
 
 /**
  *
@@ -14,6 +16,7 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 public class AutoBridge extends Command {
 
     DriveTrain driveTrain = DriveTrain.getInstance();
+    Flipper flipper = Flipper.getInstance();
     // Zis is zee maximum angre that vee vill reach
     double maxAngle;
 
@@ -26,7 +29,10 @@ public class AutoBridge extends Command {
     protected void initialize() {
         driveTrain.reInit();
         maxAngle = driveTrain.getVertAngle();
-        driveTrain.setSpeed(-120);
+        driveTrain.setSpeed(-70);
+        flipper.setFlippers(PotConstants.flipperRetract);
+        flipper.setPos(3);
+        
     }
 
     protected void execute() {
@@ -34,7 +40,7 @@ public class AutoBridge extends Command {
             maxAngle = driveTrain.getVertAngle();
         }
         else if (driveTrain.getVertAngle() < (maxAngle - 5)) {
-            driveTrain.setPos(-1.1);
+            driveTrain.setPos(0.585);
         } 
     }
     

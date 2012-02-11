@@ -23,6 +23,8 @@ public class BridgeMode extends Command {
     OI oi;
     DriveTrain driveTrain;
     double x, y;
+    boolean dPadUp = false;
+    boolean dPadDown = false;
 
     public BridgeMode() {
         // Use requires() here to declare subsystem dependencies
@@ -44,18 +46,23 @@ public class BridgeMode extends Command {
         OI.printToDS(0, "Pos SetPoint: " + driveTrain.getLeftPosSetpoint());
         OI.printToDS(1, "Pos: " + driveTrain.getLeftPos());
         OI.printToDS(2, "Gyro: " + driveTrain.getGyro().getAngle());
-        if (Buttons.isPressed(InputConstants.kAButton, oi.getDriver())) {
+        if (oi.getDriver().getRawAxis(6) == -1 && !dPadUp) {
             y += 0.25;
-        } else if (Buttons.isPressed(InputConstants.kYButton, oi.getDriver())) {
+            dPadUp = true;
+        } else if (oi.getDriver().getRawAxis(6) == 1 && !dPadDown) {
             y -= 0.25;
+            dPadDown = true;
+        }else if(oi.getDriver().getRawAxis(6) == 0 ){
+            dPadUp = false;
+            dPadDown = false;
         }
-        if (Buttons.isHeld(InputConstants.kAButton, oi.getDriver())) {
+        if (oi.getDriver().getRawAxis(6) == -1) {
             y += 0.02;
-        } else if (Buttons.isHeld(InputConstants.kYButton, oi.getDriver())) {
+        } else if (oi.getDriver().getRawAxis(6) == 1) {
             y -= 0.02;
-        } else if (Buttons.isHeld(InputConstants.kXButton, oi.getDriver())) {
+        } else if (oi.getDriver().getRawAxis(5) == -1) {
             x += 0.025;
-        } else if (Buttons.isHeld(InputConstants.kBButton, oi.getDriver())) {
+        } else if (oi.getDriver().getRawAxis(5) == 1) {
             x -= 0.025;
         }
         driveTrain.setRightPos(y - x);
