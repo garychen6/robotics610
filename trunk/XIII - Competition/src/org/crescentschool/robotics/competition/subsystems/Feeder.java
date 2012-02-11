@@ -38,7 +38,7 @@ public class Feeder extends Subsystem {
 
     /**
      * Sets the target speed for the both Victors for the Feeder.
-     * @param speed The Speed in ft/s.
+     * @param speed 
      */
     public void setFeeder(double speed) {
         //TODO: check direction of feeder
