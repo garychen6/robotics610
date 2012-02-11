@@ -44,5 +44,5 @@ public class PotConstants {
     /**
      * Flipper angle for Bridge Assist.
      */
-    public static final double turretInc = 0.1; 
+    public static final double turretInc = 1.0; 
 }

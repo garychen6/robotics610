@@ -21,7 +21,7 @@ public class Turret extends Subsystem {
     CANJaguar turretJag;
     static Turret instance = null;
     double p, i, d;
-    double position = 0.5;
+    double position = PotConstants.turretCentre;
 
     /**
      * Ensures that only one turret is instantiated.
