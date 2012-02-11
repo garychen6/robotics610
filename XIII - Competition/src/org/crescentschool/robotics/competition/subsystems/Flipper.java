@@ -20,6 +20,7 @@ public class Flipper extends Subsystem {
     CANJaguar jagFlip;
     static Flipper instance = null;
     double p, i, d;
+    int pos = 0;
     // -1 = balance assist, 0 = ball collection, 1 = barrier, 2 = bridge, 3 = retract
     int flipperPosition = 3;
 
@@ -122,6 +123,14 @@ public class Flipper extends Subsystem {
     }
 
     /**
+     * -1 = balance assist, 0 = ball collection, 1 = barrier, 2 = bridge, 3 = retract
+     * @param angle Position Mode 
+     */
+    public void setPos(int position) {
+        this.pos = position;
+    }
+
+    /**
      * Gets the current angle of the flipper.
      * @return The current angle of the flipper.
      */
@@ -157,7 +166,8 @@ public class Flipper extends Subsystem {
     }
 
     private void gotoPosition(int position) {
-        switch (position) {
+        pos = position;
+        switch (pos) {
             case -1:
                 setFlippers(PotConstants.flipperBridgeAssist);
                 break;
