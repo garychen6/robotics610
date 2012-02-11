@@ -9,19 +9,14 @@ package org.crescentschool.robotics.competition;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.KinectStick;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.crescentschool.robotics.competition.commands.AutoBridge;
 import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.AutonomousShoot;
-import org.crescentschool.robotics.competition.commands.BridgeMode;
-import org.crescentschool.robotics.competition.commands.FlipperPresets;
-import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
-import org.crescentschool.robotics.competition.commands.ManualShooter;
-import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.controls.DriverControls;
+import org.crescentschool.robotics.competition.controls.OperatorControls;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.CoyoBotUltrasonic;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
@@ -115,50 +110,18 @@ public class CoyobotXIII extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         //autonomous.cancel();
-        //Scheduler.getInstance().add(new PIDTuning());
-        Scheduler.getInstance().add(new ManualShooter());
-        Scheduler.getInstance().add(new FlipperPresets());
-        //Scheduler.getInstance().add(new TurretControl());
-        //Scheduler.getInstance().add(new BridgeMode());
     }
 
     public void teleopPeriodic() {
-        Scheduler.getInstance().run();
-        if (!kajMode) {
-            if (Math.abs(oi.getDriver().getRawAxis(InputConstants.kLeftYAxis)) > 0.2) {
-                Scheduler.getInstance().add(new KajDrive());
-                kajMode = true;
-            } else if (Math.abs(oi.getDriver().getRawAxis(InputConstants.kRightXAxis)) > 0.2) {
-                Scheduler.getInstance().add(new KajDrive());
-                kajMode = true;
-            }
-        } else {
-            if (oi.getDriver().getRawAxis(6) == 1) {
-                Scheduler.getInstance().add(new BridgeMode());
-                kajMode = false;
-            } else if (oi.getDriver().getRawAxis(5) == -1) {
-                Scheduler.getInstance().add(new BridgeMode());
-                kajMode = false;
-            }
-            if (oi.getDriver().getRawAxis(6) == -1) {
-                Scheduler.getInstance().add(new BridgeMode());
-                kajMode = false;
-            } else if (oi.getDriver().getRawAxis(5) == 1) {
-                Scheduler.getInstance().add(new BridgeMode());
-                kajMode = false;
-            }
-        }
-         if (Buttons.isPressed(InputConstants.kXButton, oi.getDriver())) {
-                Scheduler.getInstance().add(new AutoBridge());
-                kajMode = false;
-            }
         camera.processCamera();
+        Scheduler.getInstance().add(new DriverControls());
+        Scheduler.getInstance().add(new OperatorControls());
+        Scheduler.getInstance().run();
         Buttons.update();
         printDiagnostics();
     }
 
     public void teleopContinuous() {
-        
     }
 
     private void printDiagnostics() {
