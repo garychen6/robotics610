@@ -28,14 +28,14 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
 public class DriverControls extends Command {
 
     boolean kajMode = false;
-    Shooter shooter;
-    DriveTrain driveTrain;
-    Flipper flipper;
-    Intake intake;
-    Feeder feeder;
-    OI oi;
-    Turret turret;
-    Camera camera;
+    OI oi = OI.getInstance();
+    Turret turret = Turret.getInstance();
+    Shooter shooter = Shooter.getInstance();
+    DriveTrain driveTrain = DriveTrain.getInstance();
+    Flipper flipper = Flipper.getInstance();
+    Intake intake = Intake.getInstance();
+    Feeder feeder = Feeder.getInstance();
+    Camera camera = Camera.getInstance();
 
     public DriverControls() {
         // Use requires() here to declare subsystem dependencies
@@ -44,14 +44,6 @@ public class DriverControls extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        oi = OI.getInstance();
-        turret = Turret.getInstance();
-        shooter = Shooter.getInstance();
-        driveTrain = DriveTrain.getInstance();
-        flipper = Flipper.getInstance();
-        intake = Intake.getInstance();
-        feeder = Feeder.getInstance();
-        camera = Camera.getInstance();
         Scheduler.getInstance().add(new FlipperPresets());
     }
 

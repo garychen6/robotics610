@@ -110,12 +110,12 @@ public class CoyobotXIII extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         //autonomous.cancel();
+        Scheduler.getInstance().add(new DriverControls());
+        Scheduler.getInstance().add(new OperatorControls());
     }
 
     public void teleopPeriodic() {
         camera.processCamera();
-        Scheduler.getInstance().add(new DriverControls());
-        Scheduler.getInstance().add(new OperatorControls());
         Scheduler.getInstance().run();
         Buttons.update();
         printDiagnostics();
