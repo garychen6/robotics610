@@ -126,12 +126,12 @@ public class CoyobotXIII extends IterativeRobot {
 
     private void printDiagnostics() {
         SmartDashboard.putDouble("Shooter Speed", -shooter.getShooterSpeed());
-        SmartDashboard.putDouble("Left Drive Speed", -driveTrain.getLeftSpeed());
-        SmartDashboard.putDouble("Right Drive Speed", driveTrain.getRightSpeed());
-        SmartDashboard.putDouble("Horiz Gyro", driveTrain.getHorizAngle());
-        SmartDashboard.putDouble("Vert Gyro", driveTrain.getVertAngle());
+        //SmartDashboard.putDouble("Left Drive Speed", -driveTrain.getLeftSpeed());
+        //SmartDashboard.putDouble("Right Drive Speed", driveTrain.getRightSpeed());
+        //SmartDashboard.putDouble("Horiz Gyro", driveTrain.getHorizAngle());
+        //SmartDashboard.putDouble("Vert Gyro", driveTrain.getVertAngle());
         SmartDashboard.putDouble("Camera Offset", camera.getX());
-        SmartDashboard.putDouble("Flipper Pot", flipper.getPos());
+        //SmartDashboard.putDouble("Flipper Pot", flipper.getPos());
         SmartDashboard.putDouble("Turret Pot", turret.getPos());
         SmartDashboard.putDouble("Turret Set", turret.getPosSet());
         SmartDashboard.putDouble("Ultrasonic", ultrasonic.getDistance());

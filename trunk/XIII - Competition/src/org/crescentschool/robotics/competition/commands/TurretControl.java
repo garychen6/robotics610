@@ -39,23 +39,25 @@ public class TurretControl extends Command {
         // OI.printToDS(0, "Turret SetPoint: " + turret.getPosSet());
         // OI.printToDS(1, "Turret Position: " + turret.getPos());
 
-//        if (Buttons.isPressed(InputConstants.kYButton, oi.getOperator())) {
-//            turret.incTurretP(1);
-//        } else if (Buttons.isPressed(InputConstants.kXButton, oi.getOperator())) {
-//            turret.decTurretP(1);
-//        } else if (Buttons.isPressed(InputConstants.kBButton, oi.getOperator())) {
-//            turret.incTurretI(0.001);
-//        } else if (Buttons.isPressed(InputConstants.kAButton, oi.getOperator())) {
-//            turret.decTurretI(0.001);
-//        }
-         if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kRightXAxis)) > 0.05) {
-            turret.incPosition(-PotConstants.turretInc * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kRightXAxis), 3));
+        if (Buttons.isPressed(InputConstants.kYButton, oi.getOperator())) {
+            turret.incTurretP(1);
+        } else if (Buttons.isPressed(InputConstants.kXButton, oi.getOperator())) {
+            turret.decTurretP(1);
+        } else if (Buttons.isPressed(InputConstants.kBButton, oi.getOperator())) {
+            turret.incTurretI(0.001);
+        } else if (Buttons.isPressed(InputConstants.kAButton, oi.getOperator())) {
+            turret.decTurretI(0.001);
         }
+
         //System.out.println("Turret Set: " + turret.getPosSet() + " Pos: " + turret.getPos());
-            if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator()))
-            {
-                turret.incPosition(-0.1*camera.getX());
-            }
+        if (Buttons.isPressed(InputConstants.kL2Button, oi.getOperator())) {
+            turret.resetPosition();
+        }
+        if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator())) {
+            turret.incPosition(-0.5 * camera.getX());
+        } else {
+            turret.setVBus(MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kRightXAxis), 3));
+        }
     }
 
     // Make this return true when this Command no longer needs to run execute()

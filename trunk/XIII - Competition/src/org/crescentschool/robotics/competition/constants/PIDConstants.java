@@ -61,7 +61,7 @@ public class PIDConstants {
     public static final double ultrasonicVtoF = 10.0 / (0.49 * 3.2808399);
     //TODO: Javadoc
     public static final double rPD = 0.0545415391;
-    public static final double turretP = -50;
+    public static final double turretP = -150;
     public static final double turretI = 0.0;
     public static final double turretD = 0.0;
     

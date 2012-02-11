@@ -7,6 +7,7 @@ package org.crescentschool.robotics.competition.subsystems;
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.commands.TurretControl;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
@@ -22,6 +23,8 @@ public class Turret extends Subsystem {
     static Turret instance = null;
     double p, i, d;
     double position = PotConstants.turretCentre;
+    // 1 = %VBus, 2 = Position
+    private int controlMode = 1;
 
     /**
      * Ensures that only one turret is instantiated.
@@ -47,13 +50,69 @@ public class Turret extends Subsystem {
         }
     }
 
+    private void initPosMode() {
+        SmartDashboard.putString("Turret Mode", "Position");
+        controlMode = 2;
+        try {
+            turretJag.configFaultTime(0.5);
+            turretJag.configNeutralMode(CANJaguar.NeutralMode.kBrake);
+            turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
+            turretJag.configPotentiometerTurns(10);
+            turretJag.setPID(p, i, d);
+            turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
+            turretJag.configSoftPositionLimits(PotConstants.turretLoLimit, PotConstants.turretHiLimit);
+            turretJag.enableControl();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Initializes Vbus mode for the Drivetrain.
+     */
+    private void initVBusMode() {
+        SmartDashboard.putString("Turret Mode", "VBus");
+        controlMode = 1;
+        try {
+            turretJag.configFaultTime(0.5);
+            turretJag.configNeutralMode(CANJaguar.NeutralMode.kBrake);
+            turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
+            turretJag.configPotentiometerTurns(10);
+            turretJag.setPID(p, i, d);
+            turretJag.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            turretJag.configSoftPositionLimits(PotConstants.turretLoLimit, PotConstants.turretHiLimit);
+            turretJag.enableControl();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     /**
      * Sets the target angle of the turret.
      * @param ang The target angle of the turret.
      */
-    public void setX(double ang) {
+    public void setPosition(double pos) {
+        if (controlMode != 2) {
+            initPosMode();
+        }
         try {
-            turretJag.setX(ang);
+            turretJag.setX(pos);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Sets the target angle of the turret.
+     * @param ang The target angle of the turret.
+     */
+    public void setVBus(double vBus) {
+        if (controlMode != 1) {
+            initVBusMode();
+        }
+        try {
+            turretJag.setX(vBus);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -136,16 +195,20 @@ public class Turret extends Subsystem {
      * Resets the turret's P and I values to the values in PID constants.
      */
     public void resetPID() {
+        System.out.println("Turret PID Reset");
+        if (controlMode == 1) {
+            initVBusMode();
+        } else {
+            initPosMode();
+        }
+    }
+
+    /**
+     * Resets the turret's P and I values to the values in PID constants.
+     */
+    public void resetPosition() {
         try {
-            System.out.println("Turret PID Reset");
-            turretJag.configFaultTime(0.5);
-            turretJag.configNeutralMode(CANJaguar.NeutralMode.kBrake);
-            turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
-            turretJag.configPotentiometerTurns(10);
-            turretJag.setPID(p, i, d);
-            turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
-            turretJag.configSoftPositionLimits(PotConstants.turretLoLimit, PotConstants.turretHiLimit);
-            turretJag.enableControl();
+            position = turretJag.getPosition();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -156,7 +219,14 @@ public class Turret extends Subsystem {
      * @param x The amount to increment the I value by.
      */
     public void incPosition(double inc) {
-        position += inc;
+        if (controlMode != 2) {
+            initPosMode();
+        }
+        try {
+            position = turretJag.getPosition() + inc;
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
         if (position > PotConstants.turretHiLimit) {
             position = PotConstants.turretHiLimit;
         }
