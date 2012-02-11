@@ -31,17 +31,17 @@ public class OperatorControls extends Command {
     protected void initialize() {
         //Scheduler.getInstance().add(new ManualShooter());
         Scheduler.getInstance().add(new TurretControl());
-        Scheduler.getInstance().add(new PIDTuning());
+        //Scheduler.getInstance().add(new PIDTuning());
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if(Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())){
-            Scheduler.getInstance().add(new Shoot());
-        }else{
-           Scheduler.getInstance().add(new ManualBallIntake()); 
-           Scheduler.getInstance().add(new ManualFeeder());
-        }
+//        if(Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())){
+//            Scheduler.getInstance().add(new Shoot());
+//        }else{
+//           Scheduler.getInstance().add(new ManualBallIntake()); 
+//           Scheduler.getInstance().add(new ManualFeeder());
+//        }
     }
 
     // Make this return true when this Command no longer needs to run execute()
