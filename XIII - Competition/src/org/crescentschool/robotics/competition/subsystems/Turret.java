@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.commands.TurretControl;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
+import org.crescentschool.robotics.competition.constants.PotConstants;
 
 /**
  *
@@ -21,6 +22,7 @@ public class Turret extends Subsystem {
     CANJaguar turretJag;
     static Turret instance = null;
     double p, i, d;
+    double position = 0.5;
 
     /**
      * Ensures that only one turret is instantiated.
@@ -40,9 +42,7 @@ public class Turret extends Subsystem {
         try {
             turretJag = new CANJaguar(ElectricalConstants.TurretJaguar);
             resetPID();
-
-            // turretJag.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-            // turretJag.enableControl(0);
+            turretJag.setX(position);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -139,17 +139,34 @@ public class Turret extends Subsystem {
     public void resetPID() {
         try {
             System.out.println("Turret PID Reset");
-            turretJag.setPID(p, i, d);
-            turretJag.enableControl(); 
-            turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
             turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
             turretJag.setPID(p, i, d);
             turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
-            turretJag.enableControl(0);
-            turretJag.configSoftPositionLimits(135, -135);
+            turretJag.enableControl();
+            turretJag.configSoftPositionLimits(0.4, 0.6);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
+        }
+    }
 
+    /**
+     * Increments the turret's I value.
+     * @param x The amount to increment the I value by.
+     */
+    public void incPosition(double inc) {
+        position += inc;
+        if (position > PotConstants.turretHiLimit)
+        {
+            position = PotConstants.turretHiLimit;
+        }
+        if (position < PotConstants.turretLoLimit)
+        {
+            position = PotConstants.turretLoLimit;
+        }
+        try {
+            turretJag.setX(position);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
         }
     }
 }

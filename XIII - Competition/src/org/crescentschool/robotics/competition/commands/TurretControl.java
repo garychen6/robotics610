@@ -4,10 +4,12 @@
  */
 package org.crescentschool.robotics.competition.commands;
 
+import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.constants.PotConstants;
 import org.crescentschool.robotics.competition.subsystems.Turret;
 
 /**
@@ -32,28 +34,20 @@ public class TurretControl extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-       // OI.printToDS(0, "Turret SetPoint: " + turret.getPosSet());
-       // OI.printToDS(1, "Turret Position: " + turret.getPos());
+        // OI.printToDS(0, "Turret SetPoint: " + turret.getPosSet());
+        // OI.printToDS(1, "Turret Position: " + turret.getPos());
 
-        if (Buttons.isPressed(InputConstants.kYButton, oi.getDriver())) {
-            tPos += 5;
-            turret.setX(tPos);
-        }
-        if (Buttons.isPressed(InputConstants.kAButton, oi.getDriver())) {
-            tPos -= 5;
-            turret.setX(tPos);
-        }
-        if (Buttons.isPressed(InputConstants.kR1Button, oi.getDriver())) {
+        if (Buttons.isPressed(InputConstants.kYButton, oi.getOperator())) {
             turret.incTurretP(1);
-        } else if (Buttons.isPressed(InputConstants.kL1Button, oi.getDriver())) {
+        } else if (Buttons.isPressed(InputConstants.kXButton, oi.getOperator())) {
             turret.decTurretP(-1);
-        } else if (Buttons.isPressed(InputConstants.kR2Button, oi.getDriver())) {
+        } else if (Buttons.isPressed(InputConstants.kBButton, oi.getOperator())) {
             turret.incTurretI(0.001);
-        } else if (Buttons.isPressed(InputConstants.kL2Button, oi.getDriver())) {
+        } else if (Buttons.isPressed(InputConstants.kAButton, oi.getOperator())) {
             turret.decTurretI(-0.001);
         }
-        if (Buttons.isPressed(InputConstants.kStartButton, oi.getDriver())) {
-            turret.resetPID();
+        if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kRightXAxis)) > 0.1) {
+            turret.incPosition(PotConstants.turretInc * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kRightXAxis), 3));
         }
     }
 

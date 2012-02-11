@@ -28,5 +28,21 @@ public class PotConstants {
     /**
      * Flipper angle for Bridge Assist.
      */
-    public static final double flipperRetract = 90;  
+    public static final double flipperRetract = 90; 
+    /**
+     * Flipper angle for Bridge Assist.
+     */
+    public static final double turretHiLimit = 0.9; 
+    /**
+     * Flipper angle for Bridge Assist.
+     */
+    public static final double turretLoLimit = 0.1; 
+    /**
+     * Flipper angle for Bridge Assist.
+     */
+    public static final double turretCentre = 0.5;
+    /**
+     * Flipper angle for Bridge Assist.
+     */
+    public static final double turretInc = 0.001; 
 }
