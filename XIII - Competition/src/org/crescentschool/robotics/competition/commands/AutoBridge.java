@@ -19,8 +19,6 @@ public class AutoBridge extends Command {
 
     public AutoBridge()
     {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
         requires(driveTrain);
     }
 
@@ -28,23 +26,16 @@ public class AutoBridge extends Command {
     protected void initialize() {
         driveTrain.reInit();
         maxAngle = driveTrain.getVertAngle();
-        driveTrain.setSpeed(50);
+        driveTrain.setSpeed(-120);
     }
 
     protected void execute() {
         if (maxAngle < driveTrain.getVertAngle()) {
             maxAngle = driveTrain.getVertAngle();
-            driveTrain.setSpeed(50);
-        }
-        if(maxAngle - 10 > driveTrain.getVertAngle()){
-            driveTrain.setSpeed(50);
         }
         else if (driveTrain.getVertAngle() < (maxAngle - 5)) {
-            driveTrain.setPos(-1/6);
+            driveTrain.setPos(-1.1);
         } 
-        
-        
-
     }
     
 

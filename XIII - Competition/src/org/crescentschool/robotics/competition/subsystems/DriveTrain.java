@@ -54,7 +54,7 @@ public class DriveTrain extends Subsystem {
                 // Output should be in rpm
                 // PID is tuned to only reach 1/2 the setpoint
                 // Setpoint should be twice the desire mount
-                jagRightMaster.setX(-2 * output + gyro.getAngle() / PIDConstants.gyroP);
+                jagRightMaster.setX(-2 * output);
                 syncSlaves();
             } catch (CANTimeoutException ex) {
                 canError = true;
@@ -82,7 +82,7 @@ public class DriveTrain extends Subsystem {
 
         public void pidWrite(double output) {
             try {
-                jagLeftMaster.setX(2 * output + gyro.getAngle() / PIDConstants.gyroP);
+                jagLeftMaster.setX(2 * output);
                 syncSlaves();
             } catch (CANTimeoutException ex) {
                 ex.printStackTrace();
@@ -392,7 +392,6 @@ public class DriveTrain extends Subsystem {
             initSpeedMode();
         }
         try {
-            setpoint = setpoint * 60 / PIDConstants.wheelDiameter / Math.PI;
             jagLeftMaster.setX(2 * setpoint);
             syncSlaves();
             count++;
@@ -412,8 +411,7 @@ public class DriveTrain extends Subsystem {
             initSpeedMode();
         }
         try {
-            setpoint = setpoint * 60 / PIDConstants.wheelDiameter / Math.PI;
-            jagRightMaster.setX(-2 * setpoint / 60 * PIDConstants.wheelCircumference * Math.PI);
+            jagRightMaster.setX(-2 * setpoint);
             syncSlaves();
         } catch (CANTimeoutException ex) {
             canError = true;
