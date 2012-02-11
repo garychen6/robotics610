@@ -58,6 +58,7 @@ public class Shooter extends Subsystem {
     public void setShooter(double rpm) {
         try {
             shootJaguar.setX(-2 * rpm);
+            this.rpm = rpm;
             System.out.println("ShooterSet: " + rpm);
         } catch (Exception e) {
             e.printStackTrace();
