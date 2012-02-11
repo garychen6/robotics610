@@ -133,6 +133,7 @@ public class CoyobotXIII extends IterativeRobot {
         SmartDashboard.putDouble("Camera Offset", camera.getX());
         SmartDashboard.putDouble("Flipper Pot", flipper.getPos());
         SmartDashboard.putDouble("Turret Pot", turret.getPos());
+        SmartDashboard.putDouble("Turret Set", turret.getPosSet());
         SmartDashboard.putDouble("Ultrasonic", ultrasonic.getDistance());
     }
 }

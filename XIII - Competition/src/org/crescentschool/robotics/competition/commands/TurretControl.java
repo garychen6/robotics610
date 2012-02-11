@@ -10,6 +10,7 @@ import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.constants.PotConstants;
+import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Turret;
 
 /**
@@ -20,6 +21,7 @@ public class TurretControl extends Command {
 
     Turret turret = Turret.getInstance();
     OI oi = OI.getInstance();
+    Camera camera = Camera.getInstance();
     double tPos = 0;
 
     public TurretControl() {
@@ -46,10 +48,14 @@ public class TurretControl extends Command {
         } else if (Buttons.isPressed(InputConstants.kAButton, oi.getOperator())) {
             turret.decTurretI(0.001);
         }
-  //      if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kRightXAxis)) > 0.1) {
-            turret.incPosition(PotConstants.turretInc * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kRightXAxis), 3));
-  //      }
-        System.out.println("Turret Set: " + turret.getPosSet() + " Pos: " + turret.getPos());
+        else if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kRightXAxis)) > 0.05) {
+            turret.incPosition(-PotConstants.turretInc * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kRightXAxis), 3));
+        }
+        //System.out.println("Turret Set: " + turret.getPosSet() + " Pos: " + turret.getPos());
+            if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator()))
+            {
+                turret.incPosition(-0.1*camera.getX());
+            }
     }
 
     // Make this return true when this Command no longer needs to run execute()
