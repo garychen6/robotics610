@@ -9,10 +9,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Feeder;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.subsystems.Turret;
-import org.crescentschool.robotics.competition.subsystems.Ultrasonic;
+import org.crescentschool.robotics.competition.subsystems.CoyoBotUltrasonic;
 
 /**
  *
@@ -24,9 +25,10 @@ public class ManualShooter extends Command {
     Shooter shooter = Shooter.getInstance();
     Turret turret = Turret.getInstance();
     Feeder feed = Feeder.getInstance();
-    Ultrasonic uSonic = Ultrasonic.getInstance();
+    CoyoBotUltrasonic uSonic = CoyoBotUltrasonic.getInstance();
     OI oi = OI.getInstance();
-
+    Camera camera = Camera.getInstance();
+    
     public ManualShooter() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -47,6 +49,7 @@ public class ManualShooter extends Command {
         {
             shooter.resetPID();
             turret.resetPID();
+            camera.resetCamera();
         }
 
     }

@@ -9,6 +9,7 @@ package org.crescentschool.robotics.competition;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.KinectStick;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +22,7 @@ import org.crescentschool.robotics.competition.commands.KinectAuton;
 import org.crescentschool.robotics.competition.commands.ManualShooter;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
+import org.crescentschool.robotics.competition.subsystems.CoyoBotUltrasonic;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Feeder;
 import org.crescentschool.robotics.competition.subsystems.Flipper;
@@ -48,7 +50,9 @@ public class CoyobotXIII extends IterativeRobot {
     int autonMode = 1;
     Turret turret;
     Camera camera;
+    CoyoBotUltrasonic ultrasonic;
     boolean kajMode = false;
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -65,6 +69,7 @@ public class CoyobotXIII extends IterativeRobot {
         //leftArm = new KinectStick(1);
         //autonomous = new AutonomousShoot();
         camera = Camera.getInstance();
+        ultrasonic = CoyoBotUltrasonic.getInstance();
     }
 
     public void autonomousInit() {
@@ -100,7 +105,7 @@ public class CoyobotXIII extends IterativeRobot {
     public void disabledPeriodic() {
         //System.out.println("Driver EncL: " + driveTrain.getLeftSpeed());
         //System.out.println("Driver EncR: " + driveTrain.getRightSpeed());
-        //printDiagnostics();
+        printDiagnostics();
     }
 
     public void teleopInit() {
@@ -119,28 +124,26 @@ public class CoyobotXIII extends IterativeRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         //if(Buttons.isPressed(autonMode, null))
-        if(!kajMode){
-        if(Math.abs(oi.getDriver().getRawAxis(InputConstants.kLeftYAxis))>0.2){
-            Scheduler.getInstance().add(new KajDrive());
-            kajMode = true;
+        if (!kajMode) {
+            if (Math.abs(oi.getDriver().getRawAxis(InputConstants.kLeftYAxis)) > 0.2) {
+                Scheduler.getInstance().add(new KajDrive());
+                kajMode = true;
+            } else if (Math.abs(oi.getDriver().getRawAxis(InputConstants.kRightXAxis)) > 0.2) {
+                Scheduler.getInstance().add(new KajDrive());
+                kajMode = true;
+            }
+        } else {
+            if (Buttons.isPressed(InputConstants.kBButton, oi.getDriver())) {
+                Scheduler.getInstance().add(new BridgeMode());
+                kajMode = false;
+            } else if (Buttons.isPressed(InputConstants.kAButton, oi.getDriver())) {
+                Scheduler.getInstance().add(new BridgeMode());
+                kajMode = false;
+            }
+
         }
-        else if(Math.abs(oi.getDriver().getRawAxis(InputConstants.kRightXAxis))>0.2){
-            Scheduler.getInstance().add(new KajDrive());
-            kajMode = true;
-        }
-        }else{
-        if(Buttons.isPressed(InputConstants.kBButton, oi.getDriver())){
-            Scheduler.getInstance().add(new BridgeMode());
-            kajMode = false;
-        }
-        else if(Buttons.isPressed(InputConstants.kAButton, oi.getDriver())){
-            Scheduler.getInstance().add(new BridgeMode());
-            kajMode = false;
-        }
-        
-        }   
         Buttons.update();
-        //printDiagnostics();
+        printDiagnostics();
 
 
     }
@@ -154,9 +157,10 @@ public class CoyobotXIII extends IterativeRobot {
         SmartDashboard.putDouble("Left Drive Speed", -driveTrain.getLeftSpeed());
         SmartDashboard.putDouble("Right Drive Speed", driveTrain.getRightSpeed());
         SmartDashboard.putDouble("Horiz Gyro", driveTrain.getHorizAngle());
-       // SmartDashboard.putDouble("Vert Gyro", driveTrain.getVertAngle());
+        SmartDashboard.putDouble("Vert Gyro", driveTrain.getVertAngle());
         SmartDashboard.putDouble("Camera Offset", camera.getX());
         SmartDashboard.putDouble("Flipper Pot", flipper.getPos());
         SmartDashboard.putDouble("Turret Pot", turret.getPos());
+        SmartDashboard.putDouble("Ultrasonic", ultrasonic.getDistance());
     }
 }
