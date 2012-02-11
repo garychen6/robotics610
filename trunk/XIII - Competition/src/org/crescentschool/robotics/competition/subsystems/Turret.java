@@ -141,9 +141,10 @@ public class Turret extends Subsystem {
             turretJag.configFaultTime(0.5);
             turretJag.configNeutralMode(CANJaguar.NeutralMode.kBrake);
             turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
+            turretJag.configPotentiometerTurns(10);
             turretJag.setPID(p, i, d);
             turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
-            //turretJag.configSoftPositionLimits(0.1, 0.9);
+            turretJag.configSoftPositionLimits(PotConstants.turretLoLimit, PotConstants.turretHiLimit);
             turretJag.enableControl();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();

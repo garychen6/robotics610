@@ -46,10 +46,10 @@ public class TurretControl extends Command {
         } else if (Buttons.isPressed(InputConstants.kAButton, oi.getOperator())) {
             turret.decTurretI(0.001);
         }
-        if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kRightXAxis)) > 0.1) {
+  //      if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kRightXAxis)) > 0.1) {
             turret.incPosition(PotConstants.turretInc * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kRightXAxis), 3));
-        }
-        System.out.println("Turret Pos: " + turret.getPosSet());
+  //      }
+        System.out.println("Turret Set: " + turret.getPosSet() + " Pos: " + turret.getPos());
     }
 
     // Make this return true when this Command no longer needs to run execute()
