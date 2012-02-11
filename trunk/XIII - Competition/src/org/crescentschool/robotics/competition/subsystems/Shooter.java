@@ -167,7 +167,6 @@ public class Shooter extends Subsystem {
      * The default command for the shooter.
      */
     protected void initDefaultCommand() {
-        //setDefaultCommand(new PIDTuning());
     }
 
     private void handleCANError() {
