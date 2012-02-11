@@ -54,11 +54,11 @@ public class TurretControl extends Command {
             turret.resetPosition();
         }
         if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator())) {
-            double offset = -camera.getX();
-            if (offset > 0.25)
-                offset = 0.25;
-            if (offset < -0.25)
-                offset = -0.25;
+            double offset = -0.4 * camera.getX();
+            if (offset > 0.1)
+                offset = 0.1;
+            if (offset < -0.1)
+                offset = -0.1;
             turret.incPosition(offset);
         } else {
             turret.setVBus(MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kRightXAxis), 3));
