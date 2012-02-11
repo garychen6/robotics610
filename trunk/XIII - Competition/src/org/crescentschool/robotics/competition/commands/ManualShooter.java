@@ -14,6 +14,7 @@ import org.crescentschool.robotics.competition.subsystems.Feeder;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.subsystems.Turret;
 import org.crescentschool.robotics.competition.subsystems.CoyoBotUltrasonic;
+import org.crescentschool.robotics.competition.subsystems.Intake;
 
 /**
  *
@@ -29,6 +30,7 @@ public class ManualShooter extends Command {
     OI oi = OI.getInstance();
     Camera camera = Camera.getInstance();
     Feeder feeder = Feeder.getInstance();
+    Intake intake = Intake.getInstance();
     CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
 
     public ManualShooter() {
@@ -51,12 +53,14 @@ public class ManualShooter extends Command {
             turret.resetPID();
             camera.resetCamera();
         }
-        if(Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())){
+        if(Buttons.isHeld(InputConstants.kL2Button, OI.getInstance().getOperator()) && !Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())){
             shooter.setShooter((80.167*ultrasonic.getDistance())+1212);
         }
          if(Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())){
-        if((shooter.getShooterSetPoint() - shooter.getShooterSpeed()) < 0){
+            if(Math.abs((shooter.getRPM() + shooter.getShooterSpeed())) < 100){
+            intake.setInbotForward(-1);
             feeder.setFeeder(1);
+            
         }
         }else{
              feeder.setFeeder(0);

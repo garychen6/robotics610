@@ -53,7 +53,7 @@ public class TurretControl extends Command {
         if (Buttons.isPressed(InputConstants.kL2Button, oi.getOperator())) {
             turret.resetPosition();
         }
-        if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator())) {
+        if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, oi.getOperator())) {
             double offset = -0.4 * camera.getX();
             if (offset > 0.1)
                 offset = 0.1;
