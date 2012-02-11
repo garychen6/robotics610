@@ -14,10 +14,12 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.AutonomousShoot;
+import org.crescentschool.robotics.competition.commands.BridgeMode;
 import org.crescentschool.robotics.competition.commands.FlipperPresets;
+import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
 import org.crescentschool.robotics.competition.commands.PIDTuning;
-import org.crescentschool.robotics.competition.commands.BridgeMode;
+import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Feeder;
@@ -46,7 +48,7 @@ public class CoyobotXIII extends IterativeRobot {
     int autonMode = 1;
     Turret turret;
     Camera camera;
-
+    boolean kajMode = false;
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -96,8 +98,9 @@ public class CoyobotXIII extends IterativeRobot {
     }
 
     public void disabledPeriodic() {
-        System.out.println("Driver EncL: " + driveTrain.getLeftSpeed());
-        System.out.println("Driver EncR: " + driveTrain.getRightSpeed());
+        //System.out.println("Driver EncL: " + driveTrain.getLeftSpeed());
+        //System.out.println("Driver EncR: " + driveTrain.getRightSpeed());
+        //printDiagnostics();
     }
 
     public void teleopInit() {
@@ -106,7 +109,8 @@ public class CoyobotXIII extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         //autonomous.cancel();
-        //Scheduler.getInstance().add(new PIDTuning());
+        driveTrain.reInit();
+        Scheduler.getInstance().add(new PIDTuning());
         //Scheduler.getInstance().add(new Shoot());
         Scheduler.getInstance().add(new FlipperPresets());
         //Scheduler.getInstance().add(new TurretControl());
@@ -115,9 +119,29 @@ public class CoyobotXIII extends IterativeRobot {
 
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        if(Buttons.isPressed(autonMode, null))
+        //if(Buttons.isPressed(autonMode, null))
+        if(!kajMode){
+        if(Math.abs(oi.getDriver().getRawAxis(InputConstants.kLeftYAxis))>0.2){
+            Scheduler.getInstance().add(new KajDrive());
+            kajMode = true;
+        }
+        else if(Math.abs(oi.getDriver().getRawAxis(InputConstants.kRightXAxis))>0.2){
+            Scheduler.getInstance().add(new KajDrive());
+            kajMode = true;
+        }
+        }else{
+        if(Buttons.isPressed(InputConstants.kBButton, oi.getDriver())){
+            Scheduler.getInstance().add(new BridgeMode());
+            kajMode = false;
+        }
+        else if(Buttons.isPressed(InputConstants.kAButton, oi.getDriver())){
+            Scheduler.getInstance().add(new BridgeMode());
+            kajMode = false;
+        }
+        
+        }   
         Buttons.update();
-
+        //printDiagnostics();
 
 
     }
@@ -131,7 +155,7 @@ public class CoyobotXIII extends IterativeRobot {
         SmartDashboard.putDouble("Left Drive Speed", -driveTrain.getLeftSpeed());
         SmartDashboard.putDouble("Right Drive Speed", driveTrain.getRightSpeed());
         SmartDashboard.putDouble("Horiz Gyro", driveTrain.getHorizAngle());
-        SmartDashboard.putDouble("Vert Gyro", driveTrain.getVertAngle());
+       // SmartDashboard.putDouble("Vert Gyro", driveTrain.getVertAngle());
         SmartDashboard.putDouble("Camera Offset", camera.getX());
         SmartDashboard.putDouble("Flipper Pot", flipper.getPos());
         SmartDashboard.putDouble("Turret Pot", turret.getPos());

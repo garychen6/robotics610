@@ -36,16 +36,24 @@ public class BridgeMode extends Command {
     protected void initialize() {
         set = 0;
         driveTrain.setPos(set);
-        driveTrain.reInit();
+        //driveTrain.reInit();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+         
+        if (Buttons.isPressed(InputConstants.kBButton, oi.getDriver())) {
+            set += 1.4;
+            driveTrain.setPos(set);
+        } else if (Buttons.isPressed(InputConstants.kAButton, oi.getDriver())) {
+            set -= 1.4;
+            driveTrain.setPos(set);
+        }
         if (Buttons.isHeld(InputConstants.kBButton, oi.getDriver())) {
-            set += 0.02;
+            set += 0.015;
             driveTrain.setPos(set);
         } else if (Buttons.isHeld(InputConstants.kAButton, oi.getDriver())) {
-            set -= 0.02;
+            set -= 0.015;
             driveTrain.setPos(set);
         }
     }
