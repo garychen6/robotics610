@@ -51,6 +51,9 @@ public class ManualShooter extends Command {
             turret.resetPID();
             camera.resetCamera();
         }
+        if(Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())){
+            shooter.setShooter((80.167*ultrasonic.getDistance())+1212);
+        }
          if(Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())){
         if((shooter.getShooterSetPoint() - shooter.getShooterSpeed()) < 0){
             feeder.setFeeder(1);
