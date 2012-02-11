@@ -30,7 +30,7 @@ public class TurretLock extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         cam.processCamera();
-        turret.setX(turret.getPos() + PIDConstants.tLockP * cam.getX());
+        turret.setPosition(turret.getPos() + PIDConstants.tLockP * cam.getX());
     }
 
     // Make this return true when this Command no longer needs to run execute()
