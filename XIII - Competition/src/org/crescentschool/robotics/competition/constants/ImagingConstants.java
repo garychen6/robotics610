@@ -12,11 +12,11 @@ public class ImagingConstants {
     /**
      * The minimum hue value that an individual pixel in a camera image may have to be included in the threshold
      */
-    public static final int kHThresholdMin = 50;
+    public static final int kHThresholdMin = 100;
     /**
      * The maximum hue value that an individual pixel in a camera image may have to be included in the threshold
      */
-    public static final int kHThresholdMax = 100;
+    public static final int kHThresholdMax = 150;
     /**
      * The minimum saturation value that an individual pixel in a camera image may have to be included in the threshold
      */
@@ -28,7 +28,7 @@ public class ImagingConstants {
     /**
      * The minimum luminance value that an individual pixel in a camera image may have to be included in the threshold
      */
-    public static final int kLThresholdMin = 179;
+    public static final int kLThresholdMin = 150;
     /**
      * The minimum luminance value that an individual pixel in a camera image may have to be included in the threshold
      */

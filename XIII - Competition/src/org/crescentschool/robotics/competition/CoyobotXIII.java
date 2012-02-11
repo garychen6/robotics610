@@ -18,7 +18,7 @@ import org.crescentschool.robotics.competition.commands.BridgeMode;
 import org.crescentschool.robotics.competition.commands.FlipperPresets;
 import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
-import org.crescentschool.robotics.competition.commands.PIDTuning;
+import org.crescentschool.robotics.competition.commands.ManualShooter;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
@@ -109,9 +109,8 @@ public class CoyobotXIII extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         //autonomous.cancel();
-        driveTrain.reInit();
-        Scheduler.getInstance().add(new PIDTuning());
-        //Scheduler.getInstance().add(new Shoot());
+        //Scheduler.getInstance().add(new PIDTuning());
+        Scheduler.getInstance().add(new ManualShooter());
         Scheduler.getInstance().add(new FlipperPresets());
         //Scheduler.getInstance().add(new TurretControl());
         //Scheduler.getInstance().add(new BridgeMode());
@@ -147,7 +146,7 @@ public class CoyobotXIII extends IterativeRobot {
     }
 
     public void teleopContinuous() {
-        //camera.processCamera();
+        camera.processCamera();
     }
 
     private void printDiagnostics() {

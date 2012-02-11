@@ -53,7 +53,7 @@ public class TurretControl extends Command {
             turret.decTurretI(-0.001);
         }
         if (Buttons.isPressed(InputConstants.kStartButton, oi.getDriver())) {
-            turret.resetTurretPID();
+            turret.resetPID();
         }
     }
 

@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class Autonomous extends CommandGroup {
 
     public Autonomous() {
-        addSequential(new Shoot());
+        addSequential(new ManualShooter());
         addSequential(new AutoTurn(180));
         addSequential(new DriveDistance(5.03990653700226));
         addParallel(new setFlipper(45));
@@ -22,7 +22,7 @@ public class Autonomous extends CommandGroup {
         addSequential(new setFlipper(65));
         addSequential(new AutoTurn(180));
         addSequential(new DriveDistance(5.03990653700226));
-        addSequential(new Shoot());
+        addSequential(new ManualShooter());
         
         //addParallel(new setFlipper(44.9));
         
