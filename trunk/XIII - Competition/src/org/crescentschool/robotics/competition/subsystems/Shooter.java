@@ -3,7 +3,6 @@ package org.crescentschool.robotics.competition.subsystems;
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import org.crescentschool.robotics.competition.commands.PIDTuning;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 
@@ -16,6 +15,7 @@ public class Shooter extends Subsystem {
     public CANJaguar shootJaguarSlave;
     private static Shooter instance = null;
     double p, i, d;
+    double rpm = 2000;
 
     /**
      * Ensures that only one shooter is instantiated.
@@ -44,10 +44,10 @@ public class Shooter extends Subsystem {
 //            shootJaguar.enableControl();
 //            shootJaguarSlave.enableControl();
             resetPID();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
-            handleCANError();  
+            handleCANError();
         }
     }
 
@@ -57,7 +57,7 @@ public class Shooter extends Subsystem {
      */
     public void setShooter(double rpm) {
         try {
-            shootJaguar.setX(-2*rpm);
+            shootJaguar.setX(-2 * rpm);
             System.out.println("ShooterSet: " + rpm);
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,19 +65,20 @@ public class Shooter extends Subsystem {
         }
 
     }
-    
     /**
      * Gets the shooter's target speed.
      * @return  The target speed.
      */
-    public double getShooterSetPoint() {
-        try {
-            return shootJaguar.getX();
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-            handleCANError();
-            return 0;
-        }
+    public double getRPM() {
+        return rpm;
+    }
+    /**
+     * Gets the shooter's target speed.
+     * @return  The target speed.
+     */
+    public void incRPM(double newRPM) {
+        rpm += newRPM;
+        setShooter(rpm);
     }
 
     /**
@@ -93,7 +94,19 @@ public class Shooter extends Subsystem {
             return 0;
         }
     }
-
+/**
+     * Return the shooter's speed.
+     * @return Return shooter speed.
+     */
+    public double getShooterSetPoint() {
+        try {
+            return shootJaguar.getX();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+            handleCANError();
+            return 0;
+        }
+    }
     /**
      * Adjust the P value.
      * @param x The value with which to increment "P".
@@ -112,7 +125,7 @@ public class Shooter extends Subsystem {
         System.out.println("Shooter P: " + p + " I: " + i);
     }
 
-        /**
+    /**
      * Adjust the I value.
      * @param x The value with which to increment "I".
      */
@@ -121,7 +134,7 @@ public class Shooter extends Subsystem {
         System.out.println("Shooter P: " + p + " I: " + i + " D:" + d);
     }
 
-    public void syncSlaves(){
+    public void syncSlaves() {
         try {
             shootJaguarSlave.setX(shootJaguar.getOutputVoltage() / 12);
         } catch (CANTimeoutException ex) {
@@ -129,15 +142,15 @@ public class Shooter extends Subsystem {
             handleCANError();
         }
     }
+
     /**
      * Resets Shooter P, I, and D, and syncs slave.
      */
     public void resetPID() {
         try {
-            System.out.println("Shooter PID Reset"+p+i+d);
+            System.out.println("Shooter PID Reset");
             shootJaguar.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
             shootJaguar.configEncoderCodesPerRev(256);
-            //shootJaguar.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             shootJaguar.changeControlMode(CANJaguar.ControlMode.kSpeed);
             shootJaguarSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             shootJaguar.configNeutralMode(CANJaguar.NeutralMode.kCoast);
@@ -156,9 +169,8 @@ public class Shooter extends Subsystem {
     protected void initDefaultCommand() {
         //setDefaultCommand(new PIDTuning());
     }
-    
-    private void handleCANError()
-    {
+
+    private void handleCANError() {
         System.out.println("Shooter CAN Error!");
         try {
             Thread.sleep(500);

@@ -39,15 +39,7 @@ public class Turret extends Subsystem {
         d = 0;
         try {
             turretJag = new CANJaguar(ElectricalConstants.TurretJaguar);
-            turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
-            turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
-            turretJag.setPID(p, i, d);
-            //turretJag.changeControlMode(CANJaguar.ControlMode.kSpeed);
-            //turretJag.enableControl(0);
-            turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
-            turretJag.enableControl(0);
-            turretJag.configSoftPositionLimits(135, -135);
-
+            resetPID();
 
             // turretJag.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             // turretJag.enableControl(0);
@@ -144,11 +136,17 @@ public class Turret extends Subsystem {
     /**
      * Resets the turret's P and I values to the values in PID constants.
      */
-    public void resetTurretPID() {
+    public void resetPID() {
         try {
+            System.out.println("Turret PID Reset");
             turretJag.setPID(p, i, d);
-            turretJag.enableControl();
-
+            turretJag.enableControl(); 
+            turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
+            turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
+            turretJag.setPID(p, i, d);
+            turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
+            turretJag.enableControl(0);
+            turretJag.configSoftPositionLimits(135, -135);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
 
