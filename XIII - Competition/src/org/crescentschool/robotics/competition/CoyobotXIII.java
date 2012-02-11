@@ -64,7 +64,7 @@ public class CoyobotXIII extends IterativeRobot {
         feeder = Feeder.getInstance();
         //leftArm = new KinectStick(1);
         //autonomous = new AutonomousShoot();
-        //Camera.getInstance();
+        camera = Camera.getInstance();
     }
 
     public void autonomousInit() {
