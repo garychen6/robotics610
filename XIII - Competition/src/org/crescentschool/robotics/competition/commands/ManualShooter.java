@@ -28,12 +28,13 @@ public class ManualShooter extends Command {
     CoyoBotUltrasonic uSonic = CoyoBotUltrasonic.getInstance();
     OI oi = OI.getInstance();
     Camera camera = Camera.getInstance();
-    
+    Feeder feeder = Feeder.getInstance();
+    CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
+
     public ManualShooter() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(shooter);
-        requires(feed);
     }
 
     // Called just before this Command runs the first time
@@ -43,14 +44,22 @@ public class ManualShooter extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis)) > 0.1) {
-            shooter.incRPM(-50 * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis),3));
+            shooter.incRPM(-50 * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis), 3));
         }
-        if (Buttons.isPressed(InputConstants.kStartButton, oi.getOperator()))
-        {
+        if (Buttons.isPressed(InputConstants.kStartButton, oi.getOperator())) {
             shooter.resetPID();
             turret.resetPID();
             camera.resetCamera();
         }
+         if(Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())){
+        if((shooter.getShooterSetPoint() - shooter.getShooterSpeed()) < 0){
+            feeder.setFeeder(1);
+        }
+        }else{
+             feeder.setFeeder(0);
+         }
+             
+
     }
 
     // Make this return true when this Command no longer needs to run execute()
