@@ -5,7 +5,6 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.CANJaguar;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.commands.TurretControl;
@@ -139,11 +138,13 @@ public class Turret extends Subsystem {
     public void resetPID() {
         try {
             System.out.println("Turret PID Reset");
+            turretJag.configFaultTime(0.5);
+            turretJag.configNeutralMode(CANJaguar.NeutralMode.kBrake);
             turretJag.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
             turretJag.setPID(p, i, d);
             turretJag.changeControlMode(CANJaguar.ControlMode.kPosition);
+            //turretJag.configSoftPositionLimits(0.1, 0.9);
             turretJag.enableControl();
-            turretJag.configSoftPositionLimits(0.4, 0.6);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -155,12 +156,10 @@ public class Turret extends Subsystem {
      */
     public void incPosition(double inc) {
         position += inc;
-        if (position > PotConstants.turretHiLimit)
-        {
+        if (position > PotConstants.turretHiLimit) {
             position = PotConstants.turretHiLimit;
         }
-        if (position < PotConstants.turretLoLimit)
-        {
+        if (position < PotConstants.turretLoLimit) {
             position = PotConstants.turretLoLimit;
         }
         try {
