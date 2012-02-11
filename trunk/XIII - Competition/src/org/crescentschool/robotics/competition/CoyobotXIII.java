@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.commands.AutoBridge;
 import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.AutonomousShoot;
 import org.crescentschool.robotics.competition.commands.BridgeMode;
@@ -68,7 +69,7 @@ public class CoyobotXIII extends IterativeRobot {
         feeder = Feeder.getInstance();
         //leftArm = new KinectStick(1);
         //autonomous = new AutonomousShoot();
-        camera = Camera.getInstance();
+        //camera = Camera.getInstance();
         ultrasonic = CoyoBotUltrasonic.getInstance();
     }
 
@@ -105,7 +106,7 @@ public class CoyobotXIII extends IterativeRobot {
     public void disabledPeriodic() {
         //System.out.println("Driver EncL: " + driveTrain.getLeftSpeed());
         //System.out.println("Driver EncR: " + driveTrain.getRightSpeed());
-        printDiagnostics();
+        //printDiagnostics();
     }
 
     public void teleopInit() {
@@ -123,7 +124,6 @@ public class CoyobotXIII extends IterativeRobot {
 
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        //if(Buttons.isPressed(autonMode, null))
         if (!kajMode) {
             if (Math.abs(oi.getDriver().getRawAxis(InputConstants.kLeftYAxis)) > 0.2) {
                 Scheduler.getInstance().add(new KajDrive());
@@ -140,16 +140,25 @@ public class CoyobotXIII extends IterativeRobot {
                 Scheduler.getInstance().add(new BridgeMode());
                 kajMode = false;
             }
-
+            if (Buttons.isPressed(InputConstants.kXButton, oi.getDriver())) {
+                Scheduler.getInstance().add(new BridgeMode());
+                kajMode = false;
+            } else if (Buttons.isPressed(InputConstants.kYButton, oi.getDriver())) {
+                Scheduler.getInstance().add(new BridgeMode());
+                kajMode = false;
+            }
+            if (Buttons.isPressed(InputConstants.kSelectButton, oi.getDriver())) {
+                Scheduler.getInstance().add(new AutoBridge());
+            }
         }
         Buttons.update();
-        printDiagnostics();
+       // printDiagnostics();
 
 
     }
 
     public void teleopContinuous() {
-        camera.processCamera();
+        //camera.processCamera();
     }
 
     private void printDiagnostics() {

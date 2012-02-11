@@ -22,7 +22,7 @@ public class BridgeMode extends Command {
 
     OI oi;
     DriveTrain driveTrain;
-    double set;
+    double x, y;
 
     public BridgeMode() {
         // Use requires() here to declare subsystem dependencies
@@ -34,28 +34,32 @@ public class BridgeMode extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        set = 0;
-        driveTrain.setPos(set);
-        //driveTrain.reInit();
+        x = 0;
+        y = 0;
+        driveTrain.reInit();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-         
-        if (Buttons.isPressed(InputConstants.kBButton, oi.getDriver())) {
-            set += 1.4;
-            driveTrain.setPos(set);
-        } else if (Buttons.isPressed(InputConstants.kAButton, oi.getDriver())) {
-            set -= 1.4;
-            driveTrain.setPos(set);
+        OI.printToDS(0, "Pos SetPoint: " + driveTrain.getLeftPosSetpoint());
+        OI.printToDS(1, "Pos: " + driveTrain.getLeftPos());
+        OI.printToDS(2, "Gyro: " + driveTrain.getGyro().getAngle());
+        if (Buttons.isPressed(InputConstants.kAButton, oi.getDriver())) {
+            y += 0.25;
+        } else if (Buttons.isPressed(InputConstants.kYButton, oi.getDriver())) {
+            y -= 0.25;
         }
-        if (Buttons.isHeld(InputConstants.kBButton, oi.getDriver())) {
-            set += 0.015;
-            driveTrain.setPos(set);
-        } else if (Buttons.isHeld(InputConstants.kAButton, oi.getDriver())) {
-            set -= 0.015;
-            driveTrain.setPos(set);
+        if (Buttons.isHeld(InputConstants.kAButton, oi.getDriver())) {
+            y += 0.02;
+        } else if (Buttons.isHeld(InputConstants.kYButton, oi.getDriver())) {
+            y -= 0.02;
+        } else if (Buttons.isHeld(InputConstants.kXButton, oi.getDriver())) {
+            x += 0.025;
+        } else if (Buttons.isHeld(InputConstants.kBButton, oi.getDriver())) {
+            x -= 0.025;
         }
+        driveTrain.setRightPos(y - x);
+        driveTrain.setLeftPos(y + x);
     }
 
     protected void end() {
