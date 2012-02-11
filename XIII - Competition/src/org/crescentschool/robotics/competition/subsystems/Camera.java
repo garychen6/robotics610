@@ -27,16 +27,7 @@ public class Camera extends Subsystem {
     private double xOffset = 0;
 
     private Camera() {
-        camera.writeResolution(AxisCamera.ResolutionT.k320x240);
-        camera.writeCompression(30);
-        camera.writeWhiteBalance(AxisCamera.WhiteBalanceT.fixedOutdoor1);
-        camera.writeExposureControl(AxisCamera.ExposureT.flickerfree60);
-        camera.writeExposurePriority(AxisCamera.ExposurePriorityT.frameRate);
-        camera.writeBrightness(0);
-        camera.writeColorLevel(50);
-        camera.writeMaxFPS(30);
-        camera.writeRotation(AxisCamera.RotationT.k0);
-        //sharpness should be 0, but there is no method for it
+        resetCamera();
     }
 
     /**
@@ -101,5 +92,21 @@ public class Camera extends Subsystem {
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
+    }
+
+    /**
+     * 
+     */
+    public void resetCamera() {
+        camera.writeResolution(AxisCamera.ResolutionT.k320x240);
+        camera.writeCompression(30);
+        camera.writeWhiteBalance(AxisCamera.WhiteBalanceT.fixedOutdoor1);
+        camera.writeExposureControl(AxisCamera.ExposureT.flickerfree60);
+        camera.writeExposurePriority(AxisCamera.ExposurePriorityT.frameRate);
+        camera.writeBrightness(0);
+        camera.writeColorLevel(50);
+        camera.writeMaxFPS(30);
+        camera.writeRotation(AxisCamera.RotationT.k0);
+        //sharpness should be 0, but there is no method for it
     }
 }

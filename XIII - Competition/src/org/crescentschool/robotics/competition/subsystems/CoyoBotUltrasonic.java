@@ -13,22 +13,22 @@ import org.crescentschool.robotics.competition.constants.PIDConstants;
  *
  * @author Warfa
  */
-public class Ultrasonic extends Subsystem {
+public class CoyoBotUltrasonic extends Subsystem {
     // Put methods for controlling this subsystem.
     // here. Call these from Commands.
-   static Ultrasonic instance = null;
+   static CoyoBotUltrasonic instance = null;
    AnalogChannel ultrasonic;
    /**
     * Ensure only one ultrasonic is instantiated.
     * @return The singleton ultrasonic instance.
     */
-   public static Ultrasonic getInstance(){
+   public static CoyoBotUltrasonic getInstance(){
        if(instance == null){
-           instance = new Ultrasonic();
+           instance = new CoyoBotUltrasonic();
        }
        return instance;
    }
-   private Ultrasonic(){
+   private CoyoBotUltrasonic(){
        ultrasonic = new AnalogChannel(ElectricalConstants.USonic);
        ultrasonic.setAverageBits(4);
    }
