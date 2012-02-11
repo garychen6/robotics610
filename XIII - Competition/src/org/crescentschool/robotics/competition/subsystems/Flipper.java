@@ -20,7 +20,6 @@ public class Flipper extends Subsystem {
     CANJaguar jagFlip;
     static Flipper instance = null;
     double p, i, d;
-    int pos = 0;
     // -1 = balance assist, 0 = ball collection, 1 = barrier, 2 = bridge, 3 = retract
     int flipperPosition = 3;
 
@@ -59,7 +58,7 @@ public class Flipper extends Subsystem {
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
-        gotoPosition(flipperPosition);
+        gotoPosition();
     }
 
     /**
@@ -127,7 +126,8 @@ public class Flipper extends Subsystem {
      * @param angle Position Mode 
      */
     public void setPos(int position) {
-        this.pos = position;
+        flipperPosition = position;
+         gotoPosition();
     }
 
     /**
@@ -151,7 +151,8 @@ public class Flipper extends Subsystem {
         if (flipperPosition > 3) {
             flipperPosition = 3;
         }
-        gotoPosition(flipperPosition);
+      
+        gotoPosition();
     }
 
     /**
@@ -162,12 +163,11 @@ public class Flipper extends Subsystem {
         if (flipperPosition < -1) {
             flipperPosition = -1;
         }
-        gotoPosition(flipperPosition);
+        gotoPosition();
     }
 
-    private void gotoPosition(int position) {
-        pos = position;
-        switch (pos) {
+    private void gotoPosition() {
+        switch (flipperPosition) {
             case -1:
                 setFlippers(PotConstants.flipperBridgeAssist);
                 break;

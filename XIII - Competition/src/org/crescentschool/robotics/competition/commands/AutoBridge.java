@@ -30,7 +30,6 @@ public class AutoBridge extends Command {
         driveTrain.reInit();
         maxAngle = driveTrain.getVertAngle();
         driveTrain.setSpeed(-70);
-        flipper.setFlippers(PotConstants.flipperRetract);
         flipper.setPos(3);
         
     }
@@ -40,7 +39,7 @@ public class AutoBridge extends Command {
             maxAngle = driveTrain.getVertAngle();
         }
         else if (driveTrain.getVertAngle() < (maxAngle - 5)) {
-            driveTrain.setPos(0.585);
+            driveTrain.setPos(0.68);
         } 
     }
     

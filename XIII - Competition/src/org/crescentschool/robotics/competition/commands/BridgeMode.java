@@ -46,19 +46,19 @@ public class BridgeMode extends Command {
         OI.printToDS(0, "Pos SetPoint: " + driveTrain.getLeftPosSetpoint());
         OI.printToDS(1, "Pos: " + driveTrain.getLeftPos());
         OI.printToDS(2, "Gyro: " + driveTrain.getGyro().getAngle());
-        if (oi.getDriver().getRawAxis(6) == -1 && !dPadUp) {
+        if (oi.getDriver().getRawAxis(6) == 1 && !dPadUp) {
             y += 0.25;
             dPadUp = true;
-        } else if (oi.getDriver().getRawAxis(6) == 1 && !dPadDown) {
+        } else if (oi.getDriver().getRawAxis(6) == -1 && !dPadDown) {
             y -= 0.25;
             dPadDown = true;
         }else if(oi.getDriver().getRawAxis(6) == 0 ){
             dPadUp = false;
             dPadDown = false;
         }
-        if (oi.getDriver().getRawAxis(6) == -1) {
+        if (oi.getDriver().getRawAxis(6) == 1) {
             y += 0.02;
-        } else if (oi.getDriver().getRawAxis(6) == 1) {
+        } else if (oi.getDriver().getRawAxis(6) == -1) {
             y -= 0.02;
         } else if (oi.getDriver().getRawAxis(5) == -1) {
             x += 0.025;
