@@ -14,13 +14,13 @@ import org.crescentschool.robotics.competition.constants.InputConstants;
  *
  * @author ian
  */
-public class ManualBallIntake extends Command {
+public class mI_pickup extends Command {
 
     Intake intake = Intake.getInstance();
     double speed = 1;
     OI oi = OI.getInstance();
 
-    public ManualBallIntake() {
+    public mI_pickup() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis
         requires(intake);

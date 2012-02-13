@@ -17,14 +17,14 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
  *
  * @author Warfa
  */
-public class TurretControl extends Command {
+public class amtT_turn extends Command {
 
     Turret turret = Turret.getInstance();
     OI oi = OI.getInstance();
     Camera camera = Camera.getInstance();
     double tPos = 0;
 
-    public TurretControl() {
+    public amtT_turn() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(turret);

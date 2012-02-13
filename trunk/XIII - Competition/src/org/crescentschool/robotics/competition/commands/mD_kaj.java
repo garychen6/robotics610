@@ -10,12 +10,12 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  *
  * @author bradmiller
  */
-public class KajDrive extends Command {
+public class mD_kaj extends Command {
 
     DriveTrain driveTrain = DriveTrain.getInstance();
     OI oi = OI.getInstance();
 
-    public KajDrive() {
+    public mD_kaj() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(driveTrain);

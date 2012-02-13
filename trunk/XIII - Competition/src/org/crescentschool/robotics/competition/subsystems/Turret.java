@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.crescentschool.robotics.competition.commands.TurretControl;
+import org.crescentschool.robotics.competition.commands.amtT_turn;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.constants.PotConstants;
@@ -152,7 +152,7 @@ public class Turret extends Subsystem {
      */
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        setDefaultCommand(new TurretControl());
+        setDefaultCommand(new amtT_turn());
     }
 
     /**

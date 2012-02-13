@@ -8,24 +8,17 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
  *
- * @author Robotics
+ * @author Warfa
  */
-public class Autonomous2 extends CommandGroup {
-    
-    public Autonomous2() {
-        addSequential(new ManualShooter());
-        addSequential(new DriveDistance(10.98));
-        addSequential(new AutoTurn(90));
-        addParallel(new setFlipper(45));
-        addSequential(new DriveDistance(5.03990653700226));
-        addSequential(new setFlipper(10));
-        addSequential(new TimedBallIntake(2));
-        addSequential(new setFlipper(45));
-        addSequential(new AutoTurn(150));
-        addSequential(new ManualShooter());
-        //:)
+public class aST_shoot extends CommandGroup {
+
+    public aST_shoot() {
+        addSequential(new aD_distance(5.5));
+        addSequential(new aFl_set(20));
+        addSequential(new aD_distance(6.5));
+        addParallel(new aFl_set(44.9));
         
-        
+
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());

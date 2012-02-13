@@ -13,9 +13,9 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.crescentschool.robotics.competition.commands.Autonomous;
-import org.crescentschool.robotics.competition.commands.AutonomousShoot;
-import org.crescentschool.robotics.competition.commands.KinectAuton;
+import org.crescentschool.robotics.competition.commands.a_1;
+import org.crescentschool.robotics.competition.commands.aST_shoot;
+import org.crescentschool.robotics.competition.commands.aK_human;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.controls.OperatorControls;
@@ -65,7 +65,7 @@ public class CoyobotXIII extends IterativeRobot {
         intake = Intake.getInstance();
         feeder = Feeder.getInstance();
         //leftArm = new KinectStick(1);
-        //autonomous = new AutonomousShoot();
+        //autonomous = new aST_shoot();
         camera = Camera.getInstance();
         ultrasonic = CoyoBotUltrasonic.getInstance();
     }
@@ -86,13 +86,13 @@ public class CoyobotXIII extends IterativeRobot {
             switch (autonMode) {
                 default:
                 case 1:
-                    autonomous = new AutonomousShoot();
+                    autonomous = new aST_shoot();
                     break;
                 case 2:
-                    autonomous = new Autonomous();
+                    autonomous = new a_1();
                     break;
                 case 3:
-                    autonomous = new KinectAuton();
+                    autonomous = new aK_human();
                     break;
             }
             autonomous.start();
