@@ -11,10 +11,12 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.KinectStick;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.commands.Autonomous;
 import org.crescentschool.robotics.competition.commands.AutonomousShoot;
 import org.crescentschool.robotics.competition.commands.KinectAuton;
+import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.controls.OperatorControls;
 import org.crescentschool.robotics.competition.subsystems.Camera;
@@ -119,6 +121,7 @@ public class CoyobotXIII extends IterativeRobot {
         Scheduler.getInstance().run();
         Buttons.update();
         printDiagnostics();
+        
     }
 
     public void teleopContinuous() {
@@ -135,5 +138,11 @@ public class CoyobotXIII extends IterativeRobot {
         SmartDashboard.putDouble("Turret Pot", turret.getPos());
         SmartDashboard.putDouble("Turret Set", turret.getPosSet());
         SmartDashboard.putDouble("Ultrasonic", ultrasonic.getDistance());
+        ParticleAnalysisReport topTarget = Camera.getInstance().getTopTarget();
+        if(Buttons.isHeld(InputConstants.kL2Button, oi.getOperator())){
+            if(topTarget != null)SmartDashboard.putString("bounddata", topTarget.boundingRectLeft + ";" + topTarget.boundingRectTop + ";" + topTarget.boundingRectWidth + ";" + topTarget.boundingRectHeight + ";1");
+        } else {
+            if(topTarget != null)SmartDashboard.putString("bounddata", topTarget.boundingRectLeft + ";" + topTarget.boundingRectTop + ";" + topTarget.boundingRectWidth + ";" + topTarget.boundingRectHeight + ";0");
+        }
     }
 }

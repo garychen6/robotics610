@@ -25,6 +25,7 @@ public class Camera extends Subsystem {
     private static Camera instance = null;
     private static AxisCamera camera = AxisCamera.getInstance();
     private double xOffset = 0;
+    private ParticleAnalysisReport topTarget = null;
 
     private Camera() {
         resetCamera();
@@ -41,6 +42,14 @@ public class Camera extends Subsystem {
         return instance;
     }
 
+    /**
+     * Returns the top target in Particle Analysis Report form.
+     * @return the particle analysis report of the top target
+     */
+    public ParticleAnalysisReport getTopTarget(){
+        return topTarget;
+    }
+    
     /**
      * Gets the normalized position for the top square on the net.
      * @return The normalized position for the top square as a value between -1 and 1.
@@ -75,9 +84,9 @@ public class Camera extends Subsystem {
                             lowestY = i;
                         }
                     }
+                    topTarget = s_particles[lowestY];
                     //Send bounding rectangle info to SmartDashboard
-                    SmartDashboard.putString("bounddata", s_particles[lowestY].boundingRectLeft + ";" + s_particles[lowestY].boundingRectTop + ";" + s_particles[lowestY].boundingRectWidth + ";" + s_particles[lowestY].boundingRectHeight + ";" + ((Turret.getInstance().isLockedOn) ? 1:0));
-                    xOffset = ((s_particles[lowestY].boundingRectLeft + s_particles[lowestY].boundingRectWidth / 2) - 160.0) / 160.0;
+                    xOffset = ((topTarget.boundingRectLeft + topTarget.boundingRectWidth / 2) - 160.0) / 160.0;
 //                    if (Math.abs(xOffset) < 0.05) {
 //                        xOffset = 0;
 //                    }
