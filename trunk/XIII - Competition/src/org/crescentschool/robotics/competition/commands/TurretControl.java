@@ -60,8 +60,10 @@ public class TurretControl extends Command {
             if (offset < -0.1)
                 offset = -0.1;
             turret.incPosition(offset);
+            turret.isLockedOn = true;
         } else {
             turret.setVBus(MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kRightXAxis), 3));
+            turret.isLockedOn = false;
         }
     }
 
