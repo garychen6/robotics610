@@ -16,12 +16,12 @@ import org.crescentschool.robotics.competition.subsystems.Flipper;
  *
  * @author Warfa, Mr. Lim
  */
-public class tFl_presets extends Command {
+public class T_Fl_Presets extends Command {
     OI oi = OI.getInstance();
     Flipper flipper = Flipper.getInstance();
     
     
-    public tFl_presets() {
+    public T_Fl_Presets() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(flipper);

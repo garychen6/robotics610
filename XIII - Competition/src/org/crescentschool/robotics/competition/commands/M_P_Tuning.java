@@ -18,7 +18,7 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
  *
  * @author Robotics
  */
-public class mP_tuning extends Command {
+public class M_P_Tuning extends Command {
 
     OI oi = OI.getInstance();
     DriveTrain driveTrain = DriveTrain.getInstance();
@@ -29,7 +29,7 @@ public class mP_tuning extends Command {
     int count = 0;
     int rpm = 0;
 
-    public mP_tuning() {
+    public M_P_Tuning() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(shooter);

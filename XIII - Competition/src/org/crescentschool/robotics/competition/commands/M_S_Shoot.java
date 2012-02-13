@@ -20,7 +20,7 @@ import org.crescentschool.robotics.competition.subsystems.Intake;
  *
  * @author Warfa
  */
-public class mS_shoot extends Command {
+public class M_S_Shoot extends Command {
 
     private double m_timeout;
     Shooter shooter = Shooter.getInstance();
@@ -33,7 +33,7 @@ public class mS_shoot extends Command {
     Intake intake = Intake.getInstance();
     CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
 
-    public mS_shoot() {
+    public M_S_Shoot() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(shooter);
