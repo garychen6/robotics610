@@ -25,7 +25,6 @@ public class Turret extends Subsystem {
     double position = PotConstants.turretCentre;
     // 1 = %VBus, 2 = Position
     private int controlMode = 1;
-    public boolean isLockedOn = false;
 
     /**
      * Ensures that only one turret is instantiated.
