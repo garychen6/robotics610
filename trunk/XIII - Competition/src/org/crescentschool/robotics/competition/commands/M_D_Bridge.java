@@ -18,7 +18,7 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  *
  * @author Robotics
  */
-public class mD_bridge extends Command {
+public class M_D_Bridge extends Command {
 
     OI oi;
     DriveTrain driveTrain;
@@ -26,7 +26,7 @@ public class mD_bridge extends Command {
     boolean dPadUp = false;
     boolean dPadDown = false;
 
-    public mD_bridge() {
+    public M_D_Bridge() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         oi = OI.getInstance();

@@ -5,36 +5,47 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import org.crescentschool.robotics.competition.*;
 import org.crescentschool.robotics.competition.subsystems.Intake;
+import org.crescentschool.robotics.competition.OI;
+import org.crescentschool.robotics.competition.constants.InputConstants;
+
 /**
  *
- * @author Warfa
+ * @author ian
  */
-public class A_I_timed extends Command {
-    public double m_timeout;
+public class M_I_Pickup extends Command {
+
     Intake intake = Intake.getInstance();
     double speed = 1;
-    
-    public A_I_timed(double timeout) {
-        m_timeout = timeout;
-        requires(intake);
+    OI oi = OI.getInstance();
+
+    public M_I_Pickup() {
         // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
+        // eg. requires(chassis
+        requires(intake);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(m_timeout);
     }
-      
+
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        intake.setInbotForward(speed);
+        if (Buttons.isHeld(InputConstants.kR1Button, oi.getOperator())
+                || Buttons.isHeld(InputConstants.kL1Button, oi.getDriver())) {
+            intake.setInbotForward(speed);
+        } else if (Buttons.isHeld(InputConstants.kL1Button, oi.getOperator())
+                || Buttons.isHeld(InputConstants.kL2Button, oi.getDriver())) {
+            intake.setInbotForward(-speed);
+        } else {
+            intake.setInbotForward(0);
+        }
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return isTimedOut();
+        return false;
     }
 
     // Called once after isFinished returns true

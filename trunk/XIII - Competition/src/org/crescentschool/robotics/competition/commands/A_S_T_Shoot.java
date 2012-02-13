@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  *
  * @author Warfa
  */
-public class A_ST_shoot extends CommandGroup {
+public class A_S_T_Shoot extends CommandGroup {
 
-    public A_ST_shoot() {
-        addSequential(new A_D_distance(5.5));
-        addSequential(new A_Fl_set(20));
-        addSequential(new A_D_distance(6.5));
-        addParallel(new A_Fl_set(44.9));
+    public A_S_T_Shoot() {
+        addSequential(new A_D_Distance(5.5));
+        addSequential(new A_Fl_Set(20));
+        addSequential(new A_D_Distance(6.5));
+        addParallel(new A_Fl_Set(44.9));
         
 
         // Add Commands here:

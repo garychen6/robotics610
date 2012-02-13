@@ -11,12 +11,12 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  *
  * @author bradmiller
  */
-public class mD_tank extends Command {
+public class M_D_Tank extends Command {
 
     DriveTrain driveTrain = DriveTrain.getInstance();
     OI oi = OI.getInstance();
 
-    public mD_tank() {
+    public M_D_Tank() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(driveTrain);
