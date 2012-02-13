@@ -1,51 +1,38 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
-import org.crescentschool.robotics.competition.subsystems.Flipper;
+import org.crescentschool.robotics.competition.constants.PIDConstants;
+import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
  *
- * @author Warfa, Mr. Lim
+ * @author bradmiller
  */
-public class FlipperPresets extends Command {
+public class mD_tank extends Command {
+
+    DriveTrain driveTrain = DriveTrain.getInstance();
     OI oi = OI.getInstance();
-    Flipper flipper = Flipper.getInstance();
-    
-    
-    public FlipperPresets() {
+
+    public mD_tank() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        requires(flipper);
+        requires(driveTrain);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        
     }
-    
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-      
-      if(Buttons.isPressed(InputConstants.kR2Button, oi.getDriver())){
-          flipper.decFlipper();
-         
-      }
-      
-      
-      if(Buttons.isPressed(InputConstants.kR1Button, oi.getDriver())){
-          flipper.incFlipper();
-         
-      }
+        //driveTrain.rightVBusSetpoint(oi.getDriver().getRawAxis(InputConstants.kDriverRightYAxis));
+        //driveTrain.leftVBusSetpoint(oi.getDriver().getRawAxis(InputConstants.kDriverLeftYAxis));
+        driveTrain.setRightSpeed(1000 * oi.getDriver().getRawAxis(InputConstants.kRightYAxis)/ 60 * PIDConstants.wheelDiameter * Math.PI);
+        driveTrain.setLeftSpeed(1000 * oi.getDriver().getRawAxis(InputConstants.kLeftYAxis)/ 60 * PIDConstants.wheelDiameter * Math.PI);
+       
     }
 
     // Make this return true when this Command no longer needs to run execute()

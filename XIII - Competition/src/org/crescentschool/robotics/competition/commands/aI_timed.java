@@ -5,35 +5,36 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.competition.subsystems.DriveTrain;
-
+import org.crescentschool.robotics.competition.subsystems.Intake;
 /**
  *
  * @author Warfa
  */
-public class DriveDistance extends Command {
-    DriveTrain driveTrain = DriveTrain.getInstance();
-    double setPoint = 0;
-    public DriveDistance(double setPoint) {
+public class aI_timed extends Command {
+    public double m_timeout;
+    Intake intake = Intake.getInstance();
+    double speed = 1;
+    
+    public aI_timed(double timeout) {
+        m_timeout = timeout;
+        requires(intake);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        this.setPoint = setPoint;
-        requires(driveTrain);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
+        setTimeout(m_timeout);
     }
-
+      
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        driveTrain.setPos(setPoint);
+        intake.setInbotForward(speed);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        if(Math.abs(Math.abs(driveTrain.getLeftPos()) - Math.abs(setPoint)) < 0.1) return true;
-        return false;
+        return isTimedOut();
     }
 
     // Called once after isFinished returns true

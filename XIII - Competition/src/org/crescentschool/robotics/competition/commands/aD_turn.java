@@ -9,11 +9,11 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  *
  * @author Robotics
  */
-public class AutoTurn extends Command {
+public class aD_turn extends Command {
     DriveTrain driveTrain = DriveTrain.getInstance();
     private double setPoint;
     
-    public AutoTurn(double setPoint) {
+    public aD_turn(double setPoint) {
         this.setPoint = setPoint;
         requires(driveTrain);
         // Use requires() here to declare subsystem dependencies

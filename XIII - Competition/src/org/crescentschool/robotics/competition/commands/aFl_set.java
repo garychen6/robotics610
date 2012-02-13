@@ -5,36 +5,41 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.competition.subsystems.Intake;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
+import org.crescentschool.robotics.competition.subsystems.Flipper;
+
 /**
  *
  * @author Warfa
  */
-public class TimedBallIntake extends Command {
-    public double m_timeout;
-    Intake intake = Intake.getInstance();
-    double speed = 1;
+public class aFl_set extends Command {
     
-    public TimedBallIntake(double timeout) {
-        m_timeout = timeout;
-        requires(intake);
+    double angle;
+    Flipper flip = Flipper.getInstance();
+    public aFl_set(double angle) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
+        requires(flip);
+        this.angle = angle;
+        
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(m_timeout);
+        
     }
-      
+
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        intake.setInbotForward(speed);
+        flip.setFlippers(angle);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return isTimedOut();
+         if(Math.abs(Math.abs(flip.getPos())-Math.abs(angle* ElectricalConstants.potDtoV)) < 0.1){
+             return true;
+         }
+         return false;
     }
 
     // Called once after isFinished returns true

@@ -10,22 +10,21 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  *
  * @author Warfa
  */
-public class Autonomous extends CommandGroup {
+public class a_1 extends CommandGroup {
 
-    public Autonomous() {
-        addSequential(new ManualShooter());
-        addSequential(new AutoTurn(180));
-        addSequential(new DriveDistance(5.03990653700226));
-        addParallel(new setFlipper(45));
-        addSequential(new setFlipper(10));
-        addSequential(new TimedBallIntake(2));
-        addSequential(new setFlipper(65));
-        addSequential(new AutoTurn(180));
-        addSequential(new DriveDistance(5.03990653700226));
-        addSequential(new ManualShooter());
-        
-        //addParallel(new setFlipper(44.9));
-        
+    public a_1() {
+        addSequential(new aT_lock());
+        addSequential(new aS_shoot());
+        addSequential(new aD_distance(5.03990653700226));
+        addParallel(new aFl_set(45));
+        addSequential(new aFl_set(10));
+        addSequential(new aI_timed(2));
+        addSequential(new aFl_set(65));
+        addSequential(new aD_turn(180));
+        addSequential(new aD_distance(5.03990653700226));
+        addSequential(new aT_lock());
+        addSequential(new aS_shoot());
+
 
         // Add Commands here:
         // e.g. addSequential(new Command1());
@@ -41,7 +40,7 @@ public class Autonomous extends CommandGroup {
         // A command group will require all of the subsystems that each member
         // would require.
         // e.g. if Command1 requires chassis, and Command2 requires arm,
-        // a CommandGroup containing them would require both the chassis and the
+        // a_1 CommandGroup containing them would require both the chassis and the
         // arm.
     }
 }

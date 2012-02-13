@@ -13,14 +13,14 @@ import org.crescentschool.robotics.competition.subsystems.Flipper;
  *
  * @author Warfa
  */
-public class AutoBridge extends Command {
+public class tDG_bridge extends Command {
 
     DriveTrain driveTrain = DriveTrain.getInstance();
     Flipper flipper = Flipper.getInstance();
     // Zis is zee maximum angre that vee vill reach
     double maxAngle;
 
-    public AutoBridge()
+    public tDG_bridge()
     {
         requires(driveTrain);
     }

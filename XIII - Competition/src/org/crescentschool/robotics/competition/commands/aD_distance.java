@@ -5,36 +5,34 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.competition.constants.PIDConstants;
-import org.crescentschool.robotics.competition.subsystems.Camera;
-import org.crescentschool.robotics.competition.subsystems.Turret;
+import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
  *
  * @author Warfa
  */
-public class TurretLock extends Command {
-    Camera cam = Camera.getInstance();
-    Turret turret = Turret.getInstance();
-    public TurretLock() {
+public class aD_distance extends Command {
+    DriveTrain driveTrain = DriveTrain.getInstance();
+    double setPoint = 0;
+    public aD_distance(double setPoint) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        requires(turret);
+        this.setPoint = setPoint;
+        requires(driveTrain);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        cam.processCamera();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        cam.processCamera();
-        turret.setPosition(turret.getPos() + PIDConstants.tLockP * cam.getX());
+        driveTrain.setPos(setPoint);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
+        if(Math.abs(Math.abs(driveTrain.getLeftPos()) - Math.abs(setPoint)) < 0.1) return true;
         return false;
     }
 
