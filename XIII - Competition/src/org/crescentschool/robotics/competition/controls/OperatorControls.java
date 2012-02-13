@@ -10,7 +10,7 @@ import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.commands.mI_pickup;
 import org.crescentschool.robotics.competition.commands.mS_shoot;
-import org.crescentschool.robotics.competition.commands.amtT_turn;
+import org.crescentschool.robotics.competition.commands.AMT_T_turn;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.CoyoBotUltrasonic;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
@@ -32,7 +32,7 @@ public class OperatorControls extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        Scheduler.getInstance().add(new amtT_turn());
+        Scheduler.getInstance().add(new AMT_T_turn());
         Scheduler.getInstance().add(new mS_shoot());
         Scheduler.getInstance().add(new mI_pickup());
     }

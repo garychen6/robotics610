@@ -12,11 +12,11 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
  *
  * @author Warfa
  */
-public class aT_lock extends Command {
+public class A_T_lock extends Command {
     Turret turret = Turret.getInstance();
     Camera camera = Camera.getInstance();
     double offset = 0;
-    public aT_lock() {
+    public A_T_lock() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(turret);

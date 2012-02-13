@@ -11,10 +11,10 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  *
  * @author Warfa
  */
-public class aD_distance extends Command {
+public class A_D_distance extends Command {
     DriveTrain driveTrain = DriveTrain.getInstance();
     double setPoint = 0;
-    public aD_distance(double setPoint) {
+    public A_D_distance(double setPoint) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         this.setPoint = setPoint;

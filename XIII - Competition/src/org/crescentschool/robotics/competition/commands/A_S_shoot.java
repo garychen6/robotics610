@@ -14,12 +14,12 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
  *
  * @author Warfa
  */
-public class aS_shoot extends Command {
+public class A_S_shoot extends Command {
     Shooter shooter = Shooter.getInstance();
     CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
     Intake intake = Intake.getInstance();
     Feeder feeder = Feeder.getInstance();
-    public aS_shoot() {
+    public A_S_shoot() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(shooter);
