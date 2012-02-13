@@ -10,21 +10,14 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  *
  * @author Warfa
  */
-public class a_1 extends CommandGroup {
+public class A_ST_shoot extends CommandGroup {
 
-    public a_1() {
-        addSequential(new aT_lock());
-        addSequential(new aS_shoot());
-        addSequential(new aD_distance(5.03990653700226));
-        addParallel(new aFl_set(45));
-        addSequential(new aFl_set(10));
-        addSequential(new aI_timed(2));
-        addSequential(new aFl_set(65));
-        addSequential(new aD_turn(180));
-        addSequential(new aD_distance(5.03990653700226));
-        addSequential(new aT_lock());
-        addSequential(new aS_shoot());
-
+    public A_ST_shoot() {
+        addSequential(new A_D_distance(5.5));
+        addSequential(new A_Fl_set(20));
+        addSequential(new A_D_distance(6.5));
+        addParallel(new A_Fl_set(44.9));
+        
 
         // Add Commands here:
         // e.g. addSequential(new Command1());
@@ -40,7 +33,7 @@ public class a_1 extends CommandGroup {
         // A command group will require all of the subsystems that each member
         // would require.
         // e.g. if Command1 requires chassis, and Command2 requires arm,
-        // a_1 CommandGroup containing them would require both the chassis and the
+        // a CommandGroup containing them would require both the chassis and the
         // arm.
     }
 }
