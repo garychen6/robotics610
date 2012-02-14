@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.commands.tDG_bridge;
-import org.crescentschool.robotics.competition.commands.mD_bridge;
-import org.crescentschool.robotics.competition.commands.tFl_presets;
-import org.crescentschool.robotics.competition.commands.mD_kaj;
+import org.crescentschool.robotics.competition.commands.T_D_G_Bridge;
+import org.crescentschool.robotics.competition.commands.M_D_Bridge;
+import org.crescentschool.robotics.competition.commands.T_Fl_Presets;
+import org.crescentschool.robotics.competition.commands.M_D_Kaj;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
@@ -44,37 +44,37 @@ public class DriverControls extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        Scheduler.getInstance().add(new tFl_presets());
+        Scheduler.getInstance().add(new T_Fl_Presets());
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         if (!kajMode) {
             if (Math.abs(oi.getDriver().getRawAxis(InputConstants.kLeftYAxis)) > 0.2) {
-                Scheduler.getInstance().add(new mD_kaj());
+                Scheduler.getInstance().add(new M_D_Kaj());
                 kajMode = true;
             } else if (Math.abs(oi.getDriver().getRawAxis(InputConstants.kRightXAxis)) > 0.2) {
-                Scheduler.getInstance().add(new mD_kaj());
+                Scheduler.getInstance().add(new M_D_Kaj());
                 kajMode = true;
             }
         } else {
             if (oi.getDriver().getRawAxis(6) == 1) {
-                Scheduler.getInstance().add(new mD_bridge());
+                Scheduler.getInstance().add(new M_D_Bridge());
                 kajMode = false;
             } else if (oi.getDriver().getRawAxis(5) == -1) {
-                Scheduler.getInstance().add(new mD_bridge());
+                Scheduler.getInstance().add(new M_D_Bridge());
                 kajMode = false;
             }
             if (oi.getDriver().getRawAxis(6) == -1) {
-                Scheduler.getInstance().add(new mD_bridge());
+                Scheduler.getInstance().add(new M_D_Bridge());
                 kajMode = false;
             } else if (oi.getDriver().getRawAxis(5) == 1) {
-                Scheduler.getInstance().add(new mD_bridge());
+                Scheduler.getInstance().add(new M_D_Bridge());
                 kajMode = false;
             }
         }
         if (Buttons.isPressed(InputConstants.kXButton, oi.getDriver())) {
-            Scheduler.getInstance().add(new tDG_bridge());
+            Scheduler.getInstance().add(new T_D_G_Bridge());
             kajMode = false;
         }
     }

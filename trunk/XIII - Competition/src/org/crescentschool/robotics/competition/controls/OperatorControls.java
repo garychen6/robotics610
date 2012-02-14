@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.commands.mI_pickup;
-import org.crescentschool.robotics.competition.commands.mS_shoot;
+import org.crescentschool.robotics.competition.commands.M_I_Pickup;
+import org.crescentschool.robotics.competition.commands.M_S_Shoot;
 import org.crescentschool.robotics.competition.commands.AMT_T_turn;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.CoyoBotUltrasonic;
@@ -23,7 +23,7 @@ public class OperatorControls extends Command {
 
     Shooter shooter = Shooter.getInstance();
     CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
-    boolean mI_pickup = true;
+    boolean M_I_Pickup = true;
 
     public OperatorControls() {
         // Use requires() here to declare subsystem dependencies
@@ -33,28 +33,28 @@ public class OperatorControls extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
         Scheduler.getInstance().add(new AMT_T_turn());
-        Scheduler.getInstance().add(new mS_shoot());
-        Scheduler.getInstance().add(new mI_pickup());
+        Scheduler.getInstance().add(new M_S_Shoot());
+        Scheduler.getInstance().add(new M_I_Pickup());
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         if (Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())) {
-            if (mI_pickup) {
-                Scheduler.getInstance().add(new mS_shoot());
-                mI_pickup = false;
+            if (M_I_Pickup) {
+                Scheduler.getInstance().add(new M_S_Shoot());
+                M_I_Pickup = false;
             }
         }
         if (Buttons.isPressed(InputConstants.kR1Button, OI.getInstance().getOperator())) {
-            if (!mI_pickup) {
-                Scheduler.getInstance().add(new mI_pickup());
-                mI_pickup = true;
+            if (!M_I_Pickup) {
+                Scheduler.getInstance().add(new M_I_Pickup());
+                M_I_Pickup = true;
             }
         }
         if (Buttons.isPressed(InputConstants.kL1Button, OI.getInstance().getOperator())) {
-            if (!mI_pickup) {
-                Scheduler.getInstance().add(new mI_pickup());
-                mI_pickup = true;
+            if (!M_I_Pickup) {
+                Scheduler.getInstance().add(new M_I_Pickup());
+                M_I_Pickup = true;
             }
         }
         OI.printToDS(3, "Shooter SetPoint " + shooter.getRPM());
