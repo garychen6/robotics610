@@ -12,6 +12,7 @@ import org.crescentschool.robotics.competition.commands.T_D_G_Bridge;
 import org.crescentschool.robotics.competition.commands.M_D_Bridge;
 import org.crescentschool.robotics.competition.commands.T_Fl_Presets;
 import org.crescentschool.robotics.competition.commands.M_D_Kaj;
+import org.crescentschool.robotics.competition.commands.M_I_Pickup;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
@@ -36,7 +37,7 @@ public class DriverControls extends Command {
     Intake intake = Intake.getInstance();
     Feeder feeder = Feeder.getInstance();
     Camera camera = Camera.getInstance();
-
+    boolean M_I_Pickup = true;
     public DriverControls() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -77,6 +78,22 @@ public class DriverControls extends Command {
             Scheduler.getInstance().add(new T_D_G_Bridge());
             kajMode = false;
         }
+         if (Buttons.isPressed(InputConstants.kL1Button, oi.getDriver())) {
+            if(! M_I_Pickup){
+                Scheduler.getInstance().add(new M_I_Pickup());
+                  M_I_Pickup = true;
+            }
+           
+        }
+          if (Buttons.isPressed(InputConstants.kR1Button, oi.getDriver())) {
+             if(! M_I_Pickup){
+                 Scheduler.getInstance().add(new M_I_Pickup());
+                  M_I_Pickup = true;
+             }
+        }
+           if (Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())) {
+               if(M_I_Pickup) M_I_Pickup = false;
+           }
     }
 
     // Make this return true when this Command no longer needs to run execute()
