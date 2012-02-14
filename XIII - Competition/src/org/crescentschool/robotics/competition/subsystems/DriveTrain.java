@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.crescentschool.robotics.competition.commands.mD_bridge;
+import org.crescentschool.robotics.competition.commands.M_D_Bridge;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 
@@ -96,7 +96,7 @@ public class DriveTrain extends Subsystem {
      */
     public void initDefaultCommand() {
 
-        setDefaultCommand(new mD_bridge());
+        setDefaultCommand(new M_D_Bridge());
     }
 
     /**
