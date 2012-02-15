@@ -5,6 +5,8 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
+import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
@@ -18,6 +20,7 @@ public class CoyoBotUltrasonic extends Subsystem {
     // here. Call these from Commands.
    static CoyoBotUltrasonic instance = null;
    AnalogChannel ultrasonic;
+   DigitalOutput uSonic;
    /**
     * Ensure only one ultrasonic is instantiated.
     * @return The singleton ultrasonic instance.
@@ -30,7 +33,8 @@ public class CoyoBotUltrasonic extends Subsystem {
    }
    private CoyoBotUltrasonic(){
        ultrasonic = new AnalogChannel(ElectricalConstants.USonic);
-       ultrasonic.setAverageBits(4);
+       ultrasonic.setAverageBits(8);
+       uSonic = new DigitalOutput(ElectricalConstants.uSonicDigital);
    }
    /**
     * Gets the current distance in feet.
@@ -38,6 +42,13 @@ public class CoyoBotUltrasonic extends Subsystem {
     */
    public double getDistance(){
        return ultrasonic.getAverageVoltage()*PIDConstants.ultrasonicVtoF;
+   }
+      /**
+    * Turns On and Off The Ultrasonic
+    * @return Set On and Off, True and False
+    */
+   public void setUSonic(boolean on){
+       uSonic.set(on);
    }
    /**
     * The default command for the ultrasonic.

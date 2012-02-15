@@ -4,6 +4,7 @@
  */
 package org.crescentschool.robotics.competition.subsystems;
 
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
@@ -11,7 +12,7 @@ import edu.wpi.first.wpilibj.image.BinaryImage;
 import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.ImagingConstants;
 
 /**
@@ -26,7 +27,7 @@ public class Camera extends Subsystem {
     private static AxisCamera camera = AxisCamera.getInstance();
     private double xOffset = 0;
     private ParticleAnalysisReport topTarget = null;
-
+    private static Relay camLight;
     private Camera() {
         resetCamera();
     }
@@ -38,6 +39,7 @@ public class Camera extends Subsystem {
     public static Camera getInstance() {
         if (instance == null) {
             instance = new Camera();
+            camLight = new Relay(ElectricalConstants.camLight);
         }
         return instance;
     }
@@ -57,6 +59,14 @@ public class Camera extends Subsystem {
     public double getX() {
 
         return xOffset;
+    }
+        /**
+     * Sets On or Off For the Camera Light
+     * @return 1 For On And True and Off False
+     */
+    public void setLight(boolean on){
+        if(on)camLight.set(Relay.Value.kForward);
+        else camLight.set(Relay.Value.kOff);
     }
 
     /**
