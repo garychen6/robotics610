@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.crescentschool.robotics.competition.commands.A_1;
+//TODO: What happened to A_1? 
+//import org.crescentschool.robotics.competition.commands.A_1;
 import org.crescentschool.robotics.competition.commands.A_ST_shoot;
 import org.crescentschool.robotics.competition.commands.A_K_human;
 import org.crescentschool.robotics.competition.constants.InputConstants;
@@ -89,7 +90,7 @@ public class CoyobotXIII extends IterativeRobot {
                     autonomous = new A_ST_shoot();
                     break;
                 case 2:
-                    autonomous = new A_1();
+                    //autonomous = new A_1();
                     break;
                 case 3:
                     autonomous = new A_K_human();
