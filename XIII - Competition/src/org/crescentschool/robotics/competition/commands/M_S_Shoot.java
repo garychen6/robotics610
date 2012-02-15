@@ -6,6 +6,7 @@ package org.crescentschool.robotics.competition.commands;
 
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
@@ -32,7 +33,11 @@ public class M_S_Shoot extends Command {
     Feeder feeder = Feeder.getInstance();
     Intake intake = Intake.getInstance();
     CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
-
+    int numAverages = 10;
+    double[] speeds = new double[numAverages];
+    double avgSpeed;
+    int speedCounter = 0;
+    
     public M_S_Shoot() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -46,6 +51,16 @@ public class M_S_Shoot extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        
+        // Update running average of shooter speeds
+        speeds[speedCounter] = shooter.getShooterSpeed();
+        speedCounter++;
+        if (speedCounter > numAverages - 1)
+            speedCounter = 0;
+        for (int i=0; i < numAverages; i++)
+            avgSpeed += speeds[i];
+        avgSpeed /= numAverages;
+        
         if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis)) > 0.1) {
             shooter.incRPM(-50 * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis), 3));
         }
@@ -54,14 +69,14 @@ public class M_S_Shoot extends Command {
             turret.resetPID();
             camera.resetCamera();
         }
-        if(Buttons.isHeld(InputConstants.kL2Button, OI.getInstance().getOperator()) && !Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())){
+        if(Buttons.isHeld(InputConstants.kL2Button, OI.getInstance().getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())){
             shooter.setShooter((80.167*ultrasonic.getDistance())+1212);
         }
          if(Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())){
-            if(Math.abs((shooter.getRPM() + shooter.getShooterSpeed())) < 100){
+            SmartDashboard.putDouble("Wheel Difference", shooter.getRPM() + avgSpeed);
+             if(Math.abs((shooter.getRPM() + avgSpeed)) < 100){
             intake.setInbotForward(-1);
-            feeder.setFeeder(1);
-            
+            feeder.setFeeder(1);   
         }
         }else{
              feeder.setFeeder(0);
