@@ -3,6 +3,7 @@ package org.crescentschool.robotics.competition.subsystems;
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 
@@ -59,7 +60,7 @@ public class Shooter extends Subsystem {
         try {
             shootJaguar.setX(-2 * rpm);
             this.rpm = rpm;
-            System.out.println("ShooterSet: " + rpm);
+            SmartDashboard.putDouble("Shooter Set", rpm);
         } catch (Exception e) {
             e.printStackTrace();
             handleCANError();
@@ -77,9 +78,8 @@ public class Shooter extends Subsystem {
      * Gets the shooter's target speed.
      * @return  The target speed.
      */
-    public void incRPM(double newRPM) {
-        rpm += newRPM;
-        setShooter(rpm);
+    public void incRPM(double incRPM) {
+        setShooter(rpm + incRPM);
     }
 
     /**

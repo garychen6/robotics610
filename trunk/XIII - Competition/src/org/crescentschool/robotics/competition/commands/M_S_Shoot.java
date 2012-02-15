@@ -42,7 +42,6 @@ public class M_S_Shoot extends Command {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(shooter);
-        requires(intake);
     }
 
     // Called just before this Command runs the first time
