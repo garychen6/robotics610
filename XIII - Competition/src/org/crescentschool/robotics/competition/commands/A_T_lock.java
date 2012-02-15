@@ -50,5 +50,6 @@ public class A_T_lock extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+        cancel();
     }
 }
