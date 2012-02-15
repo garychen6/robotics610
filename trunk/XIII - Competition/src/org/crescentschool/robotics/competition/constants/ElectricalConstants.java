@@ -82,4 +82,12 @@ public class ElectricalConstants {
      * The channel of the second victor that controls the feeder
      */
     public static final int FeederVictor2 = 2;
+        /**
+     * The Relay of the Camera Light
+     */
+    public static final int camLight = 1;
+      /**
+     * The Relay of the UltraSonic
+     */
+    public static final int uSonicDigital = 14;
 }

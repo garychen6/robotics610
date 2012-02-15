@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
-import org.crescentschool.robotics.competition.constants.PotConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
+import org.crescentschool.robotics.competition.subsystems.CoyoBotUltrasonic;
 import org.crescentschool.robotics.competition.subsystems.Turret;
 
 /**
@@ -22,6 +22,7 @@ public class AMT_T_turn extends Command {
     Turret turret = Turret.getInstance();
     OI oi = OI.getInstance();
     Camera camera = Camera.getInstance();
+    CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
     double tPos = 0;
 
     public AMT_T_turn() {
@@ -39,26 +40,37 @@ public class AMT_T_turn extends Command {
         // OI.printToDS(0, "Turret SetPoint: " + turret.getPosSet());
         // OI.printToDS(1, "Turret Position: " + turret.getPos());
 
-        if (Buttons.isPressed(InputConstants.kYButton, oi.getOperator())) {
-            turret.incTurretP(1);
-        } else if (Buttons.isPressed(InputConstants.kXButton, oi.getOperator())) {
-            turret.decTurretP(1);
-        } else if (Buttons.isPressed(InputConstants.kBButton, oi.getOperator())) {
-            turret.incTurretI(0.001);
-        } else if (Buttons.isPressed(InputConstants.kAButton, oi.getOperator())) {
-            turret.decTurretI(0.001);
-        }
+//        if (Buttons.isPressed(InputConstants.kYButton, oi.getOperator())) {
+//            turret.incTurretP(1);
+//        } else if (Buttons.isPressed(InputConstants.kXButton, oi.getOperator())) {
+//            turret.decTurretP(1);
+//        } else if (Buttons.isPressed(InputConstants.kBButton, oi.getOperator())) {
+//            turret.incTurretI(0.001);
+//        } else if (Buttons.isPressed(InputConstants.kAButton, oi.getOperator())) {
+//            turret.decTurretI(0.001);
+//        }
 
         //System.out.println("Turret Set: " + turret.getPosSet() + " Pos: " + turret.getPos());
         if (Buttons.isPressed(InputConstants.kL2Button, oi.getOperator())) {
             turret.resetPosition();
+            camera.setLight(true);
+            ultrasonic.setUSonic(true);
+
         }
+        if (Buttons.isReleased(InputConstants.kL2Button, oi.getOperator())) {
+            camera.setLight(false);
+            ultrasonic.setUSonic(false);
+
+        }
+
         if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, oi.getOperator())) {
-            double offset = -0.4 * camera.getX();
-            if (offset > 0.1)
-                offset = 0.1;
-            if (offset < -0.1)
-                offset = -0.1;
+            double offset = -0.65 * camera.getX();
+            if (offset > 0.05) {
+                offset = 0.05;
+            }
+            if (offset < -0.05) {
+                offset = -0.05;
+            }
             turret.incPosition(offset);
         } else {
             turret.setVBus(MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kRightXAxis), 3));

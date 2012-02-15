@@ -12,6 +12,7 @@ import org.crescentschool.robotics.competition.commands.M_I_Pickup;
 import org.crescentschool.robotics.competition.commands.M_S_Shoot;
 import org.crescentschool.robotics.competition.commands.AMT_T_turn;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.CoyoBotUltrasonic;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
@@ -23,6 +24,7 @@ public class OperatorControls extends Command {
 
     Shooter shooter = Shooter.getInstance();
     CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
+    Camera camera = Camera.getInstance();
     boolean M_I_Pickup = true;
 
     public OperatorControls() {

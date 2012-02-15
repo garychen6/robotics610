@@ -32,11 +32,11 @@ public class M_I_Pickup extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if (Buttons.isHeld(InputConstants.kR1Button, oi.getOperator())
-                || Buttons.isHeld(InputConstants.kL1Button, oi.getDriver())) {
+        if (Buttons.isHeld(InputConstants.kL1Button, oi.getOperator())
+                || Buttons.isHeld(InputConstants.kR1Button, oi.getDriver())) {
             intake.setInbotForward(speed);
-        } else if (Buttons.isHeld(InputConstants.kL1Button, oi.getOperator())
-                || Buttons.isHeld(InputConstants.kL2Button, oi.getDriver())) {
+        } else if (Buttons.isHeld(InputConstants.kR1Button, oi.getOperator())
+                || Buttons.isHeld(InputConstants.kL1Button, oi.getDriver())) {
             intake.setInbotForward(-speed);
         } else {
             intake.setInbotForward(0);

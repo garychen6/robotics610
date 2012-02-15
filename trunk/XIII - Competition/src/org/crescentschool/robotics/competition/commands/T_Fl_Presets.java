@@ -42,7 +42,7 @@ public class T_Fl_Presets extends Command {
       }
       
       
-      if(Buttons.isPressed(InputConstants.kR1Button, oi.getDriver())){
+      if(Buttons.isPressed(InputConstants.kL2Button, oi.getDriver())){
           flipper.incFlipper();
          
       }
