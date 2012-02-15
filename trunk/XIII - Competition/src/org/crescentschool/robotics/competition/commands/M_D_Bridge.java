@@ -73,6 +73,7 @@ public class M_D_Bridge extends Command {
     }
 
     protected void interrupted() {
+        cancel();
     }
 
     protected boolean isFinished() {

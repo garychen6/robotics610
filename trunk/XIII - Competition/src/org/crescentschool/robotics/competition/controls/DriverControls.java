@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.commands.T_D_G_Bridge;
+import org.crescentschool.robotics.competition.commands.T_DG_Bridge;
 import org.crescentschool.robotics.competition.commands.M_D_Bridge;
 import org.crescentschool.robotics.competition.commands.T_Fl_Presets;
 import org.crescentschool.robotics.competition.commands.M_D_Kaj;
@@ -75,7 +75,7 @@ public class DriverControls extends Command {
             }
         }
         if (Buttons.isPressed(InputConstants.kXButton, oi.getDriver())) {
-            Scheduler.getInstance().add(new T_D_G_Bridge());
+            Scheduler.getInstance().add(new T_DG_Bridge());
             kajMode = false;
         }
          if (Buttons.isPressed(InputConstants.kL1Button, oi.getDriver())) {
@@ -108,5 +108,6 @@ public class DriverControls extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+        cancel();
     }
 }

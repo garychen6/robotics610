@@ -13,14 +13,14 @@ import org.crescentschool.robotics.competition.subsystems.Flipper;
  *
  * @author Warfa
  */
-public class T_D_G_Bridge extends Command {
+public class T_DG_Bridge extends Command {
 
     DriveTrain driveTrain = DriveTrain.getInstance();
     Flipper flipper = Flipper.getInstance();
     // Zis is zee maximum angre that vee vill reach
     double maxAngle;
 
-    public T_D_G_Bridge()
+    public T_DG_Bridge()
     {
         requires(driveTrain);
     }
@@ -56,5 +56,6 @@ public class T_D_G_Bridge extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+        cancel();
     }
 }
