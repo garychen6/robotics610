@@ -166,7 +166,7 @@ public class Flipper extends Subsystem {
         gotoPosition();
     }
 
-    private void gotoPosition() {
+    public void gotoPosition() {
         switch (flipperPosition) {
             case -1:
                 setFlippers(PotConstants.flipperBridgeAssist);

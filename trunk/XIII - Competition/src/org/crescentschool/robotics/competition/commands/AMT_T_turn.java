@@ -6,6 +6,7 @@ package org.crescentschool.robotics.competition.commands;
 
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
@@ -24,8 +25,12 @@ public class AMT_T_turn extends Command {
     Camera camera = Camera.getInstance();
     CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
     double tPos = 0;
+    double incOffset = 0;
+    boolean dPadR = false;
+    boolean dPadL = false;
 
     public AMT_T_turn() {
+        System.out.println(this.toString());
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(turret);
@@ -65,6 +70,7 @@ public class AMT_T_turn extends Command {
 
         if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, oi.getOperator())) {
             double offset = -0.65 * camera.getX();
+            offset += incOffset;
             if (offset > 0.05) {
                 offset = 0.05;
             }
@@ -73,7 +79,29 @@ public class AMT_T_turn extends Command {
             }
             turret.incPosition(offset);
         } else {
-            turret.setVBus(MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kRightXAxis), 3));
+            double axis = oi.getOperator().getRawAxis(InputConstants.kRightXAxis);
+            if (axis < -0.1) {
+                turret.setVBus(axis * 0.85 / 0.9 - 0.05 / 0.9);
+            } else if (axis > 0.1) {
+                turret.setVBus(axis * 0.85 / 0.9 + 0.05 / 0.9);
+            } else {
+                turret.setVBus(0);
+            }
+
+        }
+        SmartDashboard.putDouble("Offset Increment", incOffset);
+        if (OI.getInstance().getOperator().getRawAxis(5) == 1 && !dPadR) {
+            incOffset -= 0.05;
+            dPadR = true;
+        } else if (OI.getInstance().getOperator().getRawAxis(5) == -1 && !dPadL) {
+            incOffset += 0.05;
+            dPadL = true;
+        } else {
+            dPadL = false;
+            dPadR = false;
+        }
+        if (Buttons.isPressed(InputConstants.kSelectButton, OI.getInstance().getOperator())) {
+            incOffset = 0;
         }
     }
 

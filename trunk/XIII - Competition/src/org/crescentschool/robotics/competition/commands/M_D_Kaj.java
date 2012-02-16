@@ -16,6 +16,7 @@ public class M_D_Kaj extends Command {
     OI oi = OI.getInstance();
 
     public M_D_Kaj() {
+        System.out.println(this.toString());
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(driveTrain);

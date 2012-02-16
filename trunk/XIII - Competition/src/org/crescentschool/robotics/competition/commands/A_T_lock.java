@@ -17,6 +17,7 @@ public class A_T_lock extends Command {
     Camera camera = Camera.getInstance();
     double offset = 0;
     public A_T_lock() {
+        System.out.println(this.toString());
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(turret);

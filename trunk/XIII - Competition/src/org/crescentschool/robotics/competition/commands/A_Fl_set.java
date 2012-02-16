@@ -17,6 +17,7 @@ public class A_Fl_set extends Command {
     double angle;
     Flipper flip = Flipper.getInstance();
     public A_Fl_set(double angle) {
+        System.out.println(this.toString());
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(flip);

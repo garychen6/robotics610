@@ -22,6 +22,7 @@ public class T_DG_Bridge extends Command {
 
     public T_DG_Bridge()
     {
+        System.out.println(this.toString());
         requires(driveTrain);
     }
 

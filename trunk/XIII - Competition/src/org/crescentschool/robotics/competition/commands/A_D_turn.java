@@ -14,6 +14,7 @@ public class A_D_turn extends Command {
     private double setPoint;
     
     public A_D_turn(double setPoint) {
+        System.out.println(this.toString());
         this.setPoint = setPoint;
         requires(driveTrain);
         // Use requires() here to declare subsystem dependencies
