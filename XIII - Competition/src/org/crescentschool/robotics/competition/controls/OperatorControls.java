@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.commands.M_I_Pickup;
-import org.crescentschool.robotics.competition.commands.M_S_Shoot;
+import org.crescentschool.robotics.competition.commands.M_S_ShootBall;
 import org.crescentschool.robotics.competition.commands.AMT_T_turn;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
@@ -35,30 +35,28 @@ public class OperatorControls extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
         Scheduler.getInstance().add(new AMT_T_turn());
-        Scheduler.getInstance().add(new M_S_Shoot());
+        Scheduler.getInstance().add(new M_S_ShootBall());
         Scheduler.getInstance().add(new M_I_Pickup());
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if (Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())) {
-            if (M_I_Pickup) {
-                Scheduler.getInstance().add(new M_S_Shoot());
-                M_I_Pickup = false;
-            }
-        }
-        if (Buttons.isPressed(InputConstants.kR1Button, OI.getInstance().getOperator())) {
-            if (!M_I_Pickup) {
-                Scheduler.getInstance().add(new M_I_Pickup());
-                M_I_Pickup = true;
-            }
-        }
-        if (Buttons.isPressed(InputConstants.kL1Button, OI.getInstance().getOperator())) {
-            if (!M_I_Pickup) {
-                Scheduler.getInstance().add(new M_I_Pickup());
-                M_I_Pickup = true;
-            }
-        }
+//        if (Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())) {
+//                Scheduler.getInstance().add(new M_S_ShootBall());
+//                M_I_Pickup = false;
+//        }
+//        if (Buttons.isPressed(InputConstants.kR1Button, OI.getInstance().getOperator())) {
+//            if (!M_I_Pickup) {
+//                Scheduler.getInstance().add(new M_I_Pickup());
+//                M_I_Pickup = true;
+//            }
+//        }
+//        if (Buttons.isPressed(InputConstants.kL1Button, OI.getInstance().getOperator())) {
+//            if (!M_I_Pickup) {
+//                Scheduler.getInstance().add(new M_I_Pickup());
+//                M_I_Pickup = true;
+//            }
+//        }
         OI.printToDS(3, "Shooter SetPoint " + shooter.getRPM());
         OI.printToDS(4, "Shooter Speed " + shooter.getShooterSpeed());
         OI.printToDS(5, "Distance " + ultrasonic.getDistance());

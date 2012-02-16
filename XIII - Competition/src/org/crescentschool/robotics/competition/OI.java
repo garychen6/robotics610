@@ -1,5 +1,6 @@
 package org.crescentschool.robotics.competition;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -9,7 +10,7 @@ public class OI {
     private static Joystick joyDriver;
     private static Joystick joyOperator;
     private static DriverStationLCD drStationLCD;
-
+    private static DriverStation drStation;
     /**
      * Returns the operator interface.
      * @return the OI
@@ -28,7 +29,13 @@ public class OI {
     public Joystick getDriver() {
         return joyDriver;
     }
-
+    /**
+     * Returns the DriverStation
+     * @return DriverStation
+     */
+    public DriverStation getDS() {
+        return drStation;
+    }
     /**
      * Returns the Joystick object that corresponds to the operator's gamepad.
      * @return the operator Joystick object.
@@ -72,6 +79,7 @@ public class OI {
         joyDriver = new Joystick(1);
         joyOperator = new Joystick(2);
         drStationLCD = DriverStationLCD.getInstance();
+        drStation = DriverStation.getInstance();
         for (int i = 1; i <= 10; i++) {
             Buttons.register(i, joyDriver);
         }

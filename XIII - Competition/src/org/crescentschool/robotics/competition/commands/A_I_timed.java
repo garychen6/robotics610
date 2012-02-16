@@ -16,6 +16,7 @@ public class A_I_timed extends Command {
     double speed = 1;
     
     public A_I_timed(double timeout) {
+        System.out.println(this.toString());
         m_timeout = timeout;
         requires(intake);
         // Use requires() here to declare subsystem dependencies

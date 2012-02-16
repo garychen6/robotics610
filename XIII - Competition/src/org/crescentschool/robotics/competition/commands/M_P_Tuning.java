@@ -30,6 +30,7 @@ public class M_P_Tuning extends Command {
     int rpm = 0;
 
     public M_P_Tuning() {
+        System.out.println(this.toString());
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(shooter);

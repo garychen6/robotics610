@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class A_K_human extends Command {
     
     public A_K_human() {
+        System.out.println(this.toString());
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }

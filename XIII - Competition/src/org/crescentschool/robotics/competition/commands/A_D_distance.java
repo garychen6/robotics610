@@ -15,6 +15,7 @@ public class A_D_distance extends Command {
     DriveTrain driveTrain = DriveTrain.getInstance();
     double setPoint = 0;
     public A_D_distance(double setPoint) {
+        System.out.println(this.toString());
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         this.setPoint = setPoint;

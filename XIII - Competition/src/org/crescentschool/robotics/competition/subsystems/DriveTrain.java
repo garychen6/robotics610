@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.commands.M_D_Bridge;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
@@ -34,7 +35,7 @@ public class DriveTrain extends Subsystem {
     private PIDController posControllerLeft;
     private CoyoBotGyro vertGyro;
     private PIDSource rightPosIn = new PIDSource() {
-
+    
         public double pidGet() {
             try {
                 return jagRightMaster.getPosition();
@@ -271,9 +272,10 @@ public class DriveTrain extends Subsystem {
      * Sets the slaves at the same voltage as the masters.
      */
     private void syncSlaves() {
+        double voltage = OI.getInstance().getDS().getBatteryVoltage();
         try {
-            jagLeftSlave.setX(jagLeftMaster.getOutputVoltage() / 12);
-            jagRightSlave.setX(jagRightMaster.getOutputVoltage() / 12);
+            jagLeftSlave.setX(jagLeftMaster.getOutputVoltage() / voltage);
+            jagRightSlave.setX(jagRightMaster.getOutputVoltage() / voltage);
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();

@@ -19,8 +19,8 @@ public class M_I_Pickup extends Command {
     Intake intake = Intake.getInstance();
     double speed = 1;
     OI oi = OI.getInstance();
-
     public M_I_Pickup() {
+        System.out.println(this.toString());
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis
         requires(intake);
@@ -32,6 +32,7 @@ public class M_I_Pickup extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        if(!intake.isShooting()){
         if (Buttons.isHeld(InputConstants.kL1Button, oi.getOperator())
                 || Buttons.isHeld(InputConstants.kR1Button, oi.getDriver())) {
             intake.setInbotForward(speed);
@@ -40,6 +41,7 @@ public class M_I_Pickup extends Command {
             intake.setInbotForward(-speed);
         } else {
             intake.setInbotForward(0);
+        }
         }
     }
 

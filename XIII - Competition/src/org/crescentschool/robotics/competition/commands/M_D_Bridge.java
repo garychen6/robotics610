@@ -27,6 +27,7 @@ public class M_D_Bridge extends Command {
     boolean dPadDown = false;
 
     public M_D_Bridge() {
+        System.out.println(this.toString());
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         oi = OI.getInstance();

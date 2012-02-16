@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class A_ST_shoot extends CommandGroup {
 
     public A_ST_shoot() {
+        System.out.println(this.toString());
         addSequential(new A_D_distance(5.5));
         addSequential(new A_Fl_set(20));
         addSequential(new A_D_distance(6.5));

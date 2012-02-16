@@ -17,7 +17,7 @@ public class Intake extends Subsystem {
 
     Victor intake;
     static Intake instance = null;
-
+    boolean isShooting = false;
     /**
      * Ensures that only one intake is instantiated.
      * @return The singleton intake instance.
@@ -40,7 +40,20 @@ public class Intake extends Subsystem {
     public void setInbotForward(double speed) {
         intake.set(speed);
     }
-
+     /**
+     * Gets if Shooting
+     * @param 
+     */
+    public boolean isShooting() {
+        return isShooting;
+    }
+     /**
+     * Sets if Shooting
+     * @param true or false
+     */
+    public void setIsShooting(boolean isShooting) {
+        this.isShooting = isShooting;
+    }
     /**
      * The default command for the intake.
      */
