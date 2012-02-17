@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 
@@ -58,9 +59,10 @@ public class Shooter extends Subsystem {
      */
     public void setShooter(double rpm) {
         try {
-            shootJaguar.setX(-2 * rpm);
+            //shootJaguar.setX(-2 * rpm);
+            shootJaguar.setX(-rpm);
             this.rpm = rpm;
-            SmartDashboard.putDouble("Shooter Set", rpm);
+            SmartDashboard.putDouble("Shooter Set Feet ", (rpm-1212)/80.167);
         } catch (Exception e) {
             e.printStackTrace();
             handleCANError();
@@ -137,7 +139,7 @@ public class Shooter extends Subsystem {
 
     public void syncSlaves() {
         try {
-            shootJaguarSlave.setX(shootJaguar.getOutputVoltage() / 12);
+            shootJaguarSlave.setX(shootJaguar.getOutputVoltage() / OI.getInstance().getDS().getBatteryVoltage());
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
             handleCANError();

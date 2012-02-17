@@ -108,7 +108,8 @@ public class M_S_ShootBall extends Command {
         SmartDashboard.putDouble("Average Speed", avgSpeed);
         SmartDashboard.putDouble("Wheel Difference", shooter.getRPM() + avgSpeed);
         SmartDashboard.putString("offsets", "y:" +yOffset);
-        if (Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
+//        if (Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
+        if (OI.getInstance().getOperator().getRawButton(InputConstants.kR2Button)) {
             intake.setIsShooting(true);
             intake.setIntakeReverse(-1);
             feeder.setFeeder(1);
@@ -131,6 +132,7 @@ public class M_S_ShootBall extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-        cancel();
+        System.out.println(this + " canceled");
+        System.out.println(this + " canceled");cancel();
     }
 }

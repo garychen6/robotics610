@@ -71,10 +71,11 @@ public class M_D_Bridge extends Command {
     }
 
     protected void end() {
+        System.out.println(this + " canceled");
     }
 
     protected void interrupted() {
-        cancel();
+        System.out.println(this + " canceled");cancel();
     }
 
     protected boolean isFinished() {
