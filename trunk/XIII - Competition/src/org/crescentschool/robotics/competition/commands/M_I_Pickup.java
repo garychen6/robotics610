@@ -35,20 +35,17 @@ public class M_I_Pickup extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         if(!intake.isShooting()){
-        if (Buttons.isHeld(InputConstants.kL1Button, oi.getOperator())
-                || Buttons.isHeld(InputConstants.kR1Button, oi.getDriver())) {
-            intake.setInbotForward(speed);
-        } else if (Buttons.isHeld(InputConstants.kR1Button, oi.getOperator())
-                || Buttons.isHeld(InputConstants.kL1Button, oi.getDriver())) {
-            intake.setInbotForward(-speed);
-        } else {
-            intake.setInbotForward(0);
-        }
-        }
-        if(Buttons.isHeld(InputConstants.kL1Button, oi.getOperator())){
-            feeder.setFeeder(-speed);
-        }else if(Buttons.isReleased(InputConstants.kL1Button, oi.getOperator())){
-            feeder.setFeeder(0);
+            if (Buttons.isHeld(InputConstants.kL1Button, oi.getOperator())
+                    || Buttons.isHeld(InputConstants.kR1Button, oi.getDriver())) {
+                intake.setIntakeReverse(speed);
+                feeder.setFeeder(-speed);
+            } else if (Buttons.isHeld(InputConstants.kR1Button, oi.getOperator())
+                    || Buttons.isHeld(InputConstants.kL1Button, oi.getDriver())) {
+                intake.setIntakeReverse(-speed);
+            } else {
+                intake.setIntakeReverse(0);
+                feeder.setFeeder(0);
+            }
         }
     }
 

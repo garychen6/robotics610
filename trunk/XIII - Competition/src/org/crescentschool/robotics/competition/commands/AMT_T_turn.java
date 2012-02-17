@@ -73,15 +73,15 @@ public class AMT_T_turn extends Command {
 
         if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, oi.getOperator())) {
             double offset = -0.65 * camera.getX();
-            offset += incOffset;
             if (offset > 0.05) {
                 offset = 0.05;
             }
             if (offset < -0.05) {
                 offset = -0.05;
             }
+            offset += incOffset;
             turret.incPosition(offset);
-        } else {
+        } else if (!Buttons.isHeld(InputConstants.kR2Button, oi.getOperator())){
             double axis = oi.getOperator().getRawAxis(InputConstants.kRightXAxis);
             if (axis < -0.1) {
                 turret.setVBus(axis * 0.85 / 0.9 - 0.05 / 0.9);
@@ -94,13 +94,13 @@ public class AMT_T_turn extends Command {
         }
 
         SmartDashboard.putString("offsets", "x: " + incOffset);
-        if (OI.getInstance().getOperator().getRawAxis(5) == 1 && !dPadR) {
+        if (OI.getInstance().getOperator().getRawAxis(5) > 0.5 && !dPadR) {
             incOffset -= 0.05;
             dPadR = true;
-        } else if (OI.getInstance().getOperator().getRawAxis(5) == -1 && !dPadL) {
+        } else if (OI.getInstance().getOperator().getRawAxis(5) < -0.5 && !dPadL) {
             incOffset += 0.05;
             dPadL = true;
-        } else {
+        } else if (Math.abs(OI.getInstance().getOperator().getRawAxis(5)) < 0.5){
             dPadL = false;
             dPadR = false;
         }
