@@ -25,6 +25,7 @@ public class Turret extends Subsystem {
     double position = PotConstants.turretCentre;
     // 1 = %VBus, 2 = Position
     private int controlMode = 1;
+    boolean isLocked = false;
 
     /**
      * Ensures that only one turret is instantiated.
@@ -213,6 +214,12 @@ public class Turret extends Subsystem {
             ex.printStackTrace();
         }
     }
+      /**
+     * Gets if the turret is Locked On
+     */
+   public boolean isLocked(){
+       return isLocked;
+   }
 
     /**
      * Increments the turret's I value.
@@ -222,6 +229,8 @@ public class Turret extends Subsystem {
         if (controlMode != 2) {
             initPosMode();
         }
+        if(inc < 0.05 && inc > -0.05)isLocked = true;
+        else isLocked = false;
         try {
             position = turretJag.getPosition() + inc;
         } catch (CANTimeoutException ex) {

@@ -38,6 +38,10 @@ public class M_S_ShootBall extends Command {
     double avgSpeed;
     int speedCounter = 0;
     boolean shoot = false;
+    int yOffset = 0;
+    boolean dPadUp = false;
+    boolean dPadDown = false;
+    double equationSpeed = 0;
 
     public M_S_ShootBall() {
         System.err.println(this.toString());
@@ -76,14 +80,34 @@ public class M_S_ShootBall extends Command {
             turret.resetPID();
             camera.resetCamera();
         }
-
-        if (Buttons.isHeld(InputConstants.kL2Button, OI.getInstance().getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
-            shooter.setShooter((80.167 * ultrasonic.getDistance()) + 1212);
+        if(Buttons.isPressed(InputConstants.kSelectButton, oi.getOperator())){
+            yOffset = 0;
         }
-
+        if (Buttons.isHeld(InputConstants.kL2Button, OI.getInstance().getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
+            equationSpeed = (80.167 * ultrasonic.getDistance() + 1212);
+            shooter.setShooter(equationSpeed + yOffset);
+        }
+        if (OI.getInstance().getOperator().getRawAxis(6) == -1) {
+            if (!dPadUp) {
+                yOffset += 20;
+                //shooter.setShooter(equationSpeed + yOffset);
+                dPadUp = true;
+            }
+        }
+        else if (OI.getInstance().getOperator().getRawAxis(6) == 1) {
+            if (!dPadDown) {
+                yOffset -= 20;
+                //shooter.setShooter(equationSpeed + yOffset);
+                dPadDown = true;
+            }
+        }else{
+               dPadDown = false;
+               dPadUp = false;
+        }
+        
         SmartDashboard.putDouble("Average Speed", avgSpeed);
         SmartDashboard.putDouble("Wheel Difference", shooter.getRPM() + avgSpeed);
-
+        SmartDashboard.putString("offsets", "y:" +yOffset);
         if (Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
             intake.setIsShooting(true);
             intake.setInbotForward(-1);

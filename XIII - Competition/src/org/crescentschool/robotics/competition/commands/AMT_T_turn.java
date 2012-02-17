@@ -59,8 +59,11 @@ public class AMT_T_turn extends Command {
         if (Buttons.isPressed(InputConstants.kL2Button, oi.getOperator())) {
             turret.resetPosition();
             camera.setLight(true);
-            ultrasonic.setUSonic(true);
-
+        }
+        if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator())) {
+            if (turret.isLocked()) {
+                ultrasonic.setUSonic(true);
+            }
         }
         if (Buttons.isReleased(InputConstants.kL2Button, oi.getOperator())) {
             camera.setLight(false);
@@ -89,7 +92,8 @@ public class AMT_T_turn extends Command {
             }
 
         }
-        SmartDashboard.putDouble("Offset Increment", incOffset);
+
+        SmartDashboard.putString("offsets", "x: " + incOffset);
         if (OI.getInstance().getOperator().getRawAxis(5) == 1 && !dPadR) {
             incOffset -= 0.05;
             dPadR = true;
