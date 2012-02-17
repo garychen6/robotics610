@@ -37,7 +37,7 @@ public class Intake extends Subsystem {
      * Sets the speed for the intake.
      * @param speed 
      */
-    public void setInbotForward(double speed) {
+    public void setIntakeReverse(double speed) {
         intake.set(speed);
     }
      /**

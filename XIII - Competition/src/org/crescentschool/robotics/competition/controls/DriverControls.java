@@ -59,17 +59,17 @@ public class DriverControls extends Command {
                 kajMode = true;
             }
         } else {
-            if (oi.getDriver().getRawAxis(6) == 1) {
+            if (oi.getDriver().getRawAxis(6) > 0.5) {
                 Scheduler.getInstance().add(new M_D_Bridge());
                 kajMode = false;
-            } else if (oi.getDriver().getRawAxis(5) == -1) {
+            } else if (oi.getDriver().getRawAxis(5) < -0.5) {
                 Scheduler.getInstance().add(new M_D_Bridge());
                 kajMode = false;
             }
-            if (oi.getDriver().getRawAxis(6) == -1) {
+            if (oi.getDriver().getRawAxis(6) < -0.5) {
                 Scheduler.getInstance().add(new M_D_Bridge());
                 kajMode = false;
-            } else if (oi.getDriver().getRawAxis(5) == 1) {
+            } else if (oi.getDriver().getRawAxis(5) > 0.5) {
                 Scheduler.getInstance().add(new M_D_Bridge());
                 kajMode = false;
             }
@@ -78,22 +78,22 @@ public class DriverControls extends Command {
             Scheduler.getInstance().add(new T_DG_Bridge());
             kajMode = false;
         }
-         if (Buttons.isPressed(InputConstants.kL1Button, oi.getDriver())) {
-            if(! M_I_Pickup){
-                Scheduler.getInstance().add(new M_I_Pickup());
-                  M_I_Pickup = true;
-            }
-           
-        }
-          if (Buttons.isPressed(InputConstants.kR1Button, oi.getDriver())) {
-             if(! M_I_Pickup){
-                 Scheduler.getInstance().add(new M_I_Pickup());
-                  M_I_Pickup = true;
-             }
-        }
-           if (Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())) {
-               if(M_I_Pickup) M_I_Pickup = false;
-           }
+//         if (Buttons.isPressed(InputConstants.kL1Button, oi.getDriver())) {
+//            if(! M_I_Pickup){
+//                Scheduler.getInstance().add(new M_I_Pickup());
+//                  M_I_Pickup = true;
+//            }
+//           
+//        }
+//          if (Buttons.isPressed(InputConstants.kR1Button, oi.getDriver())) {
+//             if(! M_I_Pickup){
+//                 Scheduler.getInstance().add(new M_I_Pickup());
+//                  M_I_Pickup = true;
+//             }
+//        }
+//           if (Buttons.isPressed(InputConstants.kR2Button, OI.getInstance().getOperator())) {
+//               if(M_I_Pickup) M_I_Pickup = false;
+//           }
     }
 
     // Make this return true when this Command no longer needs to run execute()

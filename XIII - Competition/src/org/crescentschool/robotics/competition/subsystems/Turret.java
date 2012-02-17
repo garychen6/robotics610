@@ -229,8 +229,11 @@ public class Turret extends Subsystem {
         if (controlMode != 2) {
             initPosMode();
         }
-        if(inc < 0.05 && inc > -0.05)isLocked = true;
-        else isLocked = false;
+        if(inc < 0.05 && inc > -0.05){
+            isLocked = true;
+        } else {
+            isLocked = false;
+        }
         try {
             position = turretJag.getPosition() + inc;
         } catch (CANTimeoutException ex) {

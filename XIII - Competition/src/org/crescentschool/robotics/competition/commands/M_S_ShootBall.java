@@ -23,7 +23,7 @@ import org.crescentschool.robotics.competition.subsystems.Intake;
  */
 public class M_S_ShootBall extends Command {
 
-    private double m_timeout;
+
     Shooter shooter = Shooter.getInstance();
     Turret turret = Turret.getInstance();
     Feeder feed = Feeder.getInstance();
@@ -71,9 +71,7 @@ public class M_S_ShootBall extends Command {
         }
         avgSpeed /= numAverages;
 
-        if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis)) > 0.1) {
-            shooter.incRPM(-50 * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis), 3));
-        }
+
 
         if (Buttons.isPressed(InputConstants.kStartButton, oi.getOperator())) {
             shooter.resetPID();
@@ -86,15 +84,17 @@ public class M_S_ShootBall extends Command {
         if (Buttons.isHeld(InputConstants.kL2Button, OI.getInstance().getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
             equationSpeed = (80.167 * ultrasonic.getDistance() + 1212);
             shooter.setShooter(equationSpeed + yOffset);
+        } else if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis)) > 0.1) {
+            shooter.incRPM(-50 * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis), 3));
         }
-        if (OI.getInstance().getOperator().getRawAxis(6) == -1) {
+        if (OI.getInstance().getOperator().getRawAxis(6) < -0.5) {
             if (!dPadUp) {
                 yOffset += 20;
                 //shooter.setShooter(equationSpeed + yOffset);
                 dPadUp = true;
             }
         }
-        else if (OI.getInstance().getOperator().getRawAxis(6) == 1) {
+        else if (OI.getInstance().getOperator().getRawAxis(6) > 0.5) {
             if (!dPadDown) {
                 yOffset -= 20;
                 //shooter.setShooter(equationSpeed + yOffset);
@@ -110,7 +110,7 @@ public class M_S_ShootBall extends Command {
         SmartDashboard.putString("offsets", "y:" +yOffset);
         if (Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
             intake.setIsShooting(true);
-            intake.setInbotForward(-1);
+            intake.setIntakeReverse(-1);
             feeder.setFeeder(1);
         } else {
             feeder.setFeeder(0);
