@@ -105,6 +105,8 @@ public class CoyobotXIII extends IterativeRobot {
         //System.out.println("Driver EncL: " + driveTrain.getLeftSpeed());
         //System.out.println("Driver EncR: " + driveTrain.getRightSpeed());
         printDiagnostics();
+        System.out.println("Dpad X: "+ OI.getInstance().getOperator().getRawAxis(5));
+        System.out.println("Dpad Y: "+ OI.getInstance().getOperator().getRawAxis(6));
     }
 
     public void teleopInit() {
@@ -118,7 +120,6 @@ public class CoyobotXIII extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        camera.processCamera();
         Scheduler.getInstance().run();
         Buttons.update();
         printDiagnostics();

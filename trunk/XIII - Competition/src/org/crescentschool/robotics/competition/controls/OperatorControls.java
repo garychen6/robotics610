@@ -57,6 +57,9 @@ public class OperatorControls extends Command {
 //                M_I_Pickup = true;
 //            }
 //        }
+        if(Buttons.isHeld(InputConstants.kL2Button, OI.getInstance().getOperator())){
+            camera.processCamera();
+        }
         OI.printToDS(3, "Shooter SetPoint " + shooter.getRPM());
         OI.printToDS(4, "Shooter Speed " + shooter.getShooterSpeed());
         OI.printToDS(5, "Distance " + ultrasonic.getDistance());

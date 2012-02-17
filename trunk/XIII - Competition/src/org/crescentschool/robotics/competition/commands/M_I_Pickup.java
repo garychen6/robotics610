@@ -9,6 +9,7 @@ import org.crescentschool.robotics.competition.*;
 import org.crescentschool.robotics.competition.subsystems.Intake;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.subsystems.Feeder;
 
 /**
  *
@@ -17,6 +18,7 @@ import org.crescentschool.robotics.competition.constants.InputConstants;
 public class M_I_Pickup extends Command {
 
     Intake intake = Intake.getInstance();
+    Feeder feeder = Feeder.getInstance();
     double speed = 1;
     OI oi = OI.getInstance();
     public M_I_Pickup() {
@@ -42,6 +44,11 @@ public class M_I_Pickup extends Command {
         } else {
             intake.setInbotForward(0);
         }
+        }
+        if(Buttons.isHeld(InputConstants.kL1Button, oi.getOperator())){
+            feeder.setFeeder(-speed);
+        }else if(Buttons.isReleased(InputConstants.kL1Button, oi.getOperator())){
+            feeder.setFeeder(0);
         }
     }
 
