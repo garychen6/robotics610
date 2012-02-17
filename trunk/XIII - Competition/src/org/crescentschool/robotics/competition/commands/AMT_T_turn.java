@@ -25,7 +25,7 @@ public class AMT_T_turn extends Command {
     Camera camera = Camera.getInstance();
     CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
     double tPos = 0;
-    double incOffset = 0;
+    double xOffset = 0;
     boolean dPadR = false;
     boolean dPadL = false;
 
@@ -79,9 +79,8 @@ public class AMT_T_turn extends Command {
             if (offset < -0.05) {
                 offset = -0.05;
             }
-            offset += incOffset;
             turret.incPosition(offset);
-        } else if (!Buttons.isHeld(InputConstants.kR2Button, oi.getOperator())){
+        } else if (!Buttons.isHeld(InputConstants.kR2Button, oi.getOperator())) {
             double axis = oi.getOperator().getRawAxis(InputConstants.kRightXAxis);
             if (axis < -0.1) {
                 turret.setVBus(axis * 0.85 / 0.9 - 0.05 / 0.9);
@@ -93,19 +92,25 @@ public class AMT_T_turn extends Command {
 
         }
 
-        SmartDashboard.putString("offsets", "x: " + incOffset);
+        SmartDashboard.putString("offsets", "x: " + xOffset);
         if (OI.getInstance().getOperator().getRawAxis(5) > 0.5 && !dPadR) {
-            incOffset -= 0.05;
+            xOffset -= 0.05;
+            turret.xOffset(xOffset);
+            camera.setTurretOffset(xOffset);
             dPadR = true;
         } else if (OI.getInstance().getOperator().getRawAxis(5) < -0.5 && !dPadL) {
-            incOffset += 0.05;
+            xOffset += 0.05;
+            turret.xOffset(xOffset);
+            camera.setTurretOffset(xOffset);
             dPadL = true;
-        } else if (Math.abs(OI.getInstance().getOperator().getRawAxis(5)) < 0.5){
+        } else if (Math.abs(OI.getInstance().getOperator().getRawAxis(5)) < 0.5) {
             dPadL = false;
             dPadR = false;
+            turret.xOffset(xOffset);
+            camera.setTurretOffset(xOffset);
         }
         if (Buttons.isPressed(InputConstants.kSelectButton, OI.getInstance().getOperator())) {
-            incOffset = 0;
+            xOffset = 0;
         }
     }
 
@@ -116,11 +121,12 @@ public class AMT_T_turn extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+        System.out.println(this + " canceled");
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-        cancel();
+        System.out.println(this + " canceled");cancel();
     }
 }

@@ -23,6 +23,7 @@ public class Turret extends Subsystem {
     static Turret instance = null;
     double p, i, d;
     double position = PotConstants.turretCentre;
+    double xOffset  = 0;
     // 1 = %VBus, 2 = Position
     private int controlMode = 1;
     boolean isLocked = false;
@@ -97,7 +98,7 @@ public class Turret extends Subsystem {
             initPosMode();
         }
         try {
-            turretJag.setX(pos);
+            turretJag.setX(pos + xOffset);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -119,6 +120,7 @@ public class Turret extends Subsystem {
         }
 
     }
+    
 
     /**
      * Gets the target position of the turret.
@@ -133,7 +135,20 @@ public class Turret extends Subsystem {
         }
 
     }
-
+    /**
+     * Sets the turret Offset
+     * @return 
+     */
+    public void xOffset(double offset) {
+        xOffset = offset;
+    }
+      /**
+     * Gets the turret Offset
+     * @return turret xOffset
+     */
+    public double xOffset() {
+        return xOffset;
+    }
     /**
      * Gets the  position of the turret.
      * @return The position of the turret as an angle.
@@ -153,7 +168,7 @@ public class Turret extends Subsystem {
      */
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        setDefaultCommand(new AMT_T_turn());
+//        setDefaultCommand(new AMT_T_turn());
     }
 
     /**

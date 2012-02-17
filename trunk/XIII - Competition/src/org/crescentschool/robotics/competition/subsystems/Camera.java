@@ -28,6 +28,7 @@ public class Camera extends Subsystem {
     private double xOffset = 0;
     private ParticleAnalysisReport topTarget = null;
     private static Relay camLight;
+    private double tXOffset = 0;
     private Camera() {
         resetCamera();
     }
@@ -58,11 +59,18 @@ public class Camera extends Subsystem {
      */
     public double getX() {
 
-        return xOffset;
+        return (xOffset + (tXOffset/-0.65));
+    }
+     /**
+     * Sets turrets Offset to minus from camera offset
+     * @return
+     */
+    public void setTurretOffset(double tOffset) {
+
+        tXOffset = tOffset;
     }
         /**
      * Sets On or Off For the Camera Light
-     * @return 1 For On And True and Off False
      */
     public void setLight(boolean on){
         if(on)camLight.set(Relay.Value.kForward);
