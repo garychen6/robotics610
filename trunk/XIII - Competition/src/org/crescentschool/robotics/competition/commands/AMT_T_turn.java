@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.CoyoBotUltrasonic;
 import org.crescentschool.robotics.competition.subsystems.Turret;
@@ -26,6 +27,8 @@ public class AMT_T_turn extends Command {
     CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
     double tPos = 0;
     double xOffset = 0;
+    double n = 2;
+    double tVbus = 0;
     boolean dPadR = false;
     boolean dPadL = false;
 
@@ -56,60 +59,72 @@ public class AMT_T_turn extends Command {
 //        }
 
         //System.out.println("Turret Set: " + turret.getPosSet() + " Pos: " + turret.getPos());
-        if (Buttons.isPressed(InputConstants.kL2Button, oi.getOperator())) {
+
+        if (Buttons.isPressed(InputConstants.kL2Button, 2)) {
             turret.resetPosition();
-            camera.setLight(true);
         }
         if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator())) {
+            camera.setLight(true);
             if (turret.isLocked()) {
                 ultrasonic.setUSonic(true);
             }
         }
-        if (Buttons.isReleased(InputConstants.kL2Button, oi.getOperator())) {
+        if (Buttons.isReleased(InputConstants.kL2Button, 2)) {
             camera.setLight(false);
             ultrasonic.setUSonic(false);
 
         }
 
         if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, oi.getOperator())) {
-            double offset = -0.65 * camera.getX();
-            if (offset > 0.05) {
-                offset = 0.05;
+            if (camera.newImage()) {
+                double offset = PIDConstants.cameraP * camera.getX();
+//                if (offset > 0.05) {
+//                    offset = 0.05;
+//                }
+//                if (offset < -0.05) {
+//                    offset = -0.05;
+//                }
+                turret.incPosition(offset);
             }
-            if (offset < -0.05) {
-                offset = -0.05;
-            }
-            turret.incPosition(offset);
+//            tVbus = camera.getX() * PIDConstants.turretVBusP;
+//            if (tVbus > 0.15) {
+//                tVbus = 0.15;
+//            } else if (tVbus < -0.15) {
+//                tVbus = -0.15;
+//            }
+//            turret.setVBus(tVbus);
         } else if (!Buttons.isHeld(InputConstants.kR2Button, oi.getOperator())) {
             double axis = oi.getOperator().getRawAxis(InputConstants.kRightXAxis);
             if (axis < -0.1) {
-                turret.setVBus(axis * 0.85 / 0.9 - 0.05 / 0.9);
+                turret.setVBus(MathUtils.pow(axis + 0.1, n) * (-0.85 / MathUtils.pow(0.9, n)) - 0.15);
             } else if (axis > 0.1) {
-                turret.setVBus(axis * 0.85 / 0.9 + 0.05 / 0.9);
+                turret.setVBus(MathUtils.pow(axis - 0.1, n) * (0.85 / MathUtils.pow(0.9, n)) + 0.15);
             } else {
                 turret.setVBus(0);
             }
-
         }
 
-        SmartDashboard.putString("offsets", "x: " + xOffset);
         if (OI.getInstance().getOperator().getRawAxis(5) > 0.5 && !dPadR) {
             xOffset -= 0.05;
             turret.xOffset(xOffset);
             camera.setTurretOffset(xOffset);
             dPadR = true;
+            System.out.println("x offset changed");
+            SmartDashboard.putString("offsets", "x: " + xOffset);
         } else if (OI.getInstance().getOperator().getRawAxis(5) < -0.5 && !dPadL) {
             xOffset += 0.05;
             turret.xOffset(xOffset);
             camera.setTurretOffset(xOffset);
             dPadL = true;
+            System.out.println("x offset changed");
+            SmartDashboard.putString("offsets", "x: " + xOffset);
         } else if (Math.abs(OI.getInstance().getOperator().getRawAxis(5)) < 0.5) {
             dPadL = false;
             dPadR = false;
             turret.xOffset(xOffset);
             camera.setTurretOffset(xOffset);
         }
-        if (Buttons.isPressed(InputConstants.kSelectButton, OI.getInstance().getOperator())) {
+        if (Buttons.isPressed(InputConstants.kSelectButton, 2)) {
             xOffset = 0;
         }
     }
@@ -127,6 +142,7 @@ public class AMT_T_turn extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-        System.out.println(this + " canceled");cancel();
+        System.out.println(this + " canceled");
+        cancel();
     }
 }

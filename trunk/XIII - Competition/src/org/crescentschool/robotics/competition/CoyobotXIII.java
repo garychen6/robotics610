@@ -118,6 +118,7 @@ public class CoyobotXIII extends IterativeRobot {
         //autonomous.System.out.println(this + " canceled");cancel();
         Scheduler.getInstance().add(new DriverControls());
         Scheduler.getInstance().add(new OperatorControls());
+        Scheduler.getInstance().add(new M_P_Tuning());
     }
     
     public void teleopPeriodic() {

@@ -34,13 +34,13 @@ public class T_Fl_Presets extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
 
-        if (Buttons.isPressed(InputConstants.kR2Button, oi.getDriver())) {
+        if (Buttons.isPressed(InputConstants.kR2Button, 1)) {
             flipper.setFlippers(PotConstants.flipperBarrier);
         }
-        if (Buttons.isPressed(InputConstants.kL2Button, oi.getDriver())) {
+        if (Buttons.isPressed(InputConstants.kL2Button, 1)) {
             flipper.setFlippers(PotConstants.flipperRetract);
         }
-        if (Buttons.isPressed(InputConstants.kAButton, oi.getDriver())) {
+        if (Buttons.isPressed(InputConstants.kAButton, 1)) {
             flipper.setFlippers(PotConstants.flipperBridgeAssist);
         }
     }

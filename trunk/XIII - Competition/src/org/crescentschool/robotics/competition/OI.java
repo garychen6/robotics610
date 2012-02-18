@@ -80,11 +80,14 @@ public class OI {
         joyOperator = new Joystick(2);
         drStationLCD = DriverStationLCD.getInstance();
         drStation = DriverStation.getInstance();
+        System.out.println("still working");
+        joyDriver.equals(joyOperator);
+        System.out.println("still working");
         for (int i = 1; i <= 10; i++) {
-            Buttons.register(i, joyDriver);
+            Buttons.register(i, 1);
         }
         for (int i = 1; i <= 10; i++) {
-            Buttons.register(i, joyOperator);
+            Buttons.register(i, 2);
         }
 
     }

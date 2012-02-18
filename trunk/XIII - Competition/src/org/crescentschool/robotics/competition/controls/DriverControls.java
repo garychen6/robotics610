@@ -74,7 +74,7 @@ public class DriverControls extends Command {
                 kajMode = false;
             }
         }
-        if (Buttons.isPressed(InputConstants.kXButton, oi.getDriver())) {
+        if (Buttons.isPressed(InputConstants.kXButton, 1)) {
             Scheduler.getInstance().add(new T_DG_Bridge());
             kajMode = false;
         }

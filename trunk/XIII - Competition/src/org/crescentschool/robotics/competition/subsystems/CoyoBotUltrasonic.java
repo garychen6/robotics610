@@ -38,6 +38,7 @@ public class CoyoBotUltrasonic extends Subsystem {
     private CoyoBotUltrasonic() {
         ultrasonic = new AnalogChannel(ElectricalConstants.USonic);
         ultrasonic.setAverageBits(8);
+        //ultrasonic.setOversampleBits(8);
         uSonic = new DigitalOutput(ElectricalConstants.uSonicDigital);
     }
 
