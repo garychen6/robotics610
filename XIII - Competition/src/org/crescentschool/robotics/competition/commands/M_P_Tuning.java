@@ -4,11 +4,13 @@ import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.CoyoBotUltrasonic;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Feeder;
 import org.crescentschool.robotics.competition.subsystems.Intake;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.subsystems.Turret;
 
 /*
  * To change this template, choose Tools | Templates and open the template in
@@ -23,6 +25,7 @@ public class M_P_Tuning extends Command {
     OI oi = OI.getInstance();
     DriveTrain driveTrain = DriveTrain.getInstance();
     Shooter shooter = Shooter.getInstance();
+    Turret turret = Turret.getInstance();
     Feeder feeder = Feeder.getInstance();
     Intake intake = Intake.getInstance();
     CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
@@ -61,15 +64,17 @@ public class M_P_Tuning extends Command {
 //        count++;
 //        shooter.syncSlaves();
         // shooter.setShooter(oi.getOperator().getRawAxis(2));
-        if (Buttons.isPressed(InputConstants.kBButton, oi.getOperator())) {
-            shooter.incP(0.01);
-        } else if (Buttons.isPressed(InputConstants.kAButton, oi.getOperator())) {
-            shooter.incP(-0.01);
+        if (Buttons.isPressed(InputConstants.kBButton, 2)) {
+            turret.incTurretP(1);
+        } else if (Buttons.isPressed(InputConstants.kAButton, 2)) {
+            turret.incTurretP(-1);
         }
-        if (Buttons.isPressed(InputConstants.kYButton, oi.getOperator())) {
-            shooter.incI(0.0001);
-        } else if (Buttons.isPressed(InputConstants.kXButton, oi.getOperator())) {
-            shooter.incI(-0.0001);
+        if (Buttons.isPressed(InputConstants.kYButton, 2)) {
+            PIDConstants.cameraP += 0.1;
+            System.out.println("Canera P: "+ PIDConstants.cameraP);
+        } else if (Buttons.isPressed(InputConstants.kXButton, 2)) {
+            PIDConstants.cameraP -= 0.1;
+            System.out.println("Canera P: "+ PIDConstants.cameraP);
         }
 //        if (Buttons.isPressed(InputConstants.kStartButton, oi.getOperator())) {
 //            shooter.resetPID();

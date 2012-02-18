@@ -41,6 +41,7 @@ public class M_S_ShootBall extends Command {
     int yOffset = 0;
     boolean dPadUp = false;
     boolean dPadDown = false;
+    boolean AAAAIIIIIIDAAAAAAAAANNNNNNNNGNNGNGNGOOOOOOOOOOOOOOOOOOOO = false;
     double equationSpeed = 0;
 
     public M_S_ShootBall() {
@@ -73,16 +74,16 @@ public class M_S_ShootBall extends Command {
 
 
 
-        if (Buttons.isPressed(InputConstants.kStartButton, oi.getOperator())) {
+        if (Buttons.isPressed(InputConstants.kStartButton, 2)) {
             shooter.resetPID();
             turret.resetPID();
             camera.resetCamera();
         }
-        if(Buttons.isPressed(InputConstants.kSelectButton, oi.getOperator())){
+        if(Buttons.isPressed(InputConstants.kSelectButton, 2)){
             yOffset = 0;
         }
         if (Buttons.isHeld(InputConstants.kL2Button, OI.getInstance().getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
-            equationSpeed = (80.167 * ultrasonic.getDistance() + 1212);
+            equationSpeed = (50.545 * ultrasonic.getDistance() + 1582.2);
             shooter.setShooter(equationSpeed + yOffset);
         } else if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis)) > 0.1) {
             shooter.incRPM(-50 * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis), 3));
@@ -92,6 +93,7 @@ public class M_S_ShootBall extends Command {
                 yOffset += 20;
                 //shooter.setShooter(equationSpeed + yOffset);
                 dPadUp = true;
+                SmartDashboard.putString("offsets", "y:" +yOffset);
             }
         }
         else if (OI.getInstance().getOperator().getRawAxis(6) > 0.5) {
@@ -99,6 +101,7 @@ public class M_S_ShootBall extends Command {
                 yOffset -= 20;
                 //shooter.setShooter(equationSpeed + yOffset);
                 dPadDown = true;
+                SmartDashboard.putString("offsets", "y:" +yOffset);
             }
         }else{
                dPadDown = false;
@@ -106,8 +109,13 @@ public class M_S_ShootBall extends Command {
         }
         
         SmartDashboard.putDouble("Average Speed", avgSpeed);
-        SmartDashboard.putDouble("Wheel Difference", shooter.getRPM() + avgSpeed);
-        SmartDashboard.putString("offsets", "y:" +yOffset);
+        //SmartDashboard.putDouble("Wheel Difference", shooter.getRPM() + avgSpeed);
+        if((shooter.getRPM() + avgSpeed) < 20){
+            AAAAIIIIIIDAAAAAAAAANNNNNNNNGNNGNGNGOOOOOOOOOOOOOOOOOOOO = true;
+        }else{
+            AAAAIIIIIIDAAAAAAAAANNNNNNNNGNNGNGNGOOOOOOOOOOOOOOOOOOOO = false;
+        }
+        SmartDashboard.putBoolean("AIDAN FIRE NOW!!!!", AAAAIIIIIIDAAAAAAAAANNNNNNNNGNNGNGNGOOOOOOOOOOOOOOOOOOOO);
 //        if (Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
         if (OI.getInstance().getOperator().getRawButton(InputConstants.kR2Button)) {
             intake.setIsShooting(true);

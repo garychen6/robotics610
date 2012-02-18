@@ -23,7 +23,7 @@ public class Turret extends Subsystem {
     static Turret instance = null;
     double p, i, d;
     double position = PotConstants.turretCentre;
-    double xOffset  = 0;
+    double xOffset = 0;
     // 1 = %VBus, 2 = Position
     private int controlMode = 1;
     boolean isLocked = false;
@@ -115,12 +115,16 @@ public class Turret extends Subsystem {
         }
         try {
             turretJag.setX(vBus);
+            if (vBus < 0.05 && vBus > -0.05) {
+                isLocked = true;
+            } else {
+                isLocked = false;
+            }
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
 
     }
-    
 
     /**
      * Gets the target position of the turret.
@@ -135,6 +139,7 @@ public class Turret extends Subsystem {
         }
 
     }
+
     /**
      * Sets the turret Offset
      * @return 
@@ -142,13 +147,15 @@ public class Turret extends Subsystem {
     public void xOffset(double offset) {
         xOffset = offset;
     }
-      /**
+
+    /**
      * Gets the turret Offset
      * @return turret xOffset
      */
     public double xOffset() {
         return xOffset;
     }
+
     /**
      * Gets the  position of the turret.
      * @return The position of the turret as an angle.
@@ -229,12 +236,13 @@ public class Turret extends Subsystem {
             ex.printStackTrace();
         }
     }
-      /**
+
+    /**
      * Gets if the turret is Locked On
      */
-   public boolean isLocked(){
-       return isLocked;
-   }
+    public boolean isLocked() {
+        return isLocked;
+    }
 
     /**
      * Increments the turret's I value.
@@ -244,11 +252,7 @@ public class Turret extends Subsystem {
         if (controlMode != 2) {
             initPosMode();
         }
-        if(inc < 0.05 && inc > -0.05){
-            isLocked = true;
-        } else {
-            isLocked = false;
-        }
+
         try {
             position = turretJag.getPosition() + inc;
         } catch (CANTimeoutException ex) {
@@ -262,6 +266,7 @@ public class Turret extends Subsystem {
         }
         try {
             turretJag.setX(position);
+            System.out.println("Turret Target: "+ position);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }

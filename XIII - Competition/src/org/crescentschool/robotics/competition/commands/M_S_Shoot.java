@@ -63,7 +63,7 @@ public class M_S_Shoot extends Command {
         if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis)) > 0.1) {
             shooter.incRPM(-50 * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis), 3));
         }
-        if (Buttons.isPressed(InputConstants.kStartButton, oi.getOperator())) {
+        if (Buttons.isPressed(InputConstants.kStartButton, 2)) {
             shooter.resetPID();
             turret.resetPID();
             camera.resetCamera();

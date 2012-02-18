@@ -8,8 +8,16 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class Buttons {
 
-    private static Button[] opButtons = new Button[0];
-    private static Button[] drButtons = new Button[0];
+    private static Button[] opButtons = new Button[10];
+    private static int nOB = 0;
+    private static Button[] drButtons = new Button[10];
+    private static int nDB = 0;
+    public static final int kDriver = 1;
+    public static final int kOperator = 2;
+    public static final Joystick kDJoy = new Joystick(kDriver);
+    public static final Joystick kOJoy = new Joystick(kOperator);
+    
+    static Button button;
 
 
     private static class Button {
@@ -18,11 +26,11 @@ public class Buttons {
         boolean isPressed;
         boolean isHeld;
         boolean isReleased;
-        Joystick gamepad;
+        int gamepadID;
 
-        Button(int id, Joystick gamepad) {
+        Button(int id, int gamepadID) {
             this.id = id;
-            this.gamepad = gamepad;
+            this.gamepadID = gamepadID;
             isPressed = false;
             isHeld = false;
             isReleased = false;
@@ -34,33 +42,33 @@ public class Buttons {
      */
     public static void update() {
         for (int i = 0; i < opButtons.length; i++) {
-            Button button = opButtons[i];
+            button = opButtons[i];
             if (button.isPressed) {
                 button.isPressed = false;
             }
             if (button.isReleased) {
                 button.isReleased = false;
             }
-            if (button.gamepad.getRawButton(button.id) && !button.isHeld) {
+            if (kOJoy.getRawButton(button.id) && !button.isHeld) {
                 button.isHeld = true;
                 button.isPressed = true;
-            } else if (!button.gamepad.getRawButton(button.id) && button.isHeld) {
+            } else if (!kOJoy.getRawButton(button.id) && button.isHeld) {
                 button.isHeld = false;
                 button.isReleased = true;
             }
         }
         for (int i = 0; i < drButtons.length; i++) {
-            Button button = drButtons[i];
+            button = drButtons[i];
             if (button.isPressed) {
                 button.isPressed = false;
             }
             if (button.isReleased) {
                 button.isReleased = false;
             }
-            if (button.gamepad.getRawButton(button.id) && !button.isHeld) {
+            if (kDJoy.getRawButton(button.id) && !button.isHeld) {
                 button.isHeld = true;
                 button.isPressed = true;
-            } else if (!button.gamepad.getRawButton(button.id) && button.isHeld) {
+            } else if (!kDJoy.getRawButton(button.id) && button.isHeld) {
                 button.isHeld = false;
                 button.isReleased = true;
             }
@@ -72,17 +80,13 @@ public class Buttons {
      * @param buttonID the number of the button
      * @param gamepad the gamepad the button is on
      */
-    public static void register(int buttonID, Joystick gamepad) {
-        if(gamepad.equals(OI.getInstance().getDriver())){
-            Button[] newButtons = new Button[drButtons.length + 1];
-            System.arraycopy(drButtons, 0, newButtons, 0, drButtons.length);
-            drButtons = newButtons;
-            drButtons[drButtons.length - 1] = new Button(buttonID, gamepad);
+    public static void register(int buttonID, int gamepadID) {
+        if(gamepadID == kDriver){
+            drButtons[nDB] = new Button(buttonID, gamepadID);
+            nDB++;
         } else {
-            Button[] newButtons = new Button[opButtons.length + 1];
-            System.arraycopy(opButtons, 0, newButtons, 0, opButtons.length);
-            opButtons = newButtons;
-            opButtons[opButtons.length - 1] = new Button(buttonID, gamepad);
+            opButtons[nOB] = new Button(buttonID, gamepadID);
+            nOB++;
         }
     }
 
@@ -92,19 +96,19 @@ public class Buttons {
      * @param gamepad the gamepad the button is on
      * @return whether the button has been pressed since the last update
      */
-    public static boolean isPressed(int buttonID, Joystick gamepad) {
-        if(gamepad.equals(OI.getInstance().getDriver())){
+    public static boolean isPressed(int buttonID, int gamepadID) {
+        if(gamepadID == kDriver){
             for (int i = 0; i < drButtons.length; i++) {
-                Button button = drButtons[i];
-                if (button.id == buttonID && button.gamepad.equals(gamepad)) {
+                button = drButtons[i];
+                if (button.id == buttonID) {
                     return button.isPressed;
                 }
             }
             return false;
         } else {
-            for (int i = 0; i < drButtons.length; i++) {
-                Button button = drButtons[i];
-                if (button.id == buttonID && button.gamepad.equals(gamepad)) {
+            for (int i = 0; i < opButtons.length; i++) {
+                button = opButtons[i];
+                if (button.id == buttonID) {
                     return button.isPressed;
                 }
             }
@@ -135,19 +139,19 @@ public class Buttons {
      * @param gamepad the gamepad the button is on
      * @return whether the button has been released since the last update
      */
-    public static boolean isReleased(int buttonID, Joystick gamepad) {
-        if(gamepad.equals(OI.getInstance().getDriver())){
+    public static boolean isReleased(int buttonID, int gamepadID) {
+        if(gamepadID == kDriver){
             for (int i = 0; i < drButtons.length; i++) {
-                Button button = drButtons[i];
-                if (button.id == buttonID && button.gamepad.equals(gamepad)) {
+                button = drButtons[i];
+                if (button.id == buttonID) {
                     return button.isReleased;
                 }
             }
             return false;
         } else {
-            for (int i = 0; i < drButtons.length; i++) {
-                Button button = drButtons[i];
-                if (button.id == buttonID && button.gamepad.equals(gamepad)) {
+            for (int i = 0; i < opButtons.length; i++) {
+                button = opButtons[i];
+                if (button.id == buttonID) {
                     return button.isReleased;
                 }
             }

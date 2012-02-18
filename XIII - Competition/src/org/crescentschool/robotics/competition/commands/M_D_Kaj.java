@@ -36,7 +36,7 @@ public class M_D_Kaj extends Command {
         right = y + x;
         driveTrain.setRightVBus(right);
         driveTrain.setLeftVBus(left);
-        if (Buttons.isPressed(InputConstants.kStartButton, oi.getDriver())) {
+        if (Buttons.isPressed(InputConstants.kStartButton, 1)) {
             driveTrain.reInit();
         }
     }

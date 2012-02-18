@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.ImagingConstants;
+import org.crescentschool.robotics.competition.constants.PIDConstants;
 
 /**
  *
@@ -29,6 +30,9 @@ public class Camera extends Subsystem {
     private ParticleAnalysisReport topTarget = null;
     private static Relay camLight;
     private double tXOffset = 0;
+    private BinaryImage binImage;
+    private ParticleAnalysisReport circ;
+    boolean freshImage;
     private Camera() {
         resetCamera();
     }
@@ -58,8 +62,15 @@ public class Camera extends Subsystem {
      * @return The normalized position for the top square as a value between -1 and 1.
      */
     public double getX() {
-
-        return (xOffset + (tXOffset/-0.65));
+        freshImage = false;
+        return (xOffset + (tXOffset/PIDConstants.cameraP));
+    }
+    /**
+     * Says if we are using a new Image
+     * @return whether we are using a new image
+     */
+    public boolean newImage() {
+        return freshImage;
     }
      /**
      * Sets turrets Offset to minus from camera offset
@@ -86,9 +97,9 @@ public class Camera extends Subsystem {
         if (camera.freshImage()) {
             try {
                 colorImage = camera.getImage(); // get the image from the camera
-
+                freshImage = true;
                 //TODO: Tune these HSL values at the venue!
-                BinaryImage binImage = colorImage.thresholdHSV(ImagingConstants.kHThresholdMin, ImagingConstants.kHThresholdMax, ImagingConstants.kSThresholdMin, ImagingConstants.kSThresholdMax, ImagingConstants.kLThresholdMin, ImagingConstants.kLThresholdMax);
+                binImage = colorImage.thresholdHSV(ImagingConstants.kHThresholdMin, ImagingConstants.kHThresholdMax, ImagingConstants.kSThresholdMin, ImagingConstants.kSThresholdMax, ImagingConstants.kLThresholdMin, ImagingConstants.kLThresholdMax);
                 s_particles = binImage.getOrderedParticleAnalysisReports(4);
                 colorImage.free();
                 binImage.free();
@@ -96,7 +107,7 @@ public class Camera extends Subsystem {
                 if (s_particles.length > 0) {
                     int lowestY = 0;
                     for (int i = 0; i < s_particles.length; i++) {
-                        ParticleAnalysisReport circ = s_particles[i];
+                         circ = s_particles[i];
                         //Find the highest rectangle (will have the lowest Y coordinate)
                         if (s_particles[lowestY].center_mass_y > circ.center_mass_y) {
                             lowestY = i;
@@ -108,6 +119,7 @@ public class Camera extends Subsystem {
 //                    if (Math.abs(xOffset) < 0.05) {
 //                        xOffset = 0;
 //                    }
+//                    System.out.println("xOffset: "+xOffset);
                 } else {
                     xOffset = 0;
                 }
