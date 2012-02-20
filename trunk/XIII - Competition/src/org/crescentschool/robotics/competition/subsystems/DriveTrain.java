@@ -56,10 +56,8 @@ public class DriveTrain extends Subsystem {
                 // PID is tuned to only reach 1/2 the setpoint
                 // Setpoint should be twice the desire mount
                 jagRightMaster.setX(-2 * output);
-                syncSlaves();
+                PIDsyncSlaves();
             } catch (CANTimeoutException ex) {
-                canError = true;
-                handleCANError();
                 ex.printStackTrace();
             }
 
@@ -84,7 +82,7 @@ public class DriveTrain extends Subsystem {
         public void pidWrite(double output) {
             try {
                 jagLeftMaster.setX(2 * output);
-                syncSlaves();
+                PIDsyncSlaves();
             } catch (CANTimeoutException ex) {
                 ex.printStackTrace();
             }
@@ -125,9 +123,9 @@ public class DriveTrain extends Subsystem {
             jagRightSlave = new CANJaguar(ElectricalConstants.DriveRightSlave);
             jagLeftSlave = new CANJaguar(ElectricalConstants.DriveLeftSlave);
             posControllerRight = new PIDController(PIDConstants.drivePositionP,
-                    PIDConstants.drivePositionI, PIDConstants.drivePositionD, rightPosIn, rightPosOut, 0.020);
+                    PIDConstants.drivePositionI, PIDConstants.drivePositionD, rightPosIn, rightPosOut, 0.050);
             posControllerLeft = new PIDController(PIDConstants.drivePositionP,
-                    PIDConstants.drivePositionI, PIDConstants.drivePositionD, leftPosIn, leftPosOut, 0.020);
+                    PIDConstants.drivePositionI, PIDConstants.drivePositionD, leftPosIn, leftPosOut, 0.050);
             posControllerRight.setInputRange(-20, 20);
             posControllerRight.setOutputRange(-200, 200);
             posControllerLeft.setInputRange(-20, 20);
@@ -279,6 +277,18 @@ public class DriveTrain extends Subsystem {
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();
+            ex.printStackTrace();
+        }
+    }
+      /**
+     * Sets the slaves at the same voltage as the masters.
+     */
+    private void PIDsyncSlaves() {
+        double voltage = OI.getInstance().getDS().getBatteryVoltage();
+        try {
+            jagLeftSlave.setX(jagLeftMaster.getOutputVoltage() / voltage);
+            jagRightSlave.setX(jagRightMaster.getOutputVoltage() / voltage);
+        } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     }

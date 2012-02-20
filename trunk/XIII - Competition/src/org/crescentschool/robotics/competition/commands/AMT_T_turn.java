@@ -105,14 +105,14 @@ public class AMT_T_turn extends Command {
         }
 
         if (OI.getInstance().getOperator().getRawAxis(5) > 0.5 && !dPadR) {
-            xOffset -= 0.05;
+            xOffset -= 0.01;
             turret.xOffset(xOffset);
             camera.setTurretOffset(xOffset);
             dPadR = true;
             System.out.println("x offset changed");
             SmartDashboard.putString("offsets", "x: " + xOffset);
         } else if (OI.getInstance().getOperator().getRawAxis(5) < -0.5 && !dPadL) {
-            xOffset += 0.05;
+            xOffset += 0.01;
             turret.xOffset(xOffset);
             camera.setTurretOffset(xOffset);
             dPadL = true;

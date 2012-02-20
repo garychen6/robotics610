@@ -60,7 +60,9 @@ public class Shooter extends Subsystem {
     public void setShooter(double rpm) {
         try {
             //shootJaguar.setX(-2 * rpm);
+            rpm = Math.min(Math.max(1800, rpm),3100);
             shootJaguar.setX(-rpm);
+            
             this.rpm = rpm;
             SmartDashboard.putDouble("Shooter Set Feet ", rpm);
         } catch (Exception e) {

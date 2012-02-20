@@ -39,6 +39,8 @@ public class M_S_ShootBall extends Command {
     int speedCounter = 0;
     boolean shoot = false;
     int yOffset = 0;
+    double height;
+    double distance = 0;
     boolean dPadUp = false;
     boolean dPadDown = false;
     boolean AAAAIIIIIIDAAAAAAAAANNNNNNNNGNNGNGNGOOOOOOOOOOOOOOOOOOOO = false;
@@ -83,14 +85,18 @@ public class M_S_ShootBall extends Command {
             yOffset = 0;
         }
         if (Buttons.isHeld(InputConstants.kL2Button, OI.getInstance().getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
-            equationSpeed = (50.545 * ultrasonic.getDistance() + 1582.2);
+            height = camera.getHeight();
+            equationSpeed = 0.1399*(height*height) - 7.1922*height  + 2294.2;
+            SmartDashboard.putDouble("Camera Height", height);
             shooter.setShooter(equationSpeed + yOffset);
+            //shooter.setShooter(2000 + yOffset);
         } else if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis)) > 0.1) {
             shooter.incRPM(-50 * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis), 3));
         }
         if (OI.getInstance().getOperator().getRawAxis(6) < -0.5) {
             if (!dPadUp) {
                 yOffset += 20;
+                System.out.println("yUP");
                 //shooter.setShooter(equationSpeed + yOffset);
                 dPadUp = true;
                 SmartDashboard.putString("offsets", "y:" +yOffset);
