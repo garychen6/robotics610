@@ -266,7 +266,7 @@ public class Turret extends Subsystem {
         }
         try {
             turretJag.setX(position);
-            System.out.println("Turret Target: "+ position);
+            //System.out.println("Turret Target: "+ position);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }

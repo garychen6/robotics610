@@ -58,6 +58,15 @@ public class Camera extends Subsystem {
     }
     
     /**
+     * Returns the height of the top bounding box as given by the particle analysis report
+     * @return the height of the top bounding box
+     */
+    public double getHeight(){
+        if(topTarget == null)return 40.0;
+        return (topTarget.boundingRectTop + 0.5*topTarget.boundingRectHeight);
+    }
+    
+    /**
      * Gets the normalized position for the top square on the net.
      * @return The normalized position for the top square as a value between -1 and 1.
      */
