@@ -58,9 +58,9 @@ public class M_D_Bridge extends Command {
             dPadDown = false;
         }
         if (oi.getDriver().getRawAxis(6) > 0.5) {
-            y += 0.04;
+            y += 0.1;
         } else if (oi.getDriver().getRawAxis(6) < -0.5) {
-            y -= 0.04;
+            y -= 0.1;
         } else if (oi.getDriver().getRawAxis(5) < -0.5) {
             x += 0.05;
         } else if (oi.getDriver().getRawAxis(5) > 0.5) {

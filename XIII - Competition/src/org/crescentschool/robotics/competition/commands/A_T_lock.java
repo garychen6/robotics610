@@ -5,6 +5,7 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Turret;
 
@@ -13,9 +14,13 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
  * @author Warfa
  */
 public class A_T_lock extends Command {
+
     Turret turret = Turret.getInstance();
     Camera camera = Camera.getInstance();
     double offset = 0;
+    boolean isFinished = false;
+    boolean seeTargets = false;
+
     public A_T_lock() {
         System.out.println(this.toString());
         // Use requires() here to declare subsystem dependencies
@@ -25,23 +30,28 @@ public class A_T_lock extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-         turret.resetPosition();
+        System.out.println("Phase 1");
+        turret.setPosition(8.5);
+        camera.setLight(true);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-            offset = -0.4 * camera.getX();
-            if (offset > 0.1)
-                offset = 0.1;
-            if (offset < -0.1)
-                offset = -0.1;
+        if (Math.abs(turret.getPos() - 8.5) < 0.1) {
+            seeTargets = true;
+        }
+        if (seeTargets) {
+            double offset = PIDConstants.cameraP * camera.getX();
             turret.incPosition(offset);
+            if(Math.abs(offset) < 0.01){
+                isFinished = true;
+            }
+        }
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        if(-0.4*camera.getX() < 0.1)return true;
-        else return false;
+        return isFinished;
     }
 
     // Called once after isFinished returns true
@@ -52,6 +62,7 @@ public class A_T_lock extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-        System.out.println(this + " canceled");cancel();
+        System.out.println(this + " canceled");
+        cancel();
     }
 }
