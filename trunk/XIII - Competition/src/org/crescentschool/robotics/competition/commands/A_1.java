@@ -16,9 +16,9 @@ public class A_1 extends CommandGroup {
         System.out.println(this.toString());
         addSequential(new A_T_lock());
         addSequential(new A_S_shoot());
-        addSequential(new A_D_distance(-18.5));
-        addParallel(new A_Fl_set(90));
-        addSequential(new A_Fl_set(20));
+        addSequential(new A_D_distance(-16.5));
+        addSequential(new A_D_distance(-2));
+        addParallel(new A_Fl_set(20));
         addSequential(new A_I_timed(3));
         addSequential(new A_Fl_set(80));
         addSequential(new A_D_turn(13));
