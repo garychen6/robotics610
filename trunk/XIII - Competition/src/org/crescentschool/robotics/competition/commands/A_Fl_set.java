@@ -51,6 +51,6 @@ public class A_Fl_set extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-        System.out.println(this + " canceled");cancel();
+        System.out.println(this + " canceled");
     }
 }

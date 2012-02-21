@@ -94,29 +94,31 @@ public class M_S_ShootBall extends Command {
             shooter.incRPM(-50 * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis), 3));
         }
         if (OI.getInstance().getOperator().getRawAxis(6) < -0.5) {
-            if (!dPadUp) {
-                yOffset += 20;
+//        if (Buttons.isPressed(InputConstants.kYButton, 2)) {
+//            if (!dPadUp) {
+                yOffset += 4;
                 System.out.println("yUP");
                 //shooter.setShooter(equationSpeed + yOffset);
                 dPadUp = true;
                 SmartDashboard.putString("offsets", "y:" +yOffset);
-            }
+//            }
         }
         else if (OI.getInstance().getOperator().getRawAxis(6) > 0.5) {
-            if (!dPadDown) {
-                yOffset -= 20;
+//        else if (Buttons.isPressed(InputConstants.kAButton, 2)) {
+//            if (!dPadDown) {
+                yOffset -= 4;
                 //shooter.setShooter(equationSpeed + yOffset);
                 dPadDown = true;
                 SmartDashboard.putString("offsets", "y:" +yOffset);
-            }
-        }else{
-               dPadDown = false;
-               dPadUp = false;
+//            }
+//        }else{
+//               dPadDown = false;
+//               dPadUp = false;
         }
         
         SmartDashboard.putDouble("Average Speed", avgSpeed);
         //SmartDashboard.putDouble("Wheel Difference", shooter.getRPM() + avgSpeed);
-        if((shooter.getRPM() + avgSpeed) < 20){
+        if(Math.abs(shooter.getRPM() + avgSpeed) < 40){
             AAAAIIIIIIDAAAAAAAAANNNNNNNNGNNGNGNGOOOOOOOOOOOOOOOOOOOO = true;
         }else{
             AAAAIIIIIIDAAAAAAAAANNNNNNNNGNNGNGNGOOOOOOOOOOOOOOOOOOOO = false;

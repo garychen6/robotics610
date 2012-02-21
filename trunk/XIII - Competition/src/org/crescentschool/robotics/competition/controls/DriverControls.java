@@ -76,7 +76,7 @@ public class DriverControls extends Command {
         }
         if (Buttons.isPressed(InputConstants.kXButton, 1)) {
             Scheduler.getInstance().add(new T_DG_Bridge());
-            kajMode = false;
+            kajMode = true;
         }
 //         if (Buttons.isPressed(InputConstants.kL1Button, oi.getDriver())) {
 //            if(! M_I_Pickup){

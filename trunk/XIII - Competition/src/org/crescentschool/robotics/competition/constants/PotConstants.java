@@ -32,7 +32,7 @@ public class PotConstants {
     /**
      * Flipper angle for Bridge Assist.
      */
-    public static final double turretHiLimit = 8.5; 
+    public static final double turretHiLimit = 9; 
     /**
      * Flipper angle for Bridge Assist.
      */

@@ -6,7 +6,6 @@
 /*----------------------------------------------------------------------------*/
 package org.crescentschool.robotics.competition;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.KinectStick;
 import edu.wpi.first.wpilibj.command.Command;
@@ -15,9 +14,7 @@ import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //TODO: What happened to A_1? 
 //import org.crescentschool.robotics.competition.commands.A_1;
-import org.crescentschool.robotics.competition.commands.A_ST_shoot;
-import org.crescentschool.robotics.competition.commands.A_K_human;
-import org.crescentschool.robotics.competition.commands.M_P_Tuning;
+import org.crescentschool.robotics.competition.commands.A_1;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.controls.OperatorControls;
@@ -52,7 +49,7 @@ public class CoyobotXIII extends IterativeRobot {
     Camera camera;
     CoyoBotUltrasonic ultrasonic;
     boolean kajMode = false;
-
+    Command auton;
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -70,36 +67,18 @@ public class CoyobotXIII extends IterativeRobot {
         //autonomous = new A_ST_shoot();
         camera = Camera.getInstance();
         ultrasonic = CoyoBotUltrasonic.getInstance();
+        auton = new A_1();
     }
     
     public void autonomousInit() {
         // schedule the autonomous command (example)
-        autonomous.start();
+        auton.start();
     }
     
     public void autonomousPeriodic() {
-        if (leftArm.getY(Hand.kLeft) > 0.7) {
-            if (autonMode == 3) {
-                autonMode = 1;
-            } else {
-                autonomous.cancel();
-                autonMode++;
-            }
-            switch (autonMode) {
-                default:
-                case 1:
-                    autonomous = new A_ST_shoot();
-                    break;
-                case 2:
-                    //autonomous = new A_1();
-                    break;
-                case 3:
-                    autonomous = new A_K_human();
-                    break;
-            }
-            autonomous.start();
-        }
+        
         Scheduler.getInstance().run();
+        printDiagnostics();
     }
     
     public void disabledPeriodic() {
@@ -116,9 +95,10 @@ public class CoyobotXIII extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         //autonomous.System.out.println(this + " canceled");cancel();
+        auton.cancel();
         Scheduler.getInstance().add(new DriverControls());
         Scheduler.getInstance().add(new OperatorControls());
-        Scheduler.getInstance().add(new M_P_Tuning());
+//        Scheduler.getInstance().add(new M_P_Tuning());
     }
     
     public void teleopPeriodic() {
@@ -132,7 +112,7 @@ public class CoyobotXIII extends IterativeRobot {
     }
     
     private void printDiagnostics() {
-        SmartDashboard.putDouble("Shooter Speed", -shooter.getShooterSpeed());
+        SmartDashboard.putDouble("Shooter Speed", (shooter.getShooterSpeed() - 1212) / -80.167);
         //SmartDashboard.putDouble("Left Drive Speed", -driveTrain.getLeftSpeed());
         //SmartDashboard.putDouble("Right Drive Speed", driveTrain.getRightSpeed());
         //SmartDashboard.putDouble("Horiz Gyro", driveTrain.getHorizAngle());
