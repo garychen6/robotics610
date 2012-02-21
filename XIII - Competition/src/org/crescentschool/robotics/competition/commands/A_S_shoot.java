@@ -85,6 +85,7 @@ public class A_S_shoot extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+        System.out.println(this + " finished");
     }
 
     // Called when another command which requires one or more of the same
