@@ -13,7 +13,7 @@ import org.crescentschool.robotics.competition.subsystems.Intake;
 public class A_I_timed extends Command {
     public double m_timeout;
     Intake intake = Intake.getInstance();
-    double speed = 1;
+    double speed = -1;
     
     public A_I_timed(double timeout) {
         System.out.println(this.toString());

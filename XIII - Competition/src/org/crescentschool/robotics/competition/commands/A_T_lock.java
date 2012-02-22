@@ -7,6 +7,7 @@ package org.crescentschool.robotics.competition.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
+import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.subsystems.Turret;
 
 /**
@@ -17,9 +18,13 @@ public class A_T_lock extends Command {
 
     Turret turret = Turret.getInstance();
     Camera camera = Camera.getInstance();
+    Shooter shooter = Shooter.getInstance();
     double offset = 0;
     boolean isFinished = false;
     boolean seeTargets = false;
+    boolean startedLock = false;
+    int count = 0;
+    double turretError = 0;
 
     public A_T_lock() {
         System.out.println(this.toString());
@@ -31,21 +36,41 @@ public class A_T_lock extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
         System.out.println("Phase 1");
-        turret.setPosition(8.5);
+        turret.resetPosition();
+        System.out.println("Turret Pos Reset");
+        turret.setPosition(8);
+        System.out.println("Turret Pos Set");
         camera.setLight(true);
+        shooter.setShooter(2200);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if (Math.abs(turret.getPos() - 8.5) < 0.1) {
+        if (Math.abs(turret.getPos() - 8) < 0.1) {
             seeTargets = true;
+            System.out.println("Right Pos");
         }
         if (seeTargets) {
-            double offset = PIDConstants.cameraP * camera.getX();
+            Camera.getInstance().processCamera();
+            offset = PIDConstants.cameraP * camera.getX();
+//            offset =  camera.getX();
             turret.incPosition(offset);
-            if(Math.abs(offset) < 0.01){
-                isFinished = true;
+            System.out.println("Locking On");
+            if (!startedLock && offset > 0.1) {
+                startedLock = true;
             }
+            if (Math.abs(camera.getX()) < 0.065) {
+                count++;
+                System.out.println("Frames within tolerance: "+count);
+                if (startedLock && turretError < 0.05 && count >= 5) {
+                    isFinished = true;
+                }else if(turretError > 0.05){
+                    count = 0;
+                }
+            }else{
+                count = 0;
+            }
+            turretError = Math.abs(turret.getPosSet()) - Math.abs(turret.getPos());
         }
     }
 

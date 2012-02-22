@@ -25,7 +25,7 @@ public class Turret extends Subsystem {
     double position = PotConstants.turretCentre;
     double xOffset = 0;
     // 1 = %VBus, 2 = Position
-    private int controlMode = 1;
+    private int controlMode = 2;
     boolean isLocked = false;
 
     /**
@@ -45,14 +45,13 @@ public class Turret extends Subsystem {
         d = 0;
         try {
             turretJag = new CANJaguar(ElectricalConstants.TurretJaguar);
-            resetPID();
-            turretJag.setX(position);
+            initPosMode();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     }
 
-    private void initPosMode() {
+    public void initPosMode() {
         SmartDashboard.putString("Turret Mode", "Position");
         controlMode = 2;
         try {
@@ -252,7 +251,6 @@ public class Turret extends Subsystem {
         if (controlMode != 2) {
             initPosMode();
         }
-
         try {
             position = turretJag.getPosition() + inc;
         } catch (CANTimeoutException ex) {

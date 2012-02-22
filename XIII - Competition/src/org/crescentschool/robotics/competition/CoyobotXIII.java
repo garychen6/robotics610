@@ -35,7 +35,7 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
  * directory.
  */
 public class CoyobotXIII extends IterativeRobot {
-    
+
     Command autonomous;
     KinectStick leftArm;
     Shooter shooter;
@@ -50,6 +50,7 @@ public class CoyobotXIII extends IterativeRobot {
     CoyoBotUltrasonic ultrasonic;
     boolean kajMode = false;
     Command auton;
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -69,18 +70,20 @@ public class CoyobotXIII extends IterativeRobot {
         ultrasonic = CoyoBotUltrasonic.getInstance();
         auton = new A_1();
     }
-    
+
     public void autonomousInit() {
         // schedule the autonomous command (example)
+        turret.initPosMode();
+        shooter.resetPID();
         auton.start();
     }
-    
+
     public void autonomousPeriodic() {
-        
+
         Scheduler.getInstance().run();
         printDiagnostics();
     }
-    
+
     public void disabledPeriodic() {
         //System.out.println("Driver EncL: " + driveTrain.getLeftSpeed());
         //System.out.println("Driver EncR: " + driveTrain.getRightSpeed());
@@ -88,7 +91,7 @@ public class CoyobotXIII extends IterativeRobot {
 //        System.out.println("Dpad X: "+ OI.getInstance().getOperator().getRawAxis(5));
 //        System.out.println("Dpad Y: "+ OI.getInstance().getOperator().getRawAxis(6));
     }
-    
+
     public void teleopInit() {
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to 
@@ -100,17 +103,18 @@ public class CoyobotXIII extends IterativeRobot {
         Scheduler.getInstance().add(new OperatorControls());
 //        Scheduler.getInstance().add(new M_P_Tuning());
     }
-    
+
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+        //camera.processCamera();
         Buttons.update();
         printDiagnostics();
-        
+
     }
-    
+
     public void teleopContinuous() {
     }
-    
+
     private void printDiagnostics() {
         SmartDashboard.putDouble("Shooter Speed", (shooter.getShooterSpeed() - 1212) / -80.167);
         //SmartDashboard.putDouble("Left Drive Speed", -driveTrain.getLeftSpeed());

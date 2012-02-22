@@ -30,6 +30,8 @@ public class A_S_shoot extends Command {
     int speedCounter = 0;
     int count = 1;
     boolean counted = true;
+    boolean isFinished = false;
+
     public A_S_shoot() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -42,7 +44,7 @@ public class A_S_shoot extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-
+        Camera.getInstance().processCamera();
         if (shooter.getShooterSpeed() < 0 || shooter.getShooterSpeed() > 3000) {
             speeds[speedCounter] = shooter.getShooterSpeed();
             speedCounter++;
@@ -59,28 +61,26 @@ public class A_S_shoot extends Command {
         equationSpeed = 0.1399 * (height * height) - 7.1922 * height + 2294.2;
         SmartDashboard.putDouble("Camera Height", height);
         shooter.setShooter(equationSpeed + yOffset);
-        if (Math.abs(shooter.getRPM() + avgSpeed) < 20) {
-            intake.setIsShooting(true);
+        SmartDashboard.putDouble("Wheel Difference", Math.abs(shooter.getRPM() + avgSpeed));
+        if (Math.abs(shooter.getRPM() + avgSpeed) < 55 && !counted) {
             intake.setIntakeReverse(-1);
             feeder.setFeeder(1);
-            if(!counted){
-                count++;
-                counted = true;
-            }
-        } else {
+            count++;
+            counted = true;
+        } else if(Math.abs(shooter.getRPM() + avgSpeed) > 55){
             feeder.setFeeder(0);
             intake.setIntakeReverse(0);
             counted = false;
+        }
+        if (count >= 3) {
+            isFinished = true;
         }
         SmartDashboard.putInt("Balls Fired", count);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        if (count >= 4) {
-            return true;
-        }
-        return false;
+        return isFinished;
     }
 
     // Called once after isFinished returns true

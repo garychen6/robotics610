@@ -71,15 +71,20 @@ public class Camera extends Subsystem {
      * @return The normalized position for the top square as a value between -1 and 1.
      */
     public double getX() {
-        freshImage = false;
-        return (xOffset + (tXOffset/PIDConstants.cameraP));
+      
+        return (xOffset +0.05+ (tXOffset/PIDConstants.cameraP));
     }
     /**
      * Says if we are using a new Image
      * @return whether we are using a new image
      */
-    public boolean newImage() {
-        return freshImage;
+    public boolean newImage() {  
+        if(freshImage){
+            freshImage = false;
+            return true;
+        }
+        return false;
+        
     }
      /**
      * Sets turrets Offset to minus from camera offset

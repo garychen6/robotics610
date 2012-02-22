@@ -50,7 +50,7 @@ public class Flipper extends Subsystem {
             jagFlip = new CANJaguar(ElectricalConstants.JagFlipper);
             jagFlip.changeControlMode(CANJaguar.ControlMode.kPosition);
             jagFlip.configFaultTime(0.5);
-            jagFlip.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            jagFlip.configNeutralMode(CANJaguar.NeutralMode.kBrake);
             jagFlip.configPotentiometerTurns(10);
             jagFlip.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
             jagFlip.setPID(p, i, d);
@@ -60,7 +60,20 @@ public class Flipper extends Subsystem {
         }
         gotoPosition();
     }
-
+    public void reInit(){
+        try {
+            jagFlip = new CANJaguar(ElectricalConstants.JagFlipper);
+            jagFlip.changeControlMode(CANJaguar.ControlMode.kPosition);
+            jagFlip.configFaultTime(0.5);
+            jagFlip.configNeutralMode(CANJaguar.NeutralMode.kBrake);
+            jagFlip.configPotentiometerTurns(10);
+            jagFlip.setPositionReference(CANJaguar.PositionReference.kPotentiometer);
+            jagFlip.setPID(p, i, d);
+            jagFlip.enableControl(0);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+    }
     /**
      * Sets the P value of the victors on the flipper.
      * @param inc The increment for the P Value.
