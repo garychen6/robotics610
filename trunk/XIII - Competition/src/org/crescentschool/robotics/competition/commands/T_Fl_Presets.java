@@ -37,11 +37,17 @@ public class T_Fl_Presets extends Command {
         if (Buttons.isPressed(InputConstants.kR2Button, 1)) {
             flipper.setFlippers(PotConstants.flipperBallPickup);
         }
+        if (Buttons.isPressed(InputConstants.kBButton, 1)) {
+            flipper.setFlippers(PotConstants.flipperBarrier);
+        }
         if (Buttons.isPressed(InputConstants.kL2Button, 1)) {
             flipper.setFlippers(PotConstants.flipperRetract);
         }
         if (Buttons.isPressed(InputConstants.kAButton, 1)) {
             flipper.setFlippers(PotConstants.flipperBridgeAssist);
+        }
+        if(Buttons.isPressed(InputConstants.kStartButton,1)){
+            flipper.reInit();
         }
     }
 
