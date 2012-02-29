@@ -713,15 +713,5 @@ public class DriveTrain extends Subsystem {
 
         return gyro.getAngle();
     }
-    /* public void danceOverride() {
-    try {
-    if (robot was disabled for more than 5 seconds){
-    DANCE;
-    } else {
-    if (EmergencyStopButton = true){
-    Terminator t1000 = new Terminator();
-    t1000.killAllReferees();
     
-    }
-    }*/
 }
