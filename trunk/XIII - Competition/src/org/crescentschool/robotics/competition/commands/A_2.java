@@ -14,16 +14,14 @@ public class A_2 extends CommandGroup {
     
     public A_2() {
         System.out.println(this.toString());
-        addSequential(new M_S_ShootBall());
-        addSequential(new A_D_distance(10.98));
-        addSequential(new A_D_turn(90));
-        addParallel(new A_Fl_set(45));
-        addSequential(new A_D_distance(5.03990653700226));
+        addSequential(new A_D_distance(18));
         addSequential(new A_Fl_set(10));
-        addSequential(new A_I_timed(2));
-        addSequential(new A_Fl_set(45));
-        addSequential(new A_D_turn(150));
-        addSequential(new M_S_ShootBall());
+        addSequential(new A_D_distance(-15));
+        addParallel(new A_Fl_set(80));
+        addSequential(new A_D_distance(-3));
+        addSequential(new A_T_lock());
+        addSequential(new A_S_shoot());
+        
         //:)
         
         

@@ -98,6 +98,7 @@ public class CoyobotXIII extends IterativeRobot {
         // continue until interrupted by another command, remove
         // this line or comment it out.
         //autonomous.System.out.println(this + " canceled");cancel();
+        shooter.setAutonOver(true);
         auton.cancel();
         Scheduler.getInstance().add(new DriverControls());
         Scheduler.getInstance().add(new OperatorControls());

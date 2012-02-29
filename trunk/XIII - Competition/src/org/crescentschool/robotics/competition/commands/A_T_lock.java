@@ -7,6 +7,7 @@ package org.crescentschool.robotics.competition.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
+import org.crescentschool.robotics.competition.CoyobotXIII;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.subsystems.Turret;
 
@@ -61,16 +62,19 @@ public class A_T_lock extends Command {
             }
             if (Math.abs(camera.getX()) < 0.065) {
                 count++;
-                System.out.println("Frames within tolerance: "+count);
+                System.out.println("Frames within tolerance: " + count);
                 if (startedLock && turretError < 0.05 && count >= 5) {
                     isFinished = true;
-                }else if(turretError > 0.05){
+                } else if (turretError > 0.05) {
                     count = 0;
                 }
-            }else{
+            } else {
                 count = 0;
             }
             turretError = Math.abs(turret.getPosSet()) - Math.abs(turret.getPos());
+        }
+        if (shooter.getAutonOver()) {
+            isFinished = true;
         }
     }
 

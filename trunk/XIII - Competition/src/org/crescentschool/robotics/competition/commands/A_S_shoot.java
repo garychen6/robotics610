@@ -76,6 +76,9 @@ public class A_S_shoot extends Command {
             isFinished = true;
         }
         SmartDashboard.putInt("Balls Fired", count);
+        if(shooter.getAutonOver()){
+            isFinished = true;
+        }
     }
 
     // Make this return true when this Command no longer needs to run execute()
