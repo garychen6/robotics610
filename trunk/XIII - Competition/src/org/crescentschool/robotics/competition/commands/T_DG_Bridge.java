@@ -17,7 +17,7 @@ public class T_DG_Bridge extends Command {
 
     DriveTrain driveTrain = DriveTrain.getInstance();
     Flipper flipper = Flipper.getInstance();
-    // Zis is zee maximum angre that vee vill reach
+    
     double maxAngle;
 
     public T_DG_Bridge()
