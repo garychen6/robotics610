@@ -18,6 +18,7 @@ public class Shooter extends Subsystem {
     private static Shooter instance = null;
     double p, i, d;
     double rpm = 2000;
+    boolean autonOver = false;
 
     /**
      * Ensures that only one shooter is instantiated.
@@ -70,6 +71,12 @@ public class Shooter extends Subsystem {
             handleCANError();
         }
 
+    }
+    public void setAutonOver(boolean isOver){
+        autonOver = isOver;
+    }
+    public boolean getAutonOver(){
+        return autonOver;
     }
     /**
      * Gets the shooter's target speed.
@@ -162,6 +169,7 @@ public class Shooter extends Subsystem {
             shootJaguarSlave.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shootJaguar.setPID(-p, -i, -d);
             shootJaguar.enableControl();
+            setShooter(2200);
             syncSlaves();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
