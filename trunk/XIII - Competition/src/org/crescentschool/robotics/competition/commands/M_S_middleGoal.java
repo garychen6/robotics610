@@ -12,10 +12,10 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
  *
  * @author Warfa
  */
-public class M_ extends Command {
+public class M_S_middleGoal extends Command {
     Shooter shooter = Shooter.getInstance();
     Turret turret = Turret.getInstance();
-    public M_() {
+    public M_S_middleGoal() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
