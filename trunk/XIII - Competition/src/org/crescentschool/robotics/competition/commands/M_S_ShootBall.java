@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.constants.PIDConstants;
+import org.crescentschool.robotics.competition.constants.PotConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Feeder;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
@@ -132,6 +134,15 @@ public class M_S_ShootBall extends Command {
         } else {
             feeder.setFeeder(0);
             intake.setIsShooting(false);
+        }
+        if(Buttons.isPressed(InputConstants.kYButton, 2)){
+            turret.setPosition(PotConstants.turretCentre);
+            
+        }if(Buttons.isHeld(InputConstants.kYButton, OI.getInstance().getOperator())){
+            
+            shooter.setVbus(PIDConstants.middleGoalVbus);
+            feeder.setFeeder(1);
+            intake.setIntakeReverse(1);
         }
 
     }

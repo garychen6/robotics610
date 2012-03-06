@@ -19,6 +19,7 @@ public class Shooter extends Subsystem {
     double p, i, d;
     double rpm = 2000;
     boolean autonOver = false;
+    int controlMode = 1;
 
     /**
      * Ensures that only one shooter is instantiated.
@@ -171,9 +172,46 @@ public class Shooter extends Subsystem {
             shootJaguar.enableControl();
             setShooter(2200);
             syncSlaves();
+            controlMode = 1;
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
+    }
+    /**
+     * Resets Shooter P, I, and D, and syncs slave.
+     */
+    public void resetVbus() {
+        try {
+            System.out.println("Shooter Vbus Reset");
+            shootJaguar.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
+            shootJaguar.configEncoderCodesPerRev(256);
+            shootJaguar.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            shootJaguarSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            shootJaguar.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            shootJaguarSlave.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            
+            shootJaguar.enableControl();
+           
+            syncSlaves();
+            controlMode = 2;
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void setVbus(double vbus)  {
+        
+        if(controlMode == 1){
+            resetVbus();
+            
+        }
+        try {
+            shootJaguar.setX(vbus);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+            handleCANError();
+        }
+        syncSlaves();
+        
     }
 
     /**
