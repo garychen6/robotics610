@@ -53,6 +53,7 @@ public class PIDConstants {
      * The derivative constant of the flipper position control
      */
     public static final double flipperD = 0;
+    public static final double middleGoalVbus = 0;
     public static final double shooterP = 0.048;
 //    public static final double shooterI = 0.003;
 //    public static final double shooterP = 0.041;
