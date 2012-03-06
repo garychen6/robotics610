@@ -12,9 +12,11 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//TODO: What happened to A_1? 
-//import org.crescentschool.robotics.competition.commands.A_1;
-import org.crescentschool.robotics.competition.commands.A_1;
+//TODO: What happened to A_shootOnly? 
+//import org.crescentschool.robotics.competition.commands.A_shootOnly;
+import org.crescentschool.robotics.competition.commands.A_shootAfter;
+import org.crescentschool.robotics.competition.commands.A_shootFirst;
+import org.crescentschool.robotics.competition.commands.A_shootOnly;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.controls.OperatorControls;
@@ -45,11 +47,14 @@ public class CoyobotXIII extends IterativeRobot {
     Feeder feeder;
     OI oi;
     int autonMode = 1;
+    String autonName = "";
     Turret turret;
     Camera camera;
     CoyoBotUltrasonic ultrasonic;
     boolean kajMode = false;
+    boolean autonChanged = false;
     Command auton;
+    double autonWaitTime = 0;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -68,7 +73,7 @@ public class CoyobotXIII extends IterativeRobot {
         //autonomous = new A_ST_shoot();
         camera = Camera.getInstance();
         ultrasonic = CoyoBotUltrasonic.getInstance();
-        auton = new A_1();
+        auton = new A_shootOnly(autonWaitTime);
     }
 
     public void autonomousInit() {
@@ -87,7 +92,53 @@ public class CoyobotXIII extends IterativeRobot {
     public void disabledPeriodic() {
         //System.out.println("Driver EncL: " + driveTrain.getLeftSpeed());
         //System.out.println("Driver EncR: " + driveTrain.getRightSpeed());
+        switch (autonMode) {
+            case 1:
+                autonName = "ShootOnly";
+                if (autonChanged) {
+                    auton = new A_shootFirst();
+                    autonChanged = false;
+                }
+                break;
+            case 2:
+                autonName = "ShootFirst";
+                if (autonChanged) {
+                    auton = new A_shootOnly(autonWaitTime);
+                    autonChanged = false;
+                }
+                break;
+            case 3:
+                autonName = "ShootAfter";
+                if (autonChanged) {
+                    auton = new A_shootAfter();
+                    autonChanged = false;
+                }
+                break;
+        }
+        oi.printToDS(1, "Auton Mode: " + autonName);
+        oi.printToDS(2, "Shooter waitTime: " + autonWaitTime);
+        if (Buttons.isPressed(InputConstants.kStartButton, 1)) {
+            autonChanged = true;
+            autonWaitTime += 0.5;
+        }
+        if (Buttons.isPressed(InputConstants.kSelectButton, 1)) {
+            autonChanged = true;
+            autonWaitTime -= 0.5;
+        }
+        if (Buttons.isPressed(InputConstants.kXButton, 1)) {
+            autonChanged = true;
+            autonMode = 1;
+        }
+        if (Buttons.isPressed(InputConstants.kAButton, 1)) {
+            autonChanged = true;
+            autonMode = 2;
+        }
+        if (Buttons.isPressed(InputConstants.kBButton, 1)) {
+            autonChanged = true;
+            autonMode = 3;
+        }
         printDiagnostics();
+
 //        System.out.println("Dpad X: "+ OI.getInstance().getOperator().getRawAxis(5));
 //        System.out.println("Dpad Y: "+ OI.getInstance().getOperator().getRawAxis(6));
     }

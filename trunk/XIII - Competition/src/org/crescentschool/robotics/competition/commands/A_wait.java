@@ -5,39 +5,32 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
  *
  * @author Warfa
  */
-public class A_D_distance extends Command {
-
-    DriveTrain driveTrain = DriveTrain.getInstance();
+public class A_wait extends Command {
+    double timeout;
     Shooter shooter = Shooter.getInstance();
-    double setPoint = 0;
     boolean isFinished = false;
-
-    public A_D_distance(double setPoint) {
-        System.out.println(this.toString());
+    public A_wait(double time) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        this.setPoint = setPoint;
-        requires(driveTrain);
+        timeout = time;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        driveTrain.reInit();
+        setTimeout(timeout);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        driveTrain.setPos(setPoint);
-        if (shooter.getAutonOver()) {
+        if(shooter.getAutonOver()){
             isFinished = true;
-        } else if (Math.abs(Math.abs(driveTrain.getLeftPos()) - Math.abs(setPoint)) < 0.1) {
+        }else if(isTimedOut()){
             isFinished = true;
         }
     }
@@ -49,13 +42,10 @@ public class A_D_distance extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-        System.out.println(this + " finished");
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-        System.out.println(this + " canceled");
-        cancel();
     }
 }
