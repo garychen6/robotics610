@@ -11,14 +11,15 @@ import org.crescentschool.robotics.competition.constants.PotConstants;
  *
  * @author Warfa
  */
-public class A_1 extends CommandGroup {
+public class A_shootOnly extends CommandGroup {
 
-    public A_1() {
+    public A_shootOnly(double wait) {
         System.out.println(this.toString());
+        addSequential(new A_wait(wait));
         addSequential(new A_T_lock());
         addSequential(new A_S_shoot());
-       // addParallel(new A_Fl_set(PotConstants.flipperBridge));
-       // addSequential(new A_D_distance(-18.5));
+        // addParallel(new A_Fl_set(PotConstants.flipperBridge));
+        // addSequential(new A_D_distance(-18.5));
 //        addSequential(new A_I_timed(3));
 //        addSequential(new A_Fl_set(80));
 //        addSequential(new A_D_turn(13));
@@ -41,7 +42,7 @@ public class A_1 extends CommandGroup {
         // A command group will require all of the subsystems that each member
         // would require.
         // e.g. if Command1 requires chassis, and Command2 requires arm,
-        // A_1 CommandGroup containing them would require both the chassis and the
+        // A_shootOnly CommandGroup containing them would require both the chassis and the
         // arm.
     }
 }

@@ -5,20 +5,23 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import org.crescentschool.robotics.competition.constants.PotConstants;
 
 /**
  *
- * @author Warfa
+ * @author Robotics
  */
-public class A_ST_shoot extends CommandGroup {
+public class A_shootAfter extends CommandGroup {
 
-    public A_ST_shoot() {
+    public A_shootAfter() {
         System.out.println(this.toString());
-        addSequential(new A_D_distance(5.5));
-        addSequential(new A_Fl_set(20));
-        addSequential(new A_D_distance(6.5));
-        addParallel(new A_Fl_set(44.9));
-        
+        addSequential(new A_D_distance(15));
+        addParallel(new A_Fl_set(PotConstants.flipperBridgeAssist));
+        addSequential(new A_T_lock());
+        addSequential(new A_S_shoot());
+        addSequential(new A_D_distance(3));
+        //:)
+
 
         // Add Commands here:
         // e.g. addSequential(new Command1());
