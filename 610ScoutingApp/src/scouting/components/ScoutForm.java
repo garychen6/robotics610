@@ -177,7 +177,7 @@ public class ScoutForm extends JPanel {
         teleopBridgeAttemptCombo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                if(teleopBridgeAttemptCombo.getSelectedItem().toString().equals("No")) {
+                if(teleopBridgeAttemptCombo.getSelectedItem().toString().equals("sNo")) {
                     teleopBridgeBalancedCombo.setEnabled(false);
                     teleopBridgeCombo.setEnabled(false);
                 } else {
@@ -202,6 +202,10 @@ public class ScoutForm extends JPanel {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 saveReport();
+                scoutApp.getButtonPanel().reset();
+                scoutApp.getPaintPanel().reset();
+                scoutApp.getStatusPanel().reset();
+                resetAfterSave();
             }
         });
         saveButton.setFocusable(false);
@@ -253,7 +257,8 @@ public class ScoutForm extends JPanel {
         add(saveButton);
     }
 
-    public void update() {
+    //Update this panel
+    protected void update() {
         hybridScore = (6 * scoutApp.getPaintPanel().getHybridTop().size()) + 
                       (5 * (scoutApp.getPaintPanel().getHybridMidLeft().size() +
                             scoutApp.getPaintPanel().getHybridMidRight().size())) +
@@ -267,16 +272,16 @@ public class ScoutForm extends JPanel {
         repaint();
     }
     
-    public void reset() {
-        matchNumberSpinner = new JSpinner(matchNumberModel);
+    //Reset all data
+    protected void reset() {
         roundNumberCombo.setSelectedIndex(0);
-        teamNumberSpinner = new JSpinner(teamNumberModel);
+        teamNumberSpinner.setValue(1);
         allianceColourCombo.setSelectedIndex(0);
-        hybridFoulSpinner = new JSpinner(hybridFoulModel);
-        hybridTechFoulSpinner = new JSpinner(hybridTechFoulModel);
+        hybridFoulSpinner.setValue(0);
+        hybridTechFoulSpinner.setValue(0);
         hybridCommentsArea.setText("");
-        teleopFoulSpinner = new JSpinner(teleopFoulModel);
-        teleopTechFoulSpinner = new JSpinner(teleopTechFoulModel);
+        teleopFoulSpinner.setValue(0);
+        teleopTechFoulSpinner.setValue(0);
         teleopBridgeAttemptCombo.setSelectedIndex(0);
         teleopBridgeBalancedCombo.setSelectedIndex(0);
         teleopBridgeBalancedCombo.setEnabled(false);
@@ -284,15 +289,41 @@ public class ScoutForm extends JPanel {
         teleopBridgeCombo.setEnabled(false);
         teleopCrossedBarrierCombo.setSelectedIndex(0);
         teleopCrossedBridgeCombo.setSelectedIndex(0);
-        driveRatingSpinner = new JSpinner(driveRatingModel);
-        offenceRatingSpinner = new JSpinner(offenceRatingModel);
-        defenceRatingSpinner = new JSpinner(defenceRatingModel);
+        driveRatingSpinner.setValue(0);
+        offenceRatingSpinner.setValue(0);
+        defenceRatingSpinner.setValue(0);
         teleopCommentsArea.setText("");
         scoutNameField.setText("");
         update();
     }
     
-    public void saveReport() {
+    private void resetAfterSave() {
+        matchNumberSpinner.setValue(Integer.parseInt(matchNumberSpinner.getValue().toString()) + 1);
+        roundNumberCombo.setSelectedIndex(0);
+        teamNumberSpinner.setValue(1);
+        allianceColourCombo.setSelectedIndex(0);
+        hybridFoulSpinner.setValue(0);
+        hybridTechFoulSpinner.setValue(0);
+        hybridCommentsArea.setText("");
+        teleopFoulSpinner.setValue(0);
+        teleopTechFoulSpinner.setValue(0);
+        teleopBridgeAttemptCombo.setSelectedIndex(0);
+        teleopBridgeBalancedCombo.setSelectedIndex(0);
+        teleopBridgeBalancedCombo.setEnabled(false);
+        teleopBridgeCombo.setSelectedIndex(0);
+        teleopBridgeCombo.setEnabled(false);
+        teleopCrossedBarrierCombo.setSelectedIndex(0);
+        teleopCrossedBridgeCombo.setSelectedIndex(0);
+        driveRatingSpinner.setValue(0);
+        offenceRatingSpinner.setValue(0);
+        defenceRatingSpinner.setValue(0);
+        teleopCommentsArea.setText("");
+        scoutNameField.setText("");
+        update();
+    }
+    
+    //Outputs data to a file
+    protected void saveReport() {
        try{
             if(scoutNameField.getText().length() == 0) throw new ScoutAppException("Please enter your name.");
            
@@ -305,252 +336,254 @@ public class ScoutForm extends JPanel {
             FileWriter reporter = new FileWriter(report);
                     
             reporter.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-            reporter.write("\r\n<scoutName>" + scoutNameField.getText() + "</scoutName>");
-            reporter.write("\r\n<matchNum>" + matchNumberSpinner.getValue() + "</matchNum>");
-            reporter.write("\r\n<roundNum>" + roundNumberCombo.getSelectedItem().toString() + "</roundNum>");
-            reporter.write("\r\n<alliance>" + allianceColourCombo.getSelectedItem().toString() + "</alliance>");
-            reporter.write("\r\n<teamNum>" + teamNumberSpinner.getValue() + "</teamNum>");
-            reporter.write("\r\n<hybridPeriod>");
-                reporter.write("\r\n\t<scored>");
-                if(scoutApp.getPaintPanel().getHybridTop().size() > 0) {
-                    reporter.write("\r\n\t\t<top>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getHybridTop().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+            reporter.write("\r\n<report>");
+                reporter.write("\r\n\t<scoutName>" + scoutNameField.getText() + "</scoutName>");
+                reporter.write("\r\n\t<matchNum>" + matchNumberSpinner.getValue() + "</matchNum>");
+                reporter.write("\r\n\t<roundNum>" + roundNumberCombo.getSelectedItem().toString() + "</roundNum>");
+                reporter.write("\r\n\t<alliance>" + allianceColourCombo.getSelectedItem().toString() + "</alliance>");
+                reporter.write("\r\n\t<teamNum>" + teamNumberSpinner.getValue() + "</teamNum>");
+                reporter.write("\r\n\t<hybridPeriod>");
+                    reporter.write("\r\n\t\t<scored>");
+                    if(scoutApp.getPaintPanel().getHybridTop().size() > 0) {
+                        reporter.write("\r\n\t\t\t<top>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getHybridTop().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</top>");
                     }
-                    reporter.write("\r\n\t\t</top>");
-                }
-                if(scoutApp.getPaintPanel().getHybridMidLeft().size() > 0) {
-                    reporter.write("\r\n\t\t<midLeft>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getHybridMidLeft().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getHybridMidLeft().size() > 0) {
+                        reporter.write("\r\n\t\t\t<midLeft>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getHybridMidLeft().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</midLeft>");
                     }
-                    reporter.write("\r\n\t\t</midLeft>");
-                }
-                if(scoutApp.getPaintPanel().getHybridMidRight().size() > 0) {
-                    reporter.write("\r\n\t\t<midRight>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getHybridMidRight().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getHybridMidRight().size() > 0) {
+                        reporter.write("\r\n\t\t\t<midRight>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getHybridMidRight().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</midRight>");
                     }
-                    reporter.write("\r\n\t\t</midRight>");
-                }
-                if(scoutApp.getPaintPanel().getHybridBottom().size() > 0) {
-                    reporter.write("\r\n\t\t<bottom>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getHybridBottom().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getHybridBottom().size() > 0) {
+                        reporter.write("\r\n\t\t\t<bottom>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getHybridBottom().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</bottom>");
                     }
-                    reporter.write("\r\n\t\t</bottom>");
-                }
-                reporter.write("\r\n\t</scored>");
-                reporter.write("\r\n\t<missed>");
-                if(scoutApp.getPaintPanel().getMissedHybridTop().size() > 0) {
-                    reporter.write("\r\n\t\t<top>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedHybridTop().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    reporter.write("\r\n\t\t</scored>");
+                    reporter.write("\r\n\t\t<missed>");
+                    if(scoutApp.getPaintPanel().getMissedHybridTop().size() > 0) {
+                        reporter.write("\r\n\t\t\t<top>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedHybridTop().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</top>");
                     }
-                    reporter.write("\r\n\t\t</top>");
-                }
-                if(scoutApp.getPaintPanel().getMissedHybridMidLeft().size() > 0) {
-                    reporter.write("\r\n\t\t<midLeft>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedHybridMidLeft().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getMissedHybridMidLeft().size() > 0) {
+                        reporter.write("\r\n\t\t\t<midLeft>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedHybridMidLeft().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</midLeft>");
                     }
-                    reporter.write("\r\n\t\t</midLeft>");
-                }
-                if(scoutApp.getPaintPanel().getMissedHybridMidRight().size() > 0) {
-                    reporter.write("\r\n\t\t<midRight>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedHybridMidRight().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getMissedHybridMidRight().size() > 0) {
+                        reporter.write("\r\n\t\t\t<midRight>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedHybridMidRight().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</midRight>");
                     }
-                    reporter.write("\r\n\t\t</midRight>");
-                }
-                if(scoutApp.getPaintPanel().getMissedHybridBottom().size() > 0) {
-                    reporter.write("\r\n\t\t<bottom>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedHybridBottom().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getMissedHybridBottom().size() > 0) {
+                        reporter.write("\r\n\t\t\t<bottom>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedHybridBottom().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</bottom>");
                     }
-                    reporter.write("\r\n\t\t</bottom>");
+                    reporter.write("\r\n\t\t</missed>");
+                    reporter.write("\r\n\t\t<foul>" + hybridFoulSpinner.getValue() + "</foul>");
+                    reporter.write("\r\n\t\t<techFoul>" + hybridTechFoulSpinner.getValue() + "</techFoul>");
+                    reporter.write("\r\n\t\t<hybridScore>" + hybridScore + "</hybridScore>");
+                if(hybridCommentsArea.getText().length() > 0) {
+                    reporter.write("\r\n\t\t<comments>");
+                        reporter.write("\r\n\t\t\t" + hybridCommentsArea.getText());
+                    reporter.write("\r\n\t\t</comments>");
                 }
-                reporter.write("\r\n\t</missed>");
-                reporter.write("\r\n\t<foul>" + hybridFoulSpinner.getValue() + "</foul>");
-                reporter.write("\r\n\t<techFoul>" + hybridTechFoulSpinner.getValue() + "</techFoul>");
-                reporter.write("\r\n\t<hybridScore>" + hybridScore + "</hybridScore>");
-            if(hybridCommentsArea.getText().length() > 0) {
-                reporter.write("\r\n\t<comments>");
-                    reporter.write("\r\n\t\t" + hybridCommentsArea.getText());
-                reporter.write("\r\n\t</comments>");
-            }
-            reporter.write("\r\n</hybridPeriod>");
-            reporter.write("\r\n<teleopPeriod>");
-                reporter.write("\r\n\t<scored>");
-                if(scoutApp.getPaintPanel().getTeleopTop().size() > 0) {
-                    reporter.write("\r\n\t\t<top>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getTeleopTop().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                reporter.write("\r\n\t</hybridPeriod>");
+                reporter.write("\r\n\t<teleopPeriod>");
+                    reporter.write("\r\n\t\t<scored>");
+                    if(scoutApp.getPaintPanel().getTeleopTop().size() > 0) {
+                        reporter.write("\r\n\t\t\t<top>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getTeleopTop().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</top>");
                     }
-                    reporter.write("\r\n\t\t</top>");
-                }
-                if(scoutApp.getPaintPanel().getTeleopMidLeft().size() > 0) {
-                    reporter.write("\r\n\t\t<midLeft>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getTeleopMidLeft().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getTeleopMidLeft().size() > 0) {
+                        reporter.write("\r\n\t\t\t<midLeft>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getTeleopMidLeft().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</midLeft>");
                     }
-                    reporter.write("\r\n\t\t</midLeft>");
-                }
-                if(scoutApp.getPaintPanel().getTeleopMidRight().size() > 0) {
-                    reporter.write("\r\n\t\t<midRight>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getTeleopMidRight().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getTeleopMidRight().size() > 0) {
+                        reporter.write("\r\n\t\t\t<midRight>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getTeleopMidRight().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</midRight>");
                     }
-                    reporter.write("\r\n\t\t</midRight>");
-                }
-                if(scoutApp.getPaintPanel().getTeleopBottom().size() > 0) {
-                    reporter.write("\r\n\t\t<bottom>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getTeleopBottom().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getTeleopBottom().size() > 0) {
+                        reporter.write("\r\n\t\t\t<bottom>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getTeleopBottom().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</bottom>");
                     }
-                    reporter.write("\r\n\t\t</bottom>");
-                }
-                reporter.write("\r\n\t</scored>");
-                reporter.write("\r\n\t<missed>");
-                if(scoutApp.getPaintPanel().getMissedTeleopTop().size() > 0) {
-                    reporter.write("\r\n\t\t<top>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedTeleopTop().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    reporter.write("\r\n\t\t</scored>");
+                    reporter.write("\r\n\t\t<missed>");
+                    if(scoutApp.getPaintPanel().getMissedTeleopTop().size() > 0) {
+                        reporter.write("\r\n\t\t\t<top>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedTeleopTop().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</top>");
                     }
-                    reporter.write("\r\n\t\t</top>");
-                }
-                if(scoutApp.getPaintPanel().getMissedTeleopMidLeft().size() > 0) {
-                    reporter.write("\r\n\t\t<midLeft>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedTeleopMidLeft().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getMissedTeleopMidLeft().size() > 0) {
+                        reporter.write("\r\n\t\t\t<midLeft>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedTeleopMidLeft().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</midLeft>");
                     }
-                    reporter.write("\r\n\t\t</midLeft>");
-                }
-                if(scoutApp.getPaintPanel().getMissedTeleopMidRight().size() > 0) {
-                    reporter.write("\r\n\t\t<midRight>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedTeleopMidRight().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getMissedTeleopMidRight().size() > 0) {
+                        reporter.write("\r\n\t\t\t<midRight>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedTeleopMidRight().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</midRight>");
                     }
-                    reporter.write("\r\n\t\t</midRight>");
-                }
-                if(scoutApp.getPaintPanel().getMissedTeleopBottom().size() > 0) {
-                    reporter.write("\r\n\t\t<bottom>");
-                    for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedTeleopBottom().listIterator(); 
-                            it.hasNext();) {
-                        Point p = it.next();
-                        reporter.write("\r\n\t\t\t<point>");
-                            reporter.write("\r\n\t\t\t\t<x>" + p.x + "</x>");
-                            reporter.write("\r\n\t\t\t\t<y>" + p.y + "</y>");
-                        reporter.write("\r\n\t\t\t</point>");
+                    if(scoutApp.getPaintPanel().getMissedTeleopBottom().size() > 0) {
+                        reporter.write("\r\n\t\t\t<bottom>");
+                        for(ListIterator<Point> it = scoutApp.getPaintPanel().getMissedTeleopBottom().listIterator(); 
+                                it.hasNext();) {
+                            Point p = it.next();
+                            reporter.write("\r\n\t\t\t\t<point>");
+                                reporter.write("\r\n\t\t\t\t\t<x>" + p.x + "</x>");
+                                reporter.write("\r\n\t\t\t\t\t<y>" + p.y + "</y>");
+                            reporter.write("\r\n\t\t\t\t</point>");
+                        }
+                        reporter.write("\r\n\t\t\t</bottom>");
                     }
-                    reporter.write("\r\n\t\t</bottom>");
+                    reporter.write("\r\n\t\t</missed>");
+                    reporter.write("\r\n\t\t<foul>" + teleopFoulSpinner.getValue() + "</foul>");
+                    reporter.write("\r\n\t\t<techFoul>" + teleopTechFoulSpinner.getValue() + "</techFoul>");
+                    reporter.write("\r\n\t\t<teleopScore>" + teleopScore + "</teleopScore>");
+                    reporter.write("\r\n\t\t<bridge>");
+                        reporter.write("\r\n\t\t\t<attempted>" + teleopBridgeAttemptCombo.getSelectedItem().toString().equals("Yes") + "</attempted>");
+                    if(teleopBridgeAttemptCombo.getSelectedItem().toString().equals("Yes")) {
+                        reporter.write("\r\n\t\t\t<balanced>" + teleopBridgeBalancedCombo.getSelectedItem().toString().equals("Yes") + "</balanced>");
+                        reporter.write("\r\n\t\t\t<bridgeType>" + teleopBridgeCombo.getSelectedItem().toString() + "</bridgeType>");
+                    }
+                    reporter.write("\r\n\t\t</bridge>");
+                    reporter.write("\r\n\t\t<mobility>");
+                        reporter.write("\r\n\t\t\t<crossedBarrier>" + teleopCrossedBarrierCombo.getSelectedItem().toString().equals("Yes") + "</crossedBarrier>");
+                        reporter.write("\r\n\t\t\t<crossedBridge>" + teleopCrossedBridgeCombo.getSelectedItem().toString().equals("Yes") + "</crossedBridge>");
+                    reporter.write("\r\n\t\t</mobility>");
+                if(teleopCommentsArea.getText().length() > 0) {
+                    reporter.write("\r\n\t\t<comments>");
+                        reporter.write("\r\n\t\t\t" + teleopCommentsArea.getText());
+                    reporter.write("\r\n\t\t</comments>");
                 }
-                reporter.write("\r\n\t</missed>");
-                reporter.write("\r\n\t<foul>" + teleopFoulSpinner.getValue() + "</foul>");
-                reporter.write("\r\n\t<techFoul>" + teleopTechFoulSpinner.getValue() + "</techFoul>");
-                reporter.write("\r\n\t<teleopScore>" + teleopScore + "</teleopScore>");
-                reporter.write("\r\n\t<bridge>");
-                    reporter.write("\r\n\t\t<attempted>" + teleopBridgeAttemptCombo.getSelectedItem().toString().equals("Yes") + "</attempted>");
-                if(teleopBridgeAttemptCombo.getSelectedItem().toString().equals("Yes")) {
-                    reporter.write("\r\n\t\t<balanced>" + teleopBridgeBalancedCombo.getSelectedItem().toString().equals("Yes") + "</balanced>");
-                    reporter.write("\r\n\t\t<bridgeType>" + teleopBridgeCombo.getSelectedItem().toString() + "</bridgeType>");
-                }
-                reporter.write("\r\n\t</bridge>");
-                reporter.write("\r\n\t<mobility>");
-                    reporter.write("\r\n\t\t<crossedBarrier>" + teleopCrossedBarrierCombo.getSelectedItem().toString().equals("Yes") + "</crossedBarrier>");
-                    reporter.write("\r\n\t\t<crossedBridge>" + teleopCrossedBridgeCombo.getSelectedItem().toString().equals("Yes") + "</crossedBridge>");
-                reporter.write("\r\n\t</mobility");
-            if(teleopCommentsArea.getText().length() > 0) {
-                reporter.write("\r\n\t<comments>");
-                    reporter.write("\r\n\t\t" + teleopCommentsArea.getText());
-                reporter.write("\r\n\t</comments>");
-            }
-            reporter.write("\r\n</teleopPeriod>");
-            reporter.write("\r\n<driveRating>" + driveRatingSpinner.getValue() + "</driveRating>");
-            reporter.write("\r\n<offenceRating>" + offenceRatingSpinner.getValue() + "</offenceRating>");
-            reporter.write("\r\n<defenceRating>" + defenceRatingSpinner.getValue() + "</defenceRating>");
-            reporter.write("\r\n<endScore>" + (hybridScore + teleopScore) + "</endScore>");
+                reporter.write("\r\n\t</teleopPeriod>");
+                reporter.write("\r\n\t<driveRating>" + driveRatingSpinner.getValue() + "</driveRating>");
+                reporter.write("\r\n\t<offenceRating>" + offenceRatingSpinner.getValue() + "</offenceRating>");
+                reporter.write("\r\n\t<defenceRating>" + defenceRatingSpinner.getValue() + "</defenceRating>");
+                reporter.write("\r\n\t<endScore>" + (hybridScore + teleopScore) + "</endScore>");
+            reporter.write("\r\n</report>");
             
             reporter.close();
         } catch (ScoutAppException ex) {
-            JOptionPane.showMessageDialog(new JFrame(), ex.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(new JFrame(), ex.getMessage(), "An Error has Occurred", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "An Error has Occurred", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
