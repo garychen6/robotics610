@@ -1,5 +1,6 @@
 package scouting.components;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +12,6 @@ import javax.swing.*;
  */
 public class StatusPanel extends JPanel {
     private ScoutingApp scoutApp;
-    
     private JButton resetButton;
     private JLabel hybridLabel, teleopLabel;
     private JLabel topLabel, midLeftLabel, midRightLabel, bottomLabel, totalLabel;
@@ -20,7 +20,7 @@ public class StatusPanel extends JPanel {
                        teleopMidLeftLabel,teleopMidRightLabel, teleopBottomLabel,
                        teleopTotalLabel;
     
-    public StatusPanel(final ScoutingApp scoutApp) {
+    protected StatusPanel(final ScoutingApp scoutApp) {
         this.scoutApp = scoutApp;
         
         //Initialize panel
@@ -70,6 +70,8 @@ public class StatusPanel extends JPanel {
         resetButton.setBounds(620, 280, 100, 24);
         
         //Additional setup
+        hybridLabel.setForeground(Color.RED);
+        topLabel.setForeground(Color.RED);
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -105,7 +107,7 @@ public class StatusPanel extends JPanel {
     }
     
     //Update panel data and repaint
-    public void update() {
+    protected void update() {
         int hT = scoutApp.getPaintPanel().getHybridTop().size();
         int hL = scoutApp.getPaintPanel().getHybridMidLeft().size();
         int hR = scoutApp.getPaintPanel().getHybridMidRight().size();
@@ -138,7 +140,7 @@ public class StatusPanel extends JPanel {
     }
     
     //Reset data and repaint
-    public void reset() {
+    protected void reset() {
         hybridTopLabel.setText("N/A");
         hybridMidLeftLabel.setText("N/A");
         hybridMidRightLabel.setText("N/A");
@@ -151,5 +153,25 @@ public class StatusPanel extends JPanel {
         teleopTotalLabel.setText("N/A");
         
         repaint();
+    }
+
+    //Changes label colours
+    protected void setModeLabelColours() {
+        ButtonPanel b = scoutApp.getButtonPanel();
+        if(b.isHybridMode()) {
+            hybridLabel.setForeground(Color.RED);
+            teleopLabel.setForeground(Color.BLACK);
+        } else {
+            hybridLabel.setForeground(Color.BLACK);
+            teleopLabel.setForeground(Color.RED);
+        }
+    }
+    
+    protected void setShotTypeLabelColours() {
+        ButtonPanel b = scoutApp.getButtonPanel();
+        topLabel.setForeground(b.isTopSelected() ? Color.RED : Color.BLACK);
+        midLeftLabel.setForeground(b.isMidLeftSelected() ? Color.RED : Color.BLACK);
+        midRightLabel.setForeground(b.isMidRightSelected() ? Color.RED : Color.BLACK);
+        bottomLabel.setForeground(b.isBottomSelected() ? Color.RED : Color.BLACK);
     }
 }

@@ -20,7 +20,7 @@ public class ButtonPanel extends JPanel {
     //Hybrid mode toggle
     private boolean isHybridMode;
     
-    public ButtonPanel(final ScoutingApp scoutApp) {
+    protected ButtonPanel(final ScoutingApp scoutApp) {
         this.scoutApp = scoutApp;
         
         //Initialize variables
@@ -111,7 +111,7 @@ public class ButtonPanel extends JPanel {
     }
     
     //Makes top button active
-    public void setTopActive() {
+    protected void setTopActive() {
         BUTTON_W.setSelected(true);
         BUTTON_A.setSelected(false);
         BUTTON_S.setSelected(false);
@@ -121,10 +121,12 @@ public class ButtonPanel extends JPanel {
         BUTTON_A.setEnabled(true);
         BUTTON_S.setEnabled(true);
         BUTTON_D.setEnabled(true);
+        
+        scoutApp.getStatusPanel().setShotTypeLabelColours();
     }
     
     //Makes mid-left button active
-    public void setMidLeftActive() {
+    protected void setMidLeftActive() {
         BUTTON_W.setSelected(false);
         BUTTON_A.setSelected(true);
         BUTTON_S.setSelected(false);
@@ -134,10 +136,13 @@ public class ButtonPanel extends JPanel {
         BUTTON_A.setEnabled(false);
         BUTTON_S.setEnabled(true);
         BUTTON_D.setEnabled(true);
+
+        scoutApp.getStatusPanel().setShotTypeLabelColours();
+
     }
     
     //Makes mid-right button active
-    public void setMidRightActive() {
+    protected void setMidRightActive() {
         BUTTON_W.setSelected(false);
         BUTTON_A.setSelected(false);
         BUTTON_S.setSelected(false);
@@ -147,10 +152,12 @@ public class ButtonPanel extends JPanel {
         BUTTON_A.setEnabled(true);
         BUTTON_S.setEnabled(true);
         BUTTON_D.setEnabled(false);
+        
+        scoutApp.getStatusPanel().setShotTypeLabelColours();
     }
     
     //Makes bottom button active
-    public void setBottomActive() {
+    protected void setBottomActive() {
         BUTTON_W.setSelected(false);
         BUTTON_A.setSelected(false);
         BUTTON_S.setSelected(true);
@@ -160,54 +167,58 @@ public class ButtonPanel extends JPanel {
         BUTTON_A.setEnabled(true);
         BUTTON_S.setEnabled(false);
         BUTTON_D.setEnabled(true);
+
+        scoutApp.getStatusPanel().setShotTypeLabelColours();
     }
     
     //Makes shift button active
-    public void setMissedMode(boolean missed) {
+    protected void setMissedMode(boolean missed) {
         BUTTON_SHIFT.setSelected(missed);
         BUTTON_SHIFT.setText(missed ? "<html><p align = 'center'>Missed<br>(Shift)</p></html>" 
                                                        : "<html><p align = 'center'>Scored<br>(Shift)</p></html>");
     }
     
     //Set isHybridMode
-    public void setHybridMode(boolean isHybridMode) {
+    protected void setHybridMode(boolean isHybridMode) {
         this.isHybridMode = isHybridMode;
         BUTTON_SPACE.setText((isHybridMode) ? "<html><p align = 'center'>Hybrid Period<br>(Space)</p></html>" 
                                             : "<html><p align = 'center'>Teleop Period<br>(Space)</p></html>");
+        scoutApp.getStatusPanel().setModeLabelColours();
     }
     
     //Returns whether or not in missed shot mode
-    public boolean inMissedMode() {
+    protected boolean inMissedMode() {
         return BUTTON_SHIFT.isSelected();
     }
     
     //Returns isHybridMode
-    public boolean isHybridMode() {
+    protected boolean isHybridMode() {
         return isHybridMode;
     }
     
     //Returns true if top is selected
-    public boolean isTopSelected() {
+    protected boolean isTopSelected() {
         return BUTTON_W.isSelected();
     }
     
     //Returns true if mid-left is selected
-    public boolean isMidLeftSelected() {
+    protected boolean isMidLeftSelected() {
         return BUTTON_A.isSelected();
     }
     
     //Returns true if mid-right is selected
-    public boolean isMidRightSelected() {
+    protected boolean isMidRightSelected() {
         return BUTTON_D.isSelected();
     }
     
     //Returns true if bottom is selected
-    public boolean isBottomSelected() {
+    protected boolean isBottomSelected() {
         return BUTTON_S.isSelected();
     }
     
     //Resets all data
-    public void reset() {
+    protected void reset() {
+        setTopActive();
         setHybridMode(true);
     }
 }

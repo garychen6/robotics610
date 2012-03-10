@@ -41,6 +41,10 @@ public class ScoutingApp {
         horizSeparator.setBounds(0, 325, 745, 2);
         horizSeparatorB.setBounds(0, 648, 745, 2);
         
+        //Additional setup
+        paintPanel.setBackgroundImage();
+        paintPanel.requestFocusInWindow();
+        
         //Adds components to the frame
         frame.getContentPane().add(buttonPanel);
         frame.getContentPane().add(paintPanel);
@@ -53,30 +57,27 @@ public class ScoutingApp {
         //Pack frame
         frame.pack();
         
-        //Request focus on paint area
-        paintPanel.requestFocusInWindow();
-        
         //Make frame visible
         frame.setVisible(true);
     }
     
     //Returns the button panel
-    public ButtonPanel getButtonPanel() {
+    protected ButtonPanel getButtonPanel() {
         return buttonPanel;
     }
     
     //Returns the paint panel
-    public PaintPanel getPaintPanel() {
+    protected PaintPanel getPaintPanel() {
         return paintPanel;
     }
     
     //Returns the status panel
-    public StatusPanel getStatusPanel() {
+    protected StatusPanel getStatusPanel() {
         return statusPanel;
     }
     
     //Returns the scout form
-    public ScoutForm getScoutForm() {
+    protected ScoutForm getScoutForm() {
         return scoutForm;
     }
 }
