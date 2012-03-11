@@ -40,7 +40,7 @@ public class T_DG_Bridge extends Command {
             maxAngle = driveTrain.getVertAngle();
         }
         else if (driveTrain.getVertAngle() < (maxAngle - 5)) {
-            driveTrain.setPos(0.8);
+            driveTrain.setPos(0.60);
         } 
     }
     

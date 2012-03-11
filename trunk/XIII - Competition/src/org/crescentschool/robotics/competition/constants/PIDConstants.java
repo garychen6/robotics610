@@ -9,8 +9,18 @@ package org.crescentschool.robotics.competition.constants;
  * @author Warfa Jibril, Patrick White
  */
 public class PIDConstants {
-
-    
+/*
+     * new
+P: -0.25
+I: -0.005
+D: 0.0
+*/
+/*
+   * old
+P: 0.048
+I: 0.0035
+D: 0.0
+*/
     
     public static final boolean pidTuneMode = true;
     /**
@@ -53,23 +63,24 @@ public class PIDConstants {
      * The derivative constant of the flipper position control
      */
     public static final double flipperD = 0;
-    public static final double middleGoalVbus = 0;
-    public static final double shooterP = 0.048;
+    public static final double middleGoalVbus = -0.39;
+    public static final double shooterP = -0.25;
 //    public static final double shooterI = 0.003;
 //    public static final double shooterP = 0.041;
 //    public static final double shooterP = 0.0;
-    public static final double shooterI = 0.0035;
+    public static final double shooterI = -0.005;
     public static final double shooterD = 0.0;
     public static final double ultrasonicVtoF = 10.0 / (0.49 * 3.2808399);
     //TODO: Javadoc
     public static final double rPD = 0.0545415391;
-    public static final double turretP = -250;
+    public static final double turretP = -750;
 //    public static final double turretI = -0.1;
     public static final double turretI = 0.0;
     public static final double turretD = 0.0;
     public static final double turretVBusP = 0.4;
     public static final double tLockP = 0;
-    public static double cameraP = -0.4;
+    //public static double cameraP = -0.12;
+    public static double cameraP = -0.12;
     /**
      * The circumference of the wheel, in inches
      */

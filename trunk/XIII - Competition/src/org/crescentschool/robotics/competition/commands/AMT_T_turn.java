@@ -31,6 +31,7 @@ public class AMT_T_turn extends Command {
     double tVbus = 0;
     boolean dPadR = false;
     boolean dPadL = false;
+    boolean isLocked = false;
 
     public AMT_T_turn() {
         System.out.println(this.toString());
@@ -84,7 +85,11 @@ public class AMT_T_turn extends Command {
 //                if (offset < -0.05) {
 //                    offset = -0.05;
 //                }
+                turret.resetPosition();
                 turret.incPosition(offset);
+                isLocked = false;
+            } else {
+                turret.setPosition(turret.getPosSet());
             }
 //            tVbus = camera.getX() * PIDConstants.turretVBusP;
 //            if (tVbus > 0.15) {
@@ -97,10 +102,15 @@ public class AMT_T_turn extends Command {
             double axis = oi.getOperator().getRawAxis(InputConstants.kRightXAxis);
             if (axis < -0.1) {
                 turret.setVBus(MathUtils.pow(axis + 0.1, n) * (-0.85 / MathUtils.pow(0.9, n)) - 0.15);
+                isLocked = false;
             } else if (axis > 0.1) {
                 turret.setVBus(MathUtils.pow(axis - 0.1, n) * (0.85 / MathUtils.pow(0.9, n)) + 0.15);
-            } else {
-                turret.setVBus(0);
+                isLocked = false;
+            } else if(!isLocked) {
+                //turret.setVBus(0);
+                turret.resetPosition();
+                turret.incPosition(0);
+                isLocked = true;
             }
         }
 

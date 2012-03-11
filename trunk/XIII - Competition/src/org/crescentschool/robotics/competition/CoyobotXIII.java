@@ -37,7 +37,7 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
  * directory.
  */
 public class CoyobotXIII extends IterativeRobot {
-
+    
     Command autonomous;
     KinectStick leftArm;
     Shooter shooter;
@@ -73,37 +73,42 @@ public class CoyobotXIII extends IterativeRobot {
         //autonomous = new A_ST_shoot();
         camera = Camera.getInstance();
         ultrasonic = CoyoBotUltrasonic.getInstance();
-        auton = new A_shootOnly(autonWaitTime);
+        //auton = new A_shootOnly(autonWaitTime);
+        auton = new A_shootOnly(0);
     }
-
+    
     public void autonomousInit() {
         // schedule the autonomous command (example)
         turret.initPosMode();
         shooter.resetPID();
         auton.start();
     }
-
+    
     public void autonomousPeriodic() {
-
+        
         Scheduler.getInstance().run();
         printDiagnostics();
+        OI.printToDS(1, "Auton Mode: " + autonName);
     }
-
-    public void disabledPeriodic() {
+    
+    public void disabledPeriodicd() {
         //System.out.println("Driver EncL: " + driveTrain.getLeftSpeed());
         //System.out.println("Driver EncR: " + driveTrain.getRightSpeed());
+        printDiagnostics();
+        SmartDashboard.putString("Auton Running", autonName);
+        SmartDashboard.putDouble("Shooter waitTime", autonWaitTime);
         switch (autonMode) {
             case 1:
                 autonName = "ShootOnly";
                 if (autonChanged) {
-                    auton = new A_shootFirst();
+                    auton = new A_shootOnly(autonWaitTime);
                     autonChanged = false;
                 }
                 break;
             case 2:
                 autonName = "ShootFirst";
                 if (autonChanged) {
-                    auton = new A_shootOnly(autonWaitTime);
+                    auton = new A_shootFirst();
                     autonChanged = false;
                 }
                 break;
@@ -115,8 +120,6 @@ public class CoyobotXIII extends IterativeRobot {
                 }
                 break;
         }
-        oi.printToDS(1, "Auton Mode: " + autonName);
-        oi.printToDS(2, "Shooter waitTime: " + autonWaitTime);
         if (Buttons.isPressed(InputConstants.kStartButton, 1)) {
             autonChanged = true;
             autonWaitTime += 0.5;
@@ -137,12 +140,11 @@ public class CoyobotXIII extends IterativeRobot {
             autonChanged = true;
             autonMode = 3;
         }
-        printDiagnostics();
 
 //        System.out.println("Dpad X: "+ OI.getInstance().getOperator().getRawAxis(5));
 //        System.out.println("Dpad Y: "+ OI.getInstance().getOperator().getRawAxis(6));
     }
-
+    
     public void teleopInit() {
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to 
@@ -150,23 +152,22 @@ public class CoyobotXIII extends IterativeRobot {
         // this line or comment it out.
         //autonomous.System.out.println(this + " canceled");cancel();
         shooter.setAutonOver(true);
-        auton.cancel();
         Scheduler.getInstance().add(new DriverControls());
         Scheduler.getInstance().add(new OperatorControls());
 //        Scheduler.getInstance().add(new M_P_Tuning());
     }
-
+    
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         //camera.processCamera();
         Buttons.update();
         printDiagnostics();
-
+        
     }
-
+    
     public void teleopContinuous() {
     }
-
+    
     private void printDiagnostics() {
         SmartDashboard.putDouble("Shooter Speed", (shooter.getShooterSpeed() - 1212) / -80.167);
         //SmartDashboard.putDouble("Left Drive Speed", -driveTrain.getLeftSpeed());

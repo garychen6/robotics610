@@ -263,6 +263,7 @@ public class Turret extends Subsystem {
             position = PotConstants.turretLoLimit;
         }
         try {
+            //SmartDashboard.putDouble("Turret Setpoint ", position);
             turretJag.setX(position);
             //System.out.println("Turret Target: "+ position);
         } catch (CANTimeoutException ex) {

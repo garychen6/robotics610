@@ -15,9 +15,9 @@ public class A_shootOnly extends CommandGroup {
 
     public A_shootOnly(double wait) {
         System.out.println(this.toString());
-        addSequential(new A_wait(wait));
+        //addSequential(new A_wait(wait));
         addSequential(new A_T_lock());
-        addSequential(new A_S_shoot());
+        addSequential(new A_S_shoot(4));
         // addParallel(new A_Fl_set(PotConstants.flipperBridge));
         // addSequential(new A_D_distance(-18.5));
 //        addSequential(new A_I_timed(3));

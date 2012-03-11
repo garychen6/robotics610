@@ -69,6 +69,7 @@ public class ElectricalConstants {
     /**
      * The number of volts per degree of revolution of the potentiometer
      */
+    
     public static final double potDtoV = 0.00911111111;
     /**
      * The channel of the victor that controls the Intake
