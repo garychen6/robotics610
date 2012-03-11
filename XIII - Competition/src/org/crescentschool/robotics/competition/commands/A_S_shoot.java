@@ -6,6 +6,7 @@ package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Feeder;
 import org.crescentschool.robotics.competition.subsystems.Intake;
@@ -31,8 +32,11 @@ public class A_S_shoot extends Command {
     int count = 1;
     boolean counted = true;
     boolean isFinished = false;
+    boolean setSpeed = false;
+    int ballsFiring = 0;
 
-    public A_S_shoot() {
+    public A_S_shoot(int balls) {
+        ballsFiring = balls;
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(shooter);
@@ -58,21 +62,30 @@ public class A_S_shoot extends Command {
         }
         avgSpeed /= numAverages;
         height = camera.getHeight();
-        equationSpeed = 0.1399 * (height * height) - 7.1922 * height + 2294.2;
-        SmartDashboard.putDouble("Camera Height", height);
+        //equationSpeed = 0.1399 * (height * height) - 7.1922 * height + 2294.2;
+        //equationSpeed = 6.4*height  + 2330;
+        if(!setSpeed){
+        equationSpeed = 0.4855 * (height * height) - 24.715 * height + 2640.3;
         shooter.setShooter(equationSpeed + yOffset);
+        }
+        OI.printToDS(5, "Height: " + height);
+        SmartDashboard.putDouble("Camera Height", height);
+        
         SmartDashboard.putDouble("Wheel Difference", Math.abs(shooter.getRPM() + avgSpeed));
-        if (Math.abs(shooter.getRPM() + avgSpeed) < 55 && !counted) {
+        if (Math.abs(shooter.getRPM() + avgSpeed) < 25 && !counted) {
+            if(count >= 2){
             intake.setIntakeReverse(-1);
+            }
             feeder.setFeeder(1);
+            setSpeed = true;
             count++;
             counted = true;
-        } else if(Math.abs(shooter.getRPM() + avgSpeed) > 55){
+        } else if(Math.abs(shooter.getRPM() + avgSpeed) > 25){
             feeder.setFeeder(0);
             intake.setIntakeReverse(0);
             counted = false;
         }
-        if (count >= 3) {
+        if (count >= (ballsFiring+1)) {
             isFinished = true;
         }
         SmartDashboard.putInt("Balls Fired", count);
@@ -94,5 +107,6 @@ public class A_S_shoot extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+        isFinished = true;
     }
 }

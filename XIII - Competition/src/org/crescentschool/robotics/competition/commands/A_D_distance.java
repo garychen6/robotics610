@@ -56,6 +56,6 @@ public class A_D_distance extends Command {
     // subsystems is scheduled to run
     protected void interrupted() {
         System.out.println(this + " canceled");
-        cancel();
+        isFinished = true;
     }
 }

@@ -31,16 +31,13 @@ public class A_Fl_set extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+        flip.setFlippers(angle);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        flip.setFlippers(angle);
-        if (shooter.getAutonOver()) {
-            isFinished = true;
-        } else if (Math.abs(Math.abs(flip.getPos()) - Math.abs(angle * ElectricalConstants.potDtoV)) < 0.1) {
-            isFinished = true;
-        }
+        isFinished = true;
+
 
     }
 
@@ -58,5 +55,6 @@ public class A_Fl_set extends Command {
     // subsystems is scheduled to run
     protected void interrupted() {
         System.out.println(this + " canceled");
+        isFinished = true;
     }
 }

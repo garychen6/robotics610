@@ -39,7 +39,7 @@ public class A_T_lock extends Command {
         System.out.println("Phase 1");
         turret.resetPosition();
         System.out.println("Turret Pos Reset");
-        turret.setPosition(8);
+        turret.setPosition(8.93);
         System.out.println("Turret Pos Set");
         camera.setLight(true);
         shooter.setShooter(2200);
@@ -47,7 +47,7 @@ public class A_T_lock extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if (Math.abs(turret.getPos() - 8) < 0.1) {
+        if (Math.abs(turret.getPos() - 8.93) < 0.1) {
             seeTargets = true;
             System.out.println("Right Pos");
         }
@@ -55,18 +55,19 @@ public class A_T_lock extends Command {
             Camera.getInstance().processCamera();
             offset = PIDConstants.cameraP * camera.getX();
 //            offset =  camera.getX();
+            turret.resetPosition();
             turret.incPosition(offset);
+            System.out.println(offset);
             System.out.println("Locking On");
-            if (!startedLock && offset > 0.1) {
+            if (!startedLock && camera.getX() > 0.065) {
                 startedLock = true;
+                System.out.println("Starting Lock");
             }
             if (Math.abs(camera.getX()) < 0.065) {
                 count++;
                 System.out.println("Frames within tolerance: " + count);
-                if (startedLock && turretError < 0.05 && count >= 5) {
+                if (startedLock && count >= 2) {
                     isFinished = true;
-                } else if (turretError > 0.05) {
-                    count = 0;
                 }
             } else {
                 count = 0;
@@ -92,6 +93,6 @@ public class A_T_lock extends Command {
     // subsystems is scheduled to run
     protected void interrupted() {
         System.out.println(this + " canceled");
-        cancel();
+        isFinished = true;
     }
 }

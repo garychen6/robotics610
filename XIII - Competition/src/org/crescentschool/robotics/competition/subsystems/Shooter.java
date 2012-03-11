@@ -61,10 +61,14 @@ public class Shooter extends Subsystem {
      */
     public void setShooter(double rpm) {
         try {
+            if (controlMode == 2) {
+                resetPID();
+
+            }
             //shootJaguar.setX(-2 * rpm);
-            rpm = Math.min(Math.max(1800, rpm),3100);
+            rpm = Math.min(Math.max(1800, rpm), 3500);
             shootJaguar.setX(-rpm);
-            
+
             this.rpm = rpm;
             SmartDashboard.putDouble("Shooter Set Feet ", rpm);
         } catch (Exception e) {
@@ -73,12 +77,15 @@ public class Shooter extends Subsystem {
         }
 
     }
-    public void setAutonOver(boolean isOver){
+
+    public void setAutonOver(boolean isOver) {
         autonOver = isOver;
     }
-    public boolean getAutonOver(){
+
+    public boolean getAutonOver() {
         return autonOver;
     }
+
     /**
      * Gets the shooter's target speed.
      * @return  The target speed.
@@ -86,6 +93,7 @@ public class Shooter extends Subsystem {
     public double getRPM() {
         return rpm;
     }
+
     /**
      * Gets the shooter's target speed.
      * @return  The target speed.
@@ -107,7 +115,8 @@ public class Shooter extends Subsystem {
             return 0;
         }
     }
-/**
+
+    /**
      * Return the shooter's speed.
      * @return Return shooter speed.
      */
@@ -120,6 +129,7 @@ public class Shooter extends Subsystem {
             return 0;
         }
     }
+
     /**
      * Adjust the P value.
      * @param x The value with which to increment "P".
@@ -162,6 +172,7 @@ public class Shooter extends Subsystem {
     public void resetPID() {
         try {
             System.out.println("Shooter PID Reset");
+            controlMode = 1;
             shootJaguar.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
             shootJaguar.configEncoderCodesPerRev(256);
             shootJaguar.changeControlMode(CANJaguar.ControlMode.kSpeed);
@@ -172,37 +183,40 @@ public class Shooter extends Subsystem {
             shootJaguar.enableControl();
             setShooter(2200);
             syncSlaves();
-            controlMode = 1;
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
+            handleCANError();
         }
     }
+
     /**
      * Resets Shooter P, I, and D, and syncs slave.
      */
     public void resetVbus() {
         try {
             System.out.println("Shooter Vbus Reset");
+            controlMode = 2;
             shootJaguar.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
             shootJaguar.configEncoderCodesPerRev(256);
             shootJaguar.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             shootJaguarSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             shootJaguar.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shootJaguarSlave.configNeutralMode(CANJaguar.NeutralMode.kCoast);
-            
+
             shootJaguar.enableControl();
-           
+
             syncSlaves();
-            controlMode = 2;
+            
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     }
-    public void setVbus(double vbus)  {
-        
-        if(controlMode == 1){
+
+    public void setVbus(double vbus) {
+
+        if (controlMode == 1) {
             resetVbus();
-            
+
         }
         try {
             shootJaguar.setX(vbus);
@@ -211,7 +225,7 @@ public class Shooter extends Subsystem {
             handleCANError();
         }
         syncSlaves();
-        
+
     }
 
     /**

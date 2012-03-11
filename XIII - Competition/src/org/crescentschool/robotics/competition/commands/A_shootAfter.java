@@ -18,7 +18,7 @@ public class A_shootAfter extends CommandGroup {
         addSequential(new A_D_distance(15));
         addParallel(new A_Fl_set(PotConstants.flipperBridgeAssist));
         addSequential(new A_T_lock());
-        addSequential(new A_S_shoot());
+        addSequential(new A_S_shoot(2));
         addSequential(new A_D_distance(3));
         //:)
 

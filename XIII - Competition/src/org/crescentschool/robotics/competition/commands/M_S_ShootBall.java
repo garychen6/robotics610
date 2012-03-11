@@ -88,7 +88,10 @@ public class M_S_ShootBall extends Command {
         }
         if (Buttons.isHeld(InputConstants.kL2Button, OI.getInstance().getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
             height = camera.getHeight();
-            equationSpeed = 0.1399*(height*height) - 7.1922*height  + 2294.2;
+            //equationSpeed = 0.1399*(height*height) - 7.1922*height  + 2294.2;
+            //equationSpeed = 6.4*height  + 2330;
+//            equationSpeed = -0.3911 * (height * height) + 40.317 * height + 1701;
+            equationSpeed = 0.4855 * (height * height) - 24.715 * height + 2640.3;
             SmartDashboard.putDouble("Camera Height", height);
             shooter.setShooter(equationSpeed + yOffset);
             //shooter.setShooter(2000 + yOffset);

@@ -12,7 +12,7 @@ public class PotConstants {
      /**
      * Flipper angle for Bridge Assist.
      */
-    public static final double flipperBridgeAssist = -90;   
+    public static final double flipperBridgeAssist = -80;   
     /**
      * Flipper angle for Bridge Assist.
      */
@@ -28,7 +28,7 @@ public class PotConstants {
     /**
      * Flipper angle for Bridge Assist.
      */
-    public static final double flipperRetract = 90; 
+    public static final double flipperRetract = 79; 
     /**
      * Flipper angle for Bridge Assist.
      */
