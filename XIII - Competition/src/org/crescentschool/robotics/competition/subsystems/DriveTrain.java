@@ -29,7 +29,7 @@ public class DriveTrain extends Subsystem {
     private CANJaguar jagLeftMaster;
     private CANJaguar jagRightSlave;
     private CANJaguar jagLeftSlave;
-    private CoyoBotGyro gyro;
+    //private CoyoBotGyro gyro;
     private Accelerometer accel;
     private PIDController posControllerRight;
     private PIDController posControllerLeft;
@@ -136,8 +136,8 @@ public class DriveTrain extends Subsystem {
             handleCANError();
             ex.printStackTrace();
         }
-        gyro = new CoyoBotGyro(ElectricalConstants.GyroPort);
-        gyro.setSensitivity(0.007);
+        //gyro = new CoyoBotGyro(ElectricalConstants.GyroPort);
+       // gyro.setSensitivity(0.007);
         vertGyro = new CoyoBotGyro(ElectricalConstants.VertGyroPort);
         initPosMode();
     }
@@ -147,7 +147,7 @@ public class DriveTrain extends Subsystem {
         controlMode = 3;
         posControllerRight.setPID(-pPos, -iPos, -dPos);
         posControllerLeft.setPID(pPos, iPos, dPos);
-        gyro.reset();
+       // gyro.reset();
         try {
             jagLeftMaster.configFaultTime(0.5);
             jagRightMaster.configFaultTime(0.5);
@@ -661,7 +661,7 @@ public class DriveTrain extends Subsystem {
      * @return The drivetrain's gyro.
      */
     public CoyoBotGyro getGyro() {
-        return gyro;
+        return null;
     }
 
     /**
@@ -711,7 +711,7 @@ public class DriveTrain extends Subsystem {
      */
     public double getHorizAngle() {
 
-        return gyro.getAngle();
+        return 0;
     }
     
 }

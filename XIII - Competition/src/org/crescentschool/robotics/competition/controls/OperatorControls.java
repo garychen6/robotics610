@@ -36,7 +36,7 @@ public class OperatorControls extends Command {
     protected void initialize() {
         Scheduler.getInstance().add(new AMT_T_turn());
         Scheduler.getInstance().add(new M_S_ShootBall());
-        Scheduler.getInstance().add(new M_I_Pickup());
+        //Scheduler.getInstance().add(new M_I_Pickup());
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -62,7 +62,7 @@ public class OperatorControls extends Command {
         }
         OI.printToDS(3, "Shooter SetPoint " + shooter.getRPM());
         OI.printToDS(4, "Shooter Speed " + shooter.getShooterSpeed());
-        OI.printToDS(5, "Distance " + ultrasonic.getDistance());
+        //OI.printToDS(5, "Distance " + ultrasonic.getDistance());
 
     }
 // Make this return true when this Command no longer needs to run execute()

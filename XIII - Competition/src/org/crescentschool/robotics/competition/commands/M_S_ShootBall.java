@@ -25,16 +25,15 @@ import org.crescentschool.robotics.competition.subsystems.Intake;
  */
 public class M_S_ShootBall extends Command {
 
-
     Shooter shooter = Shooter.getInstance();
     Turret turret = Turret.getInstance();
-    Feeder feed = Feeder.getInstance();
-    CoyoBotUltrasonic uSonic = CoyoBotUltrasonic.getInstance();
+    //Feeder feed = Feeder.getInstance();
+    //CoyoBotUltrasonic uSonic = CoyoBotUltrasonic.getInstance();
     OI oi = OI.getInstance();
     Camera camera = Camera.getInstance();
-    Feeder feeder = Feeder.getInstance();
-    Intake intake = Intake.getInstance();
-    CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
+    //Feeder feeder = Feeder.getInstance();
+    //Intake intake = Intake.getInstance();
+    //CoyoBotUltrasonic ultrasonic = CoyoBotUltrasonic.getInstance();
     int numAverages = 10;
     double[] speeds = new double[numAverages];
     double avgSpeed;
@@ -83,7 +82,7 @@ public class M_S_ShootBall extends Command {
             turret.resetPID();
             camera.resetCamera();
         }
-        if(Buttons.isPressed(InputConstants.kSelectButton, 2)){
+        if (Buttons.isPressed(InputConstants.kSelectButton, 2)) {
             yOffset = 0;
         }
         if (Buttons.isHeld(InputConstants.kL2Button, OI.getInstance().getOperator()) && !Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
@@ -91,7 +90,8 @@ public class M_S_ShootBall extends Command {
             //equationSpeed = 0.1399*(height*height) - 7.1922*height  + 2294.2;
             //equationSpeed = 6.4*height  + 2330;
 //            equationSpeed = -0.3911 * (height * height) + 40.317 * height + 1701;
-            equationSpeed = 0.4855 * (height * height) - 24.715 * height + 2640.3;
+            // equationSpeed = 0.4855 * (height * height) - 24.715 * height + 2640.3;
+            equationSpeed = 0.0471 * (height * height) + 2.6303 * height + 2246;
             SmartDashboard.putDouble("Camera Height", height);
             shooter.setShooter(equationSpeed + yOffset);
             //shooter.setShooter(2000 + yOffset);
@@ -101,53 +101,54 @@ public class M_S_ShootBall extends Command {
         if (OI.getInstance().getOperator().getRawAxis(6) < -0.5) {
 //        if (Buttons.isPressed(InputConstants.kYButton, 2)) {
 //            if (!dPadUp) {
-                yOffset += 4;
-                System.out.println("yUP");
-                //shooter.setShooter(equationSpeed + yOffset);
-                dPadUp = true;
-                SmartDashboard.putString("offsets", "y:" +yOffset);
+            yOffset += 4;
+            System.out.println("yUP");
+            //shooter.setShooter(equationSpeed + yOffset);
+            dPadUp = true;
+            SmartDashboard.putString("offsets", "y:" + yOffset);
 //            }
-        }
-        else if (OI.getInstance().getOperator().getRawAxis(6) > 0.5) {
+        } else if (OI.getInstance().getOperator().getRawAxis(6) > 0.5) {
 //        else if (Buttons.isPressed(InputConstants.kAButton, 2)) {
 //            if (!dPadDown) {
-                yOffset -= 4;
-                //shooter.setShooter(equationSpeed + yOffset);
-                dPadDown = true;
-                SmartDashboard.putString("offsets", "y:" +yOffset);
+            yOffset -= 4;
+            //shooter.setShooter(equationSpeed + yOffset);
+            dPadDown = true;
+            SmartDashboard.putString("offsets", "y:" + yOffset);
 //            }
 //        }else{
 //               dPadDown = false;
 //               dPadUp = false;
         }
-        
+
         SmartDashboard.putDouble("Average Speed", avgSpeed);
         //SmartDashboard.putDouble("Wheel Difference", shooter.getRPM() + avgSpeed);
-        if(Math.abs(shooter.getRPM() + avgSpeed) < 40){
+        if (Math.abs(shooter.getRPM() + avgSpeed) < 40) {
             AAAAIIIIIIDAAAAAAAAANNNNNNNNGNNGNGNGOOOOOOOOOOOOOOOOOOOO = true;
-        }else{
+        } else {
             AAAAIIIIIIDAAAAAAAAANNNNNNNNGNNGNGNGOOOOOOOOOOOOOOOOOOOO = false;
         }
         SmartDashboard.putBoolean("AIDAN FIRE NOW!!!!", AAAAIIIIIIDAAAAAAAAANNNNNNNNGNNGNGNGOOOOOOOOOOOOOOOOOOOO);
 //        if (Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())) {
-        if (OI.getInstance().getOperator().getRawButton(InputConstants.kR2Button)) {
-            intake.setIsShooting(true);
-            intake.setIntakeReverse(-1);
-            feeder.setFeeder(1);
-        } else {
-            feeder.setFeeder(0);
-            intake.setIsShooting(false);
-        }
-        if(Buttons.isPressed(InputConstants.kYButton, 2)){
-            turret.setPosition(PotConstants.turretCentre);
-            
-        }if(Buttons.isHeld(InputConstants.kYButton, OI.getInstance().getOperator())){
-            
-            shooter.setVbus(PIDConstants.middleGoalVbus);
-            feeder.setFeeder(1);
-            intake.setIntakeReverse(1);
-        }
-
+//        if (OI.getInstance().getOperator().getRawButton(InputConstants.kR2Button)) {
+//            intake.setIsShooting(true);
+//            intake.setIntakeReverse(-1);
+//            feeder.setFeeder(1);
+//        } else {
+//            feeder.setFeeder(0);
+//            intake.setIsShooting(false);
+//        }
+//        if (Buttons.isPressed(InputConstants.kYButton, 2)) {
+//            turret.resetPosition();
+//            turret.incPosition(0);
+//            turret.setPosition(PotConstants.turretCentre);
+//        }
+//        if (Buttons.isHeld(InputConstants.kYButton, OI.getInstance().getOperator())) {
+//
+//            shooter.setVbus(PIDConstants.middleGoalVbus);
+//            feeder.setFeeder(1);
+//            intake.setIntakeReverse(1);
+//        }
+  
     }
     // Make this return true when this Command no longer needs to run execute()
 
@@ -163,6 +164,7 @@ public class M_S_ShootBall extends Command {
     // subsystems is scheduled to run
     protected void interrupted() {
         System.out.println(this + " canceled");
-        System.out.println(this + " canceled");cancel();
+        System.out.println(this + " canceled");
+        cancel();
     }
 }

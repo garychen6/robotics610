@@ -72,7 +72,7 @@ public class M_S_Shoot extends Command {
             shooter.setShooter((80.167*ultrasonic.getDistance())+1212);
         }
          if(Buttons.isHeld(InputConstants.kR2Button, OI.getInstance().getOperator())){
-            SmartDashboard.putDouble("Wheel Difference", shooter.getRPM() + avgSpeed);
+            //SmartDashboard.putDouble("Wheel Difference", shooter.getRPM() + avgSpeed);
              if(Math.abs((shooter.getRPM() + avgSpeed)) < 100){
             intake.setIntakeReverse(-1);
             feeder.setFeeder(1);   

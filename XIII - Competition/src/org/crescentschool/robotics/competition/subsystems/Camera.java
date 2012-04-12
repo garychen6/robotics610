@@ -33,6 +33,7 @@ public class Camera extends Subsystem {
     private BinaryImage binImage;
     private ParticleAnalysisReport circ;
     boolean freshImage;
+
     private Camera() {
         resetCamera();
     }
@@ -53,40 +54,48 @@ public class Camera extends Subsystem {
      * Returns the top target in Particle Analysis Report form.
      * @return the particle analysis report of the top target
      */
-    public ParticleAnalysisReport getTopTarget(){
+    public ParticleAnalysisReport getTopTarget() {
         return topTarget;
     }
-    
+
     /**
      * Returns the height of the top bounding box as given by the particle analysis report
      * @return the height of the top bounding box
      */
-    public double getHeight(){
-        if(topTarget == null)return 40.0;
-        return (topTarget.boundingRectTop + 0.5*topTarget.boundingRectHeight);
+    public double getHeight() {
+        if (topTarget == null) {
+            return 40.0;
+        }
+        return (topTarget.boundingRectTop + 0.5 * topTarget.boundingRectHeight);
     }
-    
+
     /**
      * Gets the normalized position for the top square on the net.
      * @return The normalized position for the top square as a value between -1 and 1.
      */
     public double getX() {
-      
-        return (xOffset +0.05+ (tXOffset/PIDConstants.cameraP));
+
+        return (xOffset + (tXOffset / PIDConstants.cameraP));
+    }
+
+     public double originalGetX() {
+
+        return (xOffset);
     }
     /**
      * Says if we are using a new Image
      * @return whether we are using a new image
      */
-    public boolean newImage() {  
-        if(freshImage){
+    public boolean newImage() {
+        if (freshImage) {
             freshImage = false;
             return true;
         }
         return false;
-        
+
     }
-     /**
+
+    /**
      * Sets turrets Offset to minus from camera offset
      * @return
      */
@@ -94,12 +103,16 @@ public class Camera extends Subsystem {
 
         tXOffset = tOffset;
     }
-        /**
+
+    /**
      * Sets On or Off For the Camera Light
      */
-    public void setLight(boolean on){
-        if(on)camLight.set(Relay.Value.kForward);
-        else camLight.set(Relay.Value.kOff);
+    public void setLight(boolean on) {
+        if (on) {
+            camLight.set(Relay.Value.kForward);
+        } else {
+            camLight.set(Relay.Value.kOff);
+        }
     }
 
     /**
@@ -115,16 +128,19 @@ public class Camera extends Subsystem {
                 //TODO: Tune these HSL values at the venue!
                 binImage = colorImage.thresholdHSV(ImagingConstants.kHThresholdMin, ImagingConstants.kHThresholdMax, ImagingConstants.kSThresholdMin, ImagingConstants.kSThresholdMax, ImagingConstants.kLThresholdMin, ImagingConstants.kLThresholdMax);
                 s_particles = binImage.getOrderedParticleAnalysisReports(4);
+
                 colorImage.free();
                 binImage.free();
 
                 if (s_particles.length > 0) {
                     int lowestY = 0;
                     for (int i = 0; i < s_particles.length; i++) {
-                         circ = s_particles[i];
+                        circ = s_particles[i];
                         //Find the highest rectangle (will have the lowest Y coordinate)
                         if (s_particles[lowestY].center_mass_y > circ.center_mass_y) {
-                            lowestY = i;
+                            if (circ.particleArea > 20) {
+                                lowestY = i;
+                            }
                         }
                     }
                     topTarget = s_particles[lowestY];
