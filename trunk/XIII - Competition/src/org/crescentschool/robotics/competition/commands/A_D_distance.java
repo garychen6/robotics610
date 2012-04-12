@@ -7,6 +7,7 @@ package org.crescentschool.robotics.competition.commands;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.subsystems.Turret;
 
 /**
  *
@@ -16,6 +17,7 @@ public class A_D_distance extends Command {
 
     DriveTrain driveTrain = DriveTrain.getInstance();
     Shooter shooter = Shooter.getInstance();
+   
     double setPoint = 0;
     boolean isFinished = false;
 
@@ -30,6 +32,8 @@ public class A_D_distance extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
         driveTrain.reInit();
+        Turret.getInstance().resetPosition();
+        Turret.getInstance().setPosition(5);
     }
 
     // Called repeatedly when this Command is scheduled to run

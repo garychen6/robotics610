@@ -42,7 +42,10 @@ public class Shooter extends Subsystem {
         d = PIDConstants.shooterD;
         try {
             shootJaguar = new CANJaguar(ElectricalConstants.shootJaguar);
-            shootJaguarSlave = new CANJaguar(ElectricalConstants.shootJaguarSlave);
+            //
+            
+            
+            //shootJaguarSlave = new CANJaguar(ElectricalConstants.shootJaguarSlave);
 //            shootJaguar.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
 //            shootJaguarSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
 //            shootJaguar.enableControl();
@@ -70,7 +73,7 @@ public class Shooter extends Subsystem {
             shootJaguar.setX(-rpm);
 
             this.rpm = rpm;
-            SmartDashboard.putDouble("Shooter Set Feet ", rpm);
+            //SmartDashboard.putDouble("Shooter Set Feet ", rpm);
         } catch (Exception e) {
             e.printStackTrace();
             handleCANError();
@@ -156,15 +159,15 @@ public class Shooter extends Subsystem {
         d += x;
         System.out.println("Shooter P: " + p + " I: " + i + " D:" + d);
     }
-
-    public void syncSlaves() {
-        try {
-            shootJaguarSlave.setX(shootJaguar.getOutputVoltage() / OI.getInstance().getDS().getBatteryVoltage());
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-            handleCANError();
-        }
-    }
+//
+//    public void syncSlaves() {
+//        try {
+//            shootJaguarSlave.setX(shootJaguar.getOutputVoltage() / OI.getInstance().getDS().getBatteryVoltage());
+//        } catch (CANTimeoutException ex) {
+//            ex.printStackTrace();
+//            handleCANError();
+//        }
+//    }
 
     /**
      * Resets Shooter P, I, and D, and syncs slave.
@@ -176,13 +179,13 @@ public class Shooter extends Subsystem {
             shootJaguar.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
             shootJaguar.configEncoderCodesPerRev(256);
             shootJaguar.changeControlMode(CANJaguar.ControlMode.kSpeed);
-            shootJaguarSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+            //shootJaguarSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             shootJaguar.configNeutralMode(CANJaguar.NeutralMode.kCoast);
-            shootJaguarSlave.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            //shootJaguarSlave.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shootJaguar.setPID(-p, -i, -d);
             shootJaguar.enableControl();
             setShooter(2200);
-            syncSlaves();
+            //syncSlaves();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
             handleCANError();
@@ -205,7 +208,7 @@ public class Shooter extends Subsystem {
 
             shootJaguar.enableControl();
 
-            syncSlaves();
+            //syncSlaves();
             
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
@@ -224,7 +227,7 @@ public class Shooter extends Subsystem {
             ex.printStackTrace();
             handleCANError();
         }
-        syncSlaves();
+        //syncSlaves();
 
     }
 

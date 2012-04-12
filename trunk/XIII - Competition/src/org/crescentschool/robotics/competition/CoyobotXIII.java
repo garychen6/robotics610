@@ -41,16 +41,16 @@ public class CoyobotXIII extends IterativeRobot {
     Command autonomous;
     KinectStick leftArm;
     Shooter shooter;
-    DriveTrain driveTrain;
-    Flipper flipper;
-    Intake intake;
-    Feeder feeder;
+//    DriveTrain driveTrain;
+//    Flipper flipper;
+//    Intake intake;
+//    Feeder feeder;
     OI oi;
     int autonMode = 1;
     String autonName = "";
     Turret turret;
     Camera camera;
-    CoyoBotUltrasonic ultrasonic;
+   // CoyoBotUltrasonic ultrasonic;
     boolean kajMode = false;
     boolean autonChanged = false;
     Command auton;
@@ -65,16 +65,17 @@ public class CoyobotXIII extends IterativeRobot {
         oi = OI.getInstance();
         turret = Turret.getInstance();
         shooter = Shooter.getInstance();
-        driveTrain = DriveTrain.getInstance();
-        flipper = Flipper.getInstance();
-        intake = Intake.getInstance();
-        feeder = Feeder.getInstance();
+        //driveTrain = DriveTrain.getInstance();
+        //flipper = Flipper.getInstance();
+        //intake = Intake.getInstance();
+        //feeder = Feeder.getInstance();
         //leftArm = new KinectStick(1);
         //autonomous = new A_ST_shoot();
         camera = Camera.getInstance();
-        ultrasonic = CoyoBotUltrasonic.getInstance();
+        //ultrasonic = CoyoBotUltrasonic.getInstance();
         //auton = new A_shootOnly(autonWaitTime);
         auton = new A_shootOnly(0);
+        //auton = new A_shootFirst();
     }
     
     public void autonomousInit() {
@@ -152,7 +153,7 @@ public class CoyobotXIII extends IterativeRobot {
         // this line or comment it out.
         //autonomous.System.out.println(this + " canceled");cancel();
         shooter.setAutonOver(true);
-        Scheduler.getInstance().add(new DriverControls());
+        //Scheduler.getInstance().add(new DriverControls());
         Scheduler.getInstance().add(new OperatorControls());
 //        Scheduler.getInstance().add(new M_P_Tuning());
     }
@@ -169,16 +170,17 @@ public class CoyobotXIII extends IterativeRobot {
     }
     
     private void printDiagnostics() {
-        SmartDashboard.putDouble("Shooter Speed", (shooter.getShooterSpeed() - 1212) / -80.167);
+        //SmartDashboard.putDouble("Shooter Speed", (shooter.getShooterSpeed() - 1212) / -80.167);
         //SmartDashboard.putDouble("Left Drive Speed", -driveTrain.getLeftSpeed());
         //SmartDashboard.putDouble("Right Drive Speed", driveTrain.getRightSpeed());
         //SmartDashboard.putDouble("Horiz Gyro", driveTrain.getHorizAngle());
         //SmartDashboard.putDouble("Vert Gyro", driveTrain.getVertAngle());
-        SmartDashboard.putDouble("Camera Offset", camera.getX());
+        SmartDashboard.putDouble("Camera Offset", camera.originalGetX());
         //SmartDashboard.putDouble("Flipper Pot", flipper.getPos());
         SmartDashboard.putDouble("Turret Potentiometer", turret.getPos());
+        SmartDashboard.putDouble("Turret Potentiometer SetPoint", turret.getPosSet());
         //SmartDashboard.putDouble("Turret Set", turret.getPosSet());
-        SmartDashboard.putDouble("Ultrasonic", ultrasonic.getDistance());
+        //SmartDashboard.putDouble("Ultrasonic", ultrasonic.getDistance());
         ParticleAnalysisReport topTarget = Camera.getInstance().getTopTarget();
         if (Buttons.isHeld(InputConstants.kL2Button, oi.getOperator())) {
             if (topTarget != null) {

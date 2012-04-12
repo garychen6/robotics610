@@ -117,7 +117,7 @@ public class AMT_T_turn extends Command {
 //        if (OI.getInstance().getOperator().getRawAxis(5) > 0.5 && !dPadR) {
         if (OI.getInstance().getOperator().getRawAxis(5) > 0.5) {
 //        if (Buttons.isPressed(InputConstants.kBButton, 2)) {
-            xOffset -= 0.02;
+            xOffset -= 0.005;
             turret.xOffset(xOffset);
             camera.setTurretOffset(xOffset);
             dPadR = true;
@@ -126,7 +126,7 @@ public class AMT_T_turn extends Command {
 //        } else if (OI.getInstance().getOperator().getRawAxis(5) < -0.5 && !dPadL) {
         } else if (OI.getInstance().getOperator().getRawAxis(5) < -0.5) {
 //        } else if (Buttons.isPressed(InputConstants.kXButton, 2)) {
-            xOffset += 0.02;
+            xOffset += 0.005;
             turret.xOffset(xOffset);
             camera.setTurretOffset(xOffset);
             dPadL = true;

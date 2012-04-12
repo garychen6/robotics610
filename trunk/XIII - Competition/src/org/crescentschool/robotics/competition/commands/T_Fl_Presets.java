@@ -9,6 +9,7 @@ import org.crescentschool.robotics.competition.Buttons;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.constants.PotConstants;
+import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Flipper;
 
 /**
@@ -19,7 +20,7 @@ public class T_Fl_Presets extends Command {
 
     OI oi = OI.getInstance();
     Flipper flipper = Flipper.getInstance();
-
+    DriveTrain driveTrain = DriveTrain.getInstance();
     public T_Fl_Presets() {
         System.out.println(this.toString());
         // Use requires() here to declare subsystem dependencies
@@ -45,6 +46,8 @@ public class T_Fl_Presets extends Command {
         }
         if (Buttons.isPressed(InputConstants.kAButton, 1)) {
             flipper.setFlippers(PotConstants.flipperBridgeAssist);
+            driveTrain.setLeftPos(driveTrain.getLeftPos());
+            driveTrain.setRightPos(driveTrain.getRightPos());
         }
         if(Buttons.isPressed(InputConstants.kStartButton,1)){
             flipper.reInit();

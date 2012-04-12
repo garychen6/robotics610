@@ -18,10 +18,11 @@ public class A_shootFirst extends CommandGroup {
         addSequential(new A_T_lock());
         addSequential(new A_S_shoot(2));
         addSequential(new A_wait(1));
-        addSequential(new A_D_distance(-13));
+        addSequential(new A_D_distance(-10));
         addParallel(new A_Fl_set(PotConstants.flipperBridge));
-        addSequential(new A_D_distance(-5));
+        addSequential(new A_D_distance(-10));
         addSequential(new A_Fl_set(PotConstants.flipperBarrier));
+        addSequential(new A_S_shoot(2));
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());

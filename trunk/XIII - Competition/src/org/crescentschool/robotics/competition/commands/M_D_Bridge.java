@@ -46,7 +46,7 @@ public class M_D_Bridge extends Command {
     protected void execute() {
         OI.printToDS(0, "Pos SetPoint: " + driveTrain.getLeftPosSetpoint());
         OI.printToDS(1, "Pos: " + driveTrain.getLeftPos());
-        OI.printToDS(2, "Gyro: " + driveTrain.getGyro().getAngle());
+        //OI.printToDS(2, "Gyro: " + driveTrain.getGyro().getAngle());
         if (oi.getDriver().getRawAxis(6) > 0.5 && !dPadUp) {
             y += 0.25;
             dPadUp = true;

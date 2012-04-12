@@ -11,6 +11,7 @@ import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Feeder;
 import org.crescentschool.robotics.competition.subsystems.Intake;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.subsystems.Turret;
 
 /**
  *
@@ -19,6 +20,7 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
 public class A_S_shoot extends Command {
 
     Shooter shooter = Shooter.getInstance();
+    Turret turret = Turret.getInstance();
     Camera camera = Camera.getInstance();
     Feeder feeder = Feeder.getInstance();
     Intake intake = Intake.getInstance();
@@ -44,6 +46,7 @@ public class A_S_shoot extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+        turret.setPosition(turret.getPos());
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -65,7 +68,9 @@ public class A_S_shoot extends Command {
         //equationSpeed = 0.1399 * (height * height) - 7.1922 * height + 2294.2;
         //equationSpeed = 6.4*height  + 2330;
         if(!setSpeed){
-        equationSpeed = 0.4855 * (height * height) - 24.715 * height + 2640.3;
+        //equationSpeed = 0.4855 * (height * height) - 24.715 * height + 2640.3;
+//        equationSpeed = 0.0439 * (height * height) + 1.5826 * height + 2321.6;
+        equationSpeed = 0.0471 * (height * height) + 2.6303 * height + 2296;
         shooter.setShooter(equationSpeed + yOffset);
         }
         OI.printToDS(5, "Height: " + height);
