@@ -64,11 +64,11 @@ D: 0.0
      */
     public static final double flipperD = 0;
     public static final double middleGoalVbus = -0.6;
-    public static final double shooterP = -0.25;
+    public static final double shooterP = -0.285;
 //    public static final double shooterI = 0.003;
 //    public static final double shooterP = 0.041;
 //    public static final double shooterP = 0.0;
-    public static final double shooterI = -0.005;
+    public static final double shooterI = -0.004;
     public static final double shooterD = 0.0;
     public static final double ultrasonicVtoF = 10.0 / (0.49 * 3.2808399);
     //TODO: Javadoc
