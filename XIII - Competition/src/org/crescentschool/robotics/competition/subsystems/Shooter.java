@@ -182,7 +182,7 @@ public class Shooter extends Subsystem {
             //shootJaguarSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             shootJaguar.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             //shootJaguarSlave.configNeutralMode(CANJaguar.NeutralMode.kCoast);
-            shootJaguar.setPID(-p, -i, -d);
+            shootJaguar.setPID(p, i, d);
             shootJaguar.enableControl();
             setShooter(2200);
             //syncSlaves();

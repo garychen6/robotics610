@@ -91,7 +91,9 @@ public class M_S_ShootBall extends Command {
             //equationSpeed = 6.4*height  + 2330;
 //            equationSpeed = -0.3911 * (height * height) + 40.317 * height + 1701;
             // equationSpeed = 0.4855 * (height * height) - 24.715 * height + 2640.3;
-            equationSpeed = 0.0471 * (height * height) + 2.6303 * height + 2246;
+            //equationSpeed = 0.0471 * (height * height) + 2.6303 * height + 2246;
+            //equationSpeed = 0.0222 * (height * height) + 0.4359 * height + 2172.6;
+            equationSpeed = 0.0406 * (height * height) - 2.063 * height + 2246.3;
             SmartDashboard.putDouble("Camera Height", height);
             shooter.setShooter(equationSpeed + yOffset);
             //shooter.setShooter(2000 + yOffset);
