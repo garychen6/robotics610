@@ -120,7 +120,7 @@ public class M_S_ShootBall extends Command {
 //               dPadUp = false;
         }
 
-        SmartDashboard.putDouble("Average Speed", avgSpeed);
+        SmartDashboard.putDouble("Average Speed", -avgSpeed);
         //SmartDashboard.putDouble("Wheel Difference", shooter.getRPM() + avgSpeed);
         if (Math.abs(shooter.getRPM() + avgSpeed) < 40) {
             AAAAIIIIIIDAAAAAAAAANNNNNNNNGNNGNGNGOOOOOOOOOOOOOOOOOOOO = true;

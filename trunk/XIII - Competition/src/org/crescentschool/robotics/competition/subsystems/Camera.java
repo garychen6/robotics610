@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.ImagingConstants;
-import org.crescentschool.robotics.competition.constants.PIDConstants;
 
 /**
  *
@@ -29,13 +28,17 @@ public class Camera extends Subsystem {
     private double xOffset = 0;
     private ParticleAnalysisReport topTarget = null;
     private static Relay camLight;
-    private double tXOffset = 0;
     private BinaryImage binImage;
     private ParticleAnalysisReport circ;
+    private Turret turret;
+    private double curTurretPot;
     boolean freshImage;
 
     private Camera() {
         resetCamera();
+        turret = Turret.getInstance();
+        camLight = new Relay(ElectricalConstants.camLight);
+        setLight(true);
     }
 
     /**
@@ -45,7 +48,6 @@ public class Camera extends Subsystem {
     public static Camera getInstance() {
         if (instance == null) {
             instance = new Camera();
-            camLight = new Relay(ElectricalConstants.camLight);
         }
         return instance;
     }
@@ -64,6 +66,7 @@ public class Camera extends Subsystem {
      */
     public double getHeight() {
         if (topTarget == null) {
+            //TODO: Find new default height
             return 40.0;
         }
         return (topTarget.boundingRectTop + 0.5 * topTarget.boundingRectHeight);
@@ -75,13 +78,9 @@ public class Camera extends Subsystem {
      */
     public double getX() {
 
-        return (xOffset + (tXOffset / PIDConstants.cameraP));
+        return xOffset;
     }
 
-     public double originalGetX() {
-
-        return (xOffset);
-    }
     /**
      * Says if we are using a new Image
      * @return whether we are using a new image
@@ -93,15 +92,6 @@ public class Camera extends Subsystem {
         }
         return false;
 
-    }
-
-    /**
-     * Sets turrets Offset to minus from camera offset
-     * @return
-     */
-    public void setTurretOffset(double tOffset) {
-
-        tXOffset = tOffset;
     }
 
     /**
@@ -120,9 +110,10 @@ public class Camera extends Subsystem {
      */
     public void processCamera() {
 
-
         if (camera.freshImage()) {
             try {
+                //Take a snapshot of the current turret pot position
+                curTurretPot = turret.getPos();
                 colorImage = camera.getImage(); // get the image from the camera
                 freshImage = true;
                 //TODO: Tune these HSL values at the venue!
@@ -134,24 +125,30 @@ public class Camera extends Subsystem {
 
                 if (s_particles.length > 0) {
                     int lowestY = 0;
-                    for (int i = 0; i < s_particles.length; i++) {
+                    for (int i = 1; i < s_particles.length; i++) {
                         circ = s_particles[i];
                         //Find the highest rectangle (will have the lowest Y coordinate)
-                        if (s_particles[lowestY].center_mass_y > circ.center_mass_y) {
-                            if (circ.particleArea > 20) {
+                        if (s_particles[lowestY].boundingRectTop > circ.boundingRectTop) {
+                            if ((circ.boundingRectWidth > 20) && (circ.boundingRectHeight > 20)) {
                                 lowestY = i;
                             }
                         }
                     }
                     topTarget = s_particles[lowestY];
                     //Send bounding rectangle info to SmartDashboard
-                    xOffset = ((topTarget.boundingRectLeft + topTarget.boundingRectWidth / 2) - 160.0) / 160.0;
-//                    if (Math.abs(xOffset) < 0.05) {
-//                        xOffset = 0;
-//                    }
-//                    System.out.println("xOffset: "+xOffset);
+                    // Check if the best top blob is bigger than 20
+                    if (topTarget.particleArea > 20)
+                    {
+                        xOffset = ((topTarget.boundingRectLeft + topTarget.boundingRectWidth / 2) - 160.0) / 160.0;
+                    }
+                    else
+                    {
+                        xOffset = 0;
+                        topTarget = null;
+                    }
                 } else {
                     xOffset = 0;
+                    topTarget = null;
                 }
             } catch (AxisCameraException ex) {
                 ex.printStackTrace();
@@ -184,5 +181,9 @@ public class Camera extends Subsystem {
 //        camera.writeMaxFPS(30);
 //        camera.writeRotation(AxisCamera.RotationT.k0);
         //sharpness should be 0, but there is no method for it
+    }
+    
+    public double getTurretPot() {
+        return curTurretPot;
     }
 }

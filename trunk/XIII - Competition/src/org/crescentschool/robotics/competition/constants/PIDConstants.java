@@ -95,6 +95,8 @@ D: 0.0
      * The diameter of the wheel in inches.
      */
     public static final double wheelDiameter = 5.9;
+    
+    public static final double potPerDegree = 0.019711111;
 }
 // flipper rev to degree = 0.00911111111
 // flipper facing straight up = 5.62

@@ -23,7 +23,6 @@ public class Turret extends Subsystem {
     static Turret instance = null;
     double p, i, d;
     double position = PotConstants.turretCentre;
-    double xOffset = 0;
     // 1 = %VBus, 2 = Position
     private int controlMode = 2;
     boolean isLocked = false;
@@ -97,7 +96,8 @@ public class Turret extends Subsystem {
             initPosMode();
         }
         try {
-            turretJag.setX(pos + xOffset);
+            turretJag.setX(pos);
+            position = pos;
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -137,22 +137,6 @@ public class Turret extends Subsystem {
             return 0;
         }
 
-    }
-
-    /**
-     * Sets the turret Offset
-     * @return 
-     */
-    public void xOffset(double offset) {
-        xOffset = offset;
-    }
-
-    /**
-     * Gets the turret Offset
-     * @return turret xOffset
-     */
-    public double xOffset() {
-        return xOffset;
     }
 
     /**
@@ -251,11 +235,9 @@ public class Turret extends Subsystem {
         if (controlMode != 2) {
             initPosMode();
         }
-        try {
-            position = turretJag.getPosition() + inc;
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-        }
+
+        position += inc;
+
         if (position > PotConstants.turretHiLimit) {
             position = PotConstants.turretHiLimit;
         }
