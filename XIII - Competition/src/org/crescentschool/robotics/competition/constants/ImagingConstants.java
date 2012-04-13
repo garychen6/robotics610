@@ -28,7 +28,7 @@ public class ImagingConstants {
     /**
      * The minimum luminance value that an individual ixel in a camera image may have to be included in the threshold
      */
-    public static final int kLThresholdMin = 12;
+    public static final int kLThresholdMin = 50;
     /**
      * The minimum luminance value that an individual pixel in a camera image may have to be included in the threshold
      */

@@ -175,7 +175,7 @@ public class CoyobotXIII extends IterativeRobot {
         //SmartDashboard.putDouble("Right Drive Speed", driveTrain.getRightSpeed());
         //SmartDashboard.putDouble("Horiz Gyro", driveTrain.getHorizAngle());
         //SmartDashboard.putDouble("Vert Gyro", driveTrain.getVertAngle());
-        SmartDashboard.putDouble("Camera Offset", camera.originalGetX());
+        //SmartDashboard.putDouble("Camera Offset", camera.getX());
         //SmartDashboard.putDouble("Flipper Pot", flipper.getPos());
         SmartDashboard.putDouble("Turret Potentiometer", turret.getPos());
         SmartDashboard.putDouble("Turret Potentiometer SetPoint", turret.getPosSet());
