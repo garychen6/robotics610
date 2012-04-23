@@ -95,7 +95,7 @@ public class M_S_ShootBall extends Command {
             //equationSpeed = 0.0222 * (height * height) + 0.4359 * height + 2172.6;
             equationSpeed = 0.0406 * (height * height) - 2.063 * height + 2246.3;
             SmartDashboard.putDouble("Camera Height", height);
-            shooter.setShooter(equationSpeed + yOffset);
+            shooter.setShooter(equationSpeed);
             //shooter.setShooter(2000 + yOffset);
         } else if (Math.abs(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis)) > 0.1) {
             shooter.incRPM(-50 * MathUtils.pow(oi.getOperator().getRawAxis(InputConstants.kLeftYAxis), 3));
@@ -103,19 +103,16 @@ public class M_S_ShootBall extends Command {
         if (OI.getInstance().getOperator().getRawAxis(6) < -0.5) {
 //        if (Buttons.isPressed(InputConstants.kYButton, 2)) {
 //            if (!dPadUp) {
-            yOffset += 4;
-            System.out.println("yUP");
+            shooter.incShooter(10);
             //shooter.setShooter(equationSpeed + yOffset);
             dPadUp = true;
-            SmartDashboard.putString("offsets", "y:" + yOffset);
 //            }
         } else if (OI.getInstance().getOperator().getRawAxis(6) > 0.5) {
 //        else if (Buttons.isPressed(InputConstants.kAButton, 2)) {
 //            if (!dPadDown) {
-            yOffset -= 4;
+            shooter.incShooter(-10);
             //shooter.setShooter(equationSpeed + yOffset);
             dPadDown = true;
-            SmartDashboard.putString("offsets", "y:" + yOffset);
 //            }
 //        }else{
 //               dPadDown = false;
@@ -150,7 +147,7 @@ public class M_S_ShootBall extends Command {
 //            feeder.setFeeder(1);
 //            intake.setIntakeReverse(1);
 //        }
-  
+
     }
     // Make this return true when this Command no longer needs to run execute()
 
