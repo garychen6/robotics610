@@ -73,9 +73,9 @@ D: 0.0
     public static final double ultrasonicVtoF = 10.0 / (0.49 * 3.2808399);
     //TODO: Javadoc
     public static final double rPD = 0.0545415391;
-    public static final double turretP = -500;
+    public static final double turretP = -325;
 //    public static final double turretI = -0.1;
-    public static final double turretI = 0.0;
+    public static final double turretI = -0.003;
     public static final double turretD = 0.0;
     public static final double turretVBusP = 0.4;
     public static final double tLockP = 0;

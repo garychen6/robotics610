@@ -80,6 +80,25 @@ public class Shooter extends Subsystem {
         }
 
     }
+      /**
+     * Sets master Jaguar and syncs slave Jaguar.
+     * @param rpm The speed to set the target speed for the shooter at in rpm.
+     */
+    public void incShooter(double inc) {
+        try {
+            if (controlMode == 2) {
+                resetPID();
+            }
+            //shootJaguar.setX(-2 * rpm);
+            shootJaguar.setX(-rpm-inc);
+            rpm += inc;
+            //SmartDashboard.putDouble("Shooter Set Feet ", rpm);
+        } catch (Exception e) {
+            e.printStackTrace();
+            handleCANError();
+        }
+
+    }
 
     public void setAutonOver(boolean isOver) {
         autonOver = isOver;
