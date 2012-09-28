@@ -23,8 +23,38 @@ For this projects sake we will be using these constants:
 These constants refer to the CAN ID of each drivetrain jaguar on our robot.
 Please place them within the Robot Map Class.
 
+= Step 2: Defining DriveTrain Subsystem =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+First thing you should do is rename the default subsystem class to DriveTrain. From now on we will refer to this class as DriveTrain. 
+
+Inside this class you will define and initialize the 4 jaguars on the robot.
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+public class DriveTrain extends Subsystem {
+    CANJaguar rightMaster;
+
+    CANJaguar rightSlave;
+
+    CANJaguar leftMaster;
+
+    CANJaguar leftSlave;
+    
+    private DriveTrain(){
+        
+            rightMaster = new CANJaguar(RobotMap.DriveRightMaster);
+
+            rightSlave = new CANJaguar(RobotMap.DriveRightSlave);
+
+            leftMaster = new CANJaguar(RobotMap.DriveLeftMaster);
+
+            leftSlave = new CANJaguar(RobotMap.DriveLeftSlave);
+    
+    }
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+The netbeans is probably yelling at you for implementing the previous code. What your missing is 
