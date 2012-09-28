@@ -1,0 +1,30 @@
+#summary Creating Basic Drive Code with Command Based Robot Template
+
+= Basic Drive Code with Command Based Robot Template =
+
+In this wiki entry we will be instructing you in how to create a command based project that will drive our 2011-2012 Rebound Rumble directly forward for 10 seconds. In this tutorial we are assuming that you have the current FRC netbeans plugins. 
+
+
+= Step 0: Creating the Project =
+
+Create a new project in netbeans. In the new project menu under FRC Java select CommandBasedRobotTemplateProject. 
+
+
+= Step 1: Defining Electrical Constants =
+
+Next thing we like to do when creating any robot code project is define all our electrical constants a class. 
+
+For this projects sake we will be using these constants:
+    * public static final int DriveLeftMaster = 2; 
+    * public static final int DriveLeftSlave = 3;
+    * public static final int DriveRightMaster = 5;
+    * public static final int DriveRightSlave = 4;
+
+These constants refer to the CAN ID of each drivetrain jaguar on our robot.
+Please place them within the Robot Map Class.
+
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
