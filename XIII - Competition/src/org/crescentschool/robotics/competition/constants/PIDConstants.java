@@ -54,7 +54,7 @@ D: 0.0
     /**
      * The proportional constant of the flipper position control
      */
-    public static final double flipperP = -500;
+    public static final double flipperP = -300;
     /**
      * The integral constant of the flipper position control
      */
