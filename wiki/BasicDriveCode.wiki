@@ -38,7 +38,7 @@ public class DriveTrain extends Subsystem {
 
     CANJaguar leftMaster;
 
-    CANJaguar leftSlave;
+   CANJaguar leftSlave;
     
     private DriveTrain(){
         
@@ -48,7 +48,7 @@ public class DriveTrain extends Subsystem {
 
             leftMaster = new CANJaguar(RobotMap.DriveLeftMaster);
 
-            leftSlave = new CANJaguar(RobotMap.DriveLeftSlave);
+           leftSlave = new CANJaguar(RobotMap.DriveLeftSlave);
     
     }
 
@@ -59,6 +59,7 @@ public class DriveTrain extends Subsystem {
 
 Netbeans is probably yelling at you for implementing the previous code. What your missing is a CANTimeoutException.
 
+
 try{
  //Code Here
 }
@@ -66,9 +67,13 @@ catch (CANTimeoutException ex) {
  ex.printStackTrace();
 }
 
+
 You may need to import CANTimeoutException. To do this click alt-enter on the underlined(CANTimeoutException) and select add Import.
 
 Now that you have done that you must add the following to the constructor above:
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 leftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
 
@@ -78,13 +83,15 @@ leftSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
 
 rightSlave.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
 
-leftMaster.enableControl(0)
-;
+leftMaster.enableControl(0);
+
 rightMaster.enableControl(0);
 
 leftSlave.enableControl(0);
 
 rightSlave.enableControl(0);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 This will just confirm that the jaguars are in "percent power" mode, which takes a value from 0-1 for the power. It will then enable all four jaguars.
 
@@ -93,6 +100,8 @@ That's it for the constructor.
 Now we need to define methods in the subsystem to allow the command classes to interact with the DriveTrain.
 
 Here is a basic method that will take a power value(0-1) and set the jaguars.
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void setVBus(double power){
         try {
@@ -104,6 +113,8 @@ Here is a basic method that will take a power value(0-1) and set the jaguars.
             ex.printStackTrace();
         }
     }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Once you have something like that you can start defining the command to interact with the driveTrain.
 Go on to Part 2. 
