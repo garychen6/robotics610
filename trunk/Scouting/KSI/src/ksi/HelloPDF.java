@@ -78,71 +78,71 @@ public class HelloPDF {
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(c1);
 
-        c1 = new PdfPCell(new Phrase(blue1.teamName));
+        c1 = new PdfPCell(new Phrase(blue1.getTeamNum()));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(c1);
 
-        c1 = new PdfPCell(new Phrase(blue2.teamName));
+        c1 = new PdfPCell(new Phrase(blue2.getTeamNum()));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(c1);
 
-        c1 = new PdfPCell(new Phrase(blue3.teamName));
+        c1 = new PdfPCell(new Phrase(blue3.getTeamNum()));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(c1);
 
         //Add the cells for number of matches
         table.addCell("# of Matches");
-        table.addCell(blue1.get + "");
-        table.addCell(blue2.get + "");
-        table.addCell(blue3.get + "");
+        table.addCell(blue1.getNumMatches() + "");
+        table.addCell(blue2.getNumMatches() + "");
+        table.addCell(blue3.getNumMatches() + "");
         
         //Add the cells for the starting positions
         table.addCell("Starts Auto");
-        table.addCell(blue1.get +"");
-        table.addCell(blue2.get +"");
-        table.addCell(blue3.get +"");
+        table.addCell(blue1.getAutoStart() +"");
+        table.addCell(blue2.getAutoStart() +"");
+        table.addCell(blue3.getAutoStart() +"");
         
         //Add the cells for auto points
         table.addCell("Auto Pts");
-        table.addCell(blue1.get +"");
-        table.addCell(blue2.get +"");
-        table.addCell(blue3.get +"");
+        table.addCell(blue1.getAutoPoints() +"");
+        table.addCell(blue2.getAutoPoints() +"");
+        table.addCell(blue3.getAutoPoints() +"");
 
         //Add the cells for teleop scoring percentage
         table.addCell("Teleop Scoring %");
-        table.addCell(blue1.get +"");
-        table.addCell(blue2.get +"");
-        table.addCell(blue3.get +"");
+        table.addCell(blue1.getTeleScoringPercentage() +"");
+        table.addCell(blue2.getTeleScoringPercentage() +"");
+        table.addCell(blue3.getTeleScoringPercentage() +"");
 
         //Add the cells for the average points in teleop
         table.addCell("Teleop Avg Pts");
-        table.addCell(blue1.get +"");
-        table.addCell(blue2.get +"");
-        table.addCell(blue3.get +"");
+        table.addCell(blue1.getTelePoints() +"");
+        table.addCell(blue2.getTelePoints() +"");
+        table.addCell(blue3.getTelePoints() +"");
 
         //Add the cells for defensive rating
         table.addCell("Defensive Rating");
-        table.addCell(blue1.get +"");
-        table.addCell(blue2.get +"");
-        table.addCell(blue3.get +"");
+        table.addCell(blue1.getDefenseRating() +"");
+        table.addCell(blue2.getDefenseRating() +"");
+        table.addCell(blue3.getDefenseRating() +"");
 
         //Add the cells for the time required to hang
         table.addCell("Time Hang");
-        table.addCell(blue1.get +"");
-        table.addCell(blue2.get +"");
-        table.addCell(blue3.get +"");
+        table.addCell(blue1.getHangTime() +"");
+        table.addCell(blue2.getHangTime() +"");
+        table.addCell(blue3.getHangTime() +"");
 
         //Add the cells for the level the robot can hang at
         table.addCell("Hang Level");
-        table.addCell(blue1.get +"");
-        table.addCell(blue2.get +"");
-        table.addCell(blue3.get +"");
+        table.addCell(blue1.getHangLevel() +"");
+        table.addCell(blue2.getHangLevel() +"");
+        table.addCell(blue3.getHangLevel() +"");
 
         //Add the cells for the average KPR
         table.addCell("Avg KPR");
-        table.addCell(blue1.get +"");
-        table.addCell(blue2.get +"");
-        table.addCell(blue3.get +"");
+        table.addCell(blue1.getKPR() +"");
+        table.addCell(blue2.getKPR() +"");
+        table.addCell(blue3.getKPR() +"");
 
 
 
@@ -152,72 +152,72 @@ public class HelloPDF {
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table1.addCell(c1);
 
-        c1 = new PdfPCell(new Phrase(blue1.teamName));
+        c1 = new PdfPCell(new Phrase(red1.getTeamNum()));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table1.addCell(c1);
 
-        c1 = new PdfPCell(new Phrase(blue2.teamName));
+        c1 = new PdfPCell(new Phrase(red2.getTeamNum()));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table1.addCell(c1);
 
-        c1 = new PdfPCell(new Phrase(blue3.teamName));
+        c1 = new PdfPCell(new Phrase(red3.getTeamNum()));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table1.addCell(c1);
 
 
-        //Add cells for the number of matches played
+        //Add the cells for number of matches
         table1.addCell("# of Matches");
-        table1.addCell(blue1.get +"");
-        table1.addCell(blue2.get +"");
-        table1.addCell(blue3.get +"");
+        table1.addCell(red1.getNumMatches() + "");
+        table1.addCell(red2.getNumMatches() + "");
+        table1.addCell(red3.getNumMatches() + "");
         
-        //Add cells for the starting location
+        //Add the cells for the starting positions
         table1.addCell("Starts Auto");
-        table1.addCell(blue1.get +"");
-        table1.addCell(blue2.get +"");
-        table1.addCell(blue3.get +"");
+        table1.addCell(red1.getAutoStart() +"");
+        table1.addCell(red2.getAutoStart() +"");
+        table1.addCell(red3.getAutoStart() +"");
         
-        //Add cells for the average auto points
+        //Add the cells for auto points
         table1.addCell("Auto Pts");
-        table1.addCell(blue1.get +"");
-        table1.addCell(blue2.get +"");
-        table1.addCell(blue3.get +"");
+        table1.addCell(red1.getAutoPoints() +"");
+        table1.addCell(red2.getAutoPoints() +"");
+        table1.addCell(red3.getAutoPoints() +"");
 
-        //Add cells for the teleop scoring percentage
+        //Add the cells for teleop scoring percentage
         table1.addCell("Teleop Scoring %");
-        table1.addCell(blue1.get +"");
-        table1.addCell(blue2.get +"");
-        table1.addCell(blue3.get +"");
+        table1.addCell(red1.getTeleScoringPercentage() +"");
+        table1.addCell(red2.getTeleScoringPercentage() +"");
+        table1.addCell(red3.getTeleScoringPercentage() +"");
 
-        //Add cells for the teleop average points
+        //Add the cells for the average points in teleop
         table1.addCell("Teleop Avg Pts");
-        table1.addCell(blue1.get +"");
-        table1.addCell(blue2.get +"");
-        table1.addCell(blue3.get +"");
+        table1.addCell(red1.getTelePoints() +"");
+        table1.addCell(red2.getTelePoints() +"");
+        table1.addCell(red3.getTelePoints() +"");
 
-        //Add cells for the defensive rating
+        //Add the cells for defensive rating
         table1.addCell("Defensive Rating");
-        table1.addCell(blue1.get +"");
-        table1.addCell(blue2.get +"");
-        table1.addCell(blue3.get +"");
+        table1.addCell(red1.getDefenseRating() +"");
+        table1.addCell(red2.getDefenseRating() +"");
+        table1.addCell(red3.getDefenseRating() +"");
 
-        //Add cells for the time required to hang
+        //Add the cells for the time required to hang
         table1.addCell("Time Hang");
-        table1.addCell(blue1.get +"");
-        table1.addCell(blue2.get +"");
-        table1.addCell(blue3.get +"");
+        table1.addCell(red1.getHangTime() +"");
+        table1.addCell(red2.getHangTime() +"");
+        table1.addCell(red3.getHangTime() +"");
 
-        //Add cells for the highest level of hang
+        //Add the cells for the level the robot can hang at
         table1.addCell("Hang Level");
-        table1.addCell(blue1.get +"");
-        table1.addCell(blue2.get +"");
-        table1.addCell(blue3.get +"");
+        table1.addCell(red1.getHangLevel() +"");
+        table1.addCell(red2.getHangLevel() +"");
+        table1.addCell(red3.getHangLevel() +"");
 
-        //Add cells for average KPR.
+        //Add the cells for the average KPR
         table1.addCell("Avg KPR");
-        table1.addCell(blue1.get +"");
-        table1.addCell(blue2.get +"");
-        table1.addCell(blue3.get +"");
+        table1.addCell(red1.getKPR() +"");
+        table1.addCell(red2.getKPR() +"");
+        table1.addCell(red3.getKPR() +"");
 
         Paragraph paragraph = new Paragraph("Blue Alliance", blueFont);
         paragraph.setAlignment(Element.ALIGN_CENTER);
@@ -234,6 +234,7 @@ public class HelloPDF {
         document.close();
     }
 
+    /*
     public static void createTeamPDF(MatchSheet[] matches)
             throws DocumentException {
         Document document = new Document();
@@ -333,6 +334,7 @@ public class HelloPDF {
         document.add(content);
         document.close();
     }
+    */
 
     private static void addEmptyLine(Paragraph paragraph, int number) {
         for (int i = 0; i < number; i++) {
