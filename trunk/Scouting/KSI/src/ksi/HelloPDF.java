@@ -24,45 +24,48 @@ import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HelloPDF {
 
     private static String FILE = "c:/temp/ScoutingSheet.pdf";
     private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
             Font.BOLD);
-    private static Font redFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,
+    private static Font redFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
             Font.NORMAL, BaseColor.RED);
-    private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16,
-            Font.BOLD);
-    private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12,
-            Font.BOLD);
+    private static Font blueFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
+            Font.NORMAL, BaseColor.BLUE);
 
     public static void main(String[] args) {
         try {
-            Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(FILE));
-            document.open();
+
             int[] teamNumbers = new int[3];
             teamNumbers[0] = 610;
             teamNumbers[1] = 611;
             teamNumbers[2] = 612;
             TeamSheet sheet = new TeamSheet("610");
-            createScoutingSheet(document, sheet, sheet, sheet);
+            createScoutingSheet(sheet, sheet, sheet);
 
 
-            document.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // iText allows to add metadata to the PDF which can be viewed in your Adobe
-    // Reader
-    // under File -> Properties
-    private static void createScoutingSheet(Document document, TeamSheet blue1, TeamSheet blue2, TeamSheet blue3)
+    public static void createScoutingSheet(TeamSheet blue1, TeamSheet blue2, TeamSheet blue3)
             throws DocumentException {
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream(FILE));
+        } catch (FileNotFoundException ex) {
+        }
+        document.open();
+
         Paragraph content = new Paragraph();
-        
+
 
 
         PdfPTable table = new PdfPTable(4);
@@ -83,61 +86,61 @@ public class HelloPDF {
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(c1);
 
-        
 
 
-        table.addCell("# of Matches ");
+
+        table.addCell("# of Matches");
         table.addCell(blue1.numMatches + "");
         table.addCell(blue2.numMatches + "");
         table.addCell(blue3.numMatches + "");
-        table.addCell("auto start");
+        table.addCell("Starts Auto");
         table.addCell("Auton Location");
         table.addCell("Auton Location");
         table.addCell("Auton Location");
-        table.addCell("auto points");
+        table.addCell("Auto Pts");
         table.addCell("Average Auton ");
         table.addCell("Average Auton ");
         table.addCell("Average Auton ");
 
-        table.addCell("auto scoring %");
+        table.addCell("Auto Scoring %");
         table.addCell("Scoring ");
         table.addCell("Scoring ");
         table.addCell("Scoring ");
-        
-        table.addCell("teleop avg pts");
+
+        table.addCell("Teleop Avg Pts");
         table.addCell("Average Points ");
         table.addCell("Average Points ");
         table.addCell("Average Points ");
-        
+
         table.addCell("Defensive Rating");
         table.addCell("Defense Rating");
         table.addCell("Defense Rating");
         table.addCell("Defense Rating");
-        
+
         table.addCell("Time Hang");
         table.addCell("Time");
         table.addCell("Time");
         table.addCell("Time");
-        
+
         table.addCell("Hang Level");
         table.addCell("Level");
         table.addCell("Level");
         table.addCell("Level");
-        
+
         table.addCell("KPR");
         table.addCell("99");
         table.addCell("100");
         table.addCell(">9000");
-        
-        
-    
-        
-        
-        
-        
+
+
+
+
+
+
+
         PdfPTable table1 = new PdfPTable(4);
 
-         c1 = new PdfPCell(new Phrase("Field"));
+        c1 = new PdfPCell(new Phrase("Field"));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table1.addCell(c1);
 
@@ -153,61 +156,64 @@ public class HelloPDF {
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
         table1.addCell(c1);
 
-        
 
 
-        table1.addCell("# of Matches ");
+        table1.addCell("# of Matches");
         table1.addCell(blue1.numMatches + "");
         table1.addCell(blue2.numMatches + "");
         table1.addCell(blue3.numMatches + "");
-        table1.addCell("auto start");
+        table1.addCell("Starts Auto");
         table1.addCell("Auton Location");
         table1.addCell("Auton Location");
         table1.addCell("Auton Location");
-        table1.addCell("auto points");
+        table1.addCell("Auto Pts");
         table1.addCell("Average Auton ");
         table1.addCell("Average Auton ");
         table1.addCell("Average Auton ");
 
-        table1.addCell("auto scoring %");
+        table1.addCell("Auto Scoring %");
         table1.addCell("Scoring ");
         table1.addCell("Scoring ");
         table1.addCell("Scoring ");
-        
-        table1.addCell("teleop avg pts");
+
+        table1.addCell("Teleop Avg Pts");
         table1.addCell("Average Points ");
         table1.addCell("Average Points ");
         table1.addCell("Average Points ");
-        
+
         table1.addCell("Defensive Rating");
         table1.addCell("Defense Rating");
         table1.addCell("Defense Rating");
         table1.addCell("Defense Rating");
-        
+
         table1.addCell("Time Hang");
         table1.addCell("Time");
         table1.addCell("Time");
         table1.addCell("Time");
-        
+
         table1.addCell("Hang Level");
         table1.addCell("Level");
         table1.addCell("Level");
         table1.addCell("Level");
-        
+
         table1.addCell("KPR");
         table1.addCell("99");
         table1.addCell("100");
         table1.addCell(">9000");
-        
-        content.add(new Paragraph("Blue Alliance", catFont));
+
+        Paragraph paragraph = new Paragraph("Blue Alliance", blueFont);
+        paragraph.setAlignment(Element.ALIGN_CENTER);
+        content.add(paragraph);
         addEmptyLine(content, 1);
         content.add(table);
-        
-        content.add(new Paragraph("Red Alliance", catFont));
+        paragraph = new Paragraph("Red Alliance", redFont);
+        paragraph.setAlignment(Element.ALIGN_CENTER);
+        content.add(paragraph);
         addEmptyLine(content, 1);
         content.add(table1);
         document.add(content);
 
+        document.close();
     }
 
     private static void addEmptyLine(Paragraph paragraph, int number) {
