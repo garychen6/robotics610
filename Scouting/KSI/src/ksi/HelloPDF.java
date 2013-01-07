@@ -25,6 +25,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,34 +43,6 @@ public class HelloPDF {
     HelloPDF(String directory) {
         this.matchFile = directory + "/Match.pdf";
         this.teamFile = directory + "/Team.pdf";
-    }
-
-    public static void main(String[] args) {
-        try {
-
-
-            TeamSheet sheet = new TeamSheet("610");
-            sheet.setAutoStart("L");
-            createMatchPDF(sheet, sheet, sheet, sheet, sheet, sheet);
-
-            MatchSheet matchSheet = new MatchSheet(1);
-            matchSheet.setTeamNum("610");
-            matchSheet.setAutonPointsScored(9001);
-            matchSheet.setDefense(10);
-            matchSheet.setHangLevel(3);
-            matchSheet.setHangTime(0.01);
-            matchSheet.setShotsAttemptedHigh(1);
-            matchSheet.setShotsScoredHigh(1);
-            matchSheet.setStartingPos("C");
-
-            MatchSheet[] array = new MatchSheet[2];
-            array[0] = matchSheet;
-            array[1] = matchSheet;
-
-            createTeamPDF(array);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static void createMatchPDF(TeamSheet blue1, TeamSheet blue2, TeamSheet blue3, TeamSheet red1, TeamSheet red2, TeamSheet red3)
@@ -249,7 +222,7 @@ public class HelloPDF {
         document.close();
     }
 
-    public static void createTeamPDF(MatchSheet[] matches)
+    public static void createTeamPDF(ArrayList<MatchSheet> matches)
             throws DocumentException {
         Document document = new Document();
         try {
@@ -261,15 +234,15 @@ public class HelloPDF {
         Paragraph content = new Paragraph();
 
 
-        PdfPTable table = new PdfPTable(matches.length + 2);
+        PdfPTable table = new PdfPTable(matches.size() + 2);
 
         PdfPCell c1 = new PdfPCell(new Phrase("Match #"));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
 
         table.addCell(c1);
 
-        for (int i = 0; i < matches.length; i++) {
-            c1 = new PdfPCell(new Phrase(matches[i].getMatchNum() + ""));
+        for (int i = 0; i < matches.size(); i++) {
+            c1 = new PdfPCell(new Phrase(matches.get(i).getMatchNum() + ""));
             c1.setHorizontalAlignment(Element.ALIGN_CENTER);
             table.addCell(c1);
         }
@@ -280,98 +253,98 @@ public class HelloPDF {
 
         
         table.addCell("Starting Position");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getStartingPos());
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getStartingPos());
         }
         table.addCell("N/A");
 
         table.addCell("Auto Points");
         double total = 0;
-        for (int i = 0; i < matches.length; i++) {
-            total+=matches[i].getAutonPointsScored();
-            table.addCell(matches[i].getAutonPointsScored() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getAutonPointsScored();
+            table.addCell(matches.get(i).getAutonPointsScored() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
         
         total = 0;
         table.addCell("Teleop Low Attempted");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getShotsAttemptedLow() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getShotsAttemptedLow() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
         
         total = 0;
         table.addCell("Teleop Low Scored");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getShotsScoredLow() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getShotsScoredLow() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
 
         total = 0;
         table.addCell("Teleop Middle Attempted");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getShotsAttemptedMiddle() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getShotsAttemptedMiddle() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
         
         
         total = 0;
         table.addCell("Teleop Middle Scored");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getShotsScoredMiddle() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getShotsScoredMiddle() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
 
         total = 0;
         table.addCell("Teleop High Attempted");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getShotsAttemptedHigh() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getShotsAttemptedHigh() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
         
         total = 0;
         table.addCell("Teleop High Scored");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getShotsScoredHigh() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getShotsScoredHigh() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
 
         total = 0;
         table.addCell("Teleop Pyramid Attempted");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getShotsAttemptedPyramid() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getShotsAttemptedPyramid() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
         
         total = 0;
         table.addCell("Teleop Pyramid Scored");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getShotsScoredPyramid() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getShotsScoredPyramid() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
 
         total = 0;
         table.addCell("Defense Rating");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getDefense() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getDefense() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
 
         total = 0;
         table.addCell("Hang Level");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getHangLevel() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getHangLevel() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
 
         total = 0;
         table.addCell("Hang Time");
-        for (int i = 0; i < matches.length; i++) {
-            table.addCell(matches[i].getHangTime() + "");
+        for (int i = 0; i < matches.size(); i++) {
+            table.addCell(matches.get(i).getHangTime() + "");
         }
-        table.addCell(total/matches.length + "");
+        table.addCell(total/matches.size() + "");
 
-        Paragraph paragraph = new Paragraph(matches[0].getTeamNum(), catFont);
+        Paragraph paragraph = new Paragraph(matches.get(0).getTeamNum(), catFont);
         paragraph.setAlignment(Element.ALIGN_CENTER);
         content.add(paragraph);
         addEmptyLine(content, 1);
