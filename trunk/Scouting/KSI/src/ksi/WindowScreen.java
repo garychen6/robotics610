@@ -4,6 +4,7 @@
  */
 package ksi;
 
+import com.itextpdf.text.DocumentException;
 import com.jtattoo.plaf.graphite.GraphiteLookAndFeel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,6 +41,23 @@ import javax.swing.WindowConstants;
  */
 public class WindowScreen extends JFrame {
 
+    /*  Array Indexes
+     TeamNumber
+     MatchNumber
+     StartingPosition
+     PointsScored
+     AP
+     AH
+     AM
+     AL
+     SP
+     SH
+     SM
+     SL
+     Defense
+     Hang Level
+     Hang Time
+     */
     JTextField textField[] = new JTextField[15];
     String[] info = new String[15];
     String comment;
@@ -312,7 +330,7 @@ public class WindowScreen extends JFrame {
         file.add(save);
         file.add(exit);
         menu.add(file);
-       
+
         JMenu sheets = new JMenu("Sheet");
         JMenuItem team = new JMenuItem("Team Sheet");
         team.addActionListener(new ActionListener() {
@@ -321,15 +339,21 @@ public class WindowScreen extends JFrame {
             }
         });
         JMenuItem match = new JMenuItem("Match Sheet");
-        team.addActionListener(new ActionListener() {
+        match.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                matchPDF();
+                try {
+                    matchPDF();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(WindowScreen.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (DocumentException ex) {
+                    Logger.getLogger(WindowScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         sheets.add(team);
         sheets.add(match);
         menu.add(sheets);
-        
+
         setJMenuBar(menu);
     }
 
@@ -376,14 +400,19 @@ public class WindowScreen extends JFrame {
         fl.close();
     }
 
-    public void teamPDF(){
-        String teamNumber =  JOptionPane.showInputDialog("Team:");
+    public void teamPDF() {
+        String teamNumber = JOptionPane.showInputDialog("Team:");
     }
-    
-    public void matchPDF(){
-        String teams = JOptionPane.showInputDialog("Team Numbers: \n(eg.:610,610,610)");
-        
+
+    public void matchPDF() throws FileNotFoundException, DocumentException {
+        String[] teams = JOptionPane.showInputDialog("Team Numbers: \n(eg.:Blue1,Blue2,Blue3,Red1,Red2,Red3)").split(",");
+        for (int i = 0; i < teams.length; i++) {
+            dataBase.update(teams[i]);
+        }
+        HelloPDF matchPDF = new HelloPDF(dataBasePath);
+        matchPDF.createMatchPDF(dataBase.lookUp(teams[0]),dataBase.lookUp(teams[1]),dataBase.lookUp(teams[2]),dataBase.lookUp(teams[3]),dataBase.lookUp(teams[4]),dataBase.lookUp(teams[5]));
     }
+
     public static void main(String[] args) {
         try {
             Properties props = new Properties();
