@@ -40,9 +40,9 @@ public class HelloPDF {
     private static Font blueFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
             Font.NORMAL, BaseColor.BLUE);
 
-    HelloPDF(String directory, String teamNum, String matchNum) {
-        this.matchFile = directory + "/Match " + matchNum + ".pdf";
-        this.teamFile = directory + "/Team " + teamNum + ".pdf";
+    HelloPDF(String directory, String teamFileName, String matchFileName) {
+        this.matchFile = directory + "/Match " + matchFileName + ".pdf";
+        this.teamFile = directory + "/Team " + teamFileName + ".pdf";
     }
 
     public static void createMatchPDF(TeamSheet blue1, TeamSheet blue2, TeamSheet blue3, TeamSheet red1, TeamSheet red2, TeamSheet red3)
