@@ -29,6 +29,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -70,49 +71,15 @@ public class WindowScreen extends JFrame {
     WindowScreen() {
         super("Scouting Interface");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JMenuBar menu = new JMenuBar();
-        JMenu file = new JMenu("File");
-        file.setMnemonic(KeyEvent.VK_F1);
-        JMenuItem newItem = new JMenuItem("New");
         dataBasePath = JOptionPane.showInputDialog("DataBase FilePath?\nThis is where team folders will be created.\n*NOTE:This must be a real path.* ");
         dataBase = new DataBaseClient(dataBasePath);
+        initMenus();
         initComponents();
-        newItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                clearForm();
-            }
-        });
-        JMenuItem exit = new JMenuItem("Exit");
-        exit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-        JMenuItem save = new JMenuItem("Save");
-        save.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    try {
-                        saveFile();
-                    } catch (ParseException ex) {
-                        Logger.getLogger(WindowScreen.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(WindowScreen.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-        file.add(newItem);
-        file.add(save);
-        file.add(exit);
-        menu.add(file);
-        setJMenuBar(menu);
-        // show application
         setLocation(32, 32);
         setSize(500, 700);
+        setResizable(false);
         setVisible(true);
         pack();
-        // repaint();
     }
 
     private void initComponents() {
@@ -309,7 +276,62 @@ public class WindowScreen extends JFrame {
                 .addContainerGap()));
 
         pack();
-    }// </editor-fold>
+    }
+
+    private void initMenus() {
+        JMenuBar menu = new JMenuBar();
+        JMenu file = new JMenu("File");
+        JMenuItem newItem = new JMenuItem("New");
+        newItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                clearForm();
+            }
+        });
+        JMenuItem exit = new JMenuItem("Exit");
+        exit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        JMenuItem save = new JMenuItem("Save");
+        save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    try {
+                        saveFile();
+                    } catch (ParseException ex) {
+                        Logger.getLogger(WindowScreen.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(WindowScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, java.awt.Event.CTRL_MASK));
+        file.add(newItem);
+        file.add(save);
+        file.add(exit);
+        menu.add(file);
+       
+        JMenu sheets = new JMenu("Sheet");
+        JMenuItem team = new JMenuItem("Team Sheet");
+        team.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                teamPDF();
+            }
+        });
+        JMenuItem match = new JMenuItem("Match Sheet");
+        team.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                matchPDF();
+            }
+        });
+        sheets.add(team);
+        sheets.add(match);
+        menu.add(sheets);
+        
+        setJMenuBar(menu);
+    }
 
     public void clearForm() {
         for (int i = 0; i < textField.length; i++) {
@@ -335,23 +357,32 @@ public class WindowScreen extends JFrame {
     }
 
     public void makeEntry() throws IOException {
-           if (!teams.contains(info[0])) {
+        if (!teams.contains(info[0])) {
             teams.add(info[0]);
             File dir = new File(dataBasePath + "\\" + info[0]);
             dir.mkdir();
-            File commentFile = new File(dataBasePath + "\\" + info[0]+ "\\" +"Comments.txt");
+            File commentFile = new File(dataBasePath + "\\" + info[0] + "\\" + "Comments.txt");
             commentFile.createNewFile();
             commentFile.setReadable(true);
             commentFile.setWritable(true);
         }
-            FileWriter fl = new FileWriter(dataBasePath + "\\" + info[0] + "\\" + info[0] + "-" + info[1] + ".txt");
-            for(int i = 0; i < info.length; i++){
-                fl.write(info[i]+"\r\n");
-            }
-            fl.close();
-            fl = new FileWriter(dataBasePath + "\\" + info[0]+ "\\" +"Comments.txt");
-            fl.write(comment+"\r\n");
-            fl.close();
+        FileWriter fl = new FileWriter(dataBasePath + "\\" + info[0] + "\\" + info[0] + "-" + info[1] + ".txt");
+        for (int i = 0; i < info.length; i++) {
+            fl.write(info[i] + "\r\n");
+        }
+        fl.close();
+        fl = new FileWriter(dataBasePath + "\\" + info[0] + "\\" + "Comments.txt");
+        fl.write(comment + "\r\n");
+        fl.close();
+    }
+
+    public void teamPDF(){
+        String teamNumber =  JOptionPane.showInputDialog("Team:");
+    }
+    
+    public void matchPDF(){
+        String teams = JOptionPane.showInputDialog("Team Numbers: \n(eg.:610,610,610)");
+        
     }
     public static void main(String[] args) {
         try {
