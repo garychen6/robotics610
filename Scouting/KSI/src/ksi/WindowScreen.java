@@ -335,7 +335,13 @@ public class WindowScreen extends JFrame {
         JMenuItem team = new JMenuItem("Team Sheet");
         team.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                teamPDF();
+                try {
+                    teamPDF();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(WindowScreen.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (DocumentException ex) {
+                    Logger.getLogger(WindowScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         JMenuItem match = new JMenuItem("Match Sheet");
@@ -400,17 +406,22 @@ public class WindowScreen extends JFrame {
         fl.close();
     }
 
-    public void teamPDF() {
+    public void teamPDF() throws FileNotFoundException, DocumentException {
         String teamNumber = JOptionPane.showInputDialog("Team:");
+        String teamFileName = JOptionPane.showInputDialog("Sheet Name:");
+        dataBase.update(teamNumber);
+        HelloPDF teamPDF = new HelloPDF(dataBasePath,teamFileName,"");
+        teamPDF.createTeamPDF(dataBase.lookUpMatchSheets(teamNumber));
     }
 
     public void matchPDF() throws FileNotFoundException, DocumentException {
-        String[] teams = JOptionPane.showInputDialog("Team Numbers: \n(eg.:Blue1,Blue2,Blue3,Red1,Red2,Red3)").split(",");
+        String[] teams = JOptionPane.showInputDialog("Team Numbers: \n(eg.:Blue1,Blue2,Blue3,Red1,Red2,Red3)").split(",");    
+        String matchFileName = JOptionPane.showInputDialog("Sheet Name:");
         for (int i = 0; i < teams.length; i++) {
             dataBase.update(teams[i]);
         }
-        HelloPDF matchPDF = new HelloPDF(dataBasePath);
-        matchPDF.createMatchPDF(dataBase.lookUp(teams[0]),dataBase.lookUp(teams[1]),dataBase.lookUp(teams[2]),dataBase.lookUp(teams[3]),dataBase.lookUp(teams[4]),dataBase.lookUp(teams[5]));
+        HelloPDF matchPDF = new HelloPDF(dataBasePath,"",matchFileName);
+        matchPDF.createMatchPDF(dataBase.lookUpTeamSheet(teams[0]),dataBase.lookUpTeamSheet(teams[1]),dataBase.lookUpTeamSheet(teams[2]),dataBase.lookUpTeamSheet(teams[3]),dataBase.lookUpTeamSheet(teams[4]),dataBase.lookUpTeamSheet(teams[5]));
     }
 
     public static void main(String[] args) {

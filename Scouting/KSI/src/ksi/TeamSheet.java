@@ -80,9 +80,9 @@ public class TeamSheet {
         hangLevel = Math.max(hangLevel, level);
     }
 
-    public void updateKPR() {
+    public void updateKPR(int level) {
         kpr *= numMatches - 1;
-        kpr += (autoPoints + telePoints) + (hangLevel * 10);
+        kpr += (autoPoints + telePoints) + (level * 10);
         kpr /= numMatches;
     }
 
