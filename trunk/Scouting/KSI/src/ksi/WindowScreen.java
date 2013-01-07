@@ -20,7 +20,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.GroupLayout;
-import javax.swing.JFormattedTextField;
+import javax.swing.JTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -39,7 +39,7 @@ import javax.swing.WindowConstants;
  */
 public class WindowScreen extends JFrame {
 
-    JFormattedTextField textField[] = new JFormattedTextField[15];
+    JTextField textField[] = new JTextField[15];
     String[] info = new String[15];
     String comment;
     JTextArea comments;
@@ -66,7 +66,6 @@ public class WindowScreen extends JFrame {
     String dataBasePath;
     DataBaseClient dataBase;
     ArrayList teams = new ArrayList();
-    public int i = 0;
 
     WindowScreen() {
         super("Scouting Interface");
@@ -135,84 +134,9 @@ public class WindowScreen extends JFrame {
         jLabel15 = new JLabel();
         jLabel16 = new JLabel();
 
-        for (i = 0; i < 15; i++) {
-            textField[i] = new JFormattedTextField();
+        for (int i = 0; i < 15; i++) {
+            textField[i] = new JTextField();
         }
-        textField[0].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[0] = textField[0].getText();
-            }
-        });
-        textField[1].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[1] = textField[1].getText();
-            }
-        });
-        textField[2].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[2] = textField[2].getText();
-            }
-        });
-        textField[3].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[3] = textField[3].getText();
-            }
-        });
-        textField[4].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[4] = textField[4].getText();
-            }
-        });
-        textField[5].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[5] = textField[5].getText();
-            }
-        });
-        textField[6].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[6] = textField[6].getText();
-            }
-        });
-        textField[7].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[7] = textField[7].getText();
-            }
-        });
-        textField[8].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[8] = textField[8].getText();
-            }
-        });
-        textField[9].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[9] = textField[9].getText();
-            }
-        });
-        textField[10].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[10] = textField[10].getText();
-            }
-        });
-        textField[11].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[11] = textField[11].getText();
-            }
-        });
-        textField[12].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[12] = textField[12].getText();
-            }
-        });
-        textField[13].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[13] = textField[13].getText();
-            }
-        });
-        textField[14].addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                info[14] = textField[14].getText();
-            }
-        });
         comments = new JTextArea();
         comments.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
@@ -388,21 +312,21 @@ public class WindowScreen extends JFrame {
     }// </editor-fold>
 
     public void clearForm() {
-        for (i = 0; i < textField.length; i++) {
+        for (int i = 0; i < textField.length; i++) {
             textField[i].setText("");
         }
         comments.setText("Comments");
     }
 
-    void commitEdit() throws ParseException {
-        for (i = 0; i < textField.length; i++) {
-            textField[i].commitEdit();
+    void commitVal() throws ParseException {
+        for (int i = 0; i < textField.length; i++) {
+            info[i] = textField[i].getText();
         }
         comment = comments.getText();
     }
 
     public void saveFile() throws IOException, ParseException {
-        commitEdit();
+        commitVal();
         makeEntry();
         clearForm();
     }
@@ -421,8 +345,8 @@ public class WindowScreen extends JFrame {
             commentFile.setWritable(true);
         }
             FileWriter fl = new FileWriter(dataBasePath + "\\" + info[0] + "\\" + info[0] + "-" + info[1] + ".txt");
-            for(int j = 0; j < info.length; j++){
-                fl.write(info[j]+"\r\n");
+            for(int i = 0; i < info.length; i++){
+                fl.write(info[i]+"\r\n");
             }
             fl.close();
             fl = new FileWriter(dataBasePath + "\\" + info[0]+ "\\" +"Comments.txt");
