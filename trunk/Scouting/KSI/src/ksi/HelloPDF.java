@@ -41,8 +41,8 @@ public class HelloPDF {
             Font.NORMAL, BaseColor.BLUE);
 
     HelloPDF(String directory, String teamFileName, String matchFileName) {
-        this.matchFile = directory + "/Match " + matchFileName + ".pdf";
-        this.teamFile = directory + "/Team " + teamFileName + ".pdf";
+        this.matchFile = directory + "/" + matchFileName + ".pdf";
+        this.teamFile = directory + "/" + teamFileName + ".pdf";
     }
 
     public static void createMatchPDF(TeamSheet blue1, TeamSheet blue2, TeamSheet blue3, TeamSheet red1, TeamSheet red2, TeamSheet red3)
