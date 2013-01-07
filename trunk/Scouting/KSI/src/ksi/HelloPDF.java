@@ -40,9 +40,9 @@ public class HelloPDF {
     private static Font blueFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
             Font.NORMAL, BaseColor.BLUE);
 
-    HelloPDF(String directory) {
-        this.matchFile = directory + "/Match.pdf";
-        this.teamFile = directory + "/Team.pdf";
+    HelloPDF(String directory, String teamNum, String matchNum) {
+        this.matchFile = directory + "/Match " + matchNum + ".pdf";
+        this.teamFile = directory + "/Team " + teamNum + ".pdf";
     }
 
     public static void createMatchPDF(TeamSheet blue1, TeamSheet blue2, TeamSheet blue3, TeamSheet red1, TeamSheet red2, TeamSheet red3)
@@ -269,6 +269,7 @@ public class HelloPDF {
         total = 0;
         table.addCell("Teleop Low Attempted");
         for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getShotsAttemptedLow();
             table.addCell(matches.get(i).getShotsAttemptedLow() + "");
         }
         table.addCell(total/matches.size() + "");
@@ -276,6 +277,7 @@ public class HelloPDF {
         total = 0;
         table.addCell("Teleop Low Scored");
         for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getShotsScoredLow();
             table.addCell(matches.get(i).getShotsScoredLow() + "");
         }
         table.addCell(total/matches.size() + "");
@@ -283,6 +285,7 @@ public class HelloPDF {
         total = 0;
         table.addCell("Teleop Middle Attempted");
         for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getShotsAttemptedMiddle();
             table.addCell(matches.get(i).getShotsAttemptedMiddle() + "");
         }
         table.addCell(total/matches.size() + "");
@@ -291,6 +294,7 @@ public class HelloPDF {
         total = 0;
         table.addCell("Teleop Middle Scored");
         for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getShotsScoredMiddle();
             table.addCell(matches.get(i).getShotsScoredMiddle() + "");
         }
         table.addCell(total/matches.size() + "");
@@ -298,6 +302,7 @@ public class HelloPDF {
         total = 0;
         table.addCell("Teleop High Attempted");
         for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getShotsAttemptedHigh();
             table.addCell(matches.get(i).getShotsAttemptedHigh() + "");
         }
         table.addCell(total/matches.size() + "");
@@ -305,6 +310,7 @@ public class HelloPDF {
         total = 0;
         table.addCell("Teleop High Scored");
         for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getShotsScoredHigh();
             table.addCell(matches.get(i).getShotsScoredHigh() + "");
         }
         table.addCell(total/matches.size() + "");
@@ -312,6 +318,7 @@ public class HelloPDF {
         total = 0;
         table.addCell("Teleop Pyramid Attempted");
         for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getShotsAttemptedPyramid();
             table.addCell(matches.get(i).getShotsAttemptedPyramid() + "");
         }
         table.addCell(total/matches.size() + "");
@@ -319,6 +326,7 @@ public class HelloPDF {
         total = 0;
         table.addCell("Teleop Pyramid Scored");
         for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getShotsScoredPyramid();
             table.addCell(matches.get(i).getShotsScoredPyramid() + "");
         }
         table.addCell(total/matches.size() + "");
@@ -326,6 +334,7 @@ public class HelloPDF {
         total = 0;
         table.addCell("Defense Rating");
         for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getDefense();
             table.addCell(matches.get(i).getDefense() + "");
         }
         table.addCell(total/matches.size() + "");
@@ -333,6 +342,7 @@ public class HelloPDF {
         total = 0;
         table.addCell("Hang Level");
         for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getHangLevel();
             table.addCell(matches.get(i).getHangLevel() + "");
         }
         table.addCell(total/matches.size() + "");
@@ -340,6 +350,7 @@ public class HelloPDF {
         total = 0;
         table.addCell("Hang Time");
         for (int i = 0; i < matches.size(); i++) {
+            total+=matches.get(i).getHangTime();
             table.addCell(matches.get(i).getHangTime() + "");
         }
         table.addCell(total/matches.size() + "");
