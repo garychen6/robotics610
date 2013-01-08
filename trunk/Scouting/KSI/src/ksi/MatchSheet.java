@@ -13,7 +13,7 @@ public class MatchSheet {
    
     String teamNum;
     String startingPos;
-    int matchNum;
+    String matchNum;
     double autonPointsScored;
     double shotsAttemptedPyramid;
     double shotsAttemptedHigh;
@@ -27,7 +27,8 @@ public class MatchSheet {
     double hangLevel;
     double hangTime;
 
-    MatchSheet(int matchNum) {
+
+    MatchSheet(String matchNum) {
         this.matchNum = matchNum;
         teamNum = "";
         startingPos = "";
@@ -57,7 +58,7 @@ public class MatchSheet {
         this.startingPos = startingPos;
     }
 
-    public void setMatchNum(int matchNum) {
+    public void setMatchNum(String matchNum) {
         this.matchNum = matchNum;
     }
 
@@ -113,7 +114,7 @@ public class MatchSheet {
         return startingPos;
     }
 
-    public int getMatchNum() {
+    public String getMatchNum() {
         return matchNum;
     }
 

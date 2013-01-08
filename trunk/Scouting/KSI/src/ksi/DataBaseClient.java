@@ -70,7 +70,7 @@ public class DataBaseClient {
     }
 
     public void addMatchSheet(String[] info) {
-        MatchSheet ms = new MatchSheet(Integer.parseInt(info[1]));
+        MatchSheet ms = new MatchSheet(Integer.parseInt(info[1])+"");
         if(!matchSheets.containsKey(info[0])){
             ArrayList<MatchSheet> sheets;
             sheets = new ArrayList<MatchSheet>();
