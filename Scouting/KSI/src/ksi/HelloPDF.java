@@ -5,29 +5,19 @@
  */
 package ksi;
 
-import java.io.FileOutputStream;
-import java.util.Date;
-
-import com.itextpdf.text.Anchor;
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chapter;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.List;
-import com.itextpdf.text.ListItem;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Section;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class HelloPDF {
 
@@ -39,6 +29,9 @@ public class HelloPDF {
             Font.NORMAL, BaseColor.RED);
     private static Font blueFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
             Font.NORMAL, BaseColor.BLUE);
+    private static Font greenFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
+            Font.NORMAL, new BaseColor(1,129,86));
+    
 
     HelloPDF(String directory, String teamFileName, String matchFileName) {
         this.matchFile = directory + "/" + matchFileName + ".pdf";
@@ -98,9 +91,9 @@ public class HelloPDF {
 
         //Add the cells for teleop scoring percentage
         table.addCell("Teleop Scoring %");
-        table.addCell(blue1.getTeleScoringPercentage() + "");
-        table.addCell(blue2.getTeleScoringPercentage() + "");
-        table.addCell(blue3.getTeleScoringPercentage() + "");
+        table.addCell(Math.round((blue1.getTeleScoringPercentage() * 100) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue2.getTeleScoringPercentage() * 100) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue3.getTeleScoringPercentage() * 100) * 10) / 10.0 + "");
 
         //Add the cells for the average points in teleop
         table.addCell("Teleop Avg Pts");
@@ -128,9 +121,9 @@ public class HelloPDF {
 
         //Add the cells for the average KPR
         table.addCell("Avg KPR");
-        table.addCell(blue1.getKPR() + "");
-        table.addCell(blue2.getKPR() + "");
-        table.addCell(blue3.getKPR() + "");
+        table.addCell(Math.round((blue1.getKPR() * 100) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue2.getKPR() * 100) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue3.getKPR() * 100) * 10) / 10.0 + "");
 
 
 
@@ -221,20 +214,37 @@ public class HelloPDF {
 
         document.close();
     }
-
-    public static void createTeamPDF(ArrayList<MatchSheet> matches)
-            throws DocumentException {
+    
+    public static void createTeamPDF(ArrayList<MatchSheet> matches) throws DocumentException {
         Document document = new Document();
         try {
             PdfWriter.getInstance(document, new FileOutputStream(teamFile));
         } catch (FileNotFoundException ex) {
         }
         document.open();
+        while(matches.size()>5){
+            ArrayList<MatchSheet> selection = new ArrayList();
+            for(int i = 0; i<5; i++){
+                selection.add(matches.get(0));
+                matches.remove(0);
+            }
+            
+            createNewPage(selection, document);
+            document.newPage();
+        }
+        createNewPage(matches, document);
+        
+        document.close();
+    }
+    
+    public static void createNewPage(ArrayList<MatchSheet> matches, Document document)
+            throws DocumentException {
+        
 
         Paragraph content = new Paragraph();
 
 
-        PdfPTable table = new PdfPTable(matches.size() + 2);
+        PdfPTable table = new PdfPTable(matches.size() + 1);
 
         PdfPCell c1 = new PdfPCell(new Phrase("Match #"));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -247,170 +257,194 @@ public class HelloPDF {
             table.addCell(c1);
         }
 
-        c1 = new PdfPCell(new Phrase("Average"));
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(c1);
 
-        
+
         table.addCell("Starting Position");
         for (int i = 0; i < matches.size(); i++) {
             table.addCell(matches.get(i).getStartingPos());
         }
-        table.addCell("N/A");
+        
 
         table.addCell("Auto Points");
         double total = 0;
         for (int i = 0; i < matches.size(); i++) {
-            total+=matches.get(i).getAutonPointsScored();
+            total += matches.get(i).getAutonPointsScored();
             table.addCell(matches.get(i).getAutonPointsScored() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
         
+
         double[] percentage = new double[matches.size()];
         total = 0;
         table.addCell("Teleop Low Attempted");
         for (int i = 0; i < matches.size(); i++) {
             percentage[i] = matches.get(i).getShotsAttemptedLow();
-            total+=matches.get(i).getShotsAttemptedLow();
+            total += matches.get(i).getShotsAttemptedLow();
             table.addCell(matches.get(i).getShotsAttemptedLow() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
         
+
         total = 0;
         table.addCell("Teleop Low Scored");
         for (int i = 0; i < matches.size(); i++) {
-            percentage[i] = matches.get(i).getShotsScoredLow()/percentage[i];
-            total+=matches.get(i).getShotsScoredLow();
+            if (percentage[i] != 0) {
+                percentage[i] = matches.get(i).getShotsScoredLow() / percentage[i];
+            } else {
+                percentage[i] = 0;
+            }
+            total += matches.get(i).getShotsScoredLow();
             table.addCell(matches.get(i).getShotsScoredLow() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
         
+
         total = 0;
         table.addCell("Teleop Low Percentage");
         for (int i = 0; i < matches.size(); i++) {
-            
-            total+=percentage[i]*100;
-            table.addCell(Math.floor((percentage[i]*100)*10)/10 + "");
+
+            total += percentage[i] * 100;
+            table.addCell(Math.round((percentage[i] * 100) * 10) / 10.0 + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
         
+
         percentage = new double[matches.size()];
         total = 0;
         table.addCell("Teleop Middle Attempted");
         for (int i = 0; i < matches.size(); i++) {
             percentage[i] = matches.get(i).getShotsAttemptedMiddle();
-            total+=matches.get(i).getShotsAttemptedMiddle();
+            total += matches.get(i).getShotsAttemptedMiddle();
             table.addCell(matches.get(i).getShotsAttemptedMiddle() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
         
-        
+
+
         total = 0;
         table.addCell("Teleop Middle Scored");
         for (int i = 0; i < matches.size(); i++) {
-            percentage[i] = matches.get(i).getShotsScoredMiddle()/percentage[i];
-            total+=matches.get(i).getShotsScoredMiddle();
+            if (percentage[i] != 0) {
+                percentage[i] = matches.get(i).getShotsScoredMiddle() / percentage[i];
+            } else {
+                percentage[i] = 0;
+            }
+            total += matches.get(i).getShotsScoredMiddle();
             table.addCell(matches.get(i).getShotsScoredMiddle() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
         
+
         total = 0;
         table.addCell("Teleop Middle Percentage");
         for (int i = 0; i < matches.size(); i++) {
-            
-            total+=percentage[i]*100;
-            table.addCell(Math.floor((percentage[i]*100)*10)/10 + "");
+
+            total += percentage[i] * 100;
+            table.addCell(Math.round((percentage[i] * 100) * 10) / 10.0 + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
+        
 
         percentage = new double[matches.size()];
         total = 0;
         table.addCell("Teleop High Attempted");
         for (int i = 0; i < matches.size(); i++) {
+
             percentage[i] = matches.get(i).getShotsAttemptedHigh();
-            total+=matches.get(i).getShotsAttemptedHigh();
+
+            total += matches.get(i).getShotsAttemptedHigh();
             table.addCell(matches.get(i).getShotsAttemptedHigh() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
         
+
         total = 0;
         table.addCell("Teleop High Scored");
         for (int i = 0; i < matches.size(); i++) {
-            percentage[i] = matches.get(i).getShotsScoredHigh()/percentage[i];
-            total+=matches.get(i).getShotsScoredHigh();
+            if (percentage[i] != 0) {
+                percentage[i] = matches.get(i).getShotsScoredHigh() / percentage[i];
+            } else {
+                percentage[i] = 0;
+            }
+            total += matches.get(i).getShotsScoredHigh();
             table.addCell(matches.get(i).getShotsScoredHigh() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
         
+
         total = 0;
         table.addCell("Teleop High Percentage");
         for (int i = 0; i < matches.size(); i++) {
-            
-            total+=percentage[i]*100;
-            table.addCell(Math.floor((percentage[i]*100)*10)/10 + "");
+
+            total += percentage[i] * 100;
+            table.addCell(Math.round((percentage[i] * 100) * 10) / 10.0 + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
+        
 
         percentage = new double[matches.size()];
         total = 0;
         table.addCell("Teleop Pyramid Attempted");
         for (int i = 0; i < matches.size(); i++) {
             percentage[i] = matches.get(i).getShotsAttemptedPyramid();
-            total+=matches.get(i).getShotsAttemptedPyramid();
+            total += matches.get(i).getShotsAttemptedPyramid();
             table.addCell(matches.get(i).getShotsAttemptedPyramid() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
         
+
         total = 0;
         table.addCell("Teleop Pyramid Scored");
         for (int i = 0; i < matches.size(); i++) {
-            percentage[i] = matches.get(i).getShotsScoredPyramid()/percentage[i];
-            total+=matches.get(i).getShotsScoredPyramid();
+
+            if (percentage[i] != 0) {
+                percentage[i] = matches.get(i).getShotsScoredPyramid() / percentage[i];
+            } else {
+                percentage[i] = 0;
+            }
+
+
+            total += matches.get(i).getShotsScoredPyramid();
             table.addCell(matches.get(i).getShotsScoredPyramid() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
         
+
         total = 0;
         table.addCell("Teleop Pyramid Percentage");
         for (int i = 0; i < matches.size(); i++) {
-            
-            total+=percentage[i]*100;
-            table.addCell(Math.floor((percentage[i]*100)*10)/10 + "");
+
+            total += percentage[i] * 100;
+            table.addCell(percentage[i] + "");
+            //table.addCell(Math.round((percentage[i] * 100) * 10) / 10.0 + "");
+
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
+        
 
         total = 0;
         table.addCell("Defense Rating");
         for (int i = 0; i < matches.size(); i++) {
-            total+=matches.get(i).getDefense();
+            total += matches.get(i).getDefense();
             table.addCell(matches.get(i).getDefense() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
+        
 
         total = 0;
         table.addCell("Hang Level");
         for (int i = 0; i < matches.size(); i++) {
-            total+=matches.get(i).getHangLevel();
+            total += matches.get(i).getHangLevel();
             table.addCell(matches.get(i).getHangLevel() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
+        
 
         total = 0;
         table.addCell("Hang Time");
         for (int i = 0; i < matches.size(); i++) {
-            total+=matches.get(i).getHangTime();
+            total += matches.get(i).getHangTime();
             table.addCell(matches.get(i).getHangTime() + "");
         }
-        table.addCell(Math.floor((total/matches.size())*10)/10 + "");
-
-        Paragraph paragraph = new Paragraph(matches.get(0).getTeamNum(), catFont);
+        
+        Paragraph paragraph;
+        if(matches.get(0).getTeamNum().equals("610")){
+             paragraph = new Paragraph(matches.get(0).getTeamNum(), greenFont);
+        } else{
+             paragraph = new Paragraph(matches.get(0).getTeamNum(), catFont);
+        }
         paragraph.setAlignment(Element.ALIGN_CENTER);
         content.add(paragraph);
         addEmptyLine(content, 1);
         content.add(table);
 
         document.add(content);
-        document.close();
+        
     }
 
     private static void addEmptyLine(Paragraph paragraph, int number) {
