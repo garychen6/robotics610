@@ -84,9 +84,9 @@ public class HelloPDF {
 
         //Add the cells for auto points
         table.addCell("Auto Pts");
-        table.addCell(blue1.getAutoPoints() + "");
-        table.addCell(blue2.getAutoPoints() + "");
-        table.addCell(blue3.getAutoPoints() + "");
+        table.addCell(Math.round((blue1.getAutoPoints() ) * 10) / 10.0  + "");
+        table.addCell(Math.round((blue2.getAutoPoints() ) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue3.getAutoPoints() ) * 10) / 10.0 + "");
 
         //Add the cells for teleop scoring percentage
         table.addCell("Teleop Scoring %");
@@ -96,33 +96,33 @@ public class HelloPDF {
 
         //Add the cells for the average points in teleop
         table.addCell("Teleop Avg Pts");
-        table.addCell(blue1.getTelePoints() + "");
-        table.addCell(blue2.getTelePoints() + "");
-        table.addCell(blue3.getTelePoints() + "");
+        table.addCell(Math.round((blue1.getTelePoints() ) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue2.getTelePoints() ) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue3.getTelePoints() ) * 10) / 10.0 + "");
 
         //Add the cells for defensive rating
         table.addCell("Defensive Rating");
-        table.addCell(blue1.getDefenseRating() + "");
-        table.addCell(blue2.getDefenseRating() + "");
-        table.addCell(blue3.getDefenseRating() + "");
+        table.addCell(Math.round((blue1.getDefenseRating() ) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue2.getDefenseRating() ) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue3.getDefenseRating() ) * 10) / 10.0 + "");
 
         //Add the cells for the time required to hang
         table.addCell("Time Hang");
-        table.addCell(blue1.getHangTime() + "");
-        table.addCell(blue2.getHangTime() + "");
-        table.addCell(blue3.getHangTime() + "");
+        table.addCell(Math.round((blue1.getHangTime() ) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue2.getHangTime() ) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue3.getHangTime() ) * 10) / 10.0 + "");
 
         //Add the cells for the level the robot can hang at
         table.addCell("Hang Level");
-        table.addCell(blue1.getHangLevel() + "");
-        table.addCell(blue2.getHangLevel() + "");
-        table.addCell(blue3.getHangLevel() + "");
+        table.addCell(Math.round((blue1.getHangLevel() ) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue2.getHangLevel() ) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue3.getHangLevel() ) * 10) / 10.0 + "");
 
         //Add the cells for the average KPR
         table.addCell("Avg KPR");
-        table.addCell(Math.round((blue1.getKPR() * 100) * 10) / 10.0 + "");
-        table.addCell(Math.round((blue2.getKPR() * 100) * 10) / 10.0 + "");
-        table.addCell(Math.round((blue3.getKPR() * 100) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue1.getKPR() ) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue2.getKPR() ) * 10) / 10.0 + "");
+        table.addCell(Math.round((blue3.getKPR() ) * 10) / 10.0 + "");
 
 
 
@@ -159,45 +159,45 @@ public class HelloPDF {
 
         //Add the cells for auto points
         table1.addCell("Auto Pts");
-        table1.addCell(red1.getAutoPoints() + "");
-        table1.addCell(red2.getAutoPoints() + "");
-        table1.addCell(red3.getAutoPoints() + "");
+        table1.addCell(Math.round((red1.getAutoPoints() ) * 10) / 10.0  + "");
+        table1.addCell(Math.round((red2.getAutoPoints() ) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red3.getAutoPoints() ) * 10) / 10.0 + "");
 
         //Add the cells for teleop scoring percentage
         table1.addCell("Teleop Scoring %");
-        table1.addCell(red1.getTeleScoringPercentage() + "");
-        table1.addCell(red2.getTeleScoringPercentage() + "");
-        table1.addCell(red3.getTeleScoringPercentage() + "");
+        table1.addCell(Math.round((red1.getTeleScoringPercentage() * 100) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red2.getTeleScoringPercentage() * 100) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red3.getTeleScoringPercentage() * 100) * 10) / 10.0 + "");
 
         //Add the cells for the average points in teleop
         table1.addCell("Teleop Avg Pts");
-        table1.addCell(red1.getTelePoints() + "");
-        table1.addCell(red2.getTelePoints() + "");
-        table1.addCell(red3.getTelePoints() + "");
+        table1.addCell(Math.round((red1.getTelePoints() ) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red2.getTelePoints() ) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red3.getTelePoints() ) * 10) / 10.0 + "");
 
         //Add the cells for defensive rating
         table1.addCell("Defensive Rating");
-        table1.addCell(red1.getDefenseRating() + "");
-        table1.addCell(red2.getDefenseRating() + "");
-        table1.addCell(red3.getDefenseRating() + "");
+        table1.addCell(Math.round((red1.getDefenseRating() ) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red2.getDefenseRating() ) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red3.getDefenseRating() ) * 10) / 10.0 + "");
 
         //Add the cells for the time required to hang
         table1.addCell("Time Hang");
-        table1.addCell(red1.getHangTime() + "");
-        table1.addCell(red2.getHangTime() + "");
-        table1.addCell(red3.getHangTime() + "");
+        table1.addCell(Math.round((red1.getHangTime() ) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red2.getHangTime() ) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red3.getHangTime() ) * 10) / 10.0 + "");
 
         //Add the cells for the level the robot can hang at
         table1.addCell("Hang Level");
-        table1.addCell(red1.getHangLevel() + "");
-        table1.addCell(red2.getHangLevel() + "");
-        table1.addCell(red3.getHangLevel() + "");
+        table1.addCell(Math.round((red1.getHangLevel() ) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red2.getHangLevel() ) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red3.getHangLevel() ) * 10) / 10.0 + "");
 
         //Add the cells for the average KPR
         table1.addCell("Avg KPR");
-        table1.addCell(red1.getKPR() + "");
-        table1.addCell(red2.getKPR() + "");
-        table1.addCell(red3.getKPR() + "");
+        table1.addCell(Math.round((red1.getKPR() ) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red2.getKPR() ) * 10) / 10.0 + "");
+        table1.addCell(Math.round((red3.getKPR() ) * 10) / 10.0 + "");
 
         Paragraph paragraph = new Paragraph("Blue Alliance", blueFont);
         paragraph.setAlignment(Element.ALIGN_CENTER);
