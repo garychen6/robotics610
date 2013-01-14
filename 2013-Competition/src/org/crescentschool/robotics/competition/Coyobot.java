@@ -4,15 +4,19 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
 package org.crescentschool.robotics.competition;
 
-
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.io.IOException;
 import org.crescentschool.robotics.competition.commands.KajDrive;
+import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,19 +26,23 @@ import org.crescentschool.robotics.competition.commands.KajDrive;
  * directory.
  */
 public class Coyobot extends IterativeRobot {
-
+    
     Command autonomousCommand;
+    Preferences pid;
+    Shooter shooter;
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
-        // instantiate the command used for the autonomous period
         autonomousCommand = new KajDrive();
-
+        shooter = Shooter.getInstance();
+        pid = Preferences.getInstance();
+        
+        
     }
-
+    
     public void autonomousInit() {
         // schedule the autonomous command (example)
         autonomousCommand.start();
@@ -46,9 +54,9 @@ public class Coyobot extends IterativeRobot {
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
     }
-
+    
     public void teleopInit() {
-	// This makes sure that the autonomous stops running when
+        // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
         // this line or comment it out.
@@ -59,9 +67,20 @@ public class Coyobot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        Scheduler.getInstance().run();
+       // try {
+            //SmartDashboard.putNumber("Speed", shooter.getSpeed());
+            Scheduler.getInstance().run();
+//        } catch (CANTimeoutException ex) {
+//            ex.printStackTrace();
+//        }
+        if (OI.getInstance().getDriver().getRawButton(5)) {
+            System.out.println("P: "+pid.getDouble("p", 0)+" I: "+pid.getDouble("i", 0)+" D: "+pid.getDouble("d", 0));
+            shooter.setPID(pid.getDouble("p", 0), pid.getDouble("i", 0), pid.getDouble("d", 0));
+            shooter.setSpeed(pid.getDouble("setpoint", 0));
+            
+        }
     }
-    
+
     /**
      * This function is called periodically during test mode
      */
