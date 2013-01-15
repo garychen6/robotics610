@@ -14,52 +14,62 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * @author Warfa
  */
 public class Shooter extends Subsystem {
-    
+
     static Shooter instance = null;
     CANJaguar shooter;
     PIDController pidController;
-   
-    public static Shooter getInstance(){
-        if(instance == null){
+    Thread PID;
+
+    public static Shooter getInstance() {
+        if (instance == null) {
             instance = new Shooter();
         }
         return instance;
     }
-   
-    Shooter(){
+
+    Shooter() {
         try {
             shooter = new CANJaguar(1);
-            shooter.changeControlMode(CANJaguar.ControlMode.kVoltage);
+            shooter.changeControlMode(CANJaguar.ControlMode.kSpeed);
             shooter.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
             shooter.configEncoderCodesPerRev(256);
+            shooter.changeControlMode(CANJaguar.ControlMode.kVoltage);
+            shooter.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shooter.enableControl(0);
-            pidController = new PIDController(0.1,0.01);
-            new Thread(pidController).start();
+            pidController = PIDController.getInstance();
+            pidController.start();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     }
-    public void setPID(double p, double i, double d){
+    public double getVoltage() throws CANTimeoutException{
+        return shooter.getOutputVoltage();
+    }
+    public void setPID(double p, double i, double d) {
         pidController.setP(p);
         pidController.setI(i);
         pidController.setD(d);
     }
-    public void setSpeed(double rpm){
-        pidController.setSetpoint(rpm); 
-        
+
+    public void setSpeed(double rpm) {
+        pidController.setSetpoint(rpm);
+        System.out.println("Setting Speed "+rpm);
     }
-    
-    synchronized public void setShooter(double val){
+
+    synchronized public void setShooter(double val) {
         try {
             shooter.setX(val);
+            System.out.println("PID OUTPUT"+val);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     }
-    public double getSpeed() throws CANTimeoutException{
+
+    public double getSpeed() throws CANTimeoutException {
         return shooter.getSpeed();
         //return 0;
     }
+
     protected void initDefaultCommand() {
     }
 }

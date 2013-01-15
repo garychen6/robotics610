@@ -7,13 +7,14 @@ package org.crescentschool.robotics.competition.PID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
  *
  * @author Warfa
  */
-public class PIDController implements Runnable {
+public class PIDController extends Thread {
 
     private double p = 0;
     private double i = 0;
@@ -27,11 +28,17 @@ public class PIDController implements Runnable {
     private double prevTime;
     private double time;
     private double current;
+    private static PIDController instance;
+    public static PIDController getInstance(){
+        if(instance == null){
+            instance = new PIDController(0.0,0.0);
+        }
+        return instance;
+    }
 
     public PIDController(double p, double i) {
         this.p = p;
         this.i = p;
-        shooter = Shooter.getInstance();
         timer = new Timer();
         timer.start();
         System.out.println("PID COntroller running");
@@ -63,15 +70,17 @@ public class PIDController implements Runnable {
      */
     synchronized public void setSetpoint(double setpoint) {
         this.setpoint = setpoint;
+        output = 0;
         error[0] = 0;
         error[1] = 0;
         error[2] = 0;
+        
     }
 
     synchronized public void run() {
         System.out.println("Calculating");
         try {
-            current = shooter.getSpeed();
+            current = Shooter.getInstance().getSpeed();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -81,16 +90,17 @@ public class PIDController implements Runnable {
         error[0] = setpoint - current;
 
         outputChange = (error[0] - error[1]) * p + (error[0]) * i + ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * d;
-        output += outputChange;
-        shooter.setShooter(output);
+        output += outputChange ;
+        SmartDashboard.putNumber("Output", output+(12.0/3000.0)*setpoint);
+        Shooter.getInstance().setShooter(output+(12.0/3000.0)*setpoint);
         prevTime = time;
-        run();
     }
 
     /**
      * @param p the p to set
      */
     synchronized public void setP(double p) {
+        output = 0;
         this.p = p;
         System.out.println("P");
     }
@@ -99,6 +109,7 @@ public class PIDController implements Runnable {
      * @param i the i to set
      */
     synchronized public void setI(double i) {
+       output = 0;
         this.i = i;
         System.out.println("I");
     }
@@ -107,6 +118,7 @@ public class PIDController implements Runnable {
      * @param d the d to set
      */
     synchronized public void setD(double d) {
+        output = 0;
         this.d = d;
         System.out.println("D");
     }
