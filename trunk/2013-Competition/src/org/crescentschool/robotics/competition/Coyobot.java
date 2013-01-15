@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.IOException;
+import org.crescentschool.robotics.competition.PID.PIDController;
 import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
@@ -37,9 +38,9 @@ public class Coyobot extends IterativeRobot {
      */
     public void robotInit() {
         autonomousCommand = new KajDrive();
-        shooter = Shooter.getInstance();
+       shooter = Shooter.getInstance();
         pid = Preferences.getInstance();
-        
+        PIDController.getInstance();
         
     }
     
@@ -67,14 +68,21 @@ public class Coyobot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-       // try {
-            //SmartDashboard.putNumber("Speed", shooter.getSpeed());
+        PIDController.getInstance().run();
+        try {
+            // try {
+                 SmartDashboard.putNumber("Speed", shooter.getSpeed());
+                 SmartDashboard.putNumber("SpeedNum", shooter.getSpeed());
+                SmartDashboard.putNumber("Voltage", shooter.getVoltage());
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
             Scheduler.getInstance().run();
 //        } catch (CANTimeoutException ex) {
 //            ex.printStackTrace();
 //        }
         if (OI.getInstance().getDriver().getRawButton(5)) {
-            System.out.println("P: "+pid.getDouble("p", 0)+" I: "+pid.getDouble("i", 0)+" D: "+pid.getDouble("d", 0));
+            //System.out.println("P: "+pid.getDouble("p", 0)+" I: "+pid.getDouble("i", 0)+" D: "+pid.getDouble("d", 0));
             shooter.setPID(pid.getDouble("p", 0), pid.getDouble("i", 0), pid.getDouble("d", 0));
             shooter.setSpeed(pid.getDouble("setpoint", 0));
             
