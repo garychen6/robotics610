@@ -11,8 +11,10 @@ import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 /**
  *
  */
-public class DriveTrain extends Subsystem {
-
+    public class DriveTrain extends Subsystem {
+    private static DriveTrain instance = null;
+    private int controlMode = 1;
+    
     CANJaguar jagRightMaster;
     Victor vicRightSlave;
     Victor vicRightSlave2;
@@ -29,12 +31,12 @@ public class DriveTrain extends Subsystem {
 
     DriveTrain() {
         try {
-            jagRightMaster = new CANJaguar(2);
-            jagLeftMaster = new CANJaguar(3);
-            vicRightSlave = new Victor(4);
-            vicRightSlave2 = new Victor(5);
-            vicLeftSlave = new Victor(6);
-            vicLeftSlave2 = new Victor (7);
+            jagRightMaster = new CANJaguar(ElectricalConstants.DriveRightMaster);
+            jagLeftMaster = new CANJaguar(ElectricalConstants.DriveLeftMaster);
+            vicRightSlave = new Victor(ElectricalConstants.DriveRightSlave1);
+            vicRightSlave2 = new Victor(ElectricalConstants.DriveRightSlave2);
+            vicLeftSlave = new Victor(ElectricalConstants.DriveLeftSlave1);
+            vicLeftSlave2 = new Victor (ElectricalConstants.DriveLeftSlave2);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
