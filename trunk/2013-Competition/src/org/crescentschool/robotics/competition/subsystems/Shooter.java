@@ -5,7 +5,7 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.CANJaguar;
-import org.crescentschool.robotics.competition.PID.PIDController;
+import org.crescentschool.robotics.competition.PID.ShooterPID;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -17,7 +17,7 @@ public class Shooter extends Subsystem {
 
     static Shooter instance = null;
     CANJaguar shooter;
-    PIDController pidController;
+    ShooterPID pidController;
     Thread PID;
 
     public static Shooter getInstance() {
@@ -29,14 +29,15 @@ public class Shooter extends Subsystem {
 
     Shooter() {
         try {
-            shooter = new CANJaguar(1);
+            shooter = new CANJaguar(7);
             shooter.changeControlMode(CANJaguar.ControlMode.kSpeed);
             shooter.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
             shooter.configEncoderCodesPerRev(256);
             shooter.changeControlMode(CANJaguar.ControlMode.kVoltage);
             shooter.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shooter.enableControl(0);
-            pidController = PIDController.getInstance();
+            pidController = ShooterPID.getInstance();
+            //pidController = ClassicPID.getInstance();
             pidController.start();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
@@ -67,7 +68,6 @@ public class Shooter extends Subsystem {
 
     public double getSpeed() throws CANTimeoutException {
         return shooter.getSpeed();
-        //return 0;
     }
 
     protected void initDefaultCommand() {
