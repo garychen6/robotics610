@@ -38,7 +38,7 @@ public class Coyobot extends IterativeRobot {
      */
     public void robotInit() {
         autonomousCommand = new KajDrive();
-       shooter = Shooter.getInstance();
+        shooter = Shooter.getInstance();
         pid = Preferences.getInstance();
         
     }
