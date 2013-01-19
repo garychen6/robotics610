@@ -1,8 +1,9 @@
 
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import org.crescentschool.robotics.competition.OI;
+import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
@@ -10,8 +11,8 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  * @author bradmiller
  */
 public class KajDrive extends Command {
-    DriveTrain driveTrain;
-    Joystick joy = new Joystick(1);
+    DriveTrain driveTrain = DriveTrain.getInstance();
+    OI joy = OI.getInstance();
     public KajDrive() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -24,12 +25,10 @@ public class KajDrive extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         double rightSpeed,leftSpeed;
-        leftSpeed = joy.getRawAxis(2) + (joy.getRawAxis(3));
-        rightSpeed = joy.getRawAxis(2) - (joy.getRawAxis(3));
+        leftSpeed = joy.getDriver().getRawAxis(InputConstants.leftYAxis) + (joy.getDriver().getRawAxis(InputConstants.rightXAxis));
+        rightSpeed = joy.getDriver().getRawAxis(InputConstants.leftYAxis) - (joy.getDriver().getRawAxis(InputConstants.rightXAxis));
         driveTrain.setLeftVBus(leftSpeed);
-        driveTrain.setRightVBus(rightSpeed);
-        
-        
+        driveTrain.setRightVBus(rightSpeed);  
     }
 
     // Make this return true when this Command no longer needs to run execute()
