@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.IOException;
-import org.crescentschool.robotics.competition.PID.PIDController;
+import org.crescentschool.robotics.competition.PID.ShooterPID;
 import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
@@ -40,7 +40,7 @@ public class Coyobot extends IterativeRobot {
         autonomousCommand = new KajDrive();
        shooter = Shooter.getInstance();
         pid = Preferences.getInstance();
-        PIDController.getInstance();
+        ShooterPID.getInstance();
         
     }
     
@@ -68,12 +68,13 @@ public class Coyobot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        PIDController.getInstance().run();
+        ShooterPID.getInstance().run();
         try {
             // try {
                  SmartDashboard.putNumber("Speed", shooter.getSpeed());
                  SmartDashboard.putNumber("SpeedNum", shooter.getSpeed());
                 SmartDashboard.putNumber("Voltage", shooter.getVoltage());
+               
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }

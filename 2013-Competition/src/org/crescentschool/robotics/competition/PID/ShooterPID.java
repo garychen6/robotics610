@@ -14,7 +14,7 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
  *
  * @author Warfa
  */
-public class PIDController extends Thread {
+public class ShooterPID extends Thread {
 
     private double p = 0;
     private double i = 0;
@@ -28,15 +28,15 @@ public class PIDController extends Thread {
     private double prevTime;
     private double time;
     private double current;
-    private static PIDController instance;
-    public static PIDController getInstance(){
+    private static ShooterPID instance;
+    public static ShooterPID getInstance(){
         if(instance == null){
-            instance = new PIDController(0.0,0.0);
+            instance = new ShooterPID(0.0,0.0);
         }
         return instance;
     }
 
-    public PIDController(double p, double i) {
+    public ShooterPID(double p, double i) {
         this.p = p;
         this.i = p;
         timer = new Timer();
