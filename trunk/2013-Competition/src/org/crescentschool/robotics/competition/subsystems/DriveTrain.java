@@ -27,7 +27,12 @@ public class DriveTrain extends Subsystem {
         setDefaultCommand(new KajDrive());
 
     }
-
+    public static DriveTrain getInstance(){
+        if(instance == null){
+            instance = new DriveTrain();
+        }
+        return instance;
+    }
     DriveTrain() {
         try {
             jagRightMaster = new CANJaguar(ElectricalConstants.jagRightMaster);
