@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import java.io.IOException;
+import org.crescentschool.robotics.competition.PID.ClassicPID;
 import org.crescentschool.robotics.competition.PID.ShooterPID;
 import org.crescentschool.robotics.competition.commands.KajDrive;
+import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
@@ -40,7 +40,7 @@ public class Coyobot extends IterativeRobot {
         autonomousCommand = new KajDrive();
        shooter = Shooter.getInstance();
         pid = Preferences.getInstance();
-        ShooterPID.getInstance();
+        ClassicPID.getInstance(shooter);
         
     }
     
