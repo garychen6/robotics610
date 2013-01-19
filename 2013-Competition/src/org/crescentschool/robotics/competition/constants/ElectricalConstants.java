@@ -25,4 +25,6 @@ public class ElectricalConstants {
     
     //CAN ID of the shooter Jaguar
     final public static int jagShooter = 7;
+    
+    final public static int encoder = 256;
 }

@@ -30,12 +30,14 @@ public class DriveTrain extends Subsystem {
 
     DriveTrain() {
         try {
-            jagRightMaster = new CANJaguar(ElectricalConstants.DriveRightMaster);
-            jagLeftMaster = new CANJaguar(ElectricalConstants.DriveLeftMaster);
-            vr1 = new Victor(ElectricalConstants.DriveRightSlave1);
-            vr2 = new Victor(ElectricalConstants.DriveRightSlave2);
-            vl1 = new Victor(ElectricalConstants.DriveLeftSlave1);
-            vl2 = new Victor(ElectricalConstants.DriveLeftSlave2);
+            jagRightMaster = new CANJaguar(ElectricalConstants.jagRightMaster);
+            jagLeftMaster = new CANJaguar(ElectricalConstants.jagLeftMaster);
+            jagRightMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            jagLeftMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            vr1 = new Victor(ElectricalConstants.victorRightSlaveMid);
+            vr2 = new Victor(ElectricalConstants.victorRightSlaveBack);
+            vl1 = new Victor(ElectricalConstants.victorLeftSlaveMid);
+            vl2 = new Victor(ElectricalConstants.victorLeftSlaveBack);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -43,9 +45,36 @@ public class DriveTrain extends Subsystem {
     void initVBus(){
         try {
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-            jagRightMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-            jagLeftMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            jagRightMaster.enableControl();
+            jagLeftMaster.enableControl();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    void initPosition(){
+        try {
+                jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+                jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+                jagRightMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
+                jagLeftMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
+                jagRightMaster.configEncoderCodesPerRev(256);
+                jagLeftMaster.configEncoderCodesPerRev(256);
+                jagRightMaster.changeControlMode(CANJaguar.ControlMode.kVoltage);
+                jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kVoltage);
+                jagRightMaster.enableControl(0);
+                jagLeftMaster.enableControl(0);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+    }
+   
+
+    void syncSlaves(){
+        try {
+            vr1.set(jagRightMaster.getOutputVoltage()/jagRightMaster.getBusVoltage());
+            vr2.set(jagLeftMaster.getOutputVoltage()/jagLeftMaster.getBusVoltage());
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }

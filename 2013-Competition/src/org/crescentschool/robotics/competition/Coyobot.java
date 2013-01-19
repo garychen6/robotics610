@@ -40,7 +40,6 @@ public class Coyobot extends IterativeRobot {
         autonomousCommand = new KajDrive();
        shooter = Shooter.getInstance();
         pid = Preferences.getInstance();
-        ClassicPID.getInstance(shooter);
         
     }
     
