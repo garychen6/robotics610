@@ -74,9 +74,25 @@ public class DriveTrain extends Subsystem {
     void syncSlaves(){
         try {
             vr1.set(jagRightMaster.getOutputVoltage()/jagRightMaster.getBusVoltage());
-            vr2.set(jagLeftMaster.getOutputVoltage()/jagLeftMaster.getBusVoltage());
+            vr2.set(jagRightMaster.getOutputVoltage()/jagRightMaster.getBusVoltage());
+            vl1.set(jagLeftMaster.getOutputVoltage()/jagLeftMaster.getBusVoltage());
+            vl2.set(jagLeftMaster.getOutputVoltage()/jagLeftMaster.getBusVoltage());
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
+    }
+    public void setLeftVBus(double power){
+        try{
+            jagLeftMaster.setX(power);
+        } catch (CANTimeoutException e){     
+        }
+        syncSlaves();
+    }
+    public void setRightVBus(double power){
+        try{
+            jagRightMaster.setX(power);
+        } catch (CANTimeoutException e){
+        }
+        syncSlaves();
     }
 }
