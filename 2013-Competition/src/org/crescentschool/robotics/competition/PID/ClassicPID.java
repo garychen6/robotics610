@@ -6,6 +6,7 @@ package org.crescentschool.robotics.competition.PID;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
@@ -28,16 +29,20 @@ public class ClassicPID extends Thread {
     private double time = 0;
     private double output = 0;
     private static ClassicPID instance = null;
+    private Subsystem subsystem = null;
     
-    public static ClassicPID getInstance(){
+    public static ClassicPID getInstance(Subsystem subsystem){
         if(instance == null){
-            instance = new ClassicPID();
+            instance = new ClassicPID(subsystem);
         }
         return instance;
     }
-    ClassicPID(){
+    ClassicPID(Subsystem subsystem){
         timer = new Timer();
         timer.start();
+        this.subsystem = subsystem;
+        System.out.println("ClassicPID Controller running for: " + subsystem.getName());
+
     }
 
     /**
@@ -116,8 +121,10 @@ public class ClassicPID extends Thread {
         error = setpoint - currentSpeed;
         totalError += error;
         output = (ff*setpoint)+(p*error)+Math.min(12,(i*totalError*(time-prevTime)))+(d*error)/(time-prevTime);
-        SmartDashboard.putNumber("Output", output);
-        Shooter.getInstance().setShooter(output);
+        if(subsystem.getName().equals("Shooter")){
+            SmartDashboard.putNumber("Output", output);
+            ((Shooter)subsystem).getInstance().setShooter(output);
+        }
         prevTime = time;
     }
 }
