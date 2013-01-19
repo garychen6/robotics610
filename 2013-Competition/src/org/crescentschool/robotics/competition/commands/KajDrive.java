@@ -11,11 +11,14 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  * @author bradmiller
  */
 public class KajDrive extends Command {
-    DriveTrain driveTrain = DriveTrain.getInstance();
-    OI joy = OI.getInstance();
+    DriveTrain driveTrain;
+    OI oi;
     public KajDrive() {
+        driveTrain = DriveTrain.getInstance();
+        oi = OI.getInstance();
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
+        requires(driveTrain);
     }
 
     // Called just before this Command runs the first time
@@ -25,8 +28,8 @@ public class KajDrive extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         double rightSpeed,leftSpeed;
-        leftSpeed = joy.getDriver().getRawAxis(InputConstants.leftYAxis) + (joy.getDriver().getRawAxis(InputConstants.rightXAxis));
-        rightSpeed = joy.getDriver().getRawAxis(InputConstants.leftYAxis) - (joy.getDriver().getRawAxis(InputConstants.rightXAxis));
+        leftSpeed = oi.getDriver().getRawAxis(InputConstants.leftYAxis) + (oi.getDriver().getRawAxis(InputConstants.rightXAxis));
+        rightSpeed = oi.getDriver().getRawAxis(InputConstants.leftYAxis) - (oi.getDriver().getRawAxis(InputConstants.rightXAxis));
         driveTrain.setLeftVBus(leftSpeed);
         driveTrain.setRightVBus(rightSpeed);  
     }
