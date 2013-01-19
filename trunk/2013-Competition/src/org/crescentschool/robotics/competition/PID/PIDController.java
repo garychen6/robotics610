@@ -4,9 +4,10 @@
  */
 package org.crescentschool.robotics.competition.PID;
 
+import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
@@ -14,34 +15,32 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
  *
  * @author Warfa
  */
-public class ShooterPID extends Thread {
+public class PIDController extends Thread {
 
     private double p = 0;
     private double i = 0;
     private double d = 0;
+    private double ff = 0;
     private double setpoint = 0;
     private double output = 0;
     private double outputChange = 0;
     private double[] error = new double[3];
-    private Shooter shooter;
     private Timer timer;
     private double prevTime;
     private double time;
     private double current;
-    private static ShooterPID instance;
-    public static ShooterPID getInstance(){
-        if(instance == null){
-            instance = new ShooterPID(0.0,0.0);
-        }
-        return instance;
-    }
+    private static IanPID instance;
+    private CANJaguar controller;
 
-    public ShooterPID(double p, double i) {
+
+
+    public PIDController(double p, double i,double d, CANJaguar controller) {
         this.p = p;
-        this.i = p;
+        this.i = i;
+        this.d = d;
         timer = new Timer();
         timer.start();
-        System.out.println("PID Controller running");
+        this.controller = controller;
     }
 
     /**
@@ -74,13 +73,12 @@ public class ShooterPID extends Thread {
         error[0] = 0;
         error[1] = 0;
         error[2] = 0;
-        
+
     }
 
     synchronized public void run() {
-        System.out.println("Calculating");
         try {
-            current = Shooter.getInstance().getSpeed();
+            current = controller.getSpeed();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -90,9 +88,16 @@ public class ShooterPID extends Thread {
         error[0] = setpoint - current;
 
         outputChange = (error[0] - error[1]) * p + (error[0]) * i + ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * d;
-        output += outputChange ;
-        SmartDashboard.putNumber("Output", output+(12.0/3000.0)*setpoint);
-        Shooter.getInstance().setShooter(output+(12.0/3000.0)*setpoint);
+        output += outputChange;
+     
+            SmartDashboard.putNumber("Output", output + ff * setpoint);
+        try {
+            controller.setX(output + getFf() * setpoint);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+  
+        
         prevTime = time;
     }
 
@@ -109,7 +114,7 @@ public class ShooterPID extends Thread {
      * @param i the i to set
      */
     synchronized public void setI(double i) {
-       output = 0;
+        output = 0;
         this.i = i;
         System.out.println("I");
     }
@@ -121,5 +126,19 @@ public class ShooterPID extends Thread {
         output = 0;
         this.d = d;
         System.out.println("D");
+    }
+
+    /**
+     * @return the ff
+     */
+    public double getFf() {
+        return ff;
+    }
+
+    /**
+     * @param ff the ff to set
+     */
+    public void setFf(double ff) {
+        this.ff = ff;
     }
 }
