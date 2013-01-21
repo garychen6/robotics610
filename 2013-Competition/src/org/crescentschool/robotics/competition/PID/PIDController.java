@@ -5,11 +5,10 @@
 package org.crescentschool.robotics.competition.PID;
 
 import edu.wpi.first.wpilibj.CANJaguar;
+import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
  *
@@ -20,7 +19,7 @@ public class PIDController extends Thread {
     private double p = 0;
     private double i = 0;
     private double d = 0;
-    private double ff = 0;
+    private double ff = 1.5 / 400.0;
     private double setpoint = 0;
     private double output = 0;
     private double outputChange = 0;
@@ -31,15 +30,17 @@ public class PIDController extends Thread {
     private double current;
     private static IanPID instance;
     private CANJaguar controller;
+    private GearTooth gearTooth;
 
-
-
-    public PIDController(double p, double i,double d, CANJaguar controller) {
+    public PIDController(double p, double i, double d, CANJaguar controller, GearTooth gearTooth) {
         this.p = p;
         this.i = i;
         this.d = d;
         timer = new Timer();
         timer.start();
+        if (gearTooth != null) {
+            this.gearTooth = gearTooth;
+        }
         this.controller = controller;
     }
 
@@ -78,7 +79,12 @@ public class PIDController extends Thread {
 
     synchronized public void run() {
         try {
-            current = controller.getSpeed();
+            if (gearTooth != null) {
+                current = -30.0 / gearTooth.getPeriod();
+                //System.out.println(current);
+            } else {
+                current = controller.getSpeed();
+            }
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -89,15 +95,21 @@ public class PIDController extends Thread {
 
         outputChange = (error[0] - error[1]) * p + (error[0]) * i + ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * d;
         output += outputChange;
-     
-            SmartDashboard.putNumber("Output", output + ff * setpoint);
+        SmartDashboard.putNumber("SpeedNum", current);
         try {
-            controller.setX(output + getFf() * setpoint);
+            SmartDashboard.putNumber("JagNum", controller.getSpeed());
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
-  
         
+        SmartDashboard.putNumber("Output", output + ff * setpoint);
+        try {
+            controller.setX(output + ff * setpoint);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+
+
         prevTime = time;
     }
 

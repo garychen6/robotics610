@@ -6,6 +6,8 @@
 /*----------------------------------------------------------------------------*/
 package org.crescentschool.robotics.competition;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
@@ -13,10 +15,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.crescentschool.robotics.competition.PID.ClassicPID;
-import org.crescentschool.robotics.competition.PID.ShooterPID;
 import org.crescentschool.robotics.competition.commands.KajDrive;
-import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
@@ -31,7 +30,9 @@ public class Coyobot extends IterativeRobot {
     Command autonomousCommand;
     Preferences pid;
     Shooter shooter;
-
+    //Encoder encoder;
+    //GearTooth counter;
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -40,6 +41,11 @@ public class Coyobot extends IterativeRobot {
         autonomousCommand = new KajDrive();
         shooter = Shooter.getInstance();
         pid = Preferences.getInstance();
+        //encoder = new Encoder(1, 2, false, CounterBase.EncodingType.k1X);
+        //counter = new GearTooth(1);
+        //counter.setMaxPeriod(5);
+        //counter.start();
+        
         
     }
     
@@ -67,11 +73,16 @@ public class Coyobot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        ShooterPID.getInstance().run();
+        shooter.getInstance().getPIDController().run();
+        //ShooterPID.getInstance().run();
+        //System.out.println(30.0/counter.getPeriod());
+        
+        //shooter.getInstance().getPIDController().run();
         try {
             // try {
-                 SmartDashboard.putNumber("Speed", shooter.getSpeed());
-                 SmartDashboard.putNumber("SpeedNum", shooter.getSpeed());
+                //SmartDashboard.putNumber("SpeedNum",30.0/counter.getPeriod());
+                SmartDashboard.putNumber("Speed", shooter.getSpeed());
+                 //SmartDashboard.putNumber("SpeedNum", shooter.getSpeed());
                 SmartDashboard.putNumber("Voltage", shooter.getVoltage());
                
         } catch (CANTimeoutException ex) {
