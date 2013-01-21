@@ -5,7 +5,7 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.CANJaguar;
-import org.crescentschool.robotics.competition.PID.ShooterPID;
+import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.PID.PIDController;
@@ -20,6 +20,7 @@ public class Shooter extends Subsystem {
     CANJaguar shooter;
     PIDController pidController;
     Thread PID;
+    GearTooth gearTooth;
 
     public static Shooter getInstance() {
         if (instance == null) {
@@ -33,11 +34,16 @@ public class Shooter extends Subsystem {
             shooter = new CANJaguar(7);
             shooter.changeControlMode(CANJaguar.ControlMode.kSpeed);
             shooter.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
-            shooter.configEncoderCodesPerRev(256);
+            shooter.configEncoderCodesPerRev(2);
             shooter.changeControlMode(CANJaguar.ControlMode.kVoltage);
             shooter.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shooter.enableControl(0);
-            pidController = new PIDController(0,0,0,shooter);
+            gearTooth = new GearTooth(1);
+            gearTooth.setMaxPeriod(5);
+            gearTooth.start();
+            
+            //pidController = PIDController.getInstance();
+            pidController = new PIDController(0,0,0,shooter, gearTooth);
             //pidController = ClassicPID.getInstance();
             pidController.start();
         } catch (CANTimeoutException ex) {
@@ -72,5 +78,8 @@ public class Shooter extends Subsystem {
     }
 
     protected void initDefaultCommand() {
+    }
+    public PIDController getPIDController() {
+        return pidController;
     }
 }
