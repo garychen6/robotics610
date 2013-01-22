@@ -15,17 +15,16 @@ public class DriveTrain extends Subsystem {
 
     private static DriveTrain instance = null;
     CANJaguar jagRightMaster;
-    Victor vr1;
-    Victor vr2;
+    Victor victorRightSlaveMid;
+    Victor victorRightSlaveBack;
     CANJaguar jagLeftMaster;
-    Victor vl1;
-    Victor vl2;
+    Victor victorLeftSlaveMid;
+    Victor victorLeftSlaveBack;
     private boolean canError = false;
 
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         setDefaultCommand(new KajDrive());
-
     }
     public static DriveTrain getInstance(){
         if(instance == null){
@@ -39,10 +38,10 @@ public class DriveTrain extends Subsystem {
             jagLeftMaster = new CANJaguar(ElectricalConstants.jagLeftMaster);
             jagRightMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             jagLeftMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
-            vr1 = new Victor(ElectricalConstants.victorRightSlaveMid);
-            vr2 = new Victor(ElectricalConstants.victorRightSlaveBack);
-            vl1 = new Victor(ElectricalConstants.victorLeftSlaveMid);
-            vl2 = new Victor(ElectricalConstants.victorLeftSlaveBack);
+            victorRightSlaveMid = new Victor(ElectricalConstants.victorRightSlaveMid);
+            victorRightSlaveBack = new Victor(ElectricalConstants.victorRightSlaveBack);
+            victorLeftSlaveMid = new Victor(ElectricalConstants.victorLeftSlaveMid);
+            victorLeftSlaveBack = new Victor(ElectricalConstants.victorLeftSlaveBack);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -78,22 +77,24 @@ public class DriveTrain extends Subsystem {
 
     void syncSlaves(){
         try {
-            vr1.set(jagRightMaster.getOutputVoltage()/jagRightMaster.getBusVoltage());
-            vr2.set(jagRightMaster.getOutputVoltage()/jagRightMaster.getBusVoltage());
-            vl1.set(jagLeftMaster.getOutputVoltage()/jagLeftMaster.getBusVoltage());
-            vl2.set(jagLeftMaster.getOutputVoltage()/jagLeftMaster.getBusVoltage());
+            victorRightSlaveMid.set(jagRightMaster.getOutputVoltage()/jagRightMaster.getBusVoltage());
+            victorRightSlaveBack.set(jagRightMaster.getOutputVoltage()/jagRightMaster.getBusVoltage());
+            victorLeftSlaveMid.set(jagLeftMaster.getOutputVoltage()/jagLeftMaster.getBusVoltage());
+            victorLeftSlaveBack.set(jagLeftMaster.getOutputVoltage()/jagLeftMaster.getBusVoltage());
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     }
-    public void setLeftVBus(double power){
+    public void setLeftVBus(double rawPower){
+        double power = rawPower * rawPower * rawPower;
         try{
             jagLeftMaster.setX(power);
         } catch (CANTimeoutException e){     
         }
         syncSlaves();
     }
-    public void setRightVBus(double power){
+    public void setRightVBus(double rawPower){
+        double power = rawPower * rawPower * rawPower;
         try{
             jagRightMaster.setX(power);
         } catch (CANTimeoutException e){
