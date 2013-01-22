@@ -85,16 +85,14 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
-    public void setLeftVBus(double rawPower){
-        double power = rawPower * rawPower * rawPower;
+    public void setLeftVBus(double power){
         try{
             jagLeftMaster.setX(power);
         } catch (CANTimeoutException e){     
         }
         syncSlaves();
     }
-    public void setRightVBus(double rawPower){
-        double power = rawPower * rawPower * rawPower;
+    public void setRightVBus(double power){
         try{
             jagRightMaster.setX(power);
         } catch (CANTimeoutException e){

@@ -6,8 +6,6 @@
 /*----------------------------------------------------------------------------*/
 package org.crescentschool.robotics.competition;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
@@ -16,6 +14,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.commands.KajDrive;
+import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
@@ -30,6 +29,8 @@ public class Coyobot extends IterativeRobot {
     Command autonomousCommand;
     Preferences pid;
     Shooter shooter;
+    DriveTrain driveTrain;
+    
     //Encoder encoder;
     //GearTooth counter;
     
@@ -41,6 +42,7 @@ public class Coyobot extends IterativeRobot {
         autonomousCommand = new KajDrive();
         shooter = Shooter.getInstance();
         pid = Preferences.getInstance();
+        driveTrain = DriveTrain.getInstance();
         //encoder = new Encoder(1, 2, false, CounterBase.EncodingType.k1X);
         //counter = new GearTooth(1);
         //counter.setMaxPeriod(5);
