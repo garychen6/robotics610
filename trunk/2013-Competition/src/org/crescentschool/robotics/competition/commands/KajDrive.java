@@ -27,9 +27,13 @@ public class KajDrive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        double rightSpeed,leftSpeed;
-        leftSpeed = oi.getDriver().getRawAxis(InputConstants.leftYAxis) + (oi.getDriver().getRawAxis(InputConstants.rightXAxis));
-        rightSpeed = oi.getDriver().getRawAxis(InputConstants.leftYAxis) - (oi.getDriver().getRawAxis(InputConstants.rightXAxis));
+        double rightSpeed,leftSpeed,x,y;
+        x = oi.getDriver().getRawAxis(InputConstants.rightXAxis);
+        y = oi.getDriver().getRawAxis(InputConstants.leftYAxis);
+        x = x * x * x;
+        y = y * y * y;
+        leftSpeed = y - x;
+        rightSpeed = y + x;
         driveTrain.setLeftVBus(leftSpeed);
         driveTrain.setRightVBus(rightSpeed);  
     }
