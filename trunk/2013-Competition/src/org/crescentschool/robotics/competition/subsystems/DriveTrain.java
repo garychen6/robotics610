@@ -38,9 +38,9 @@ public class DriveTrain extends Subsystem {
             jagLeftMaster = new CANJaguar(ElectricalConstants.jagLeftMaster);
             jagRightMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             jagLeftMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
-            victorRightSlaveMid = new Victor(ElectricalConstants.victorRightSlaveMid);
+            victorRightSlaveMid = new Victor(ElectricalConstants.victorRightSlaveFront);
             victorRightSlaveBack = new Victor(ElectricalConstants.victorRightSlaveBack);
-            victorLeftSlaveMid = new Victor(ElectricalConstants.victorLeftSlaveMid);
+            victorLeftSlaveMid = new Victor(ElectricalConstants.victorLeftSlaveFront);
             victorLeftSlaveBack = new Victor(ElectricalConstants.victorLeftSlaveBack);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
