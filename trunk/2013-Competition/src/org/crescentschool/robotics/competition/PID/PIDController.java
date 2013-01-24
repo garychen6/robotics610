@@ -32,7 +32,7 @@ public class PIDController extends Thread {
     private CANJaguar controller;
     private GearTooth gearTooth;
 
-    public PIDController(double p, double i, double d, CANJaguar controller, GearTooth gearTooth) {
+    public PIDController(double p, double i, double d,double ff, CANJaguar controller, GearTooth gearTooth) {
         this.p = p;
         this.i = i;
         this.d = d;
