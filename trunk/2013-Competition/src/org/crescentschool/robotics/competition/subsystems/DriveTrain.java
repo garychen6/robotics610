@@ -87,7 +87,7 @@ public class DriveTrain extends Subsystem {
     }
     public void setLeftVBus(double power){
         try{
-            jagLeftMaster.setX(power);
+            jagLeftMaster.setX(-power);
         } catch (CANTimeoutException e){     
         }
         syncSlaves();
