@@ -28,7 +28,6 @@ public class PIDController extends Thread {
     private double prevTime;
     private double time;
     private double current;
-    private static IanPID instance;
     private CANJaguar controller;
     private GearTooth gearTooth;
 

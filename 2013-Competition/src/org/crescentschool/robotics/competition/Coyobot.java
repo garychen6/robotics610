@@ -39,9 +39,9 @@ public class Coyobot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-        autonomousCommand = new KajDrive();
-        shooter = Shooter.getInstance();
-        pid = Preferences.getInstance();
+       // autonomousCommand = new KajDrive();
+       // shooter = Shooter.getInstance();
+        //pid = Preferences.getInstance();
         driveTrain = DriveTrain.getInstance();
         //encoder = new Encoder(1, 2, false, CounterBase.EncodingType.k1X);
         //counter = new GearTooth(1);
@@ -75,31 +75,31 @@ public class Coyobot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-        shooter.getInstance().getPIDController().run();
+        //shooter.getInstance().getPIDController().run();
         //ShooterPID.getInstance().run();
         //System.out.println(30.0/counter.getPeriod());
         
         //shooter.getInstance().getPIDController().run();
-        try {
+      //  try {
             // try {
                 //SmartDashboard.putNumber("SpeedNum",30.0/counter.getPeriod());
-                SmartDashboard.putNumber("Speed", shooter.getSpeed());
+                //SmartDashboard.putNumber("Speed", shooter.getSpeed());
                  //SmartDashboard.putNumber("SpeedNum", shooter.getSpeed());
-                SmartDashboard.putNumber("Voltage", shooter.getVoltage());
+                //SmartDashboard.putNumber("Voltage", shooter.getVoltage());
                
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-        }
-            Scheduler.getInstance().run();
+      //  } catch (CANTimeoutException ex) {
+        //    ex.printStackTrace();
+        //}
+           Scheduler.getInstance().run();
 //        } catch (CANTimeoutException ex) {
 //            ex.printStackTrace();
 //        }
-        if (OI.getInstance().getDriver().getRawButton(5)) {
-            //System.out.println("P: "+pid.getDouble("p", 0)+" I: "+pid.getDouble("i", 0)+" D: "+pid.getDouble("d", 0));
-            shooter.setPID(pid.getDouble("p", 0), pid.getDouble("i", 0), pid.getDouble("d", 0));
-            shooter.setSpeed(pid.getDouble("setpoint", 0));
-            
-        }
+//        if (OI.getInstance().getDriver().getRawButton(5)) {
+//            //System.out.println("P: "+pid.getDouble("p", 0)+" I: "+pid.getDouble("i", 0)+" D: "+pid.getDouble("d", 0));
+//            shooter.setPID(pid.getDouble("p", 0), pid.getDouble("i", 0), pid.getDouble("d", 0));
+//            shooter.setSpeed(pid.getDouble("setpoint", 0));
+//            
+//        }
     }
 
     /**
