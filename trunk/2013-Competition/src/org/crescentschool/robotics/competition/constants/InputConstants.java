@@ -21,14 +21,14 @@ public class InputConstants {
     final public static int rightYAxis = 4;
     
     //Buttons:
-    final public static int aButton = 2;
-    final public static int bButton = 3;
-    final public static int xButton = 1;
-    final public static int yButton = 4;
-    final public static int rightBumper = 6;
-    final public static int leftBumper = 5;
-    final public static int rightTrigger = 8;
-    final public static int leftTrigger = 7;
+    final public static int xButton = 2;
+    final public static int oButton = 3;
+    final public static int squareButton = 1;
+    final public static int triangleButton = 4;
+    final public static int r1Button = 6;
+    final public static int l1Button = 5;
+    final public static int r2Button = 8;
+    final public static int l2Button = 7;
     final public static int startButton = 10;
     final public static int selectButton = 9;
 }
