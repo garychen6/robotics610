@@ -17,16 +17,16 @@ import org.crescentschool.robotics.competition.subsystems.Socket;
  *
  * @author Warfa
  */
-public class AutoSpeed extends Command {
+public class KinectDriveTest extends Command {
 
     InputStream is;
     OutputStream os;
     String data;
     Joystick joyDriver;
     OI oi;
-    double depth, x, y;
+    double offset, x, y;
 
-    public AutoSpeed() throws IOException {
+    public KinectDriveTest() throws IOException {
         Socket.getInstance();
         oi = OI.getInstance();
     }
@@ -43,11 +43,11 @@ public class AutoSpeed extends Command {
         byte[] msg = new byte[1000];
         // if(joyDriver.getRawButton(4)){
         try {
-            os.write("<request><get_variables>Distance</get_variables></request>".getBytes());
+            os.write("<request><get_variables>OFFSET</get_variables></request>".getBytes());
             is.read(msg);
             String message = new String(msg);
-            depth = retrieveVal(message, "Distance");
-            SmartDashboard.putNumber("Depth:",depth);
+            offset = retrieveVal(message, "OFFSET");
+            SmartDashboard.putNumber("offset:",offset);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
