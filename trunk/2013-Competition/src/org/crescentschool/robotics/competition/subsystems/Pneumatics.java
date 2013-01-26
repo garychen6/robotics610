@@ -5,8 +5,10 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import org.crescentschool.robotics.competition.constants.ElectricalConstants;
+import org.crescentschool.robotics.competition.commands.DefaultPneumatics;
+import org.crescentschool.robotics.competition.constants.PneumaticConstants;
 
 /**
  *
@@ -15,6 +17,7 @@ import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 public class Pneumatics extends Subsystem {
     private static Pneumatics instance = null;
     Compressor compressor;
+    DoubleSolenoid doubleSolenoid;
     
     public static Pneumatics getInstance(){
         if(instance == null){
@@ -23,11 +26,18 @@ public class Pneumatics extends Subsystem {
         return instance;
     }
     Pneumatics(){
-        compressor = new Compressor(ElectricalConstants.compressorSwitch, ElectricalConstants.compressorRelay);
+        compressor = new Compressor(PneumaticConstants.compressorSwitch, PneumaticConstants.compressorRelay);
+        doubleSolenoid = new DoubleSolenoid(PneumaticConstants.forwardChannel, PneumaticConstants.reverseChannel);
         compressor.start();
     }
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
+        setDefaultCommand(new DefaultPneumatics());
+    }
+    public void forwardDoubleSolenoid(){
+        doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+    public void reverseDoubleSolenoid(){
+        doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 }
