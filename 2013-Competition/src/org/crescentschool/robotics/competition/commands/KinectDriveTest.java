@@ -1,11 +1,14 @@
 package org.crescentschool.robotics.competition.commands;
 
+import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.crescentschool.robotics.competition.OI;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.subsystems.Socket;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
@@ -21,12 +24,14 @@ public class KinectDriveTest extends Command {
     Joystick joyDriver;
     OI oi;
     double offset;
+    Gyro gyro;
     DriveTrain driveTrain;
 
     public KinectDriveTest() throws IOException {
         Socket.startSocket();
         driveTrain = DriveTrain.getInstance();
         oi = oi.getInstance();
+        Gyro gyro = new Gyro(ElectricalConstants.gyroAnalogInput);
         requires(driveTrain);
         //joyDriver = oi.getDriver();
         // Use requires() here to declare subsystem dependencies
@@ -56,7 +61,9 @@ public class KinectDriveTest extends Command {
                 offset = retrieveVal(message, "OFFSET");
             } catch (IOException ex) {
                 ex.printStackTrace();
-           
+            }
+            SmartDashboard.putNumber("OFFSET", offset);
+            SmartDashboard.putNumber("Gyor", gyro.getAngle());
             driveTrain.setLeftVBus(0.2* offset);
             driveTrain.setRightVBus(0.2* offset);
         }
