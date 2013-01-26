@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.subsystems.ShooterSensor;
 
 /**
  *
@@ -16,10 +17,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class PIDController extends Thread {
 
+    private double kP = 0;
+    private double kI = 0;
+    private double kD = 0;
     private double p = 0;
     private double i = 0;
     private double d = 0;
-    private double ff = 1.5 / 400.0;
+    private double ff = 1.5 / 580.0;
     private double setpoint = 0;
     private double output = 0;
     private double outputChange = 0;
@@ -29,16 +33,17 @@ public class PIDController extends Thread {
     private double time;
     private double current;
     private CANJaguar controller;
-    private GearTooth gearTooth;
+    private ShooterSensor opticalSensor;
 
-    public PIDController(double p, double i, double d,double ff, CANJaguar controller, GearTooth gearTooth) {
-        this.p = p;
-        this.i = i;
-        this.d = d;
+    public PIDController(double p, double i, double d, double ff, CANJaguar controller, ShooterSensor gearTooth) {
+        this.ff = ff;
+        this.kP = p;
+        this.kI = i;
+        this.kD = d;
         timer = new Timer();
         timer.start();
         if (gearTooth != null) {
-            this.gearTooth = gearTooth;
+            this.opticalSensor = gearTooth;
         }
         this.controller = controller;
     }
@@ -47,14 +52,14 @@ public class PIDController extends Thread {
      * @return the p
      */
     public double getP() {
-        return p;
+        return kP;
     }
 
     /**
      * @return the i
      */
     public double getI() {
-        return i;
+        return kI;
     }
 
     /**
@@ -78,8 +83,8 @@ public class PIDController extends Thread {
 
     synchronized public void run() {
         try {
-            if (gearTooth != null) {
-                current = -7.5 / gearTooth.getPeriod();
+            if (opticalSensor != null) {
+                current = opticalSensor.getSpeed();
                 //System.out.println(current);
             } else {
                 current = controller.getSpeed();
@@ -91,10 +96,16 @@ public class PIDController extends Thread {
         error[2] = error[1];
         error[1] = error[0];
         error[0] = setpoint - current;
-
-        outputChange = (error[0] - error[1]) * p + (error[0]) * i + ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * d;
+        p= (error[0] - error[1]) * kP; 
+        i=  (error[0]) * kI;
+        d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
+        outputChange = p+i+d;
         output += outputChange;
+        SmartDashboard.putNumber("P",p);
+        SmartDashboard.putNumber("I",i);
+        SmartDashboard.putNumber("D",d);
         SmartDashboard.putNumber("SpeedNum", current);
+        SmartDashboard.putNumber("SpeedNumGraph", current);
         try {
             SmartDashboard.putNumber("JagNum", controller.getSpeed());
         } catch (CANTimeoutException ex) {
@@ -103,6 +114,8 @@ public class PIDController extends Thread {
         
         SmartDashboard.putNumber("Output", output + ff * setpoint);
         try {
+            System.out.print(time);
+            System.out.print(","+current+"\n");
             controller.setX(output + ff * setpoint);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
@@ -117,7 +130,7 @@ public class PIDController extends Thread {
      */
     synchronized public void setP(double p) {
         output = 0;
-        this.p = p;
+        this.kP = p;
         System.out.println("P");
     }
 
@@ -126,7 +139,7 @@ public class PIDController extends Thread {
      */
     synchronized public void setI(double i) {
         output = 0;
-        this.i = i;
+        this.kI = i;
         System.out.println("I");
     }
 
@@ -135,7 +148,7 @@ public class PIDController extends Thread {
      */
     synchronized public void setD(double d) {
         output = 0;
-        this.d = d;
+        this.kD = d;
         System.out.println("D");
     }
 

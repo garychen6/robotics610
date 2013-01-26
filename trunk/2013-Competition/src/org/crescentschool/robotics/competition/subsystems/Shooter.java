@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.PID.PIDController;
 
 /**
@@ -20,7 +21,7 @@ public class Shooter extends Subsystem {
     CANJaguar shooter;
     PIDController pidController;
     Thread PID;
-    GearTooth gearTooth;
+    ShooterSensor gearTooth;
 
     public static Shooter getInstance() {
         if (instance == null) {
@@ -38,12 +39,13 @@ public class Shooter extends Subsystem {
             shooter.changeControlMode(CANJaguar.ControlMode.kVoltage);
             shooter.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shooter.enableControl(0);
-            gearTooth = new GearTooth(1);
+            gearTooth = new ShooterSensor(1);
             gearTooth.setMaxPeriod(5);
             gearTooth.start();
             
+            
             //pidController = PIDController.getInstance();
-            pidController = new PIDController(0,0,0,0,shooter, gearTooth);
+            pidController = new PIDController(0, 0, 0, SmartDashboard.getNumber("ff", 0), shooter, gearTooth);
             //pidController = ClassicPID.getInstance();
             pidController.start();
         } catch (CANTimeoutException ex) {

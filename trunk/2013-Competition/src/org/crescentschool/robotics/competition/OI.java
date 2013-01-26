@@ -26,7 +26,7 @@ public class OI {
 
     OI() {
         driver = new Joystick(1);
-        shooter = Shooter.getInstance();
+        //shooter = Shooter.getInstance();
     }
 
     public Joystick getDriver() {

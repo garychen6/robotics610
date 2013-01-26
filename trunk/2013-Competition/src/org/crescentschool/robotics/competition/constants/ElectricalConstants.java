@@ -14,9 +14,9 @@ public class ElectricalConstants {
     //CAN ID of the left drivetrain Jaguar
     final public static int jagLeftMaster = 2;
     //PWM ID of the first right drivetrain Victor
-    final public static int victorRightSlaveFront = 4;
+    final public static int victorRightSlaveFront = 3;
     //PWM ID of the second right drivetrain Victor
-    final public static int victorRightSlaveBack = 5;
+    final public static int victorRightSlaveBack = 4;
     //PWM ID of the first left drivetrain Victor
     final public static int victorLeftSlaveFront = 2;
     //PWM ID of the second left drivetrain Victor
