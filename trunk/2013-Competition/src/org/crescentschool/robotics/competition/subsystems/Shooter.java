@@ -35,7 +35,7 @@ public class Shooter extends Subsystem {
             shooter = new CANJaguar(ElectricalConstants.jagShooter);
             shooter.changeControlMode(CANJaguar.ControlMode.kSpeed);
             shooter.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
-            shooter.configEncoderCodesPerRev(2);
+            shooter.configEncoderCodesPerRev(8);
             shooter.changeControlMode(CANJaguar.ControlMode.kVoltage);
             shooter.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shooter.enableControl(0);

@@ -22,6 +22,8 @@ public class ElectricalConstants {
     //PWM ID of the second left drivetrain Victor
     final public static int victorLeftSlaveBack = 1;
     
+    final public static int gyroAnalogInput = 3;
+    
     
     //CAN ID of the shooter Jaguar
     final public static int jagShooter = 7;
