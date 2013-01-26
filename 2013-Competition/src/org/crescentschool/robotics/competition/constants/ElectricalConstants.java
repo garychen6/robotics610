@@ -24,10 +24,6 @@ public class ElectricalConstants {
     
     final public static int gyroAnalogInput = 3;
     //CAN ID of the shooter Jaguar
-    final public static int jagShooter = 7;
-    //Compressor switch
-    final public static int compressorSwitch = 1;
-    //Compressor relay
-    final public static int compressorRelay = 1;
+    final public static int jagShooter = 7; 
     
 }
