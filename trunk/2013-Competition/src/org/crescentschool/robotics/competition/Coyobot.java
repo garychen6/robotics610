@@ -9,13 +9,13 @@ package org.crescentschool.robotics.competition;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.IOException;
 import org.crescentschool.robotics.competition.commands.KinectDriveTest;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Pneumatics;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.subsystems.Socket;
 
@@ -34,6 +34,7 @@ public class Coyobot extends IterativeRobot {
     DriveTrain driveTrain;
     Socket socket;
     KinectDriveTest SocketDrive;
+    Pneumatics pneumatics;
     //Encoder encoder;
     //GearTooth counter;
 
@@ -48,18 +49,19 @@ public class Coyobot extends IterativeRobot {
             //counter.setMaxPeriod(5);
             //counter.start();
             SocketDrive = new KinectDriveTest();
+            pneumatics = Pneumatics.getInstance();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
 
     }
     
-    public void shooterInit(){
+    /*public void shooterInit(){
         shooter = Shooter.getInstance();
         pid = Preferences.getInstance();
 
             
-    }
+    }*/
 
     public void autonomousInit() {
         // schedule the autonomous command (example)
