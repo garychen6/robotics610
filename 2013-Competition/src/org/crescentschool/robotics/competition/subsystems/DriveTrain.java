@@ -43,18 +43,17 @@ public class DriveTrain extends Subsystem {
             victorRightSlaveBack = new Victor(ElectricalConstants.victorRightSlaveBack);
             victorLeftSlaveMid = new Victor(ElectricalConstants.victorLeftSlaveFront);
             victorLeftSlaveBack = new Victor(ElectricalConstants.victorLeftSlaveBack);
-
             System.out.println("left");
-
             jagLeftMaster = new CANJaguar(ElectricalConstants.jagLeftMaster);
             System.out.println("right");
             jagRightMaster = new CANJaguar(ElectricalConstants.jagRightMaster);
-
             System.out.println("done");
             jagRightMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             jagLeftMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
 
         } catch (CANTimeoutException ex) {
+            canError = true;
+            handleCANError();
             ex.printStackTrace();
         }
     }
@@ -67,6 +66,8 @@ public class DriveTrain extends Subsystem {
             jagRightMaster.enableControl();
             jagLeftMaster.enableControl();
         } catch (CANTimeoutException ex) {
+            canError = true;
+            handleCANError();
             ex.printStackTrace();
         }
     }
@@ -85,6 +86,8 @@ public class DriveTrain extends Subsystem {
             jagRightMaster.enableControl(0);
             jagLeftMaster.enableControl(0);
         } catch (CANTimeoutException ex) {
+            canError = true;
+            handleCANError();
             ex.printStackTrace();
         }
     }
@@ -96,6 +99,8 @@ public class DriveTrain extends Subsystem {
             victorLeftSlaveMid.set(jagLeftMaster.getOutputVoltage() / jagLeftMaster.getBusVoltage());
             victorLeftSlaveBack.set(jagLeftMaster.getOutputVoltage() / jagLeftMaster.getBusVoltage());
         } catch (CANTimeoutException ex) {
+            canError = true;
+            handleCANError();
             ex.printStackTrace();
         }
     }
@@ -107,6 +112,9 @@ public class DriveTrain extends Subsystem {
         try {
             jagLeftMaster.setX(power);
         } catch (CANTimeoutException e) {
+            canError = true;
+            handleCANError();
+            e.printStackTrace();
         }
         syncSlaves();
     }
@@ -118,7 +126,29 @@ public class DriveTrain extends Subsystem {
         try {
             jagRightMaster.setX(-power);
         } catch (CANTimeoutException e) {
+            canError = true;
+            handleCANError();
+            e.printStackTrace();
         }
         syncSlaves();
+    }
+    public void handleCANError() {
+        if (canError) {
+            System.out.println("CAN Error!");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            canError = false;
+            switch (driveMode) {
+                case 1:
+                    initVBus();
+                    break;
+                case 2:
+                    initPosition();
+                    break;
+            }
+        }
     }
 }
