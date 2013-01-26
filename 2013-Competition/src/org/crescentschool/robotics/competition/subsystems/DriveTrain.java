@@ -34,14 +34,21 @@ public class DriveTrain extends Subsystem {
     }
     DriveTrain() {
         try {
-            jagRightMaster = new CANJaguar(ElectricalConstants.jagRightMaster);
-            jagLeftMaster = new CANJaguar(ElectricalConstants.jagLeftMaster);
-            jagRightMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
-            jagLeftMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             victorRightSlaveMid = new Victor(ElectricalConstants.victorRightSlaveFront);
             victorRightSlaveBack = new Victor(ElectricalConstants.victorRightSlaveBack);
             victorLeftSlaveMid = new Victor(ElectricalConstants.victorLeftSlaveFront);
             victorLeftSlaveBack = new Victor(ElectricalConstants.victorLeftSlaveBack);
+            
+            System.out.println("left");
+            
+            jagLeftMaster = new CANJaguar(ElectricalConstants.jagLeftMaster);
+            System.out.println("right");
+            jagRightMaster = new CANJaguar(ElectricalConstants.jagRightMaster);
+            
+            System.out.println("done");
+            jagRightMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            jagLeftMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -87,14 +94,14 @@ public class DriveTrain extends Subsystem {
     }
     public void setLeftVBus(double power){
         try{
-            jagLeftMaster.setX(-power);
+            jagLeftMaster.setX(power);
         } catch (CANTimeoutException e){     
         }
         syncSlaves();
     }
     public void setRightVBus(double power){
         try{
-            jagRightMaster.setX(power);
+            jagRightMaster.setX(-power);
         } catch (CANTimeoutException e){
         }
         syncSlaves();
