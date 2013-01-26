@@ -43,7 +43,7 @@ public class Shooter extends Subsystem {
             gearTooth.start();
             
             //pidController = PIDController.getInstance();
-            pidController = new PIDController(0,0,0,shooter, gearTooth);
+            pidController = new PIDController(0,0,0,0,shooter, gearTooth);
             //pidController = ClassicPID.getInstance();
             pidController.start();
         } catch (CANTimeoutException ex) {
@@ -53,10 +53,11 @@ public class Shooter extends Subsystem {
     public double getVoltage() throws CANTimeoutException{
         return shooter.getOutputVoltage();
     }
-    public void setPID(double p, double i, double d) {
+    public void setPID(double p, double i, double d,double ff) {
         pidController.setP(p);
         pidController.setI(i);
         pidController.setD(d);
+        pidController.setFf(ff);
     }
 
     public void setSpeed(double rpm) {
@@ -74,7 +75,7 @@ public class Shooter extends Subsystem {
     }
 
     public double getSpeed() throws CANTimeoutException {
-        return shooter.getSpeed();
+        return (7.5/gearTooth.getPeriod());
     }
 
     protected void initDefaultCommand() {
