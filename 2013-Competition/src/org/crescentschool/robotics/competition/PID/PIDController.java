@@ -79,7 +79,7 @@ public class PIDController extends Thread {
     synchronized public void run() {
         try {
             if (gearTooth != null) {
-                current = -30.0 / gearTooth.getPeriod();
+                current = -7.5 / gearTooth.getPeriod();
                 //System.out.println(current);
             } else {
                 current = controller.getSpeed();
