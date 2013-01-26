@@ -5,11 +5,11 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.CANJaguar;
-import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.PID.PIDController;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
 /**
  *
@@ -32,7 +32,7 @@ public class Shooter extends Subsystem {
 
     Shooter() {
         try {
-            shooter = new CANJaguar(7);
+            shooter = new CANJaguar(ElectricalConstants.jagShooter);
             shooter.changeControlMode(CANJaguar.ControlMode.kSpeed);
             shooter.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
             shooter.configEncoderCodesPerRev(2);
