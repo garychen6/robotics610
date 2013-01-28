@@ -34,8 +34,9 @@ public class PIDController extends Thread {
     private double current;
     private CANJaguar controller;
     private ShooterSensor opticalSensor;
-
-    public PIDController(double p, double i, double d, double ff, CANJaguar controller, ShooterSensor gearTooth) {
+    
+    
+   public PIDController(double p, double i, double d, double ff, CANJaguar controller, ShooterSensor gearTooth) {
         this.ff = ff;
         this.kP = p;
         this.kI = i;
@@ -84,7 +85,7 @@ public class PIDController extends Thread {
     synchronized public void run() {
         try {
             if (opticalSensor != null) {
-                current = opticalSensor.getSpeed();
+                current = -15.0/(opticalSensor.getSpeed());
                 //System.out.println(current);
             } else {
                 current = controller.getSpeed();
@@ -114,8 +115,7 @@ public class PIDController extends Thread {
         
         SmartDashboard.putNumber("Output", output + ff * setpoint);
         try {
-            System.out.print(time);
-            System.out.print(","+current+"\n");
+           // System.out.println(time +","+current);
             controller.setX(output + ff * setpoint);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
