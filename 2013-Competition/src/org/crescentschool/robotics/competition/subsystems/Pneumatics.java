@@ -40,4 +40,7 @@ public class Pneumatics extends Subsystem {
     public void reverseDoubleSolenoid(){
         doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
+    public boolean getSwitchValue(){
+        return compressor.getPressureSwitchValue();
+    }
 }

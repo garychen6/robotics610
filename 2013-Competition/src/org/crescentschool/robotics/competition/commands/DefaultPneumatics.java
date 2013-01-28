@@ -15,8 +15,11 @@ import org.crescentschool.robotics.competition.subsystems.Pneumatics;
  * @author jeffrey
  */
 public class DefaultPneumatics extends Command {
+
+    boolean cooldown = false;
     OI oi;
     Pneumatics pneumatics;
+
     public DefaultPneumatics() {
         pneumatics = Pneumatics.getInstance();
         oi = OI.getInstance();
@@ -30,7 +33,15 @@ public class DefaultPneumatics extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if(oi.getDriver().getRawButton(InputConstants.squareButton)){
+        if (pneumatics.getSwitchValue() == true && cooldown == false) {
+            cooldown = true;
+            System.out.println("Pressure switch: " + pneumatics.getSwitchValue());
+        }
+        if (pneumatics.getSwitchValue() == false && cooldown == true) {
+            cooldown = false;
+            System.out.println("Pressure switch: " + pneumatics.getSwitchValue());
+        }
+        if (oi.getDriver().getRawButton(InputConstants.squareButton)) {
             pneumatics.forwardDoubleSolenoid();
         } else {
             pneumatics.reverseDoubleSolenoid();
