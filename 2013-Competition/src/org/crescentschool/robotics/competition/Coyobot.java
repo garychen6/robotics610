@@ -43,30 +43,29 @@ public class Coyobot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-        try {
-            //encoder = new Encoder(1, 2, false, CounterBase.EncodingType.k1X);
-            //counter = new GearTooth(1);
-            //counter.setMaxPeriod(5);
-            //counter.start();
-            SocketDrive = new KinectDriveTest();
-            pneumatics = Pneumatics.getInstance();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+//        try {
+        //encoder = new Encoder(1, 2, false, CounterBase.EncodingType.k1X);
+        //counter = new GearTooth(1);
+        //counter.setMaxPeriod(5);
+        //counter.start();
+        //SocketDrive = new KinectDriveTest();
+        shooterInit();
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
 
     }
-    
-    /*public void shooterInit(){
+
+    public void shooterInit() {
         shooter = Shooter.getInstance();
         pid = Preferences.getInstance();
 
-            
-    }*/
+
+    }
 
     public void autonomousInit() {
         // schedule the autonomous command (example)
         //autonomousCommand.start();
-      
     }
 
     /**
@@ -77,17 +76,17 @@ public class Coyobot extends IterativeRobot {
     }
 
     public void teleopInit() {
-          SocketDrive.start();
+        //SocketDrive.start();
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-       
+
         Scheduler.getInstance().run();
-        SmartDashboard.putNumber("Offset",7);
-        
+        //SmartDashboard.putNumber("Offset",7);
+        shooterTeleop();
     }
 
     /**
@@ -96,28 +95,21 @@ public class Coyobot extends IterativeRobot {
     public void testPeriodic() {
         LiveWindow.run();
     }
-    public void shooterTeleop(){
-        shooter.getInstance().getPIDController().run();
-        //ShooterPID.getInstance().run();
-        //System.out.println(30.0 / counter.getPeriod());
 
-        shooter.getInstance().getPIDController().run();
-        try {
-            SmartDashboard.putNumber("SpeedNum", shooter.getSpeed());
-            SmartDashboard.putNumber("Speed", shooter.getSpeed());
-            SmartDashboard.putNumber("SpeedNum", shooter.getSpeed());
-            SmartDashboard.putNumber("Voltage", shooter.getVoltage());
-
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-        }
+    public void shooterTeleop() {
         Scheduler.getInstance().run();
-
+        shooter.getInstance().getPIDController().run();
         if (OI.getInstance().getDriver().getRawButton(5)) {
-            System.out.println("P: " + pid.getDouble("p", 0) + " I: " + pid.getDouble("i", 0) + " D: " + pid.getDouble("d", 0));
-            shooter.setPID(pid.getDouble("p", 0), pid.getDouble("i", 0), pid.getDouble("d", 0),pid.getDouble("ff", 0));
+            shooter.setPID(pid.getDouble("p", 0), pid.getDouble("i", 0), pid.getDouble("d", 0), pid.getDouble("ff", 0));
             shooter.setSpeed(pid.getDouble("setpoint", 0));
-
         }
+        if(OI.getInstance().getDriver().getRawButton(6)){
+            shooter.fireFeeder();
+        }else{
+            shooter.retractFeeder();
+        }
+//        if (OI.getInstance().getDriver().getRawButton(6)) {
+//            shooter.fireFeeder();
+//        }
     }
 }

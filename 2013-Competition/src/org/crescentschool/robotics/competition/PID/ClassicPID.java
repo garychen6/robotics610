@@ -4,18 +4,21 @@
  */
 package org.crescentschool.robotics.competition.PID;
 
+import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.subsystems.ShooterSensor;
 
 /**
  *
  * @author Warfa
  */
 public class ClassicPID extends Thread {
-    
+    private ShooterSensor opticalSensor;
+    private CANJaguar controller;
     private double p = 0;
     private double i = 0;
     private double d = 0;
@@ -28,21 +31,20 @@ public class ClassicPID extends Thread {
     private double prevTime = 0;
     private double time = 0;
     private double output = 0;
-    private static ClassicPID instance = null;
     private Subsystem subsystem = null;
     
-    public static ClassicPID getInstance(Subsystem subsystem){
-        if(instance == null){
-            instance = new ClassicPID(subsystem);
-        }
-        return instance;
-    }
-    ClassicPID(Subsystem subsystem){
+
+   public ClassicPID(double p, double i, double d, double ff, CANJaguar controller, ShooterSensor gearTooth) {
+        this.ff = ff;
+        this.p = p;
+        this.i = i;
+        this.d = d;
         timer = new Timer();
         timer.start();
-        this.subsystem = subsystem;
-        System.out.println("ClassicPID Controller running for: " + subsystem.getName());
-
+        if (gearTooth != null) {
+            this.opticalSensor = gearTooth;
+        }
+        this.controller = controller;
     }
 
     /**
@@ -116,11 +118,9 @@ public class ClassicPID extends Thread {
      */
     synchronized public void run() {
         time = timer.get();
-        try {
-            currentSpeed = Shooter.getInstance().getSpeed();
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-        }
+
+            currentSpeed = opticalSensor.getSpeed();
+
         error = setpoint - currentSpeed;
         totalError += error;
         output = (ff*setpoint)+(p*error)+Math.min(12,(i*totalError*(time-prevTime)))+(d*error)/(time-prevTime);
