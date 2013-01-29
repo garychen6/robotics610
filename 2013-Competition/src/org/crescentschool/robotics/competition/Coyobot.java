@@ -8,14 +8,10 @@ package org.crescentschool.robotics.competition;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.can.CANTimeoutException;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import java.io.IOException;
-import org.crescentschool.robotics.competition.commands.KinectDriveTest;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
-import org.crescentschool.robotics.competition.subsystems.Pneumatics;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.subsystems.Socket;
 
@@ -28,13 +24,13 @@ import org.crescentschool.robotics.competition.subsystems.Socket;
  */
 public class Coyobot extends IterativeRobot {
 
-    //Command autonomousCommand;
+    Command autonomousCommand;
     Preferences pid;
     Shooter shooter;
     DriveTrain driveTrain;
     Socket socket;
-    KinectDriveTest SocketDrive;
-    Pneumatics pneumatics;
+    //KinectDriveTest SocketDrive;
+    //Pneumatics pneumatics;
     //Encoder encoder;
     //GearTooth counter;
 
@@ -43,20 +39,22 @@ public class Coyobot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-//        try {
-        //encoder = new Encoder(1, 2, false, CounterBase.EncodingType.k1X);
-        //counter = new GearTooth(1);
-        //counter.setMaxPeriod(5);
-        //counter.start();
-        //SocketDrive = new KinectDriveTest();
         shooterInit();
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
+                
+        //pneumatics = Pneumatics.getInstance();
+        //autonomousCommand = new KinectDriveTest();
+
 
     }
 
     public void shooterInit() {
+        /*
+         * Jan 28, 2013
+         * P: 0.01
+         * I: 0.00001
+         * D: 0.0001
+         * ff: 0.0023
+         */
         shooter = Shooter.getInstance();
         pid = Preferences.getInstance();
 
@@ -85,7 +83,7 @@ public class Coyobot extends IterativeRobot {
     public void teleopPeriodic() {
 
         Scheduler.getInstance().run();
-        //SmartDashboard.putNumber("Offset",7);
+        //SmartDashboard.putNumber("Offset", 7);
         shooterTeleop();
     }
 
@@ -95,11 +93,21 @@ public class Coyobot extends IterativeRobot {
     public void testPeriodic() {
         LiveWindow.run();
     }
-
+    
+    /*
+    public void shooterTeleop() {
+        shooter.getInstance().getPIDController().run();
+        //ShooterPID.getInstance().run();
+        //System.out.println(30.0 / counter.getPeriod());
+    }
+    */
+    
+    
     public void shooterTeleop() {
         Scheduler.getInstance().run();
         shooter.getInstance().getPIDController().run();
         if (OI.getInstance().getDriver().getRawButton(5)) {
+            System.out.println("P: " + pid.getDouble("p", 0) + " I: " + pid.getDouble("i", 0) + " D: " + pid.getDouble("d", 0));
             shooter.setPID(pid.getDouble("p", 0), pid.getDouble("i", 0), pid.getDouble("d", 0), pid.getDouble("ff", 0));
             shooter.setSpeed(pid.getDouble("setpoint", 0));
         }
@@ -112,4 +120,5 @@ public class Coyobot extends IterativeRobot {
 //            shooter.fireFeeder();
 //        }
     }
+    
 }

@@ -6,6 +6,7 @@ package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.commands.DefaultPneumatics;
 import org.crescentschool.robotics.competition.constants.PneumaticConstants;
@@ -18,6 +19,7 @@ public class Pneumatics extends Subsystem {
     private static Pneumatics instance = null;
     Compressor compressor;
     DoubleSolenoid doubleSolenoid;
+    Solenoid singleSolenoid;
     
     public static Pneumatics getInstance(){
         if(instance == null){
