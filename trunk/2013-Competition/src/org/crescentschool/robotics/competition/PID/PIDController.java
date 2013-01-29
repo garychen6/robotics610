@@ -5,7 +5,7 @@
 package org.crescentschool.robotics.competition.PID;
 
 import edu.wpi.first.wpilibj.CANJaguar;
-import edu.wpi.first.wpilibj.GearTooth;
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,7 +33,7 @@ public class PIDController extends Thread {
     private double time;
     private double current;
     private CANJaguar controller;
-    private ShooterSensor opticalSensor;
+    private Counter opticalSensor;
     
     
    public PIDController(double p, double i, double d, double ff, CANJaguar controller, ShooterSensor gearTooth) {
@@ -45,6 +45,10 @@ public class PIDController extends Thread {
         timer.start();
         if (gearTooth != null) {
             this.opticalSensor = gearTooth;
+            //Measure the period of the white part of the disc
+            this.opticalSensor.setSemiPeriodMode(false);
+            this.opticalSensor.setMaxPeriod(1);
+            this.opticalSensor.start();
         }
         this.controller = controller;
     }
@@ -85,7 +89,7 @@ public class PIDController extends Thread {
     synchronized public void run() {
         try {
             if (opticalSensor != null) {
-                current = -15.0/(opticalSensor.getSpeed());
+                current = -(60/(opticalSensor.getPeriod()*(8.0/7.0)));
                 //System.out.println(current);
             } else {
                 current = controller.getSpeed();
@@ -102,11 +106,13 @@ public class PIDController extends Thread {
         d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
         outputChange = p+i+d;
         output += outputChange;
+        SmartDashboard.putNumber("Error", error[0]);
         SmartDashboard.putNumber("P",p);
         SmartDashboard.putNumber("I",i);
         SmartDashboard.putNumber("D",d);
         SmartDashboard.putNumber("SpeedNum", current);
         SmartDashboard.putNumber("SpeedNumGraph", current);
+        SmartDashboard.putNumber("OpticalPeriod", opticalSensor.getPeriod());
         try {
             SmartDashboard.putNumber("JagNum", controller.getSpeed());
         } catch (CANTimeoutException ex) {

@@ -24,14 +24,14 @@ public class KinectDriveTest extends Command {
     Joystick joyDriver;
     OI oi;
     double offset;
-    Gyro gyro;
+    //Gyro gyro;
     DriveTrain driveTrain;
 
     public KinectDriveTest() throws IOException {
         Socket.startSocket();
         driveTrain = DriveTrain.getInstance();
         oi = oi.getInstance();
-        Gyro gyro = new Gyro(ElectricalConstants.gyroAnalogInput);
+        //Gyro gyro = new Gyro(ElectricalConstants.gyroAnalogInput);
         requires(driveTrain);
         //joyDriver = oi.getDriver();
         // Use requires() here to declare subsystem dependencies
@@ -53,7 +53,7 @@ public class KinectDriveTest extends Command {
     protected void execute() {
         data = "";
         byte[] msg = new byte[1000];
-        if (joyDriver.getRawButton(4)) {
+        //if (joyDriver.getRawButton(4)) {
             try {
                 os.write("<request><get_variable>OFFSET</get_variable></request>".getBytes());
                 is.read(msg);
@@ -63,10 +63,11 @@ public class KinectDriveTest extends Command {
                 ex.printStackTrace();
             }
             SmartDashboard.putNumber("OFFSET", offset);
-            SmartDashboard.putNumber("Gyor", gyro.getAngle());
-            driveTrain.setLeftVBus(0.2* offset);
-            driveTrain.setRightVBus(0.2* offset);
-        }
+            //System.out.println(offset);
+            //SmartDashboard.putNumber("Gyor", gyro.getAngle());
+            //driveTrain.setLeftVBus(0.2* offset);
+            //driveTrain.setRightVBus(0.2* offset);
+    //}
     }
 
     public static double retrieveVal(String msg, String variable) {

@@ -23,23 +23,21 @@ public class ShooterSensor extends Counter {
     }
     
     public double getSpeed(){
-       ticks = super.get();
-      period = (0.020/(ticks-prevTicks));
-      System.out.println(ticks);
-//        reads[readCounter] = 
-//        //System.out.println(super.getPeriod());
-//        readCounter++;
-//        if (readCounter >= numAvgs)
-//        {
-//            readCounter = 0;
-//        }
-//        double average = 0;
-//        for (int i = 0; i < numAvgs; i++)
-//        {
-//            average += reads[i];
-//        }
-//        average /= numAvgs;
-        prevTicks = ticks;
-        return  period;
+        
+        
+        reads[readCounter] = -30.0 / super.getPeriod();
+        readCounter++;
+        if (readCounter >= numAvgs)
+        {
+            readCounter = 0;
+        }
+        double average = 0;
+        for (int i = 0; i < numAvgs; i++)
+        {
+            average += reads[i];
+        }
+        average /= numAvgs;
+        return average;
+        
     }
 }

@@ -33,15 +33,8 @@ public class DefaultPneumatics extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if (pneumatics.getSwitchValue() == true && cooldown == false) {
-            cooldown = true;
-            System.out.println("Pressure switch: " + pneumatics.getSwitchValue());
-        }
-        if (pneumatics.getSwitchValue() == false && cooldown == true) {
-            cooldown = false;
-            System.out.println("Pressure switch: " + pneumatics.getSwitchValue());
-        }
-        if (oi.getDriver().getRawButton(InputConstants.squareButton)) {
+        System.out.println("Running Pneumatics");
+        if(oi.getDriver().getRawButton(InputConstants.squareButton)){
             pneumatics.forwardDoubleSolenoid();
         } else {
             pneumatics.reverseDoubleSolenoid();
