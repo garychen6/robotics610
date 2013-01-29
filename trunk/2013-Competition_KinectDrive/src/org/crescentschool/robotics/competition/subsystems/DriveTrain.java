@@ -141,8 +141,8 @@ public class DriveTrain extends Subsystem {
     }
     public void setAngle(double angle){
       gyro.reset();
-      setRightVBus(angle*-(12/180));
-      setLeftVBus(angle*(12/180));
+      setRightVBus(angle*-(12/180.0));
+      setLeftVBus(angle*(12/180.0));
     }
     public void handleCANError() {
         if (canError) {
