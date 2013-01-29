@@ -19,7 +19,7 @@ public class Pneumatics extends Subsystem {
     private static Pneumatics instance = null;
     Compressor compressor;
     DoubleSolenoid doubleSolenoid;
-    Solenoid singleSolenoid;
+    Solenoid solenoid;
     
     public static Pneumatics getInstance(){
         if(instance == null){
@@ -30,6 +30,7 @@ public class Pneumatics extends Subsystem {
     Pneumatics(){
         compressor = new Compressor(PneumaticConstants.compressorSwitch, PneumaticConstants.compressorRelay);
         doubleSolenoid = new DoubleSolenoid(PneumaticConstants.forwardChannel, PneumaticConstants.reverseChannel);
+        solenoid = new Solenoid(PneumaticConstants.forwardChannel);
         compressor.start();
     }
     public void initDefaultCommand() {
@@ -41,6 +42,9 @@ public class Pneumatics extends Subsystem {
     }
     public void reverseDoubleSolenoid(){
         doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+    }
+    public void solenoidControl(boolean controlSwitch){
+        solenoid.set(controlSwitch);
     }
     public boolean getSwitchValue(){
         return compressor.getPressureSwitchValue();
