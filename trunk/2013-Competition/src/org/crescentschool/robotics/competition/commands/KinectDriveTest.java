@@ -24,8 +24,9 @@ public class KinectDriveTest extends Command {
     Joystick joyDriver;
     OI oi;
     double offset;
-    //Gyro gyro;
+    Gyro gyro;
     DriveTrain driveTrain;
+    
 
     public KinectDriveTest() throws IOException {
         Socket.startSocket();

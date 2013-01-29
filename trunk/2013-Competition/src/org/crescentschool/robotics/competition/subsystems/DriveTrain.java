@@ -1,6 +1,7 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.CANJaguar;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -24,6 +25,7 @@ public class DriveTrain extends Subsystem {
     PIDController leftPIDControl;
     int driveMode = 1;
     private boolean canError = false;
+    Solenoid powerTO;
 
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
@@ -32,6 +34,7 @@ public class DriveTrain extends Subsystem {
 
     public static DriveTrain getInstance() {
         if (instance == null) {
+            
             instance = new DriveTrain();
         }
         return instance;
@@ -39,6 +42,7 @@ public class DriveTrain extends Subsystem {
 
     DriveTrain() {
         try {
+            powerTO = new Solenoid(1,2);
             victorRightSlaveMid = new Victor(ElectricalConstants.victorRightSlaveFront);
             victorRightSlaveBack = new Victor(ElectricalConstants.victorRightSlaveBack);
             victorLeftSlaveMid = new Victor(ElectricalConstants.victorLeftSlaveFront);
@@ -132,6 +136,10 @@ public class DriveTrain extends Subsystem {
         }
         syncSlaves();
     }
+    public void powerTO(boolean takeOff){
+        powerTO.set(takeOff);
+    }
+    
     public void handleCANError() {
         if (canError) {
             System.out.println("CAN Error!");

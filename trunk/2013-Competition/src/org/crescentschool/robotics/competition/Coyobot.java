@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Pneumatics;
+
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.subsystems.Socket;
 
@@ -30,7 +32,7 @@ public class Coyobot extends IterativeRobot {
     DriveTrain driveTrain;
     Socket socket;
     //KinectDriveTest SocketDrive;
-    //Pneumatics pneumatics;
+    Pneumatics pneumatics;
     //Encoder encoder;
     //GearTooth counter;
 
@@ -41,9 +43,9 @@ public class Coyobot extends IterativeRobot {
     public void robotInit() {
         shooterInit();
                 
-        //pneumatics = Pneumatics.getInstance();
+        pneumatics = Pneumatics.getInstance();
         //autonomousCommand = new KinectDriveTest();
-
+        driveTrain = DriveTrain.getInstance();
 
     }
 
@@ -85,6 +87,8 @@ public class Coyobot extends IterativeRobot {
         Scheduler.getInstance().run();
         //SmartDashboard.putNumber("Offset", 7);
         shooterTeleop();
+      
+        driveTrain.powerTO(OI.getInstance().getDriver().getRawButton(4));
     }
 
     /**
@@ -104,13 +108,14 @@ public class Coyobot extends IterativeRobot {
     
     
     public void shooterTeleop() {
-        Scheduler.getInstance().run();
+        //Scheduler.getInstance().run();
         shooter.getInstance().getPIDController().run();
         if (OI.getInstance().getDriver().getRawButton(5)) {
             System.out.println("P: " + pid.getDouble("p", 0) + " I: " + pid.getDouble("i", 0) + " D: " + pid.getDouble("d", 0));
             shooter.setPID(pid.getDouble("p", 0), pid.getDouble("i", 0), pid.getDouble("d", 0), pid.getDouble("ff", 0));
             shooter.setSpeed(pid.getDouble("setpoint", 0));
         }
+        
         if(OI.getInstance().getDriver().getRawButton(6)){
             shooter.fireFeeder();
         }else{
