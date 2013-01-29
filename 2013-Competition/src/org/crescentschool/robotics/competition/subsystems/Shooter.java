@@ -22,9 +22,10 @@ public class Shooter extends Subsystem {
     CANJaguar shooter;
     PIDController pidController;
     Thread PID;
-        ShooterSensor gearTooth;
+    ShooterSensor gearTooth;
+    
     Solenoid feeder1;
-    Solenoid feeder2;
+    //Solenoid feeder2;
 
     public static Shooter getInstance() {
         if (instance == null) {
@@ -42,11 +43,12 @@ public class Shooter extends Subsystem {
             shooter.changeControlMode(CANJaguar.ControlMode.kVoltage);
             shooter.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shooter.enableControl(0);
-            gearTooth = new ShooterSensor(1);
+            gearTooth = new ShooterSensor(2);
             gearTooth.setMaxPeriod(5);
             gearTooth.start();
+            
             feeder1 = new Solenoid(1,1);
-            feeder2 = new Solenoid(1,2);
+            //feeder2 = new Solenoid(1,2);
             
             //pidController = PIDController.getInstance();
             pidController = new PIDController(0, 0, 0, 0, shooter, gearTooth);
@@ -57,14 +59,14 @@ public class Shooter extends Subsystem {
         }
     }
     public void fireFeeder(){
-        feeder2.set(false);
+        //feeder2.set(false);
         feeder1.set(true);
         
         
     }
     public void retractFeeder(){
         feeder1.set(false);
-        feeder2.set(true);
+        //feeder2.set(true);
     }
     
     public double getVoltage() throws CANTimeoutException{

@@ -43,6 +43,7 @@ public class DefaultPneumatics extends Command {
         }
         /*if (oi.getDriver().getRawButton(InputConstants.squareButton)) {
         System.out.println("Running Pneumatics");
+        
         if(oi.getDriver().getRawButton(InputConstants.squareButton)){
             pneumatics.forwardDoubleSolenoid();
         } else {
@@ -53,6 +54,7 @@ public class DefaultPneumatics extends Command {
         } else {
             pneumatics.solenoidControl(false);
         }
+        
     }
 
     // Make this return true when this Command no longer needs to run execute()

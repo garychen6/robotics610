@@ -18,8 +18,8 @@ import org.crescentschool.robotics.competition.constants.PneumaticConstants;
 public class Pneumatics extends Subsystem {
     private static Pneumatics instance = null;
     Compressor compressor;
-    DoubleSolenoid doubleSolenoid;
-    Solenoid solenoid;
+    //DoubleSolenoid doubleSolenoid;
+    //sSolenoid singleSolenoid;
     
     public static Pneumatics getInstance(){
         if(instance == null){
@@ -29,8 +29,8 @@ public class Pneumatics extends Subsystem {
     }
     Pneumatics(){
         compressor = new Compressor(PneumaticConstants.compressorSwitch, PneumaticConstants.compressorRelay);
-        doubleSolenoid = new DoubleSolenoid(PneumaticConstants.forwardChannel, PneumaticConstants.reverseChannel);
-        solenoid = new Solenoid(PneumaticConstants.forwardChannel);
+        //doubleSolenoid = new DoubleSolenoid(PneumaticConstants.forwardChannel, PneumaticConstants.reverseChannel);
+        //solenoid = new Solenoid(PneumaticConstants.forwardChannel);
         compressor.start();
     }
     public void initDefaultCommand() {
@@ -38,13 +38,13 @@ public class Pneumatics extends Subsystem {
         setDefaultCommand(new DefaultPneumatics());
     }
     public void forwardDoubleSolenoid(){
-        doubleSolenoid.set(DoubleSolenoid.Value.kForward);
+       // doubleSolenoid.set(DoubleSolenoid.Value.kForward);
     }
     public void reverseDoubleSolenoid(){
-        doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
+      //  doubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
     public void solenoidControl(boolean controlSwitch){
-        solenoid.set(controlSwitch);
+        //solenoid.set(controlSwitch);
     }
     public boolean getSwitchValue(){
         return compressor.getPressureSwitchValue();
