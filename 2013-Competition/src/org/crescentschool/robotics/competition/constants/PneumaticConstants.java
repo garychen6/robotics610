@@ -13,6 +13,6 @@ public class PneumaticConstants {
     final public static int compressorSwitch = 1;
     //Compressor relay
     final public static int compressorRelay = 1;
-    final public static int forwardChannel = 1;
-    final public static int reverseChannel = 2;
+    final public static int feederSolenoid = 1;
+    final public static int driveTrainSolenoid = 2;
 }
