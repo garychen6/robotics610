@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -29,10 +30,15 @@ public class DataBaseClient {
     }
 
     public void update(String teamName) throws FileNotFoundException {
+        teamSheets = new HashMap();
+        matchSheets = new HashMap();
         File dir = new File(path + "\\" + teamName);
-        for (File child : dir.listFiles()) {
+        File[] files = dir.listFiles();
+        
+        for (File child : files ){
             if (!child.getName().equals("Comments.txt")) {
                 addSheet(child);
+                System.out.println(child.getName());
             }
         }
     }
