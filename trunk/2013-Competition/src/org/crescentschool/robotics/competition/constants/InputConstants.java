@@ -19,7 +19,10 @@ public class InputConstants {
     final public static int rightXAxis = 3;
     //Right thumbstick Y-axis
     final public static int rightYAxis = 4;
-    
+    //D-Pad Horizontal
+    final public static int dPadX = 5;
+    //D-Pad Vertical 
+    final public static int dPadY = 6;
     //Buttons:
     final public static int xButton = 2;
     final public static int oButton = 3;
