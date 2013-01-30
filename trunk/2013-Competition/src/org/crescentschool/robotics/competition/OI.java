@@ -3,6 +3,7 @@ package org.crescentschool.robotics.competition;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Preferences;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
@@ -14,6 +15,7 @@ public class OI {
     DriverStation ds;
     Preferences pid;
     Joystick driver;
+    Joystick operator;
     Shooter shooter;
     static OI instance = null;
 
@@ -25,11 +27,15 @@ public class OI {
     }
 
     OI() {
-        driver = new Joystick(1);
-        //shooter = Shooter.getInstance();
+        driver = new Joystick(ElectricalConstants.driverJoystick);
+        operator = new Joystick(ElectricalConstants.operatorJoystick);
     }
 
     public Joystick getDriver() {
         return driver;
+    }
+
+    public Joystick getOperator() {
+        return operator;
     }
 }
