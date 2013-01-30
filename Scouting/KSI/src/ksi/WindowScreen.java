@@ -316,6 +316,7 @@ public class WindowScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     try {
+                        
                         saveFile();
                     } catch (ParseException ex) {
                         Logger.getLogger(WindowScreen.class.getName()).log(Level.SEVERE, null, ex);
@@ -410,7 +411,7 @@ public class WindowScreen extends JFrame {
         String teamNumber = JOptionPane.showInputDialog("Team:");
         String teamFileName = JOptionPane.showInputDialog("Sheet Name:");
         dataBase.update(teamNumber);
-        HelloPDF teamPDF = new HelloPDF(dataBasePath,teamFileName,"");
+        PDFCreator teamPDF = new PDFCreator(dataBasePath,teamFileName,"");
         teamPDF.createTeamPDF(dataBase.lookUpMatchSheets(teamNumber));
     }
 
@@ -420,7 +421,7 @@ public class WindowScreen extends JFrame {
         for (int i = 0; i < teams.length; i++) {
             dataBase.update(teams[i]);
         }
-        HelloPDF matchPDF = new HelloPDF(dataBasePath,"",matchFileName);
+        PDFCreator matchPDF = new PDFCreator(dataBasePath,"",matchFileName);
         matchPDF.createMatchPDF(dataBase.lookUpTeamSheet(teams[0]),dataBase.lookUpTeamSheet(teams[1]),dataBase.lookUpTeamSheet(teams[2]),dataBase.lookUpTeamSheet(teams[3]),dataBase.lookUpTeamSheet(teams[4]),dataBase.lookUpTeamSheet(teams[5]));
     }
 

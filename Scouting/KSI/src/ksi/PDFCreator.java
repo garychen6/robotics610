@@ -19,7 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
-public class HelloPDF {
+public class PDFCreator {
 
     private static String matchFile = "C:/temp/Match.pdf";
     private static String teamFile = "C:/temp/Team.pdf";
@@ -32,7 +32,7 @@ public class HelloPDF {
     private static Font greenFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
             Font.NORMAL, new BaseColor(1, 129, 86));
 
-    HelloPDF(String directory, String teamFileName, String matchFileName) {
+    PDFCreator(String directory, String teamFileName, String matchFileName) {
         this.matchFile = directory + "/" + matchFileName + ".pdf";
         this.teamFile = directory + "/" + teamFileName + ".pdf";
     }
@@ -217,10 +217,13 @@ public class HelloPDF {
     public static void createTeamPDF(ArrayList<MatchSheet> matches) throws DocumentException {
         Document document = new Document();
         try {
+            //Make the PDF writer
             PdfWriter.getInstance(document, new FileOutputStream(teamFile));
         } catch (FileNotFoundException ex) {
         }
+        matches = sortMatches(matches);
         document.open();
+        Paragraph content = new Paragraph();
         MatchSheet matchsheet = new MatchSheet("Average");
         double autonPointsScored = 0;
         double shotsAttemptedPyramid = 0;
@@ -284,12 +287,14 @@ public class HelloPDF {
     public static void createNewPage(ArrayList<MatchSheet> matches, Document document, int numMatches)
             throws DocumentException {
 
-
         Paragraph content = new Paragraph();
 
-
+        
         PdfPTable table = new PdfPTable(matches.size() + 1);
+        
+        
 
+        
         PdfPCell c1 = new PdfPCell(new Phrase("Match #"));
         c1.setHorizontalAlignment(Element.ALIGN_CENTER);
 
@@ -543,10 +548,13 @@ public class HelloPDF {
         }
         paragraph.setAlignment(Element.ALIGN_CENTER);
         content.add(paragraph);
+        
         addEmptyLine(content, 1);
+        
         content.add(table);
 
         document.add(content);
+        
 
     }
 
@@ -554,5 +562,25 @@ public class HelloPDF {
         for (int i = 0; i < number; i++) {
             paragraph.add(new Paragraph(" "));
         }
+    }
+    private static ArrayList<MatchSheet> sortMatches (ArrayList<MatchSheet> matches) {
+        ArrayList<MatchSheet> orderedMatches = new ArrayList();
+        orderedMatches.add(matches.get(0));
+        for(int i = 1; i<matches.size(); i++){
+            for(int j = 0; j<orderedMatches.size(); j++){
+                if(Integer.parseInt(matches.get(i).getMatchNum())<Integer.parseInt(orderedMatches.get(j).getMatchNum())){
+                    orderedMatches.add(j,matches.get(i));
+                    j=orderedMatches.size();
+                }
+                else if(j==orderedMatches.size()-1){
+                    orderedMatches.add(matches.get(i));
+                    j = orderedMatches.size();
+                }
+            }
+        }
+        for(int i = 0; i<orderedMatches.size();i++){
+            System.out.println(orderedMatches.get(i).getMatchNum());
+        }
+        return orderedMatches;
     }
 }
