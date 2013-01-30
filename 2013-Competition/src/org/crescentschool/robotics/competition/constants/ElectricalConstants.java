@@ -25,5 +25,8 @@ public class ElectricalConstants {
     final public static int gyroAnalogInput = 3;
     //CAN ID of the shooter Jaguar
     final public static int jagShooter = 4; 
-    
+    //Driver Joystick
+    final public static int driverJoystick = 1;
+    //Operator Joystick
+    final public static int operatorJoystick = 2;
 }

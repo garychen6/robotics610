@@ -6,10 +6,10 @@ package org.crescentschool.robotics.competition.PID;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.crescentschool.robotics.competition.subsystems.ShooterSensor;
 
 /**
  *
@@ -34,22 +34,16 @@ public class PIDController extends Thread {
     private double current;
     private CANJaguar controller;
     private Counter opticalSensor;
-    
-    
-   public PIDController(double p, double i, double d, double ff, CANJaguar controller, ShooterSensor gearTooth) {
+
+    public PIDController(double p, double i, double d, double ff, CANJaguar controller, GearTooth opticalSensor) {
         this.ff = ff;
         this.kP = p;
         this.kI = i;
         this.kD = d;
         timer = new Timer();
         timer.start();
-        if (gearTooth != null) {
-            this.opticalSensor = gearTooth;
-            //Measure the period of the white part of the disc
-            this.opticalSensor.setSemiPeriodMode(false);
-            this.opticalSensor.setMaxPeriod(1);
-            this.opticalSensor.start();
-        }
+        this.opticalSensor = opticalSensor;
+        this.opticalSensor.start();
         this.controller = controller;
     }
 
@@ -83,14 +77,12 @@ public class PIDController extends Thread {
         error[0] = 0;
         error[1] = 0;
         error[2] = 0;
-
     }
 
     synchronized public void run() {
         try {
             if (opticalSensor != null) {
-                current = -(60/(opticalSensor.getPeriod()*(8.0/7.0)));
-                //System.out.println(current);
+                current = -(60 / (opticalSensor.getPeriod() * (8.0 / 7.0)));
             } else {
                 current = controller.getSpeed();
             }
@@ -101,34 +93,18 @@ public class PIDController extends Thread {
         error[2] = error[1];
         error[1] = error[0];
         error[0] = setpoint - current;
-        p= (error[0] - error[1]) * kP; 
-        i=  (error[0]) * kI;
+        p = (error[0] - error[1]) * kP;
+        i = (error[0]) * kI;
         d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
-        outputChange = p+i+d;
+        outputChange = p + i + d;
         output += outputChange;
-        SmartDashboard.putNumber("Error", error[0]);
-        SmartDashboard.putNumber("P",p);
-        SmartDashboard.putNumber("I",i);
-        SmartDashboard.putNumber("D",d);
-        SmartDashboard.putNumber("SpeedNum", current);
-        SmartDashboard.putNumber("SpeedNumGraph", current);
-        SmartDashboard.putNumber("OpticalPeriod", opticalSensor.getPeriod());
         try {
-            SmartDashboard.putNumber("JagNum", controller.getSpeed());
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-        }
-        
-        SmartDashboard.putNumber("Output", output + ff * setpoint);
-        try {
-           // System.out.println(time +","+current);
             controller.setX(output + ff * setpoint);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
-
-
         prevTime = time;
+        pushPIDStats();
     }
 
     /**
@@ -137,7 +113,6 @@ public class PIDController extends Thread {
     synchronized public void setP(double p) {
         output = 0;
         this.kP = p;
-        System.out.println("P");
     }
 
     /**
@@ -146,7 +121,6 @@ public class PIDController extends Thread {
     synchronized public void setI(double i) {
         output = 0;
         this.kI = i;
-        System.out.println("I");
     }
 
     /**
@@ -155,7 +129,6 @@ public class PIDController extends Thread {
     synchronized public void setD(double d) {
         output = 0;
         this.kD = d;
-        System.out.println("D");
     }
 
     /**
@@ -170,5 +143,15 @@ public class PIDController extends Thread {
      */
     public void setFf(double ff) {
         this.ff = ff;
+    }
+    public void pushPIDStats(){
+        SmartDashboard.putNumber("Error", error[0]);
+        SmartDashboard.putNumber("P", p);
+        SmartDashboard.putNumber("I", i);
+        SmartDashboard.putNumber("D", d);
+        SmartDashboard.putNumber("SpeedNum", current);
+        SmartDashboard.putNumber("SpeedNumGraph", current);
+        SmartDashboard.putNumber("OpticalPeriod", opticalSensor.getPeriod());
+        SmartDashboard.putNumber("Output", output + ff * setpoint);
     }
 }

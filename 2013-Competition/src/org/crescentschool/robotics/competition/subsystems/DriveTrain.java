@@ -1,6 +1,7 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.CANJaguar;
+import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
@@ -13,8 +14,7 @@ import org.crescentschool.robotics.competition.constants.ElectricalConstants;
  *
  */
 public class DriveTrain extends Subsystem {
-
-    private static DriveTrain instance = null;
+    Gyro gyro;
     CANJaguar jagRightMaster;
     Victor victorRightSlaveMid;
     Victor victorRightSlaveBack;
@@ -24,17 +24,14 @@ public class DriveTrain extends Subsystem {
     Victor victorLeftSlaveBack;
     PIDController leftPIDControl;
     int driveMode = 1;
+    private static DriveTrain instance = null;
     private boolean canError = false;
-    Solenoid powerTO;
 
     public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        setDefaultCommand(new KajDrive());
     }
 
     public static DriveTrain getInstance() {
         if (instance == null) {
-            
             instance = new DriveTrain();
         }
         return instance;
@@ -42,24 +39,23 @@ public class DriveTrain extends Subsystem {
 
     DriveTrain() {
         try {
-            powerTO = new Solenoid(1,2);
+            gyro = new Gyro(1);
             victorRightSlaveMid = new Victor(ElectricalConstants.victorRightSlaveFront);
             victorRightSlaveBack = new Victor(ElectricalConstants.victorRightSlaveBack);
             victorLeftSlaveMid = new Victor(ElectricalConstants.victorLeftSlaveFront);
             victorLeftSlaveBack = new Victor(ElectricalConstants.victorLeftSlaveBack);
-            System.out.println("left");
             jagLeftMaster = new CANJaguar(ElectricalConstants.jagLeftMaster);
-            System.out.println("right");
             jagRightMaster = new CANJaguar(ElectricalConstants.jagRightMaster);
-            System.out.println("done");
             jagRightMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             jagLeftMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
-
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();
             ex.printStackTrace();
         }
+    }
+    public Gyro getGyro() {
+        return gyro;
     }
 
     void initVBus() {
@@ -75,7 +71,6 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
-
     void initPosition() {
         try {
             driveMode = 2;
@@ -108,13 +103,12 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
-
     public void setLeftVBus(double power) {
         if (driveMode != 1) {
             initVBus();
         }
         try {
-            jagLeftMaster.setX(power);
+            jagLeftMaster.setX(-power);
         } catch (CANTimeoutException e) {
             canError = true;
             handleCANError();
@@ -128,7 +122,7 @@ public class DriveTrain extends Subsystem {
             initVBus();
         }
         try {
-            jagRightMaster.setX(-power);
+            jagRightMaster.setX(power);
         } catch (CANTimeoutException e) {
             canError = true;
             handleCANError();
@@ -136,10 +130,11 @@ public class DriveTrain extends Subsystem {
         }
         syncSlaves();
     }
-    public void powerTO(boolean takeOff){
-        powerTO.set(takeOff);
+    public void setAngle(double angle){
+      gyro.reset();
+      setRightVBus(angle*-(12/180.0));
+      setLeftVBus(angle*(12/180.0));
     }
-    
     public void handleCANError() {
         if (canError) {
             System.out.println("CAN Error!");

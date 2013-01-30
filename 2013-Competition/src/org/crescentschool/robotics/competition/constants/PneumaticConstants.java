@@ -9,10 +9,9 @@ package org.crescentschool.robotics.competition.constants;
  * @author jeffrey
  */
 public class PneumaticConstants {
-    //Compressor switch
     final public static int compressorSwitch = 1;
-    //Compressor relay
     final public static int compressorRelay = 1;
-    final public static int feederSolenoid = 1;
-    final public static int driveTrainSolenoid = 2;
+    final public static int digitalModule = 1;
+    final public static int feeder = 1;
+    final public static int powerTakeOff = 2;
 }

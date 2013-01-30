@@ -17,8 +17,6 @@ import org.crescentschool.robotics.competition.commands.KinectDriveTest;
  * @author Warfa
  */
 public class Socket extends Subsystem{
-        // Put methods for controlling this subsystem
-    // here. Call these from Commands.
     static SocketConnection sc = null;
     static InputStream is;
     static OutputStream os;
@@ -40,11 +38,6 @@ public class Socket extends Subsystem{
   }
 
     protected void initDefaultCommand() {
-        try {
-            setDefaultCommand(new KinectDriveTest());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
   

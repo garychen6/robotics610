@@ -1,5 +1,6 @@
 package org.crescentschool.robotics.competition.commands;
 
+import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
@@ -9,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
+import org.crescentschool.robotics.competition.constants.KinectConstants;
 import org.crescentschool.robotics.competition.subsystems.Socket;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
@@ -26,7 +28,7 @@ public class KinectDriveTest extends Command {
     double offset;
     Gyro gyro;
     DriveTrain driveTrain;
-    
+    double angleTurn =0;
 
     public KinectDriveTest() throws IOException {
         Socket.startSocket();
@@ -64,10 +66,10 @@ public class KinectDriveTest extends Command {
                 ex.printStackTrace();
             }
             SmartDashboard.putNumber("OFFSET", offset);
-            //System.out.println(offset);
-            //SmartDashboard.putNumber("Gyor", gyro.getAngle());
-            //driveTrain.setLeftVBus(0.2* offset);
-            //driveTrain.setRightVBus(0.2* offset);
+            angleTurn = (Math.PI/180)*(MathUtils.atan(offset*(MathUtils.atan(KinectConstants.kinectFOV))));
+        
+        driveTrain.setAngle(angleTurn);
+        
     //}
     }
 
