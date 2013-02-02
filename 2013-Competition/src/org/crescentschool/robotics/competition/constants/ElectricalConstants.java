@@ -29,4 +29,11 @@ public class ElectricalConstants {
     final public static int driverJoystick = 1;
     //Operator Joystick
     final public static int operatorJoystick = 2;
+    final public static int compressorSwitch = 1;
+    final public static int compressorRelay = 1;
+    final public static int digitalModule = 1;
+    final public static int feeder = 1;
+    final public static int powerTakeOff = 2;
+    final public static int shooterAngleForward = 3;
+    final public static int shooterAngleReverse = 4;
 }
