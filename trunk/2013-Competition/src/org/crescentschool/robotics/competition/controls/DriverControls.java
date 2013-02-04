@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import java.io.IOException;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.commands.KajDrive;
+import org.crescentschool.robotics.competition.commands.*;
 import org.crescentschool.robotics.competition.commands.KinectDriveTest;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 
@@ -20,29 +20,26 @@ import org.crescentschool.robotics.competition.constants.InputConstants;
 public class DriverControls extends Command {
 
     protected void initialize() {
-        Scheduler.getInstance().add(new KajDrive());  
+        Scheduler.getInstance().add(new KajDrive());
     }
-    
+
     protected void execute() {
-        if (getDriver().getRawButton(InputConstants.xButton)) {
+        
+       if (Math.abs(getDriver().getRawAxis(InputConstants.leftYAxis)) > 0.1 || Math.abs(getDriver().getRawAxis(InputConstants.rightXAxis)) > 0.1) {
             Scheduler.getInstance().add(new KajDrive());
-        }
-        else if (getDriver().getRawButton(InputConstants.triangleButton)) {
-            try {
-                Scheduler.getInstance().add(new KinectDriveTest());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+       }
+       
+
+
     }
-    
+
     protected boolean isFinished() {
         return false;
     }
-    
+
     protected void end() {
     }
-    
+
     protected void interrupted() {
     }
 

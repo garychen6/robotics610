@@ -28,7 +28,7 @@ public class KinectDriveTest extends Command {
     double offset;
     Gyro gyro;
     DriveTrain driveTrain;
-    double angleTurn =0;
+    double angleTurn = 0;
 
     public KinectDriveTest() throws IOException {
         Socket.startSocket();
@@ -56,21 +56,20 @@ public class KinectDriveTest extends Command {
     protected void execute() {
         data = "";
         byte[] msg = new byte[1000];
-        //if (joyDriver.getRawButton(4)) {
-            try {
-                os.write("<request><get_variable>OFFSET</get_variable></request>".getBytes());
-                is.read(msg);
-                String message = new String(msg);
-                offset = retrieveVal(message, "OFFSET");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            SmartDashboard.putNumber("OFFSET", offset);
-            angleTurn = (Math.PI/180)*(MathUtils.atan(offset*(MathUtils.atan(KinectConstants.kinectFOV))));
-        
+        try {
+            os.write("<request><get_variable>OFFSET</get_variable></request>".getBytes());
+            is.read(msg);
+            String message = new String(msg);
+            offset = retrieveVal(message, "OFFSET");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        SmartDashboard.putNumber("OFFSET", offset);
+        angleTurn = (Math.PI / 180) * (MathUtils.atan(offset * (MathUtils.atan(KinectConstants.kinectFOV))));
+
         driveTrain.setAngle(angleTurn);
-        
-    //}
+
+
     }
 
     public static double retrieveVal(String msg, String variable) {

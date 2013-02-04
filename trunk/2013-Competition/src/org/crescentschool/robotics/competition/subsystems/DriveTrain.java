@@ -10,9 +10,7 @@ import org.crescentschool.robotics.competition.PID.PIDController;
 import org.crescentschool.robotics.competition.commands.KajDrive;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
-/**
- *
- */
+
 public class DriveTrain extends Subsystem {
     Gyro gyro;
     CANJaguar jagRightMaster;
@@ -23,6 +21,9 @@ public class DriveTrain extends Subsystem {
     Victor victorLeftSlaveMid;
     Victor victorLeftSlaveBack;
     PIDController leftPIDControl;
+    double p = 0;
+    double i = 0;
+    double d = 0;
     int driveMode = 1;
     private static DriveTrain instance = null;
     private boolean canError = false;
@@ -60,6 +61,7 @@ public class DriveTrain extends Subsystem {
 
     void initVBus() {
         try {
+            System.out.println("VBus");
             driveMode = 1;
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
@@ -73,15 +75,16 @@ public class DriveTrain extends Subsystem {
     }
     void initPosition() {
         try {
+            System.out.println("Position");
             driveMode = 2;
-            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
-            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kSpeed);
+            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
             jagRightMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
             jagLeftMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
             jagRightMaster.configEncoderCodesPerRev(256);
             jagLeftMaster.configEncoderCodesPerRev(256);
-            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kVoltage);
-            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kVoltage);
+            jagRightMaster.setPID(p, i, d);
+            jagLeftMaster.setPID(p, i, d);
             jagRightMaster.enableControl(0);
             jagLeftMaster.enableControl(0);
         } catch (CANTimeoutException ex) {
@@ -90,7 +93,35 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
-
+    public double getPosition(){
+        try {
+            return jagRightMaster.getPosition();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+            handleCANError();
+            return 42;
+        }
+    }
+    public void setPID(double p, double i, double d){
+        this.p = p;
+        this.i = i;
+        this.d = d;
+        initPosition();
+    }
+    public void setPosition(double pos){
+        if (driveMode != 2) {
+            initPosition();
+        }
+        try {
+            System.out.println("Setpoint: "+pos);
+            jagLeftMaster.setX(-pos);
+            jagRightMaster.setX(pos);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+            handleCANError();
+        }
+        syncSlaves();
+    }
     void syncSlaves() {
         try {
             victorRightSlaveMid.set(jagRightMaster.getOutputVoltage() / jagRightMaster.getBusVoltage());

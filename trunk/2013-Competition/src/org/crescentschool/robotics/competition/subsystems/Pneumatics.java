@@ -10,16 +10,13 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
-/**
- *
- * @author jeffrey
- */
 public class Pneumatics extends Subsystem {
     private static Pneumatics instance = null;
-    Compressor compressor;
+    static Compressor compressor;
     Solenoid feeder;
     Solenoid powerTakeOff;
     DoubleSolenoid shooterAngle;
+    
     
     public static Pneumatics getInstance(){
         if(instance == null){
@@ -33,11 +30,23 @@ public class Pneumatics extends Subsystem {
         powerTakeOff = new Solenoid(ElectricalConstants.digitalModule,ElectricalConstants.powerTakeOff);
         shooterAngle = new DoubleSolenoid(ElectricalConstants.shooterAngleForward,ElectricalConstants.shooterAngleReverse);
         compressor.start();
+        shooterAngle = new DoubleSolenoid(ElectricalConstants.digitalModule, 3,4);
+        
+    }
+    public static Compressor getCompressor(){
+        return compressor;
     }
     public void initDefaultCommand() {
     }
     public void setFeeder(boolean fire){
         feeder.set(fire);
+    }
+    public void setAngleUp(boolean fire){
+        if(fire){
+            shooterAngle.set(DoubleSolenoid.Value.kForward);
+        } else{
+            shooterAngle.set(DoubleSolenoid.Value.kReverse);
+        }
     }
     public void setPowerTakeOff(boolean fire){
         powerTakeOff.set(fire);
