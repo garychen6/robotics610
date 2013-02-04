@@ -21,17 +21,18 @@ public class DriverControls extends Command {
     Pneumatics pneumatics = Pneumatics.getInstance();
     OI oi = OI.getInstance();
     Joystick driver = oi.getDriver();
-    
+    boolean hanging = false;
     protected void initialize() {
         Scheduler.getInstance().add(new KajDrive());
     }
 
     protected void execute() {
         
-       /*if (Math.abs(getDriver().getRawAxis(InputConstants.leftYAxis)) > 0.1 || Math.abs(getDriver().getRawAxis(InputConstants.rightXAxis)) > 0.1) {
+       if (hanging&&Math.abs(getDriver().getRawAxis(InputConstants.leftYAxis)) > 0.1 || Math.abs(getDriver().getRawAxis(InputConstants.rightXAxis)) > 0.1) {
             Scheduler.getInstance().add(new KajDrive());
+            hanging = false;
        }
-       */
+       
 
         if (driver.getRawButton(InputConstants.l2Button)) {
             pneumatics.setPowerTakeOff(true);

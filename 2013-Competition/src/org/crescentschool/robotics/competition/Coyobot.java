@@ -11,10 +11,6 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.crescentschool.robotics.competition.controls.DriverControls;
-import org.crescentschool.robotics.competition.subsystems.DriveTrain;
-import org.crescentschool.robotics.competition.subsystems.Pneumatics;
-
-import org.crescentschool.robotics.competition.constants.*;
 import org.crescentschool.robotics.competition.controls.OperatorControls;
 import org.crescentschool.robotics.competition.subsystems.*;
 
@@ -41,7 +37,8 @@ public class Coyobot extends IterativeRobot {
         pneumatics = Pneumatics.getInstance();
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
-
+         
+       
     }
 
     public void shooterInit() {
@@ -65,30 +62,23 @@ public class Coyobot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-        Scheduler.getInstance().run();
+        //Scheduler.getInstance().run();
     }
 
     public void teleopInit() {
         //SocketDrive.start();
+        Scheduler.getInstance().add(new DriverControls());
+        Scheduler.getInstance().add(new OperatorControls());
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-
         Scheduler.getInstance().run();
-        shooterTeleop();
-        Scheduler.getInstance().add(new DriverControls());
-        Scheduler.getInstance().add(new OperatorControls());
-
-        //positionTestTeleop();
-       // pneumatics.setPowerTakeOff(true);
-       
-       
         
-        //pneumatics.setFeeder(!OI.getInstance().getDriver().getRawButton(InputConstants.r1Button));
-        //pneumatics.setAngleUp(OI.getInstance().getDriver().getRawButton(InputConstants.squareButton));
+        //positionTestTel shooterTeleop();
+
     }
 
     /**
@@ -97,30 +87,28 @@ public class Coyobot extends IterativeRobot {
     public void testPeriodic() {
         LiveWindow.run();
     }
-/*
-    public void positionTestTeleop() {
+    /*
+     public void positionTestTeleop() {
 
-        Scheduler.getInstance().run();
-        if (OI.getInstance().getDriver().getRawButton(5)) {
-            driveTrain.setPID(constantsTable.getDouble("p", 0), constantsTable.getDouble("i", 0), constantsTable.getDouble("d", 0));
-            driveTrain.setPosition(constantsTable.getDouble("setpoint", 0));
-        }
-        SmartDashboard.putNumber("Position", driveTrain.getPosition());
+     Scheduler.getInstance().run();
+     if (OI.getInstance().getDriver().getRawButton(5)) {
+     driveTrain.setPID(constantsTable.getDouble("p", 0), constantsTable.getDouble("i", 0), constantsTable.getDouble("d", 0));
+     driveTrain.setPosition(constantsTable.getDouble("setpoint", 0));
+     }
+     SmartDashboard.putNumber("Position", driveTrain.getPosition());
 
-    }
-*/
+     }
+     */
+
     public void shooterTeleop() {
-
         //Scheduler.getInstance().run();
-        shooter.getInstance().getPIDController().run();
-        /*
-        if (OI.getInstance().getDriver().getRawButton(5)) {
+        //shooter.getInstance().getPIDController().run();
+        
+         if (OI.getInstance().getDriver().getRawButton(5)) {
             System.out.println("P: " + constantsTable.getDouble("p", 0) + " I: " + constantsTable.getDouble("i", 0) + " D: " + constantsTable.getDouble("d", 0));
             shooter.setPID(constantsTable.getDouble("p", 0), constantsTable.getDouble("i", 0), constantsTable.getDouble("d", 0), constantsTable.getDouble("ff", 0));
             shooter.setSpeed(constantsTable.getDouble("setpoint", 0));
-        }
-        */
-
-
+         }
+         
     }
 }
