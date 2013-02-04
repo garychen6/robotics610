@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.PID.PIDController;
+import org.crescentschool.robotics.competition.commands.PIDCommand;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
 /**
@@ -19,7 +20,7 @@ public class Shooter extends Subsystem {
 
     static Shooter instance = null;
     CANJaguar shooter;
-    PIDController pidController;
+    PIDCommand pidController;
     GearTooth gearTooth;
 
     public static Shooter getInstance() {
@@ -43,8 +44,8 @@ public class Shooter extends Subsystem {
             shooter.changeControlMode(CANJaguar.ControlMode.kVoltage);
             shooter.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shooter.enableControl(0);
-            pidController = new PIDController(0, 0, 0, 0, shooter, gearTooth);
-            pidController.start();
+            
+            
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -69,9 +70,10 @@ public class Shooter extends Subsystem {
         // Made negative so that we don't shoot backwards! -Mr. Lim
         pidController.setSetpoint(-rpm);
     }
-    public PIDController getPIDController(){
+    public PIDCommand getPIDController(){
         return pidController;
     }
     protected void initDefaultCommand() {
+        setDefaultCommand(new PIDCommand(0, 0, 0, 0, shooter, gearTooth));
     }
 }

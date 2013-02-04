@@ -41,7 +41,7 @@ public class Pneumatics extends Subsystem {
         feeder.set(fire);
     }
     public void setAngleUp(boolean fire){
-        if(fire){
+        if(!fire){
             shooterAngle.set(DoubleSolenoid.Value.kForward);
         } else{
             shooterAngle.set(DoubleSolenoid.Value.kReverse);

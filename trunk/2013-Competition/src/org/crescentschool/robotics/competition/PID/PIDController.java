@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -35,7 +36,10 @@ public class PIDController extends Thread {
     private CANJaguar controller;
     private Counter opticalSensor;
 
+    
+     
     public PIDController(double p, double i, double d, double ff, CANJaguar controller, GearTooth opticalSensor) {
+        /*
         this.ff = ff;
         this.kP = p;
         this.kI = i;
@@ -45,113 +49,7 @@ public class PIDController extends Thread {
         this.opticalSensor = opticalSensor;
         this.opticalSensor.start();
         this.controller = controller;
+        */
     }
 
-    /**
-     * @return the p
-     */
-    public double getP() {
-        return kP;
-    }
-
-    /**
-     * @return the i
-     */
-    public double getI() {
-        return kI;
-    }
-
-    /**
-     * @return the setpoint
-     */
-    public double getSetpoint() {
-        return setpoint;
-    }
-
-    /**
-     * @param setpoint the setpoint to set
-     */
-    synchronized public void setSetpoint(double setpoint) {
-        this.setpoint = setpoint;
-        output = 0;
-        error[0] = 0;
-        error[1] = 0;
-        error[2] = 0;
-    }
-
-    synchronized public void run() {
-        try {
-            if (opticalSensor != null) {
-                current = -(60 / (opticalSensor.getPeriod() * (8.0 / 7.0)));
-            } else {
-                current = controller.getSpeed();
-            }
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-        }
-        time = timer.get();
-        error[2] = error[1];
-        error[1] = error[0];
-        error[0] = setpoint - current;
-        p = (error[0] - error[1]) * kP;
-        i = (error[0]) * kI;
-        d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
-        outputChange = p + i + d;
-        output += outputChange;
-        try {
-            controller.setX(output + ff * setpoint);
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-        }
-        prevTime = time;
-        pushPIDStats();
-    }
-
-    /**
-     * @param p the p to set
-     */
-    synchronized public void setP(double p) {
-        output = 0;
-        this.kP = p;
-    }
-
-    /**
-     * @param i the i to set
-     */
-    synchronized public void setI(double i) {
-        output = 0;
-        this.kI = i;
-    }
-
-    /**
-     * @param d the d to set
-     */
-    synchronized public void setD(double d) {
-        output = 0;
-        this.kD = d;
-    }
-
-    /**
-     * @return the ff
-     */
-    public double getFf() {
-        return ff;
-    }
-
-    /**
-     * @param ff the ff to set
-     */
-    public void setFf(double ff) {
-        this.ff = ff;
-    }
-    public void pushPIDStats(){
-        SmartDashboard.putNumber("Error", error[0]);
-        SmartDashboard.putNumber("P", p);
-        SmartDashboard.putNumber("I", i);
-        SmartDashboard.putNumber("D", d);
-        SmartDashboard.putNumber("SpeedNum", current);
-        SmartDashboard.putNumber("SpeedNumGraph", current);
-        SmartDashboard.putNumber("OpticalPeriod", opticalSensor.getPeriod());
-        SmartDashboard.putNumber("Output", output + ff * setpoint);
-    }
 }
