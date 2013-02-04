@@ -30,7 +30,6 @@ public class Pneumatics extends Subsystem {
         powerTakeOff = new Solenoid(ElectricalConstants.digitalModule,ElectricalConstants.powerTakeOff);
         shooterAngle = new DoubleSolenoid(ElectricalConstants.shooterAngleForward,ElectricalConstants.shooterAngleReverse);
         compressor.start();
-        shooterAngle = new DoubleSolenoid(ElectricalConstants.digitalModule, 3,4);
         
     }
     public static Compressor getCompressor(){
