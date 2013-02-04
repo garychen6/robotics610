@@ -33,10 +33,9 @@ public class Shooter extends Subsystem {
         try {
             gearTooth = new GearTooth(2);
             gearTooth.setMaxPeriod(5);
-            gearTooth.setSemiPeriodMode(false);
+            gearTooth.setSemiPeriodMode(true);
             gearTooth.start();
-            pidController = new PIDController(0, 0, 0, 0, shooter, gearTooth);
-            pidController.start();
+            
             shooter = new CANJaguar(ElectricalConstants.jagShooter);
             shooter.changeControlMode(CANJaguar.ControlMode.kSpeed);
             shooter.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
@@ -44,6 +43,8 @@ public class Shooter extends Subsystem {
             shooter.changeControlMode(CANJaguar.ControlMode.kVoltage);
             shooter.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shooter.enableControl(0);
+            pidController = new PIDController(0, 0, 0, 0, shooter, gearTooth);
+            pidController.start();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }

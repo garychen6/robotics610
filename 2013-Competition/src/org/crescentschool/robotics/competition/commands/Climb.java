@@ -5,7 +5,9 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.*;
+import org.crescentschool.robotics.competition.*;
+import org.crescentschool.robotics.competition.constants.InputConstants;
 
 /**
  *
@@ -13,9 +15,13 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  */
 public class Climb extends Command {
     DriveTrain driveTrain;
+    Pneumatics pneumatics;
+    OI oi;
     public Climb() {
         driveTrain = DriveTrain.getInstance();
         requires(driveTrain);
+        pneumatics = Pneumatics.getInstance();
+        oi = OI.getInstance();
     }
 
     // Called just before this Command runs the first time
@@ -24,6 +30,16 @@ public class Climb extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        
+        double rightSpeed,leftSpeed,x,y;
+        x = oi.getDriver().getRawAxis(InputConstants.rightXAxis);
+        y = oi.getDriver().getRawAxis(InputConstants.leftYAxis);
+        x = x * x * x;
+        y = y * y * y;
+        leftSpeed = y + x;
+        rightSpeed = y - x;
+        driveTrain.setLeftVBus(leftSpeed);
+        driveTrain.setRightVBus(rightSpeed);  
     }
 
     // Make this return true when this Command no longer needs to run execute()

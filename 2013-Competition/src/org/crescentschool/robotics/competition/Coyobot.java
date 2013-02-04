@@ -10,12 +10,13 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
 
-import org.crescentschool.robotics.competition.subsystems.Shooter;
-import org.crescentschool.robotics.competition.subsystems.Socket;
+import org.crescentschool.robotics.competition.constants.*;
+import org.crescentschool.robotics.competition.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,18 +30,17 @@ public class Coyobot extends IterativeRobot {
     Preferences constantsTable;
     Shooter shooter;
     DriveTrain driveTrain;
-    Socket socket;
     Pneumatics pneumatics;
-
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
-        //shooterInit();
+        shooterInit();
         pneumatics = Pneumatics.getInstance();
         driveTrain = DriveTrain.getInstance();
+        constantsTable = Preferences.getInstance();
 
     }
 
@@ -53,7 +53,7 @@ public class Coyobot extends IterativeRobot {
          * ff: 0.0023
          */
         shooter = Shooter.getInstance();
-        constantsTable = Preferences.getInstance();
+
     }
 
     public void autonomousInit() {
@@ -78,9 +78,29 @@ public class Coyobot extends IterativeRobot {
     public void teleopPeriodic() {
 
         Scheduler.getInstance().run();
-       // shooterTeleop();
+        shooterTeleop();
         Scheduler.getInstance().add(new DriverControls());
-        pneumatics.setPowerTakeOff(OI.getInstance().getDriver().getRawButton(4));
+
+        //positionTestTeleop();
+       // pneumatics.setPowerTakeOff(true);
+       
+        
+        if (OI.getInstance().getDriver().getRawButton(InputConstants.triangleButton)) {
+            pneumatics.setPowerTakeOff(true);
+        } else if (OI.getInstance().getDriver().getRawButton(InputConstants.xButton)) {
+            pneumatics.setPowerTakeOff(false);
+        }
+        if(OI.getInstance().getDriver().getRawButton(InputConstants.l1Button)){
+            shooter.setSpeed(-5000);
+            shooter.setPID(0.01,0,0,0.0019);
+        } else if(OI.getInstance().getDriver().getRawButton(InputConstants.l2Button)){
+            shooter.setSpeed(-4500);
+                        shooter.setPID(0.01,0,0,0.0019);
+
+        }
+        
+        pneumatics.setFeeder(!OI.getInstance().getDriver().getRawButton(InputConstants.r1Button));
+        pneumatics.setAngleUp(OI.getInstance().getDriver().getRawButton(InputConstants.squareButton));
     }
 
     /**
@@ -89,17 +109,30 @@ public class Coyobot extends IterativeRobot {
     public void testPeriodic() {
         LiveWindow.run();
     }
+/*
+    public void positionTestTeleop() {
 
-    
+        Scheduler.getInstance().run();
+        if (OI.getInstance().getDriver().getRawButton(5)) {
+            driveTrain.setPID(constantsTable.getDouble("p", 0), constantsTable.getDouble("i", 0), constantsTable.getDouble("d", 0));
+            driveTrain.setPosition(constantsTable.getDouble("setpoint", 0));
+        }
+        SmartDashboard.putNumber("Position", driveTrain.getPosition());
+
+    }
+*/
     public void shooterTeleop() {
+
         //Scheduler.getInstance().run();
         shooter.getInstance().getPIDController().run();
+        /*
         if (OI.getInstance().getDriver().getRawButton(5)) {
             System.out.println("P: " + constantsTable.getDouble("p", 0) + " I: " + constantsTable.getDouble("i", 0) + " D: " + constantsTable.getDouble("d", 0));
             shooter.setPID(constantsTable.getDouble("p", 0), constantsTable.getDouble("i", 0), constantsTable.getDouble("d", 0), constantsTable.getDouble("ff", 0));
             shooter.setSpeed(constantsTable.getDouble("setpoint", 0));
         }
+        */
+
 
     }
-    
 }

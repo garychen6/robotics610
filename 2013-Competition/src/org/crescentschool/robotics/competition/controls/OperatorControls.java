@@ -22,12 +22,14 @@ public class OperatorControls extends Command{
     }
 
     protected void execute() {
+        /*
         if(getOperator().getRawButton(InputConstants.r2Button)){
             Scheduler.getInstance().add(new Shoot());
         }
         if(getOperator().getRawButton(InputConstants.l2Button)){
             Scheduler.getInstance().add(new LockOn());
         }
+        */ 
     }
 
     protected boolean isFinished() {
