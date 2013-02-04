@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
 
 import org.crescentschool.robotics.competition.constants.*;
+import org.crescentschool.robotics.competition.controls.OperatorControls;
 import org.crescentschool.robotics.competition.subsystems.*;
 
 /**
@@ -80,27 +80,15 @@ public class Coyobot extends IterativeRobot {
         Scheduler.getInstance().run();
         shooterTeleop();
         Scheduler.getInstance().add(new DriverControls());
+        Scheduler.getInstance().add(new OperatorControls());
 
         //positionTestTeleop();
        // pneumatics.setPowerTakeOff(true);
        
+       
         
-        if (OI.getInstance().getDriver().getRawButton(InputConstants.triangleButton)) {
-            pneumatics.setPowerTakeOff(true);
-        } else if (OI.getInstance().getDriver().getRawButton(InputConstants.xButton)) {
-            pneumatics.setPowerTakeOff(false);
-        }
-        if(OI.getInstance().getDriver().getRawButton(InputConstants.l1Button)){
-            shooter.setSpeed(-5000);
-            shooter.setPID(0.01,0,0,0.0019);
-        } else if(OI.getInstance().getDriver().getRawButton(InputConstants.l2Button)){
-            shooter.setSpeed(-4500);
-                        shooter.setPID(0.01,0,0,0.0019);
-
-        }
-        
-        pneumatics.setFeeder(!OI.getInstance().getDriver().getRawButton(InputConstants.r1Button));
-        pneumatics.setAngleUp(OI.getInstance().getDriver().getRawButton(InputConstants.squareButton));
+        //pneumatics.setFeeder(!OI.getInstance().getDriver().getRawButton(InputConstants.r1Button));
+        //pneumatics.setAngleUp(OI.getInstance().getDriver().getRawButton(InputConstants.squareButton));
     }
 
     /**

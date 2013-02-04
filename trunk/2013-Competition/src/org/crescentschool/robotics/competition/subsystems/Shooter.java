@@ -66,7 +66,8 @@ public class Shooter extends Subsystem {
     }
 
     public void setSpeed(double rpm) {
-        pidController.setSetpoint(rpm);
+        // Made negative so that we don't shoot backwards! -Mr. Lim
+        pidController.setSetpoint(-rpm);
     }
     public PIDController getPIDController(){
         return pidController;
