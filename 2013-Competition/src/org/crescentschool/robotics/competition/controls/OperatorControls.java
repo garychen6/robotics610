@@ -42,17 +42,18 @@ public class OperatorControls extends Command {
          */
 
         if (operator.getRawButton(InputConstants.l2Button)) {
-            shooter.setSpeed(farSpeed);
-            shooter.setPID(PIDConstants.p, PIDConstants.i, PIDConstants.d, PIDConstants.ff);
+            //shooter.setSpeed(farSpeed);
+            //shooter.setPID(PIDConstants.p, PIDConstants.i, PIDConstants.d, PIDConstants.ff);
             pneumatics.setAngleUp(false);
             upPosition = false;
         } else if (operator.getRawButton(InputConstants.l1Button)) {
-            shooter.setSpeed(nearSpeed);
-            shooter.setPID(PIDConstants.p, PIDConstants.i, PIDConstants.d, PIDConstants.ff);
+            //shooter.setSpeed(nearSpeed);
+            //shooter.setPID(PIDConstants.p, PIDConstants.i, PIDConstants.d, PIDConstants.ff);
             pneumatics.setAngleUp(true);
             upPosition = true;
         }
-
+        
+        /*
         //r1 reset
         if (operator.getRawButton(InputConstants.r1Button)) {
             nearSpeed = KinectConstants.baseNearShooterRPM;
@@ -66,6 +67,7 @@ public class OperatorControls extends Command {
             }
         }
         //r2 shoot
+        
         //pneumatics.setFeeder(operator.getRawButton(InputConstants.r2Button));
         // rightY trim
         if (Math.abs(operator.getRawAxis(InputConstants.rightYAxis)) > 0.1) {
@@ -79,7 +81,7 @@ public class OperatorControls extends Command {
                 shooter.setPID(PIDConstants.p, PIDConstants.i, PIDConstants.d, PIDConstants.ff);
             }
         }
-
+        * */
     }
 
     protected boolean isFinished() {

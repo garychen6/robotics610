@@ -20,7 +20,7 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
  *
  * @author robotics
  */
-public class PIDCommand extends Command {
+public class ShooterPIDCommand extends Command {
 
     private static double kP = 0;
     private static double kI = 0;
@@ -43,7 +43,7 @@ public class PIDCommand extends Command {
     private static Pneumatics pneumatics;
     private static OI oi;
 
-    public PIDCommand(double p, double i, double d, double ff, CANJaguar controller, GearTooth opticalSensor) {
+    public ShooterPIDCommand(double p, double i, double d, double ff, CANJaguar controller, GearTooth opticalSensor) {
         shooter = Shooter.getInstance();
         requires(shooter);
         this.ff = ff;
@@ -84,17 +84,27 @@ public class PIDCommand extends Command {
             d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
             outputChange = p + i + d;
             output += outputChange;
-            try {
-                controller.setX((output + ff * setpoint));
-            } catch (CANTimeoutException ex) {
-                ex.printStackTrace();
-            }
+            double outputFinal = 0;
             prevTime = time;
             pushPIDStats();
-            if(Math.abs(error[0])<50&&oi.getOperator().getRawButton(InputConstants.r2Button)){
+            if(error[0]>0&&oi.getOperator().getRawButton(InputConstants.r2Button)){
                 pneumatics.setFeeder(true);
-            } else {
+                outputFinal = (output + ff * setpoint);
+            } 
+            else if(error[0]<0&&oi.getOperator().getRawButton(InputConstants.r2Button)){
                 pneumatics.setFeeder(false);
+                outputFinal = -12;
+                System.out.println("Recovering...");
+            }
+            else{
+                pneumatics.setFeeder(false);
+                outputFinal = (output + ff * setpoint);
+            }
+             
+            try {
+                controller.setX(outputFinal);
+            } catch (CANTimeoutException ex) {
+                ex.printStackTrace();
             }
     }
 
@@ -136,7 +146,7 @@ public class PIDCommand extends Command {
      * @param setpoint the setpoint to set
      */
     synchronized public static void setSetpoint(double setpoint) {
-        PIDCommand.setpoint = setpoint;
+        ShooterPIDCommand.setpoint = setpoint;
         output = 0;
         error[0] = 0;
         error[1] = 0;
@@ -149,7 +159,7 @@ public class PIDCommand extends Command {
      */
     synchronized public static void setP(double p) {
         output = 0;
-        PIDCommand.kP = p;
+        ShooterPIDCommand.kP = p;
     }
 
     /**
@@ -157,7 +167,7 @@ public class PIDCommand extends Command {
      */
     synchronized public static void setI(double i) {
         output = 0;
-        PIDCommand.kI = i;
+        ShooterPIDCommand.kI = i;
     }
 
     /**
@@ -165,7 +175,7 @@ public class PIDCommand extends Command {
      */
     synchronized public static void setD(double d) {
         output = 0;
-        PIDCommand.kD = d;
+        ShooterPIDCommand.kD = d;
     }
 
     /**
@@ -179,7 +189,7 @@ public class PIDCommand extends Command {
      * @param ff the ff to set
      */
     synchronized public static void setFf(double ff) {
-        PIDCommand.ff = ff;
+        ShooterPIDCommand.ff = ff;
     }
 
     public static void pushPIDStats() {

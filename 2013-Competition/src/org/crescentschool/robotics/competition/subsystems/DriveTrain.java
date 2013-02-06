@@ -2,31 +2,30 @@ package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Gyro;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import org.crescentschool.robotics.competition.PID.PIDController;
-import org.crescentschool.robotics.competition.commands.KajDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
-
 public class DriveTrain extends Subsystem {
+
     Gyro gyro;
     CANJaguar jagRightMaster;
     Victor victorRightSlaveMid;
     Victor victorRightSlaveBack;
-    PIDController rightPIDControl;
     CANJaguar jagLeftMaster;
     Victor victorLeftSlaveMid;
     Victor victorLeftSlaveBack;
-    PIDController leftPIDControl;
     double p = 0;
     double i = 0;
     double d = 0;
     int driveMode = 1;
     private static DriveTrain instance = null;
     private boolean canError = false;
+    double errorI = 0;
+    Preferences constantsTable;
 
     public void initDefaultCommand() {
     }
@@ -49,12 +48,14 @@ public class DriveTrain extends Subsystem {
             jagRightMaster = new CANJaguar(ElectricalConstants.jagRightMaster);
             jagRightMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             jagLeftMaster.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            constantsTable = Preferences.getInstance();
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();
             ex.printStackTrace();
         }
     }
+
     public Gyro getGyro() {
         return gyro;
     }
@@ -63,8 +64,9 @@ public class DriveTrain extends Subsystem {
         try {
             System.out.println("VBus");
             driveMode = 1;
-            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+
+            jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagRightMaster.enableControl();
             jagLeftMaster.enableControl();
         } catch (CANTimeoutException ex) {
@@ -73,6 +75,7 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
+
     void initPosition() {
         try {
             System.out.println("Position");
@@ -93,7 +96,8 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
-    public double getPosition(){
+
+    public double getPosition() {
         try {
             return jagRightMaster.getPosition();
         } catch (CANTimeoutException ex) {
@@ -102,18 +106,20 @@ public class DriveTrain extends Subsystem {
             return 42;
         }
     }
-    public void setPID(double p, double i, double d){
+
+    public void setPID(double p, double i, double d) {
         this.p = p;
         this.i = i;
         this.d = d;
         initPosition();
     }
-    public void setPosition(double pos){
+
+    public void setPosition(double pos) {
         if (driveMode != 2) {
             initPosition();
         }
         try {
-            System.out.println("Setpoint: "+pos);
+            System.out.println("Setpoint: " + pos);
             jagLeftMaster.setX(-pos);
             jagRightMaster.setX(pos);
         } catch (CANTimeoutException ex) {
@@ -122,6 +128,7 @@ public class DriveTrain extends Subsystem {
         }
         syncSlaves();
     }
+
     void syncSlaves() {
         try {
             victorRightSlaveMid.set(jagRightMaster.getOutputVoltage() / jagRightMaster.getBusVoltage());
@@ -134,6 +141,7 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
+
     public void setLeftVBus(double power) {
         if (driveMode != 1) {
             initVBus();
@@ -161,11 +169,22 @@ public class DriveTrain extends Subsystem {
         }
         syncSlaves();
     }
-    public void setAngle(double angle){
-      gyro.reset();
-      setRightVBus(angle*-(12/180.0));
-      setLeftVBus(angle*(12/180.0));
+
+    public void setAngle(double angle) {
+        double error = (angle - gyro.getAngle());
+        //System.out.println(error);
+        errorI += error;
+        double i = constantsTable.getDouble("turnI", 0);
+        double p = constantsTable.getDouble("turnP",0);
+        System.out.println(errorI);
+        setRightVBus(error * -p - i*errorI);
+        setLeftVBus(error * p + i*errorI);
+        SmartDashboard.putNumber("turnError", error);
     }
+    public void setErrorI(double errorI){
+        this.errorI = errorI;
+    }
+
     public void handleCANError() {
         if (canError) {
             System.out.println("CAN Error!");

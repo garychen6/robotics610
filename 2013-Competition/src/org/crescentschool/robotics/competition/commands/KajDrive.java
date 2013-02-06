@@ -38,8 +38,8 @@ public class KajDrive extends Command {
         y = driver.getRawAxis(InputConstants.leftYAxis);
         x = x * x * x;
         y = y * y * y;
-        leftSpeed = y - x;
-        rightSpeed = y + x;
+        leftSpeed = y + x;
+        rightSpeed = y - x;
         driveTrain.setLeftVBus(leftSpeed);
         driveTrain.setRightVBus(rightSpeed);
        
