@@ -8,11 +8,14 @@ package org.crescentschool.robotics.competition;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import org.crescentschool.robotics.competition.controls.DriverControls;
-import org.crescentschool.robotics.competition.controls.OperatorControls;
+import org.crescentschool.robotics.competition.controls.*;
+import org.crescentschool.robotics.competition.constants.*;
 import org.crescentschool.robotics.competition.subsystems.*;
+import org.crescentschool.robotics.competition.commands.*;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,6 +30,8 @@ public class Coyobot extends IterativeRobot {
     Shooter shooter;
     DriveTrain driveTrain;
     Pneumatics pneumatics;
+    Command autonomousCommand;
+    
 
     /**
      * This function is run when the robot is first started up and should be
@@ -37,6 +42,8 @@ public class Coyobot extends IterativeRobot {
         pneumatics = Pneumatics.getInstance();
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
+        autonomousCommand = new TurnTest();
+        
          
        
     }
@@ -50,19 +57,20 @@ public class Coyobot extends IterativeRobot {
          * ff: 0.0023
          */
         shooter = Shooter.getInstance();
-
     }
 
     public void autonomousInit() {
         // schedule the autonomous command (example)
-        //autonomousCommand.start();
+        driveTrain.getGyro().reset();
+        autonomousCommand.start();
+
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-        //Scheduler.getInstance().run();
+        Scheduler.getInstance().run();
     }
 
     public void teleopInit() {
@@ -78,7 +86,7 @@ public class Coyobot extends IterativeRobot {
         Scheduler.getInstance().run();
         
         //positionTestTel shooterTeleop();
-
+        shooterTeleop();
     }
 
     /**
@@ -104,7 +112,7 @@ public class Coyobot extends IterativeRobot {
         //Scheduler.getInstance().run();
         //shooter.getInstance().getPIDController().run();
         
-         if (OI.getInstance().getDriver().getRawButton(5)) {
+         if (OI.getInstance().getOperator().getRawButton(InputConstants.r1Button)) {
             System.out.println("P: " + constantsTable.getDouble("p", 0) + " I: " + constantsTable.getDouble("i", 0) + " D: " + constantsTable.getDouble("d", 0));
             shooter.setPID(constantsTable.getDouble("p", 0), constantsTable.getDouble("i", 0), constantsTable.getDouble("d", 0), constantsTable.getDouble("ff", 0));
             shooter.setSpeed(constantsTable.getDouble("setpoint", 0));
