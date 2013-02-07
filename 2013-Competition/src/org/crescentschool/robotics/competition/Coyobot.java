@@ -39,7 +39,7 @@ public class Coyobot extends IterativeRobot {
      */
     public void robotInit() {
         shooterInit();
-        pneumatics = Pneumatics.getInstance();
+        //pneumatics = Pneumatics.getInstance();
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
         autonomousCommand = new TurnTest();
