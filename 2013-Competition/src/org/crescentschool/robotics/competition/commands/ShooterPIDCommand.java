@@ -42,19 +42,20 @@ public class ShooterPIDCommand extends Command {
     private static Shooter shooter;
     private static Pneumatics pneumatics;
     private static OI oi;
+    private static int feedDelay = 0;
 
-    public ShooterPIDCommand(double p, double i, double d, double ff, CANJaguar controller, GearTooth opticalSensor) {
+    public ShooterPIDCommand(double p, double i, double d, double ff, CANJaguar controller, Counter opticalSensor) {
         shooter = Shooter.getInstance();
         requires(shooter);
-        this.ff = ff;
-        this.kP = p;
-        this.kI = i;
-        this.kD = d;
+        ShooterPIDCommand.ff = ff;
+        ShooterPIDCommand.kP = p;
+        ShooterPIDCommand.kI = i;
+        ShooterPIDCommand.kD = d;
         timer = new Timer();
         timer.start();
-        this.opticalSensor = opticalSensor;
-        this.opticalSensor.start();
-        this.controller = controller;
+        ShooterPIDCommand.opticalSensor = opticalSensor;
+        ShooterPIDCommand.opticalSensor.start();
+        ShooterPIDCommand.controller = controller;
         pneumatics = Pneumatics.getInstance();
         oi = OI.getInstance();
     }
@@ -65,47 +66,56 @@ public class ShooterPIDCommand extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        
-            try {
-                if (opticalSensor != null) {
-                    current = -(60 / (opticalSensor.getPeriod() * (8.0 / 7.0)));
-                } else {
-                    current = controller.getSpeed();
-                }
-            } catch (CANTimeoutException ex) {
-                ex.printStackTrace();
+
+        try {
+            if (opticalSensor != null) {
+                current = -(60 / (opticalSensor.getPeriod() * (8.0 / 7.0)));
+            } else {
+                current = controller.getSpeed();
             }
-            time = timer.get();
-            error[2] = error[1];
-            error[1] = error[0];
-            error[0] = setpoint - current;
-            p = (error[0] - error[1]) * kP;
-            i = (error[0]) * kI;
-            d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
-            outputChange = p + i + d;
-            output += outputChange;
-            double outputFinal = 0;
-            prevTime = time;
-            pushPIDStats();
-            if(error[0]>0&&oi.getOperator().getRawButton(InputConstants.r2Button)){
-                pneumatics.setFeeder(true);
-                outputFinal = (output + ff * setpoint);
-            } 
-            else if(error[0]<0&&oi.getOperator().getRawButton(InputConstants.r2Button)){
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
+        time = timer.get();
+        error[2] = error[1];
+        error[1] = error[0];
+        error[0] = setpoint - current;
+        p = (error[0] - error[1]) * kP;
+        i = (error[0]) * kI;
+        d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
+        outputChange = p + i + d;
+        output += outputChange;
+        double outputFinal = 0;
+        prevTime = time;
+        pushPIDStats();
+        if (error[0] > 0 && oi.getOperator().getRawButton(InputConstants.r2Button)) {
+            pneumatics.setFeeder(true);
+            if (feedDelay == 0) {
+                feedDelay = 10;
+            }
+            outputFinal = (output + ff * setpoint);
+        } else if (error[0] < 0 && oi.getOperator().getRawButton(InputConstants.r2Button)) {
+            if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
-                outputFinal = -12;
-                System.out.println("Recovering...");
             }
-            else{
+            outputFinal = -12;
+            System.out.println("Recovering...");
+        } else {
+            if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
-                outputFinal = (output + ff * setpoint);
             }
-             
-            try {
-                controller.setX(outputFinal);
-            } catch (CANTimeoutException ex) {
-                ex.printStackTrace();
-            }
+            outputFinal = (output + ff * setpoint);
+        }
+
+        if (feedDelay > 0) {
+            feedDelay--;
+        }
+
+        try {
+            controller.setX(outputFinal);
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+        }
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -119,9 +129,10 @@ public class ShooterPIDCommand extends Command {
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
-    protected  void interrupted() {
+    protected void interrupted() {
     }
-        /**
+
+    /**
      * @return the p
      */
     public static double getP() {
@@ -153,7 +164,6 @@ public class ShooterPIDCommand extends Command {
         error[2] = 0;
     }
 
-    
     /**
      * @param p the p to set
      */
