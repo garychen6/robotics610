@@ -36,4 +36,5 @@ public class ElectricalConstants {
     final public static int powerTakeOff = 2;
     final public static int shooterAngleForward = 3;
     final public static int shooterAngleReverse = 4;
+    final public static int LEDRelay = 2;
 }
