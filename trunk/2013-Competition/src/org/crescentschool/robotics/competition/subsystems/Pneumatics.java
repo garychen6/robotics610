@@ -13,7 +13,7 @@ import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 public class Pneumatics extends Subsystem {
     private static Pneumatics instance = null;
     static Compressor compressor;
-    DoubleSolenoid feeder;
+    Solenoid feeder;
     Solenoid powerTakeOff;
     DoubleSolenoid shooterAngle;
     
@@ -26,7 +26,7 @@ public class Pneumatics extends Subsystem {
     }
     Pneumatics(){
         compressor = new Compressor(ElectricalConstants.compressorSwitch, ElectricalConstants.compressorRelay);
-        feeder = new DoubleSolenoid(ElectricalConstants.digitalModule,ElectricalConstants.feeder);
+        feeder = new Solenoid(ElectricalConstants.feeder);
         powerTakeOff = new Solenoid(ElectricalConstants.digitalModule,ElectricalConstants.powerTakeOff);
         shooterAngle = new DoubleSolenoid(ElectricalConstants.shooterAngleForward,ElectricalConstants.shooterAngleReverse);
         compressor.start();
@@ -38,12 +38,7 @@ public class Pneumatics extends Subsystem {
     public void initDefaultCommand() {
     }
     public void setFeeder(boolean fire){
-        if(fire){
-        feeder.set(DoubleSolenoid.Value.kForward);
-        }
-        else{
-        feeder.set(DoubleSolenoid.Value.kReverse);
-        }
+        feeder.set(fire);
     }
     public void setAngleUp(boolean fire){
         if(!fire){

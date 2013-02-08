@@ -16,7 +16,6 @@ import org.crescentschool.robotics.competition.constants.*;
 import org.crescentschool.robotics.competition.subsystems.*;
 import org.crescentschool.robotics.competition.commands.*;
 
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -31,7 +30,6 @@ public class Coyobot extends IterativeRobot {
     DriveTrain driveTrain;
     Pneumatics pneumatics;
     Command autonomousCommand;
-    
 
     /**
      * This function is run when the robot is first started up and should be
@@ -43,9 +41,6 @@ public class Coyobot extends IterativeRobot {
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
         autonomousCommand = new TurnTest();
-        
-         
-       
     }
 
     public void shooterInit() {
@@ -63,7 +58,6 @@ public class Coyobot extends IterativeRobot {
         // schedule the autonomous command (example)
         driveTrain.getGyro().reset();
         autonomousCommand.start();
-
     }
 
     /**
@@ -84,7 +78,6 @@ public class Coyobot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        
         //positionTestTel shooterTeleop();
         shooterTeleop();
     }
@@ -111,12 +104,12 @@ public class Coyobot extends IterativeRobot {
     public void shooterTeleop() {
         //Scheduler.getInstance().run();
         //shooter.getInstance().getPIDController().run();
-        
-         if (OI.getInstance().getOperator().getRawButton(InputConstants.r1Button)) {
+
+        if (OI.getInstance().getOperator().getRawButton(InputConstants.r1Button)) {
             System.out.println("P: " + constantsTable.getDouble("p", 0) + " I: " + constantsTable.getDouble("i", 0) + " D: " + constantsTable.getDouble("d", 0));
             shooter.setPID(constantsTable.getDouble("p", 0), constantsTable.getDouble("i", 0), constantsTable.getDouble("d", 0), constantsTable.getDouble("ff", 0));
             shooter.setSpeed(constantsTable.getDouble("setpoint", 0));
-         }
-         
+        }
+
     }
 }
