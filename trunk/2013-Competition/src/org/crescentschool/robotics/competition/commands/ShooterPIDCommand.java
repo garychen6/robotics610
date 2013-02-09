@@ -28,6 +28,7 @@ public class ShooterPIDCommand extends Command {
     private static double p = 0;
     private static double i = 0;
     private static double d = 0;
+    private static double prevSpeed = 0;
     private static double ff = 1.5 / 580.0;
     private static double setpoint = 0;
     private static double output = 0;

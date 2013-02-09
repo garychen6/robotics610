@@ -8,6 +8,7 @@ import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.subsystems.*;
 import org.crescentschool.robotics.competition.*;
 import org.crescentschool.robotics.competition.constants.InputConstants;
@@ -36,8 +37,10 @@ public class TurnTest extends Command {
     protected void execute() {
         Preferences constantsTable = Preferences.getInstance();
         
-        //double angle = Math.PI/180.0*MathUtils.atan(constantsTable.getDouble("OFFSET",0)*Math.tan(28.5));
+        double angle = Math.toDegrees(MathUtils.atan(constantsTable.getDouble("OFFSET",0)*Math.tan(Math.toRadians(28.5))));
         //driveTrain.getGyro().reset();
+        SmartDashboard.putNumber("AngleTurn", angle);
+
         
         driveTrain.setAngle(constantsTable.getDouble("Angle",0));
         if(lastAngle != constantsTable.getDouble("Angle",0)){

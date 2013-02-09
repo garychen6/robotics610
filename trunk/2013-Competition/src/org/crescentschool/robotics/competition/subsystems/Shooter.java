@@ -7,6 +7,7 @@ package org.crescentschool.robotics.competition.subsystems;
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.GearTooth;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.commands.ShooterPIDCommand;
@@ -21,7 +22,8 @@ public class Shooter extends Subsystem {
     static Shooter instance = null;
     CANJaguar shooter;
     Counter optical;
-
+    
+    Relay light;
     public static Shooter getInstance() {
         if (instance == null) {
             instance = new Shooter();
@@ -42,11 +44,17 @@ public class Shooter extends Subsystem {
             optical.setMaxPeriod(5);
             optical.setSemiPeriodMode(true);
             optical.start();
+            light = new Relay(ElectricalConstants.LEDRelay);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
     }
-
+    public void setLight(boolean on){
+        if(on){
+            light.set(Relay.Value.kForward);
+        }
+        else light.set(Relay.Value.kOff);
+    }
     public double getVoltage() throws CANTimeoutException {
         return shooter.getOutputVoltage();
     }

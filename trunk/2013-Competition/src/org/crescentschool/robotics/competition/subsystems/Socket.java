@@ -23,7 +23,7 @@ public class Socket extends Subsystem{
 
    public static void startSocket() throws IOException{
        if(sc == null){
-           sc =  (SocketConnection)Connector.open("socket://10.6.12.3:6060");
+           sc =  (SocketConnection)Connector.open("socket://10.6.12.11:6060");
            sc.setSocketOption(SocketConnection.LINGER, 1);
            is = sc.openInputStream();
            os = sc.openOutputStream();

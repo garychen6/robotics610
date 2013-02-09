@@ -172,11 +172,9 @@ public class DriveTrain extends Subsystem {
 
     public void setAngle(double angle) {
         double error = (angle - gyro.getAngle());
-        //System.out.println(error);
         errorI += error;
         double i = constantsTable.getDouble("turnI", 0);
         double p = constantsTable.getDouble("turnP",0);
-        System.out.println(errorI);
         setRightVBus(error * -p - i*errorI);
         setLeftVBus(error * p + i*errorI);
         SmartDashboard.putNumber("turnError", error);
