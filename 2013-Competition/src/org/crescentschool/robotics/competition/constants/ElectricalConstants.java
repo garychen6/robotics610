@@ -10,9 +10,9 @@ package org.crescentschool.robotics.competition.constants;
  */
 public class ElectricalConstants {
     //CAN ID of the right drivetrain Jaguar
-    final public static int jagRightMaster = 3;
+    final public static int jagRightMaster = 2;
     //CAN ID of the left drivetrain Jaguar
-    final public static int jagLeftMaster = 2;
+    final public static int jagLeftMaster = 3;
     //PWM ID of the first right drivetrain Victor
     final public static int victorRightSlaveFront = 3;
     //PWM ID of the second right drivetrain Victor

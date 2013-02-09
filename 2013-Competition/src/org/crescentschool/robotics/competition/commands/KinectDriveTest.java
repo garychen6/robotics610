@@ -29,7 +29,8 @@ public class KinectDriveTest extends Command {
     double area;
     DriveTrain driveTrain;
     double angleTurn = 0;
-
+    double prevOffset = 0;
+    boolean pressed = false;
     public KinectDriveTest() throws IOException {
         Socket.startSocket();
         driveTrain = DriveTrain.getInstance();
@@ -54,25 +55,33 @@ public class KinectDriveTest extends Command {
     // Called repeatedly when this Command is scheduled to run
 
     protected void execute() {
-        data = "";
-        byte[] msg = new byte[1000];
 
-        try {
-            os.write("<request><get_variable>OFFSET</get_variable></request>".getBytes());
-            is.read(msg);
-            String message = new String(msg);
-            offset = retrieveVal(message, "OFFSET");
-
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        SmartDashboard.putNumber("OFFSET", offset);
-        angleTurn = Math.toDegrees(MathUtils.atan(offset * Math.tan(Math.toRadians(28.5))));
-
-        SmartDashboard.putNumber("AngleTurn", angleTurn);
         if (OI.getInstance().getOperator().getRawButton(InputConstants.squareButton)) {
-            driveTrain.setAngle(angleTurn);
+            if(!pressed){
+                driveTrain.resetGyro();
+            }
+            pressed = true;
+            data = "";
+            byte[] msg = new byte[1000];
+
+            try {
+                os.write("<request><get_variable>OFFSET</get_variable></request>".getBytes());
+                is.read(msg);
+                String message = new String(msg);
+                offset = retrieveVal(message, "OFFSET");
+
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            SmartDashboard.putNumber("OFFSET", offset);
+            angleTurn = Math.toDegrees(MathUtils.atan(offset * Math.tan(Math.toRadians(28.5))));
+            
+            SmartDashboard.putNumber("AngleTurn", angleTurn);
+            driveTrain.setAngle(angleTurn,offset!=prevOffset);
+            prevOffset = offset;
+        }else{
+            pressed = false;
         }
 
     }
@@ -80,8 +89,6 @@ public class KinectDriveTest extends Command {
     public static double retrieveVal(String msg, String variable) {
         String subMsg = msg.substring(msg.indexOf(variable), msg.indexOf(variable, msg.indexOf(variable) + 1));
         subMsg = subMsg.substring(subMsg.indexOf(">") + 1, subMsg.length() - 2);
-        System.out.println(msg);
-        System.out.println(subMsg);
         return (Double.parseDouble(subMsg));
     }
 
