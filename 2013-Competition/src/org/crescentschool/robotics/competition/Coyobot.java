@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import java.io.IOException;
 import org.crescentschool.robotics.competition.controls.*;
 import org.crescentschool.robotics.competition.constants.*;
 import org.crescentschool.robotics.competition.subsystems.*;
@@ -40,7 +41,9 @@ public class Coyobot extends IterativeRobot {
         //pneumatics = Pneumatics.getInstance();
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
-        autonomousCommand = new TurnTest();
+       
+            autonomousCommand = new TurnTest();
+       
     }
 
     public void shooterInit() {
@@ -68,8 +71,13 @@ public class Coyobot extends IterativeRobot {
     }
 
     public void teleopInit() {
-        //SocketDrive.start();
-        Scheduler.getInstance().add(new DriverControls());
+        try {
+            //SocketDrive.start();
+           // Scheduler.getInstance().add(new DriverControls());
+           Scheduler.getInstance().add(new KinectDriveTest());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         Scheduler.getInstance().add(new OperatorControls());
     }
 

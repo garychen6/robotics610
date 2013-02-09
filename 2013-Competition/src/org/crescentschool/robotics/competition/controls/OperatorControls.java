@@ -5,15 +5,16 @@
 package org.crescentschool.robotics.competition.controls;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import java.io.IOException;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.constants.KinectConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.commands.*;
 
 /**
  *
@@ -25,12 +26,10 @@ public class OperatorControls extends Command {
     Joystick operator = oi.getOperator();
     Shooter shooter = Shooter.getInstance();
     Pneumatics pneumatics = Pneumatics.getInstance();
-    ;
     int nearSpeed = KinectConstants.baseNearShooterRPM;
     int farSpeed = KinectConstants.baseFarShooterRPM;
     boolean upPosition = true;
-    Relay light = new Relay(ElectricalConstants.LEDRelay);
-
+    boolean lightOn = false;
     protected void initialize() {
     }
 
@@ -62,11 +61,13 @@ public class OperatorControls extends Command {
             }
         }
         // ir leds
-        if(operator.getRawButton(InputConstants.xButton)){
-            light.set(Relay.Value.kOn);
-        } else if(operator.getRawButton(InputConstants.oButton)){
-            light.set(Relay.Value.kOff);
+        if(operator.getRawButton(InputConstants.oButton)){
+            shooter.setLight(true);
         }
+        if(operator.getRawButton(InputConstants.xButton)){
+            shooter.setLight(false);
+        }
+        
         
         // rightY trim
         if (Math.abs(operator.getRawAxis(InputConstants.rightYAxis)) > 0.1) {

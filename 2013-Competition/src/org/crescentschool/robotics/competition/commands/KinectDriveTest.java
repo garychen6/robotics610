@@ -9,9 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.constants.ElectricalConstants;
-import org.crescentschool.robotics.competition.constants.KinectConstants;
 import org.crescentschool.robotics.competition.subsystems.Socket;
+import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
@@ -27,6 +26,7 @@ public class KinectDriveTest extends Command {
     OI oi;
     double offset;
     Gyro gyro;
+    double area;
     DriveTrain driveTrain;
     double angleTurn = 0;
 
@@ -35,7 +35,7 @@ public class KinectDriveTest extends Command {
         driveTrain = DriveTrain.getInstance();
         oi = oi.getInstance();
         //Gyro gyro = new Gyro(ElectricalConstants.gyroAnalogInput);
-        requires(driveTrain);
+        //requires(driveTrain);
         //joyDriver = oi.getDriver();
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -56,19 +56,24 @@ public class KinectDriveTest extends Command {
     protected void execute() {
         data = "";
         byte[] msg = new byte[1000];
+
         try {
             os.write("<request><get_variable>OFFSET</get_variable></request>".getBytes());
             is.read(msg);
             String message = new String(msg);
             offset = retrieveVal(message, "OFFSET");
+
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         SmartDashboard.putNumber("OFFSET", offset);
-        angleTurn = (Math.PI / 180) * (MathUtils.atan(offset * (MathUtils.atan(KinectConstants.kinectFOV))));
+        angleTurn = Math.toDegrees(MathUtils.atan(offset * Math.tan(Math.toRadians(28.5))));
 
-        driveTrain.setAngle(angleTurn);
-
+        SmartDashboard.putNumber("AngleTurn", angleTurn);
+        if (OI.getInstance().getOperator().getRawButton(InputConstants.squareButton)) {
+            driveTrain.setAngle(angleTurn);
+        }
 
     }
 
