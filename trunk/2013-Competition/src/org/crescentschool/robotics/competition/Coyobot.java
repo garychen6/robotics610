@@ -73,8 +73,8 @@ public class Coyobot extends IterativeRobot {
     public void teleopInit() {
         try {
             //SocketDrive.start();
-           // Scheduler.getInstance().add(new DriverControls());
-           Scheduler.getInstance().add(new KinectDriveTest());
+          Scheduler.getInstance().add(new DriverControls());
+          Scheduler.getInstance().add(new KinectDriveTest());
         } catch (IOException ex) {
             ex.printStackTrace();
         }

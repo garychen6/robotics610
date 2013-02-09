@@ -15,6 +15,7 @@ import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.commands.*;
+import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
  *
@@ -25,6 +26,7 @@ public class OperatorControls extends Command {
     OI oi = OI.getInstance();
     Joystick operator = oi.getOperator();
     Shooter shooter = Shooter.getInstance();
+    DriveTrain driveTrain = DriveTrain.getInstance();
     Pneumatics pneumatics = Pneumatics.getInstance();
     int nearSpeed = KinectConstants.baseNearShooterRPM;
     int farSpeed = KinectConstants.baseFarShooterRPM;
@@ -67,7 +69,6 @@ public class OperatorControls extends Command {
         if(operator.getRawButton(InputConstants.xButton)){
             shooter.setLight(false);
         }
-        
         
         // rightY trim
         if (Math.abs(operator.getRawAxis(InputConstants.rightYAxis)) > 0.1) {

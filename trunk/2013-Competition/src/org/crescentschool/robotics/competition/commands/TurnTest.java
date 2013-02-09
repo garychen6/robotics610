@@ -42,7 +42,7 @@ public class TurnTest extends Command {
         SmartDashboard.putNumber("AngleTurn", angle);
 
         
-        driveTrain.setAngle(constantsTable.getDouble("Angle",0));
+        driveTrain.setAngle(constantsTable.getDouble("Angle",0),true);
         if(lastAngle != constantsTable.getDouble("Angle",0)){
             driveTrain.setErrorI(0);
         }

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
 public class DriveTrain extends Subsystem {
@@ -21,6 +22,8 @@ public class DriveTrain extends Subsystem {
     double p = 0;
     double i = 0;
     double d = 0;
+    double error = 0;
+    double targetAngle = 0;
     int driveMode = 1;
     private static DriveTrain instance = null;
     private boolean canError = false;
@@ -131,10 +134,12 @@ public class DriveTrain extends Subsystem {
 
     void syncSlaves() {
         try {
-            victorRightSlaveMid.set(jagRightMaster.getOutputVoltage() / jagRightMaster.getBusVoltage());
-            victorRightSlaveBack.set(jagRightMaster.getOutputVoltage() / jagRightMaster.getBusVoltage());
-            victorLeftSlaveMid.set(jagLeftMaster.getOutputVoltage() / jagLeftMaster.getBusVoltage());
-            victorLeftSlaveBack.set(jagLeftMaster.getOutputVoltage() / jagLeftMaster.getBusVoltage());
+            double getOutputVoltageRight = jagRightMaster.getOutputVoltage();
+            double getOutputVoltageLeft = jagLeftMaster.getOutputVoltage();
+            victorRightSlaveMid.set(getOutputVoltageRight / 12.0);
+            victorRightSlaveBack.set(getOutputVoltageRight/12.0);
+            victorLeftSlaveMid.set(getOutputVoltageLeft/12.0);
+            victorLeftSlaveBack.set(getOutputVoltageLeft/12.0);
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();
@@ -147,7 +152,7 @@ public class DriveTrain extends Subsystem {
             initVBus();
         }
         try {
-            jagLeftMaster.setX(-power);
+            jagLeftMaster.setX(power);
         } catch (CANTimeoutException e) {
             canError = true;
             handleCANError();
@@ -170,16 +175,38 @@ public class DriveTrain extends Subsystem {
         syncSlaves();
     }
 
-    public void setAngle(double angle) {
+    public void resetGyro() {
+        gyro.reset();
+    }
+
+    public void setAngle(double angle, boolean newOffset) {
+        if (newOffset) {
+            targetAngle = gyro.getAngle() + angle;
+        }
+        error = targetAngle - gyro.getAngle();
+        errorI += error;
+        double i = constantsTable.getDouble("turnI", 0);
+        double p = constantsTable.getDouble("turnP", 0);
+        setRightVBus(0.1);
+        errorI = Math.min(1.0 / i, errorI);
+        setRightVBus(-0.2);
+        setLeftVBus(error * p + i * errorI);
+        SmartDashboard.putNumber("Output", error * -p - i * errorI);
+        SmartDashboard.putNumber("turnError", error);
+        SmartDashboard.putNumber("Angle Wanted", angle);
+    }
+
+    public void setAngleOnSpot(double angle) {
         double error = (angle - gyro.getAngle());
         errorI += error;
         double i = constantsTable.getDouble("turnI", 0);
-        double p = constantsTable.getDouble("turnP",0);
-        setRightVBus(error * -p - i*errorI);
-        setLeftVBus(error * p + i*errorI);
+        double p = constantsTable.getDouble("turnP", 0);
+        setRightVBus(error * p + i * errorI);
+        setLeftVBus(error * -p - i * errorI);
         SmartDashboard.putNumber("turnError", error);
     }
-    public void setErrorI(double errorI){
+
+    public void setErrorI(double errorI) {
         this.errorI = errorI;
     }
 
