@@ -42,7 +42,7 @@ public class KajDrive extends Command {
         rightSpeed = -x-y;
         driveTrain.setLeftVBus(leftSpeed);
         driveTrain.setRightVBus(rightSpeed);
-       
+        //System.out.println("Kaj");
 
     }
 

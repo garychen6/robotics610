@@ -19,7 +19,7 @@ public class DriveTrain extends Subsystem {
     CANJaguar jagLeftMaster;
     Victor victorLeftSlaveMid;
     Victor victorLeftSlaveBack;
-    double p = 0;
+    double p = 50.0;
     double i = 0;
     double d = 0;
     double error = 0;
@@ -63,7 +63,7 @@ public class DriveTrain extends Subsystem {
         return gyro;
     }
 
-    void initVBus() {
+    public void initVBus() {
         try {
             System.out.println("VBus");
             driveMode = 1;
@@ -79,7 +79,7 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    void initPosition() {
+    public void initPosition() {
         try {
             System.out.println("Position");
             driveMode = 2;
@@ -89,8 +89,9 @@ public class DriveTrain extends Subsystem {
             jagLeftMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
             jagRightMaster.configEncoderCodesPerRev(256);
             jagLeftMaster.configEncoderCodesPerRev(256);
+            System.out.println(p+","+i+"i"+d);
             jagRightMaster.setPID(p, i, d);
-            jagLeftMaster.setPID(p, i, d);
+            jagLeftMaster.setPID(-p, -i, -d);
             jagRightMaster.enableControl(0);
             jagLeftMaster.enableControl(0);
         } catch (CANTimeoutException ex) {
@@ -100,7 +101,7 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    public double getPosition() {
+    public double getPositionRight() {
         try {
             return jagRightMaster.getPosition();
         } catch (CANTimeoutException ex) {
@@ -110,6 +111,17 @@ public class DriveTrain extends Subsystem {
         }
     }
 
+    
+    public double getPositionLeft() {
+        try {
+            return jagLeftMaster.getPosition();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+            handleCANError();
+            return 42;
+        }
+    }
+    
     public void setPID(double p, double i, double d) {
         this.p = p;
         this.i = i;
@@ -117,14 +129,27 @@ public class DriveTrain extends Subsystem {
         initPosition();
     }
 
-    public void setPosition(double pos) {
+    public void setPositionLeft(double pos) {
         if (driveMode != 2) {
             initPosition();
         }
         try {
-            System.out.println("Setpoint: " + pos);
             jagLeftMaster.setX(-pos);
+            syncSlaves();
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
+            handleCANError();
+        }
+        syncSlaves();
+    }
+    
+    public void setPositionRight(double pos) {
+        if (driveMode != 2) {
+            initPosition();
+        }
+        try {
             jagRightMaster.setX(pos);
+            syncSlaves();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
             handleCANError();
@@ -132,14 +157,14 @@ public class DriveTrain extends Subsystem {
         syncSlaves();
     }
 
-    void syncSlaves() {
+    public void syncSlaves() {
         try {
             double getOutputVoltageRight = jagRightMaster.getOutputVoltage();
             double getOutputVoltageLeft = jagLeftMaster.getOutputVoltage();
             victorRightSlaveMid.set(getOutputVoltageRight / 12.0);
-            victorRightSlaveBack.set(getOutputVoltageRight/12.0);
-            victorLeftSlaveMid.set(getOutputVoltageLeft/12.0);
-            victorLeftSlaveBack.set(getOutputVoltageLeft/12.0);
+            victorRightSlaveBack.set(getOutputVoltageRight / 12.0);
+            victorLeftSlaveMid.set(getOutputVoltageLeft / 12.0);
+            victorLeftSlaveBack.set(getOutputVoltageLeft / 12.0);
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();

@@ -26,7 +26,6 @@ public class OperatorControls extends Command {
     OI oi = OI.getInstance();
     Joystick operator = oi.getOperator();
     Shooter shooter = Shooter.getInstance();
-    DriveTrain driveTrain = DriveTrain.getInstance();
     Pneumatics pneumatics = Pneumatics.getInstance();
     int nearSpeed = KinectConstants.baseNearShooterRPM;
     int farSpeed = KinectConstants.baseFarShooterRPM;
