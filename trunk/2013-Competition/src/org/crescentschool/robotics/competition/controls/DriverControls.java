@@ -21,7 +21,9 @@ public class DriverControls extends Command {
     Pneumatics pneumatics = Pneumatics.getInstance();
     OI oi = OI.getInstance();
     Joystick driver = oi.getDriver();
-    boolean hanging = false;
+
+    int driveMode = 0;
+    // 0 = Kaj, 1 = Hang, 2 = Position
 
     protected void initialize() {
         Scheduler.getInstance().add(new KajDrive());
@@ -29,17 +31,26 @@ public class DriverControls extends Command {
 
     protected void execute() {
 
-        if (hanging && (Math.abs(getDriver().getRawAxis(InputConstants.leftYAxis)) > 0.1 || Math.abs(getDriver().getRawAxis(InputConstants.rightXAxis)) > 0.1)) {
+        if (driveMode != 0 && driver.getRawButton(InputConstants.r2Button)){
             Scheduler.getInstance().add(new KajDrive());
-            hanging = false;
-        }
-
-        if (driver.getRawButton(InputConstants.l2Button)) {
-            pneumatics.setPowerTakeOff(true);
-        } else if (driver.getRawButton(InputConstants.r2Button)) {
             pneumatics.setPowerTakeOff(false);
+            driveMode = 0;
         }
-
+  
+        if (driveMode != 1 && driver.getRawButton(InputConstants.l2Button)) {
+            pneumatics.setPowerTakeOff(true);
+            driveMode = 1;
+        }
+        
+        if (driver.getRawButton(InputConstants.oButton)) {
+            Scheduler.getInstance().add(new PositionControl(4,4));
+            driveMode = 2;
+        }
+        if (driveMode != 2 && driver.getRawButton(InputConstants.xButton)) {
+            Scheduler.getInstance().add(new PositionControl(-4,-4));
+            driveMode = 2;
+        }
+        //System.out.println("DCon");
     }
 
     protected boolean isFinished() {

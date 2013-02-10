@@ -14,13 +14,13 @@ public class ElectricalConstants {
     //CAN ID of the left drivetrain Jaguar
     final public static int jagLeftMaster = 3;
     //PWM ID of the first right drivetrain Victor
-    final public static int victorRightSlaveFront = 3;
+    final public static int victorRightSlaveFront = 1;
     //PWM ID of the second right drivetrain Victor
-    final public static int victorRightSlaveBack = 4;
+    final public static int victorRightSlaveBack = 2;
     //PWM ID of the first left drivetrain Victor
-    final public static int victorLeftSlaveFront = 2;
+    final public static int victorLeftSlaveFront = 3;
     //PWM ID of the second left drivetrain Victor
-    final public static int victorLeftSlaveBack = 1;
+    final public static int victorLeftSlaveBack = 4;
     
     final public static int gyroAnalogInput = 3;
     //CAN ID of the shooter Jaguar

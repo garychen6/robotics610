@@ -71,13 +71,11 @@ public class Coyobot extends IterativeRobot {
     }
 
     public void teleopInit() {
-        try {
+       
             //SocketDrive.start();
           Scheduler.getInstance().add(new DriverControls());
-          Scheduler.getInstance().add(new KinectDriveTest());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+          //Scheduler.getInstance().add(new KinectDriveTest());
+     
         Scheduler.getInstance().add(new OperatorControls());
     }
 
@@ -114,8 +112,8 @@ public class Coyobot extends IterativeRobot {
         //shooter.getInstance().getPIDController().run();
 
         if (OI.getInstance().getOperator().getRawButton(InputConstants.r1Button)) {
-            System.out.println("P: " + constantsTable.getDouble("p", 0) + " I: " + constantsTable.getDouble("i", 0) + " D: " + constantsTable.getDouble("d", 0));
             shooter.setPID(constantsTable.getDouble("p", 0), constantsTable.getDouble("i", 0), constantsTable.getDouble("d", 0), constantsTable.getDouble("ff", 0));
+            driveTrain.setPID(constantsTable.getDouble("DriveP", 0), constantsTable.getDouble("DriveI", 0), constantsTable.getDouble("DriveD", 0));
             shooter.setSpeed(constantsTable.getDouble("setpoint", 0));
         }
 
