@@ -68,7 +68,6 @@ public class DriveTrain extends Subsystem {
             System.out.println("VBus");
             driveMode = 1;
             jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
-
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagRightMaster.enableControl();
             jagLeftMaster.enableControl();

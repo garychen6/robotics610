@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.subsystems.Socket;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Socket;
 
 /**
  *
@@ -31,10 +31,11 @@ public class KinectDriveTest extends Command {
     double angleTurn = 0;
     double prevOffset = 0;
     boolean pressed = false;
+    
     public KinectDriveTest() throws IOException {
         Socket.startSocket();
         driveTrain = DriveTrain.getInstance();
-        oi = oi.getInstance();
+        oi = OI.getInstance();
         //Gyro gyro = new Gyro(ElectricalConstants.gyroAnalogInput);
         //requires(driveTrain);
         //joyDriver = oi.getDriver();

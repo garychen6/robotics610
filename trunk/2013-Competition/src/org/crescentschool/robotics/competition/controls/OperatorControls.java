@@ -38,12 +38,12 @@ public class OperatorControls extends Command {
 
         if (operator.getRawButton(InputConstants.l2Button)) {
             shooter.setSpeed(farSpeed);
-            shooter.setPID(PIDConstants.p, PIDConstants.i, PIDConstants.d, PIDConstants.ff);
+            shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             pneumatics.setAngleUp(false);
             upPosition = false;
         } else if (operator.getRawButton(InputConstants.l1Button)) {
             shooter.setSpeed(nearSpeed);
-            shooter.setPID(PIDConstants.p, PIDConstants.i, PIDConstants.d, PIDConstants.ff);
+            shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             pneumatics.setAngleUp(true);
             upPosition = true;
         }
@@ -55,10 +55,10 @@ public class OperatorControls extends Command {
             farSpeed = KinectConstants.baseFarShooterRPM;
             if(upPosition){
                 shooter.setSpeed(nearSpeed);
-                shooter.setPID(PIDConstants.p, PIDConstants.i, PIDConstants.d, PIDConstants.ff);
+                shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             } else{
                 shooter.setSpeed(farSpeed);
-                shooter.setPID(PIDConstants.p, PIDConstants.i, PIDConstants.d, PIDConstants.ff);
+                shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             }
         }
         // ir leds
@@ -74,11 +74,11 @@ public class OperatorControls extends Command {
             if (upPosition) {
                 nearSpeed += operator.getRawAxis(InputConstants.rightYAxis) * -10;
                 shooter.setSpeed(nearSpeed);
-                shooter.setPID(PIDConstants.p, PIDConstants.i, PIDConstants.d, PIDConstants.ff);
+                shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             } else {
                 farSpeed += operator.getRawAxis(InputConstants.rightYAxis) * -10;
                 shooter.setSpeed(farSpeed);
-                shooter.setPID(PIDConstants.p, PIDConstants.i, PIDConstants.d, PIDConstants.ff);
+                shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             }
         }
     }
