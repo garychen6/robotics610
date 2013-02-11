@@ -21,9 +21,8 @@ public class KajDrive extends Command {
         driveTrain = DriveTrain.getInstance();
         oi = OI.getInstance();
         driver = oi.getDriver();
-        
-        requires(driveTrain);
         pneumatics = Pneumatics.getInstance();
+        requires(driveTrain);
     }
 
     // Called just before this Command runs the first time
@@ -32,7 +31,6 @@ public class KajDrive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-
         double rightSpeed, leftSpeed, x, y;
         x = driver.getRawAxis(InputConstants.rightXAxis);
         y = driver.getRawAxis(InputConstants.leftYAxis);
@@ -43,7 +41,6 @@ public class KajDrive extends Command {
         driveTrain.setLeftVBus(leftSpeed);
         driveTrain.setRightVBus(rightSpeed);
         //System.out.println("Kaj");
-
     }
 
     // Make this return true when this Command no longer needs to run execute()

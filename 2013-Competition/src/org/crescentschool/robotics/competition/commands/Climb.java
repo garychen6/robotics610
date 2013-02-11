@@ -5,9 +5,9 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import org.crescentschool.robotics.competition.subsystems.*;
 import org.crescentschool.robotics.competition.*;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.subsystems.*;
 
 /**
  *

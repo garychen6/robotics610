@@ -11,11 +11,10 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import java.io.IOException;
-import org.crescentschool.robotics.competition.controls.*;
-import org.crescentschool.robotics.competition.constants.*;
-import org.crescentschool.robotics.competition.subsystems.*;
 import org.crescentschool.robotics.competition.commands.*;
+import org.crescentschool.robotics.competition.constants.*;
+import org.crescentschool.robotics.competition.controls.*;
+import org.crescentschool.robotics.competition.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -37,24 +36,11 @@ public class Coyobot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-        shooterInit();
-        //pneumatics = Pneumatics.getInstance();
+        shooter = Shooter.getInstance();
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
-       
-            autonomousCommand = new TurnTest();
-       
-    }
+        autonomousCommand = new TurnTest();
 
-    public void shooterInit() {
-        /*
-         * Jan 28, 2013
-         * P: 0.01
-         * I: 0.00001
-         * D: 0.0001
-         * ff: 0.0023
-         */
-        shooter = Shooter.getInstance();
     }
 
     public void autonomousInit() {
@@ -71,11 +57,7 @@ public class Coyobot extends IterativeRobot {
     }
 
     public void teleopInit() {
-       
-            //SocketDrive.start();
-          Scheduler.getInstance().add(new DriverControls());
-          //Scheduler.getInstance().add(new KinectDriveTest());
-     
+        Scheduler.getInstance().add(new DriverControls());
         Scheduler.getInstance().add(new OperatorControls());
     }
 
@@ -84,8 +66,6 @@ public class Coyobot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        //positionTestTel shooterTeleop();
-        shooterTeleop();
     }
 
     /**
@@ -93,29 +73,13 @@ public class Coyobot extends IterativeRobot {
      */
     public void testPeriodic() {
         LiveWindow.run();
-    }
-    /*
-     public void positionTestTeleop() {
 
-     Scheduler.getInstance().run();
-     if (OI.getInstance().getDriver().getRawButton(5)) {
-     driveTrain.setPID(constantsTable.getDouble("p", 0), constantsTable.getDouble("i", 0), constantsTable.getDouble("d", 0));
-     driveTrain.setPosition(constantsTable.getDouble("setpoint", 0));
-     }
-     SmartDashboard.putNumber("Position", driveTrain.getPosition());
-
-     }
-     */
-
-    public void shooterTeleop() {
-        //Scheduler.getInstance().run();
-        //shooter.getInstance().getPIDController().run();
-
+        // In Test mode, press Operator R1 to reload all shooter PID values + setpoints from prefs
         if (OI.getInstance().getOperator().getRawButton(InputConstants.r1Button)) {
             shooter.setPID(constantsTable.getDouble("p", 0), constantsTable.getDouble("i", 0), constantsTable.getDouble("d", 0), constantsTable.getDouble("ff", 0));
             driveTrain.setPID(constantsTable.getDouble("DriveP", 0), constantsTable.getDouble("DriveI", 0), constantsTable.getDouble("DriveD", 0));
             shooter.setSpeed(constantsTable.getDouble("setpoint", 0));
         }
-
     }
+
 }
