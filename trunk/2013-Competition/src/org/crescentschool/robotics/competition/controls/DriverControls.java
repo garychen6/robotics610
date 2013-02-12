@@ -23,6 +23,7 @@ public class DriverControls extends Command {
     Joystick driver = oi.getDriver();
 
     int driveMode = 0;
+    boolean halfSpeed = false;
     // 0 = Kaj, 1 = Hang, 2 = Position
 
     protected void initialize() {

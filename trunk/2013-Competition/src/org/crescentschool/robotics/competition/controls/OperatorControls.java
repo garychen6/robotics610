@@ -61,24 +61,13 @@ public class OperatorControls extends Command {
                 shooter.setSpeed(farSpeed);
                 shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             }
-        }
-        // ir leds
-        if (!locking && operator.getRawButton(InputConstants.r1Button)) {
-            shooter.setLight(true);
-            try {
-                Scheduler.getInstance().add(new LockOn());
-                locking = true;
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+        }        
         if (locking && !operator.getRawButton(InputConstants.r1Button)) {
-            shooter.setLight(false);
+            nearSpeed = KinectConstants.baseNearShooterRPM;
+            farSpeed = KinectConstants.baseFarShooterRPM;
             Scheduler.getInstance().add(new PositionControl(true, 0, true, 0));
             locking = false;
         }
-
-
         // rightY trim
         if (Math.abs(operator.getRawAxis(InputConstants.rightYAxis)) > 0.1) {
             if (upPosition) {

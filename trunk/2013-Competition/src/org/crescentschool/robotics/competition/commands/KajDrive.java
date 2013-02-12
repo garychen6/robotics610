@@ -40,8 +40,12 @@ public class KajDrive extends Command {
         y = driver.getRawAxis(InputConstants.leftYAxis);
         x = x * x * x;
         y = y * y * y;
-        leftSpeed = x-y;
-        rightSpeed = -x-y;
+        leftSpeed = x - y;
+        rightSpeed = -x - y;
+        if (driver.getRawButton(InputConstants.l1Button)) {
+            driveTrain.setLeftVBus(leftSpeed/2);
+            driveTrain.setRightVBus(rightSpeed/2);
+        }
         driveTrain.setLeftVBus(leftSpeed);
         driveTrain.setRightVBus(rightSpeed);
         //System.out.println("Kaj");
