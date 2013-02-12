@@ -17,6 +17,7 @@ public class Climb extends Command {
     DriveTrain driveTrain;
     Pneumatics pneumatics;
     OI oi;
+    Shooter shooter;
     public Climb() {
         driveTrain = DriveTrain.getInstance();
         requires(driveTrain);
@@ -26,6 +27,7 @@ public class Climb extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+        shooter.setLight(false);
     }
 
     // Called repeatedly when this Command is scheduled to run

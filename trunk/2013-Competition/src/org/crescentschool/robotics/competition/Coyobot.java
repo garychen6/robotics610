@@ -39,14 +39,12 @@ public class Coyobot extends IterativeRobot {
         shooter = Shooter.getInstance();
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
-        autonomousCommand = new TurnTest();
 
     }
 
     public void autonomousInit() {
         // schedule the autonomous command (example)
         driveTrain.getGyro().reset();
-        autonomousCommand.start();
     }
 
     /**

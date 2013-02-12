@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.microedition.io.Connector;
 import javax.microedition.io.SocketConnection;
-import org.crescentschool.robotics.competition.commands.KinectDriveTest;
+import org.crescentschool.robotics.competition.commands.LockOn;
 
 /**
  *

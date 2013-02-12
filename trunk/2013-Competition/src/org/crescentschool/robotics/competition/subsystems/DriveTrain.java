@@ -64,12 +64,25 @@ public class DriveTrain extends Subsystem {
     }
     
     public void initVBus() {
+        driveMode = 1;
+        initVBusRight();
+        initVBusLeft();
+    }
+
+    public void initVBusRight() {
         try {
-            System.out.println("VBus");
-            driveMode = 1;
-            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagRightMaster.enableControl();
+        } catch (CANTimeoutException ex) {
+            canError = true;
+            handleCANError();
+            ex.printStackTrace();
+        }
+    }
+
+    public void initVBusLeft() {
+        try {
+            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
             jagLeftMaster.enableControl();
         } catch (CANTimeoutException ex) {
             canError = true;
@@ -79,19 +92,31 @@ public class DriveTrain extends Subsystem {
     }
 
     public void initPosition() {
+        driveMode = 2;
+        initPositionRight();
+        initPositionLeft();
+    }
+
+    public void initPositionRight() {
         try {
-            System.out.println("Position");
-            driveMode = 2;
             jagRightMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
-            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
             jagRightMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
-            jagLeftMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
             jagRightMaster.configEncoderCodesPerRev(256);
-            jagLeftMaster.configEncoderCodesPerRev(256);
-            System.out.println(p+","+i+"i"+d);
             jagRightMaster.setPID(p, i, d);
-            jagLeftMaster.setPID(-p, -i, -d);
             jagRightMaster.enableControl(0);
+        } catch (CANTimeoutException ex) {
+            canError = true;
+            handleCANError();
+            ex.printStackTrace();
+        }
+    }
+
+    public void initPositionLeft() {
+        try {
+            jagLeftMaster.changeControlMode(CANJaguar.ControlMode.kPosition);
+            jagLeftMaster.setPositionReference(CANJaguar.PositionReference.kQuadEncoder);
+            jagLeftMaster.configEncoderCodesPerRev(256);
+            jagLeftMaster.setPID(-p, -i, -d);
             jagLeftMaster.enableControl(0);
         } catch (CANTimeoutException ex) {
             canError = true;
@@ -110,7 +135,6 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    
     public double getPositionLeft() {
         try {
             return jagLeftMaster.getPosition();
@@ -120,7 +144,7 @@ public class DriveTrain extends Subsystem {
             return 42;
         }
     }
-    
+
     public void setPID(double p, double i, double d) {
         this.p = p;
         this.i = i;
@@ -141,7 +165,7 @@ public class DriveTrain extends Subsystem {
         }
         syncSlaves();
     }
-    
+
     public void setPositionRight(double pos) {
         if (driveMode != 2) {
             initPosition();
@@ -202,34 +226,35 @@ public class DriveTrain extends Subsystem {
     public void resetGyro() {
         gyro.reset();
     }
-
-    public void setAngle(double angle, boolean newOffset) {
+    //1: Left
+    //2: Right
+    //3: Both
+    public void setAngle(double angle, boolean newOffset,int side) {
         if (newOffset) {
             targetAngle = gyro.getAngle() + angle;
         }
-        error = targetAngle - gyro.getAngle();
-        errorI += error;
         double i = constantsTable.getDouble("turnI", 0);
         double p = constantsTable.getDouble("turnP", 0);
-        setRightVBus(0.1);
+        error = targetAngle - gyro.getAngle();
+        errorI += error;
         errorI = Math.min(1.0 / i, errorI);
-        setRightVBus(-0.2);
-        setLeftVBus(error * p + i * errorI);
+        switch(side){
+            case 1:
+                setLeftVBus(error * p + i * errorI);
+            break;
+            case 2:
+                setRightVBus(error * p + i * errorI);
+            break;
+            case 3:
+                setRightVBus(error * p + i * errorI);
+                setLeftVBus(error * p + i * errorI);
+            break;
+        }
+        
         SmartDashboard.putNumber("Output", error * -p - i * errorI);
         SmartDashboard.putNumber("turnError", error);
         SmartDashboard.putNumber("Angle Wanted", angle);
     }
-
-    public void setAngleOnSpot(double angle) {
-        double error = (angle - gyro.getAngle());
-        errorI += error;
-        double i = constantsTable.getDouble("turnI", 0);
-        double p = constantsTable.getDouble("turnP", 0);
-        setRightVBus(error * p + i * errorI);
-        setLeftVBus(error * -p - i * errorI);
-        SmartDashboard.putNumber("turnError", error);
-    }
-
     public void setErrorI(double errorI) {
         this.errorI = errorI;
     }

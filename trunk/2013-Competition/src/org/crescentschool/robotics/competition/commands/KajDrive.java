@@ -15,9 +15,11 @@ public class KajDrive extends Command {
     DriveTrain driveTrain;
     OI oi;
     Joystick driver;
+    Shooter shooter;
     Pneumatics pneumatics;
 
     public KajDrive() {
+        shooter = Shooter.getInstance();
         driveTrain = DriveTrain.getInstance();
         oi = OI.getInstance();
         driver = oi.getDriver();
@@ -27,6 +29,8 @@ public class KajDrive extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+        shooter.setLight(false);
+        
     }
 
     // Called repeatedly when this Command is scheduled to run
