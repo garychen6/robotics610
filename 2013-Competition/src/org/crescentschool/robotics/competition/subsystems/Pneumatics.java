@@ -19,10 +19,10 @@ public class Pneumatics extends Subsystem {
     Solenoid post;
     Solenoid tray;
     DoubleSolenoid shooterAngle;
-    //Checks if the pneumatics object is already running.  If not, create one.
-
-    public static Pneumatics getInstance() {
-        if (instance == null) {
+    boolean feederHigh = false;
+    
+    public static Pneumatics getInstance(){
+        if(instance == null){
             instance = new Pneumatics();
         }
         return instance;
@@ -63,13 +63,16 @@ public class Pneumatics extends Subsystem {
     public void setPowerTakeOff(boolean fire) {
         powerTakeOff.set(fire);
     }
-
-    public void angleFeeder(boolean fire) {
-        if (fire == true) {
+    public boolean getFeederState(){
+        return feederHigh;
+    }
+    public void angleFeeder(boolean fire){
+        if(fire == true){
             shooterAngle.set(DoubleSolenoid.Value.kForward);
         } else {
             shooterAngle.set(DoubleSolenoid.Value.kReverse);
         }
+        feederHigh = fire;
     }
     //Allows other classes to get the pressure switch value.
 

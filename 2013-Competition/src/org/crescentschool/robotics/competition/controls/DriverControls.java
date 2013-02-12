@@ -43,12 +43,12 @@ public class DriverControls extends Command {
         }
         
         if (driver.getRawAxis(InputConstants.dPadY) > 0.2) {
-            Scheduler.getInstance().add(new PositionControl(4,4));
-            driveMode = 2;
+           // Scheduler.getInstance().add(new PositionControl(4,4));
+            //driveMode = 2;
         }
         if (driveMode != 2 && driver.getRawAxis(InputConstants.dPadY) < -0.2) {
-            Scheduler.getInstance().add(new PositionControl(-4,-4));
-            driveMode = 2;
+           // Scheduler.getInstance().add(new PositionControl(-4,-4));
+           // driveMode = 2;
         }
         if(driver.getRawButton(InputConstants.l1Button)){
             pneumatics.postUp(true);

@@ -15,14 +15,13 @@ import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 import org.crescentschool.robotics.competition.commands.*;
-import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
  *
  * @author robotics
  */
 public class OperatorControls extends Command {
-
+    
     OI oi = OI.getInstance();
     Joystick operator = oi.getOperator();
     Shooter shooter = Shooter.getInstance();
@@ -31,11 +30,13 @@ public class OperatorControls extends Command {
     int farSpeed = KinectConstants.baseFarShooterRPM;
     boolean upPosition = true;
     boolean lightOn = false;
+    boolean locking = false;
+    
     protected void initialize() {
     }
-
+    
     protected void execute() {
-
+        
         if (operator.getRawButton(InputConstants.l2Button)) {
             shooter.setSpeed(farSpeed);
             shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
@@ -47,28 +48,37 @@ public class OperatorControls extends Command {
             pneumatics.setAngleUp(true);
             upPosition = true;
         }
-        
-        
+
+
         //btn1 reset
         if (operator.getRawButton(InputConstants.xButton)) {
             nearSpeed = KinectConstants.baseNearShooterRPM;
             farSpeed = KinectConstants.baseFarShooterRPM;
-            if(upPosition){
+            if (upPosition) {
                 shooter.setSpeed(nearSpeed);
                 shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
-            } else{
+            } else {
                 shooter.setSpeed(farSpeed);
                 shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             }
         }
         // ir leds
-        if(operator.getRawButton(InputConstants.oButton)){
+        if (!locking && operator.getRawButton(InputConstants.r1Button)) {
             shooter.setLight(true);
+            try {
+                Scheduler.getInstance().add(new LockOn());
+                locking = true;
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
-        if(operator.getRawButton(InputConstants.xButton)){
+        if (locking && !operator.getRawButton(InputConstants.r1Button)) {
             shooter.setLight(false);
+            Scheduler.getInstance().add(new PositionControl(true, 0, true, 0));
+            locking = false;
         }
-        
+
+
         // rightY trim
         if (Math.abs(operator.getRawAxis(InputConstants.rightYAxis)) > 0.1) {
             if (upPosition) {
@@ -82,17 +92,17 @@ public class OperatorControls extends Command {
             }
         }
     }
-
+    
     protected boolean isFinished() {
         return false;
     }
-
+    
     protected void end() {
     }
-
+    
     protected void interrupted() {
     }
-
+    
     public Joystick getOperator() {
         return OI.getInstance().getOperator();
     }

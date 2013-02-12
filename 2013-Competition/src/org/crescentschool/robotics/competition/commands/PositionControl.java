@@ -6,6 +6,8 @@ package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.OI;
+import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
@@ -13,26 +15,49 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  * @author robotics
  */
 public class PositionControl extends Command {
+
     DriveTrain driveTrain;
+    OI oi;
     double setPointRight = 0;
     double setPointLeft = 0;
-    public PositionControl(double left,double right) {
+    double trim = 0;
+    double axis = 0;
+    //negative is left, positive is right
+    boolean leftPositionMode = false;
+    boolean rightPositionMode = false;
+
+    public PositionControl(boolean leftPositionMode, double left, boolean rightPositionMode, double right) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         driveTrain = DriveTrain.getInstance();
+        oi = OI.getInstance();
+        this.leftPositionMode = leftPositionMode;
+        this.rightPositionMode = rightPositionMode;
         setPointRight = right;
         setPointLeft = left;
         requires(driveTrain);
     }
     // Called just before this Command runs the first time
+
     protected void initialize() {
-        driveTrain.initPosition();
-        driveTrain.setPositionLeft(setPointLeft);
-        driveTrain.setPositionRight(setPointRight);
+        if (leftPositionMode) {
+            driveTrain.initPositionLeft();
+            driveTrain.setPositionLeft(setPointLeft);
+        }
+        if (rightPositionMode) {
+            driveTrain.initPositionRight();
+            driveTrain.setPositionRight(setPointRight);
+        }
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        axis = oi.getOperator().getRawAxis(InputConstants.rightXAxis);
+        if(oi.getOperator().getRawAxis(InputConstants.rightXAxis) > 0.1){
+            trim+= axis*0.01;
+            driveTrain.setPositionLeft(-trim);
+            driveTrain.setPositionRight(trim);
+        }
         driveTrain.syncSlaves();
         SmartDashboard.putNumber("Position Left", driveTrain.getPositionLeft());
         SmartDashboard.putNumber("Position Right", driveTrain.getPositionRight());
