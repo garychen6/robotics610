@@ -29,12 +29,20 @@ public class ElectricalConstants {
     final public static int driverJoystick = 1;
     //Operator Joystick
     final public static int operatorJoystick = 2;
+    //Compressor switch channel
     final public static int compressorSwitch = 1;
+    //Compressor relay channel
     final public static int compressorRelay = 1;
+    //Digital module
     final public static int digitalModule = 1;
+    //Feeder solenoid channel
     final public static int feeder = 1;
+    //Power take off solenoid channel
     final public static int powerTakeOff = 2;
+    //Channel for double solenoid to extend the piston.
     final public static int shooterAngleForward = 3;
+    //Channel for double solenoid to retract the piston.
     final public static int shooterAngleReverse = 4;
+    final public static int post = 5;
     final public static int LEDRelay = 2;
 }
