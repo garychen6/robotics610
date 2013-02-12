@@ -32,14 +32,14 @@ public class DriveTrain extends Subsystem {
 
     public void initDefaultCommand() {
     }
-
+    
     public static DriveTrain getInstance() {
         if (instance == null) {
             instance = new DriveTrain();
         }
         return instance;
     }
-
+    
     DriveTrain() {
         try {
             gyro = new Gyro(1);
@@ -62,7 +62,7 @@ public class DriveTrain extends Subsystem {
     public Gyro getGyro() {
         return gyro;
     }
-
+    
     public void initVBus() {
         try {
             System.out.println("VBus");
