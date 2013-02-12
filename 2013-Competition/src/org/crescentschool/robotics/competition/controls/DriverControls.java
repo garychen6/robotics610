@@ -24,6 +24,7 @@ public class DriverControls extends Command {
 
     int driveMode = 0;
     boolean halfSpeed = false;
+    boolean moveBack = false;
     // 0 = Kaj, 1 = Hang, 2 = Position
 
     protected void initialize() {
@@ -50,7 +51,9 @@ public class DriverControls extends Command {
         if (driveMode != 2 && driver.getRawAxis(InputConstants.dPadY) < -0.2) {
            // Scheduler.getInstance().add(new PositionControl(-4,-4));
            // driveMode = 2;
+            moveBack = true;
         }
+        moveBack = false;
         if(driver.getRawButton(InputConstants.l1Button)){
             pneumatics.postUp(true);
         } else {

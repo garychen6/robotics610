@@ -24,6 +24,7 @@ public class OperatorControls extends Command {
     
     OI oi = OI.getInstance();
     Joystick operator = oi.getOperator();
+    Joystick driver = oi.getDriver();
     Shooter shooter = Shooter.getInstance();
     Pneumatics pneumatics = Pneumatics.getInstance();
     int nearSpeed = KinectConstants.baseNearShooterRPM;
@@ -48,8 +49,10 @@ public class OperatorControls extends Command {
             pneumatics.setAngleUp(true);
             upPosition = true;
         }
-
-
+        if(driver.getRawAxis(InputConstants.dPadY) < -0.2){
+            shooter.setSpeed(nearSpeed - KinectConstants.moveBack);
+        }
+        
         //btn1 reset
         if (operator.getRawButton(InputConstants.xButton)) {
             nearSpeed = KinectConstants.baseNearShooterRPM;

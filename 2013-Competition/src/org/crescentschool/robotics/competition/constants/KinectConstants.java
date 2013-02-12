@@ -13,5 +13,5 @@ public class KinectConstants {
     final public static double kinectFOV = 57.8;
     final public static int baseNearShooterRPM = 4000;
     final public static int baseFarShooterRPM = 5000;
-    
+    final public static int moveBack = 200;
 }
