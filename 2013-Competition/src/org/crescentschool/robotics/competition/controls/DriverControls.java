@@ -31,25 +31,31 @@ public class DriverControls extends Command {
 
     protected void execute() {
 
-        if (driveMode != 0 && driver.getRawButton(InputConstants.r2Button)){
+        if (driveMode != 0 && driver.getRawButton(InputConstants.r1Button)){
             Scheduler.getInstance().add(new KajDrive());
             pneumatics.setPowerTakeOff(false);
             driveMode = 0;
         }
   
-        if (driveMode != 1 && driver.getRawButton(InputConstants.l2Button)) {
+        if (driveMode != 1 && driver.getRawButton(InputConstants.l2Button) && driver.getRawButton(InputConstants.r2Button)) {
             pneumatics.setPowerTakeOff(true);
             driveMode = 1;
         }
         
-        if (driver.getRawButton(InputConstants.oButton)) {
+        if (driver.getRawAxis(InputConstants.dPadY) > 0.2) {
             Scheduler.getInstance().add(new PositionControl(4,4));
             driveMode = 2;
         }
-        if (driveMode != 2 && driver.getRawButton(InputConstants.xButton)) {
+        if (driveMode != 2 && driver.getRawAxis(InputConstants.dPadY) < -0.2) {
             Scheduler.getInstance().add(new PositionControl(-4,-4));
             driveMode = 2;
         }
+        if(driver.getRawButton(InputConstants.l1Button)){
+            pneumatics.postUp(true);
+        } else {
+            pneumatics.postUp(false);
+        }
+        
         //System.out.println("DCon");
     }
 
