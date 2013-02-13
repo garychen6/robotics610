@@ -21,7 +21,7 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
  * @author robotics
  */
 public class ShooterPIDCommand extends Command {
-
+    
     private static double kP = 0;
     private static double kI = 0;
     private static double kD = 0;
@@ -44,8 +44,20 @@ public class ShooterPIDCommand extends Command {
     private static Pneumatics pneumatics;
     private static OI oi;
     private static int feedDelay = 0;
-    
 
+    /**
+     * This program gets an instance of the shooter, pneumatics, and oi, and
+     * also changes the ff, kP, kI, and kD values to the ones in this method.
+     *
+     * It also starts a timer for calculating the time.
+     *
+     * @param p the shooter's Position value for its PID control.
+     * @param i the shooter's Integral value for its PID control.
+     * @param d the shooter's Derivative value for its PID control.
+     * @param ff the shooter's FeedForward value for its FeedForward control.
+     * @param controller the motor controller to be passed in
+     * @param opticalSensor the optical sensor (counter) to be passed in
+     */
     public ShooterPIDCommand(double p, double i, double d, double ff, CANJaguar controller, Counter opticalSensor) {
         shooter = Shooter.getInstance();
         requires(shooter);
@@ -67,6 +79,9 @@ public class ShooterPIDCommand extends Command {
     }
 
     // Called repeatedly when this Command is scheduled to run
+    /**
+     * This program runs speed control code.
+     */
     protected void execute() {
 
         try {
@@ -134,31 +149,46 @@ public class ShooterPIDCommand extends Command {
     }
 
     /**
-     * @return the p
+     * This method returns the proportional value.
+     * @return the proportional value
      */
     public static double getP() {
         return kP;
     }
 
     /**
-     * @return the i
+     * This method returns the integral value.
+     * @return the integral value
      */
     public static double getI() {
         return kI;
     }
 
     /**
-     * @return the setpoint
+     * This method returns the derivative value.
+     * @return the derivative value
+     */
+    public static double getD() {
+        return kD;
+    }
+    
+    /**
+     * This program returns the setpoint value
+     * @return the setpoint value
      */
     public static double getSetpoint() {
         return setpoint;
     }
 
     /**
-     * @param setpoint the setpoint to set
+     * This method sets the setpoint value to the parameter setpoint PLUS 200.
+     * 
+     * It also resets the output and error[0]-[2] values to 0.
+     * 
+     * @param setpoint 200 less than the new setpoint to be set
      */
     synchronized public static void setSetpoint(double setpoint) {
-        ShooterPIDCommand.setpoint = setpoint+200;
+        ShooterPIDCommand.setpoint = setpoint + 200;
         output = 0;
         error[0] = 0;
         error[1] = 0;
@@ -166,7 +196,8 @@ public class ShooterPIDCommand extends Command {
     }
 
     /**
-     * @param p the p to set
+     * This method sets the proportional value to the parameter p
+     * @param p the new proportional value
      */
     synchronized public static void setP(double p) {
         output = 0;
@@ -174,7 +205,8 @@ public class ShooterPIDCommand extends Command {
     }
 
     /**
-     * @param i the i to set
+     * This method sets the integral value to the parameter i
+     * @param i the new integral value
      */
     synchronized public static void setI(double i) {
         output = 0;
@@ -182,7 +214,8 @@ public class ShooterPIDCommand extends Command {
     }
 
     /**
-     * @param d the d to set
+     * This method sets the derivative value to the parameter d.
+     * @param d the new derivative value
      */
     synchronized public static void setD(double d) {
         output = 0;
@@ -190,19 +223,28 @@ public class ShooterPIDCommand extends Command {
     }
 
     /**
-     * @return the ff
+     * This method returns the feedforward value.
+     * @return ff the feedforward value
      */
     public static double getFf() {
         return ff;
     }
 
     /**
-     * @param ff the ff to set
+     * This method sets the feedforward value to the parameter ff.
+     * @param ff the new feedforward value
      */
     synchronized public static void setFf(double ff) {
         ShooterPIDCommand.ff = ff;
     }
 
+    /**
+     * This method prints out the PID statistics to the SmartDashboard for
+     * debugging.
+     *
+     * It prints out error, p, i, d, current, the period of the optical sensor,
+     * and the output.
+     */
     public static void pushPIDStats() {
         SmartDashboard.putNumber("Error", error[0]);
         SmartDashboard.putNumber("P", p);
