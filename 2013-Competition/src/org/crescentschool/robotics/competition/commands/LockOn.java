@@ -72,6 +72,11 @@ public class LockOn extends Command {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        if (offset < 0) {
+            offset = Math.max(offset, -0.2);
+        } else {
+            offset = Math.min(offset, 0.2);
+        }
         SmartDashboard.putNumber("OFFSET", offset);
         angleTurn = Math.toDegrees(MathUtils.atan(offset * Math.tan(Math.toRadians(28.5))));
         driveTrain.setAngle(angleTurn, offset != prevOffset, 3);

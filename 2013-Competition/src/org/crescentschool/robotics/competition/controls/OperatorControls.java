@@ -64,21 +64,31 @@ public class OperatorControls extends Command {
                 shooter.setSpeed(farSpeed);
                 shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             }
-        }        
+        }
+        if (!locking && operator.getRawButton(InputConstants.r1Button)){
+            shooter.setLight(true);
+            try{
+                Scheduler.getInstance().add(new LockOn());
+                locking = true;
+            }
+            catch (IOException ex){
+                ex.printStackTrace();
+            }
+        }
         if (locking && !operator.getRawButton(InputConstants.r1Button)) {
-            nearSpeed = KinectConstants.baseNearShooterRPM;
-            farSpeed = KinectConstants.baseFarShooterRPM;
+            shooter.setLight(false);
             Scheduler.getInstance().add(new PositionControl(true, 0, true, 0));
             locking = false;
         }
+        
         // rightY trim
-        if (Math.abs(operator.getRawAxis(InputConstants.rightYAxis)) > 0.1) {
+        if (Math.abs(operator.getRawAxis(InputConstants.leftYAxis)) > 0.1) {
             if (upPosition) {
-                nearSpeed += operator.getRawAxis(InputConstants.rightYAxis) * -10;
+                nearSpeed += operator.getRawAxis(InputConstants.leftYAxis) * -10;
                 shooter.setSpeed(nearSpeed);
                 shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             } else {
-                farSpeed += operator.getRawAxis(InputConstants.rightYAxis) * -10;
+                farSpeed += operator.getRawAxis(InputConstants.leftYAxis) * -10;
                 shooter.setSpeed(farSpeed);
                 shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             }

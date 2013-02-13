@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.controls.*;
 
 /**
  *
@@ -48,16 +49,18 @@ public class PositionControl extends Command {
             driveTrain.initPositionRight();
             driveTrain.setPositionRight(setPointRight);
         }
+        DriverControls.setDriveMode(2);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         axis = oi.getOperator().getRawAxis(InputConstants.rightXAxis);
-        if(oi.getOperator().getRawAxis(InputConstants.rightXAxis) > 0.1){
-            trim+= axis*0.01;
-            driveTrain.setPositionLeft(-trim);
-            driveTrain.setPositionRight(trim);
+        if (Math.abs(oi.getOperator().getRawAxis(InputConstants.rightXAxis)) > 0.1) {
+            trim += axis * 0.05;
+            driveTrain.setPositionLeft(trim);
+            driveTrain.setPositionRight(-trim);
         }
+
         driveTrain.syncSlaves();
         SmartDashboard.putNumber("Position Left", driveTrain.getPositionLeft());
         SmartDashboard.putNumber("Position Right", driveTrain.getPositionRight());

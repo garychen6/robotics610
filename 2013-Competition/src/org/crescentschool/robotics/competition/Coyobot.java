@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import java.io.IOException;
 import org.crescentschool.robotics.competition.commands.*;
 import org.crescentschool.robotics.competition.constants.*;
 import org.crescentschool.robotics.competition.controls.*;
@@ -66,6 +67,10 @@ public class Coyobot extends IterativeRobot {
         Scheduler.getInstance().run();
     }
 
+    public void disabledPeriodic() {
+        //ShooterPIDCommand.pushPIDStats();
+    }
+
     /**
      * This function is called periodically during test mode
      */
@@ -79,5 +84,4 @@ public class Coyobot extends IterativeRobot {
             shooter.setSpeed(constantsTable.getDouble("setpoint", 0));
         }
     }
-
 }
