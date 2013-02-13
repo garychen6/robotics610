@@ -45,5 +45,6 @@ public class ElectricalConstants {
     final public static int shooterAngleReverse = 4;
     final public static int postForward = 5;
     final public static int postReverse =6;
+    //Channel for LED Relay
     final public static int LEDRelay = 2;
 }
