@@ -46,6 +46,14 @@ public class ShooterPIDCommand extends Command {
     private static int feedDelay = 0;
 
     /**
+     * @return the current
+     */
+    public static double getCurrent() {
+        return -current;
+    }
+    
+
+    /**
      * This program gets an instance of the shooter, pneumatics, and oi, and
      * also changes the ff, kP, kI, and kD values to the ones in this method.
      *
@@ -86,7 +94,7 @@ public class ShooterPIDCommand extends Command {
 
         try {
             if (opticalSensor != null) {
-                current = -(60 / (opticalSensor.getPeriod() * (8.0 / 7.0)));
+                current = (60 / (opticalSensor.getPeriod() * (8.0 / 7.0)));
             } else {
                 current = controller.getSpeed();
             }
@@ -96,7 +104,7 @@ public class ShooterPIDCommand extends Command {
         time = timer.get();
         error[2] = error[1];
         error[1] = error[0];
-        error[0] = setpoint - current;
+        error[0] = setpoint - getCurrent();
         p = (error[0] - error[1]) * kP;
         i = (error[0]) * kI;
         d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
@@ -110,15 +118,15 @@ public class ShooterPIDCommand extends Command {
             if (feedDelay == 0) {
                 feedDelay = 10;
             }
-            outputFinal = -12;
+            //outputFinal = -12;
         } else if (error[0] < 200 && oi.getOperator().getRawButton(InputConstants.r2Button)) {
             if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
             }
-            outputFinal = -12;
+            //outputFinal = -12;
         } else {
             if (feedDelay == 0) {
-                pneumatics.setFeeder(false);
+                //pneumatics.setFeeder(false);
             }
             outputFinal = (output + ff * setpoint);
         }
@@ -147,7 +155,6 @@ public class ShooterPIDCommand extends Command {
     // subsystems is scheduled to run
     protected void interrupted() {
     }
-
     /**
      * This method returns the proportional value.
      * @return the proportional value
@@ -250,8 +257,8 @@ public class ShooterPIDCommand extends Command {
         SmartDashboard.putNumber("P", p);
         SmartDashboard.putNumber("I", i);
         SmartDashboard.putNumber("D", d);
-        SmartDashboard.putNumber("SpeedNum", -current);
-        SmartDashboard.putNumber("SpeedNumGraph", -current);
+        SmartDashboard.putNumber("SpeedNum", -getCurrent());
+        SmartDashboard.putNumber("SpeedNumGraph", -getCurrent());
         SmartDashboard.putNumber("OpticalPeriod", opticalSensor.getPeriod());
         SmartDashboard.putNumber("Output", output + ff * setpoint);
     }
