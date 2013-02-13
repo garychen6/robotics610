@@ -19,6 +19,10 @@ public class OI {
     Shooter shooter;
     static OI instance = null;
 
+    /**
+     * Get instance of OI.
+     * @return OI instance
+     */
     public static OI getInstance() {
         if (instance == null) {
             instance = new OI();
@@ -26,15 +30,26 @@ public class OI {
         return instance;
     }
 
+    /**
+     * Set driver and operator joysticks to the right joystick numbers.
+     */
     OI() {
         driver = new Joystick(ElectricalConstants.driverJoystick);
         operator = new Joystick(ElectricalConstants.operatorJoystick);
     }
 
+    /**
+     * Get the driver joystick.
+     * @return driver joystick
+     */
     public Joystick getDriver() {
         return driver;
     }
-
+    
+    /**
+     * Get the operator joystick.
+     * @return operator joystick
+     */
     public Joystick getOperator() {
         return operator;
     }
