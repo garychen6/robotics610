@@ -40,7 +40,7 @@ public class Coyobot extends IterativeRobot {
         shooter = Shooter.getInstance();
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
-
+        autonomousCommand = new Shoot();
     }
 
     /**
@@ -49,19 +49,21 @@ public class Coyobot extends IterativeRobot {
     public void autonomousInit() {
         // schedule the autonomous command (example)
         driveTrain.getGyro().reset();
+        //autonomousCommand.start();
     }
 
     /**
      * This function is called periodically during autonomous.
      */
     public void autonomousPeriodic() {
-        Scheduler.getInstance().run();
+        //Scheduler.getInstance().run();
     }
 
     /**
      * This function is run when driver control starts.
      */
     public void teleopInit() {
+       // autonomousCommand.cancel();
         Scheduler.getInstance().add(new DriverControls());
         Scheduler.getInstance().add(new OperatorControls());
     }
