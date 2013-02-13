@@ -43,6 +43,7 @@ public class ElectricalConstants {
     final public static int shooterAngleForward = 3;
     //Channel for double solenoid to retract the piston.
     final public static int shooterAngleReverse = 4;
-    final public static int post = 5;
+    final public static int postForward = 5;
+    final public static int postReverse =6;
     final public static int LEDRelay = 2;
 }

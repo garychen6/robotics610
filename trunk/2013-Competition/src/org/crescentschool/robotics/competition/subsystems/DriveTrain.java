@@ -246,7 +246,7 @@ public class DriveTrain extends Subsystem {
                 setRightVBus(error * p + i * errorI);
             break;
             case 3:
-                setRightVBus(error * p + i * errorI);
+                setRightVBus(error * -p - i * errorI);
                 setLeftVBus(error * p + i * errorI);
             break;
         }

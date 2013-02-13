@@ -44,6 +44,7 @@ public class ShooterPIDCommand extends Command {
     private static Pneumatics pneumatics;
     private static OI oi;
     private static int feedDelay = 0;
+    
 
     public ShooterPIDCommand(double p, double i, double d, double ff, CANJaguar controller, Counter opticalSensor) {
         shooter = Shooter.getInstance();
@@ -89,18 +90,17 @@ public class ShooterPIDCommand extends Command {
         double outputFinal = 0;
         prevTime = time;
         pushPIDStats();
-        if (error[0] > 0 && oi.getOperator().getRawButton(InputConstants.r2Button)) {
+        if (error[0] > 200 && oi.getOperator().getRawButton(InputConstants.r2Button)) {
             pneumatics.setFeeder(true);
             if (feedDelay == 0) {
                 feedDelay = 10;
             }
-            outputFinal = (output + ff * setpoint);
-        } else if (error[0] < 0 && oi.getOperator().getRawButton(InputConstants.r2Button)) {
+            outputFinal = -12;
+        } else if (error[0] < 200 && oi.getOperator().getRawButton(InputConstants.r2Button)) {
             if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
             }
             outputFinal = -12;
-            System.out.println("Recovering...");
         } else {
             if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
@@ -158,7 +158,7 @@ public class ShooterPIDCommand extends Command {
      * @param setpoint the setpoint to set
      */
     synchronized public static void setSetpoint(double setpoint) {
-        ShooterPIDCommand.setpoint = setpoint;
+        ShooterPIDCommand.setpoint = setpoint+200;
         output = 0;
         error[0] = 0;
         error[1] = 0;

@@ -49,6 +49,7 @@ public class Shooter extends Subsystem {
             ex.printStackTrace();
         }
     }
+    
     public void setLight(boolean on){
         if(on){
             light.set(Relay.Value.kForward);

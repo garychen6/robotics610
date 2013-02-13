@@ -16,13 +16,13 @@ public class Pneumatics extends Subsystem {
     static Compressor compressor;
     Solenoid feeder;
     Solenoid powerTakeOff;
-    Solenoid post;
+    DoubleSolenoid post;
     Solenoid tray;
     DoubleSolenoid shooterAngle;
     boolean feederHigh = false;
-    
-    public static Pneumatics getInstance(){
-        if(instance == null){
+
+    public static Pneumatics getInstance() {
+        if (instance == null) {
             instance = new Pneumatics();
         }
         return instance;
@@ -34,7 +34,7 @@ public class Pneumatics extends Subsystem {
         feeder = new Solenoid(ElectricalConstants.feeder);
         powerTakeOff = new Solenoid(ElectricalConstants.digitalModule, ElectricalConstants.powerTakeOff);
         shooterAngle = new DoubleSolenoid(ElectricalConstants.shooterAngleForward, ElectricalConstants.shooterAngleReverse);
-        post = new Solenoid(ElectricalConstants.digitalModule, ElectricalConstants.post);
+        post = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.postForward, ElectricalConstants.postReverse);
         //Run the compressor
         compressor.start();
 
@@ -63,11 +63,13 @@ public class Pneumatics extends Subsystem {
     public void setPowerTakeOff(boolean fire) {
         powerTakeOff.set(fire);
     }
-    public boolean getFeederState(){
+
+    public boolean getFeederState() {
         return feederHigh;
     }
-    public void angleFeeder(boolean fire){
-        if(fire == true){
+
+    public void angleFeeder(boolean fire) {
+        if (fire == true) {
             shooterAngle.set(DoubleSolenoid.Value.kForward);
         } else {
             shooterAngle.set(DoubleSolenoid.Value.kReverse);
@@ -81,6 +83,11 @@ public class Pneumatics extends Subsystem {
     }
 
     public void postUp(boolean fire) {
-        post.set(fire);
+        if(!fire){
+            post.set(DoubleSolenoid.Value.kForward);
+        } else{
+            post.set(DoubleSolenoid.Value.kReverse);
+        }
+        
     }
 }
