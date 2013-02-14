@@ -42,7 +42,6 @@ public class Shoot extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
             //ADD TRIM
-            System.out.println(ShooterPIDCommand.getCurrent());
             if(!fired&&ShooterPIDCommand.getCurrent() >= nearSpeed&&shotFris < 3){
                 pneumatics.setFeeder(true);
                 fired = true;

@@ -49,21 +49,23 @@ public class Coyobot extends IterativeRobot {
     public void autonomousInit() {
         // schedule the autonomous command (example)
         driveTrain.getGyro().reset();
-        //autonomousCommand.start();
+        ShooterPIDCommand.setAuton(true);
+        autonomousCommand.start();
     }
 
     /**
      * This function is called periodically during autonomous.
      */
     public void autonomousPeriodic() {
-        //Scheduler.getInstance().run();
+        Scheduler.getInstance().run();
     }
 
     /**
      * This function is run when driver control starts.
      */
     public void teleopInit() {
-       // autonomousCommand.cancel();
+        autonomousCommand.cancel();
+        ShooterPIDCommand.setAuton(false);
         Scheduler.getInstance().add(new DriverControls());
         Scheduler.getInstance().add(new OperatorControls());
     }
