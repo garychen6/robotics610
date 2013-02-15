@@ -19,6 +19,8 @@ public class Pneumatics extends Subsystem {
     DoubleSolenoid post;
     Solenoid tray;
     DoubleSolenoid shooterAngle;
+    DoubleSolenoid trayFlip;
+    DoubleSolenoid hang;
     boolean feederHigh = false;
 
     public static Pneumatics getInstance() {
@@ -35,6 +37,8 @@ public class Pneumatics extends Subsystem {
         powerTakeOff = new Solenoid(ElectricalConstants.digitalModule, ElectricalConstants.powerTakeOff);
         shooterAngle = new DoubleSolenoid(ElectricalConstants.shooterAngleForward, ElectricalConstants.shooterAngleReverse);
         post = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.postForward, ElectricalConstants.postReverse);
+        trayFlip = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.trayFlipForward, ElectricalConstants.trayFlipReverse);
+        hang = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.hangForward, ElectricalConstants.hangReverse);
         //Run the compressor
         compressor.start();
 
@@ -88,6 +92,19 @@ public class Pneumatics extends Subsystem {
         } else{
             post.set(DoubleSolenoid.Value.kReverse);
         }
-        
+    }
+    public void hangControl(boolean fire){
+        if(fire){
+            hang.set(DoubleSolenoid.Value.kForward);
+        } else {
+            post.set(DoubleSolenoid.Value.kReverse);
+        }
+    }
+    public void trayControl(boolean fire){
+        if(fire){
+            trayFlip.set(DoubleSolenoid.Value.kForward);
+        } else {
+            trayFlip.set(DoubleSolenoid.Value.kReverse);
+        }
     }
 }
