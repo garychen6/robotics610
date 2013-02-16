@@ -21,7 +21,7 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
  * @author robotics
  */
 public class ShooterPIDCommand extends Command {
-    
+
     private static double kP = 0;
     private static double kI = 0;
     private static double kD = 0;
@@ -33,7 +33,7 @@ public class ShooterPIDCommand extends Command {
     private static double setpoint = 0;
     private static double output = 0;
     private static double outputChange = 0;
-    private static double[] error = new double[3];
+    private static double[] error = new double[10];
     private static Timer timer;
     private static double prevTime;
     private static double time;
@@ -45,6 +45,8 @@ public class ShooterPIDCommand extends Command {
     private static OI oi;
     private static int feedDelay = 0;
     private static boolean auton = false;
+    private double avgSpeed = 0;
+    private boolean canError = false;
 
     /**
      * @return the auton
@@ -97,7 +99,6 @@ public class ShooterPIDCommand extends Command {
     /**
      * This program runs speed control code.
      */
-    
     protected void execute() {
 
         try {
@@ -110,9 +111,14 @@ public class ShooterPIDCommand extends Command {
             ex.printStackTrace();
         }
         time = timer.get();
-        error[2] = error[1];
-        error[1] = error[0];
+        for (int i = error.length - 1; i >= 1; i--) {
+            error[i] = error[i - 1];
+        }
         error[0] = setpoint - current;
+        for (int i = 0; i < error.length; i++) {
+            avgSpeed += error[i];
+        }
+        avgSpeed /= error.length;
         p = (error[0] - error[1]) * kP;
         i = (error[0]) * kI;
         d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
@@ -121,18 +127,20 @@ public class ShooterPIDCommand extends Command {
         double outputFinal = 0;
         prevTime = time;
         pushPIDStats();
-        if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button)||auton)) {
+        if (avgSpeed > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
             pneumatics.setFeeder(true);
+            System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
+
             if (feedDelay == 0) {
                 feedDelay = 10;
             }
             outputFinal = -12;
-        } else if (error[0] < 200 && (oi.getOperator().getRawButton(InputConstants.r2Button)||auton)) {
+        } else if (avgSpeed < 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
             if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
             }
             outputFinal = -12;
-        } else{
+        } else {
             if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
             }
@@ -147,6 +155,8 @@ public class ShooterPIDCommand extends Command {
             controller.setX(outputFinal);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
+            canError = true;
+            handleCANError();
         }
     }
 
@@ -166,6 +176,7 @@ public class ShooterPIDCommand extends Command {
 
     /**
      * This method returns the proportional value.
+     *
      * @return the proportional value
      */
     public static double getP() {
@@ -174,6 +185,7 @@ public class ShooterPIDCommand extends Command {
 
     /**
      * This method returns the integral value.
+     *
      * @return the integral value
      */
     public static double getI() {
@@ -182,14 +194,16 @@ public class ShooterPIDCommand extends Command {
 
     /**
      * This method returns the derivative value.
+     *
      * @return the derivative value
      */
     public static double getD() {
         return kD;
     }
-    
+
     /**
      * This program returns the setpoint value
+     *
      * @return the setpoint value
      */
     public static double getSetpoint() {
@@ -198,9 +212,9 @@ public class ShooterPIDCommand extends Command {
 
     /**
      * This method sets the setpoint value to the parameter setpoint PLUS 200.
-     * 
+     *
      * It also resets the output and error[0]-[2] values to 0.
-     * 
+     *
      * @param setpoint 200 less than the new setpoint to be set
      */
     synchronized public static void setSetpoint(double setpoint) {
@@ -213,6 +227,7 @@ public class ShooterPIDCommand extends Command {
 
     /**
      * This method sets the proportional value to the parameter p
+     *
      * @param p the new proportional value
      */
     synchronized public static void setP(double p) {
@@ -222,6 +237,7 @@ public class ShooterPIDCommand extends Command {
 
     /**
      * This method sets the integral value to the parameter i
+     *
      * @param i the new integral value
      */
     synchronized public static void setI(double i) {
@@ -231,6 +247,7 @@ public class ShooterPIDCommand extends Command {
 
     /**
      * This method sets the derivative value to the parameter d.
+     *
      * @param d the new derivative value
      */
     synchronized public static void setD(double d) {
@@ -240,6 +257,7 @@ public class ShooterPIDCommand extends Command {
 
     /**
      * This method returns the feedforward value.
+     *
      * @return ff the feedforward value
      */
     public static double getFf() {
@@ -248,14 +266,17 @@ public class ShooterPIDCommand extends Command {
 
     /**
      * This method sets the feedforward value to the parameter ff.
+     *
      * @param ff the new feedforward value
      */
     synchronized public static void setFf(double ff) {
         ShooterPIDCommand.ff = ff;
     }
-    public static double getCurrent(){
+
+    public static double getCurrent() {
         return -current;
     }
+
     /**
      * This method prints out the PID statistics to the SmartDashboard for
      * debugging.
@@ -272,5 +293,27 @@ public class ShooterPIDCommand extends Command {
         SmartDashboard.putNumber("SpeedNumGraph", -current);
         SmartDashboard.putNumber("OpticalPeriod", opticalSensor.getPeriod());
         SmartDashboard.putNumber("Output", output + ff * setpoint);
+    }
+
+    public void handleCANError() {
+        if (canError) {
+            System.out.println("CAN Error!");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+
+            canError = false;
+            try {
+                controller.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
+                controller.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+                controller.enableControl(0);
+            } catch (CANTimeoutException ex) {
+                ex.printStackTrace();
+                canError = true; 
+                handleCANError();
+            }
+        }
     }
 }

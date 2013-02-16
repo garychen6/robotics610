@@ -61,7 +61,7 @@ public class PositionControl extends Command {
             driveTrain.setPositionRight(-trim);
         }
 
-        driveTrain.syncSlaves();
+        driveTrain.syncSlaves(false,0);
         SmartDashboard.putNumber("Position Left", driveTrain.getPositionLeft());
         SmartDashboard.putNumber("Position Right", driveTrain.getPositionRight());
     }

@@ -6,6 +6,7 @@ package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
@@ -20,7 +21,8 @@ public class Pneumatics extends Subsystem {
     Solenoid tray;
     DoubleSolenoid shooterAngle;
     DoubleSolenoid trayFlip;
-    DoubleSolenoid hang;
+    //DoubleSolenoid hang;
+    Relay hang;
     boolean feederHigh = false;
 
     public static Pneumatics getInstance() {
@@ -38,7 +40,7 @@ public class Pneumatics extends Subsystem {
         shooterAngle = new DoubleSolenoid(ElectricalConstants.shooterAngleForward, ElectricalConstants.shooterAngleReverse);
         post = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.postForward, ElectricalConstants.postReverse);
         trayFlip = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.trayFlipForward, ElectricalConstants.trayFlipReverse);
-        hang = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.hangForward, ElectricalConstants.hangReverse);
+        hang = new Relay(3);
         //Run the compressor
         compressor.start();
 
@@ -76,7 +78,7 @@ public class Pneumatics extends Subsystem {
         if (fire == true) {
             shooterAngle.set(DoubleSolenoid.Value.kForward);
         } else {
-            shooterAngle.set(DoubleSolenoid.Value.kReverse);
+            shooterAngle.set(DoubleSolenoid.Value.kOff);
         }
         feederHigh = fire;
     }
@@ -95,9 +97,9 @@ public class Pneumatics extends Subsystem {
     }
     public void hangControl(boolean fire){
         if(fire){
-            hang.set(DoubleSolenoid.Value.kForward);
+            hang.set(Relay.Value.kForward);
         } else {
-            post.set(DoubleSolenoid.Value.kReverse);
+            hang.set(Relay.Value.kReverse);
         }
     }
     public void trayControl(boolean fire){

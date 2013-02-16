@@ -32,14 +32,14 @@ public class DriveTrain extends Subsystem {
 
     public void initDefaultCommand() {
     }
-    
+
     public static DriveTrain getInstance() {
         if (instance == null) {
             instance = new DriveTrain();
         }
         return instance;
     }
-    
+
     DriveTrain() {
         try {
             gyro = new Gyro(1);
@@ -62,7 +62,7 @@ public class DriveTrain extends Subsystem {
     public Gyro getGyro() {
         return gyro;
     }
-    
+
     public void initVBus() {
         driveMode = 1;
         initVBusRight();
@@ -158,12 +158,11 @@ public class DriveTrain extends Subsystem {
         }
         try {
             jagLeftMaster.setX(-pos);
-            syncSlaves();
+            syncSlaves(false,0);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
             handleCANError();
         }
-        syncSlaves();
     }
 
     public void setPositionRight(double pos) {
@@ -172,22 +171,61 @@ public class DriveTrain extends Subsystem {
         }
         try {
             jagRightMaster.setX(pos);
-            syncSlaves();
+            syncSlaves(false,0);
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
             handleCANError();
         }
-        syncSlaves();
     }
 
-    public void syncSlaves() {
+    public void syncSlaves(boolean vbus, double power) {
         try {
-            double getOutputVoltageRight = jagRightMaster.getOutputVoltage();
-            double getOutputVoltageLeft = jagLeftMaster.getOutputVoltage();
-            victorRightSlaveMid.set(getOutputVoltageRight / 12.0);
-            victorRightSlaveBack.set(getOutputVoltageRight / 12.0);
-            victorLeftSlaveMid.set(getOutputVoltageLeft / 12.0);
-            victorLeftSlaveBack.set(getOutputVoltageLeft / 12.0);
+            if (!vbus) {
+                double getOutputVoltageRight = jagRightMaster.getOutputVoltage();
+                double getOutputVoltageLeft = jagLeftMaster.getOutputVoltage();
+                victorRightSlaveMid.set(getOutputVoltageRight / 9.0);
+                victorRightSlaveBack.set(getOutputVoltageRight / 9.0);
+                victorLeftSlaveMid.set(getOutputVoltageLeft / 9.0);
+                victorLeftSlaveBack.set(getOutputVoltageLeft / 9.0);
+            } else {
+                victorRightSlaveMid.set(power);
+                victorRightSlaveBack.set(power);
+                victorLeftSlaveMid.set(power);
+                victorLeftSlaveBack.set(power);
+            }
+        } catch (CANTimeoutException ex) {
+            canError = true;
+            handleCANError();
+            ex.printStackTrace();
+        }
+    }
+     public void syncSlavesRight(boolean vbus, double power) {
+        try {
+            if (!vbus) {
+                double getOutputVoltageRight = jagRightMaster.getOutputVoltage();
+                victorRightSlaveMid.set(getOutputVoltageRight / 9.0);
+                victorRightSlaveBack.set(getOutputVoltageRight / 9.0);
+            } else {
+                victorRightSlaveMid.set(power);
+                victorRightSlaveBack.set(power);
+            }
+        } catch (CANTimeoutException ex) {
+            canError = true;
+            handleCANError();
+            ex.printStackTrace();
+        }
+    }
+      public void syncSlavesLeft(boolean vbus, double power) {
+        try {
+            if (!vbus) {
+                double getOutputVoltageRight = jagRightMaster.getOutputVoltage();
+                double getOutputVoltageLeft = jagLeftMaster.getOutputVoltage();
+                victorLeftSlaveMid.set(getOutputVoltageLeft / 9.0);
+                victorLeftSlaveBack.set(getOutputVoltageLeft / 9.0);
+            } else {
+                victorLeftSlaveMid.set(power);
+                victorLeftSlaveBack.set(power);
+            }
         } catch (CANTimeoutException ex) {
             canError = true;
             handleCANError();
@@ -206,7 +244,7 @@ public class DriveTrain extends Subsystem {
             handleCANError();
             e.printStackTrace();
         }
-        syncSlaves();
+        syncSlavesLeft(true,power);
     }
 
     public void setRightVBus(double power) {
@@ -220,7 +258,7 @@ public class DriveTrain extends Subsystem {
             handleCANError();
             e.printStackTrace();
         }
-        syncSlaves();
+        syncSlavesRight(true,power);
     }
 
     public void resetGyro() {
@@ -229,32 +267,34 @@ public class DriveTrain extends Subsystem {
     //1: Left
     //2: Right
     //3: Both
-    public void setAngle(double angle, boolean newOffset,int side) {
+
+    public void setAngle(double angle, boolean newOffset, int side) {
         if (newOffset) {
             targetAngle = gyro.getAngle() + angle;
         }
-        double i = constantsTable.getDouble("turnI", 0);
-        double p = constantsTable.getDouble("turnP", 0);
+        double i = 0.004;
+        double p = 0.07;
         error = targetAngle - gyro.getAngle();
         errorI += error;
         errorI = Math.min(1.0 / i, errorI);
-        switch(side){
+        switch (side) {
             case 1:
                 setLeftVBus(error * p + i * errorI);
-            break;
+                break;
             case 2:
                 setRightVBus(error * p + i * errorI);
-            break;
+                break;
             case 3:
                 setRightVBus(error * -p - i * errorI);
                 setLeftVBus(error * p + i * errorI);
-            break;
+                break;
         }
-        
+
         SmartDashboard.putNumber("Output", error * -p - i * errorI);
         SmartDashboard.putNumber("turnError", error);
         SmartDashboard.putNumber("Angle Wanted", angle);
     }
+
     public void setErrorI(double errorI) {
         this.errorI = errorI;
     }

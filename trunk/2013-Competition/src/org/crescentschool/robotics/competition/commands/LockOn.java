@@ -59,6 +59,7 @@ public class LockOn extends Command {
     // Called repeatedly when this Command is scheduled to run
 
     protected void execute() {
+        if(Socket.getConnected()){
         data = "";
         byte[] msg = new byte[1000];
 
@@ -81,6 +82,10 @@ public class LockOn extends Command {
         angleTurn = Math.toDegrees(MathUtils.atan(offset * Math.tan(Math.toRadians(28.5))));
         driveTrain.setAngle(angleTurn, offset != prevOffset, 3);
         prevOffset = offset;
+        }else{
+            System.out.println("Aborting LockON");
+            this.end();
+        }
     }
 
     public static double retrieveVal(String msg, String variable) {
