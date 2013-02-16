@@ -93,6 +93,7 @@ public class OperatorControls extends Command {
                 shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             }
         }
+     
     }
     
     protected boolean isFinished() {

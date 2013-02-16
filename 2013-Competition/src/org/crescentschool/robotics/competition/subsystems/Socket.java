@@ -1,4 +1,3 @@
-
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -13,29 +12,40 @@ import org.crescentschool.robotics.competition.commands.LockOn;
  *
  * @author Warfa
  */
-public class Socket extends Subsystem{
+public class Socket extends Subsystem {
+
     static SocketConnection sc = null;
     static InputStream is;
     static OutputStream os;
+    static boolean socketConnected = false;
 
-   public static void startSocket() throws IOException{
-       if(sc == null){
-           sc =  (SocketConnection)Connector.open("socket://10.6.12.11:6060");
-           sc.setSocketOption(SocketConnection.LINGER, 1);
-           is = sc.openInputStream();
-           os = sc.openOutputStream();
-       }
-   }
-   
-  public static InputStream getInStream(){
-      return is;
-  }
-  public static OutputStream getOutStream(){
-      return os;
-  }
+    public static void startSocket() {
+        if (sc == null) {
+            try {
+                sc = (SocketConnection) Connector.open("socket://10.6.10.11:6060");
+                sc.setSocketOption(SocketConnection.LINGER, 1);
+                is = sc.openInputStream();
+                os = sc.openOutputStream();
+                socketConnected = true;
+            } catch (IOException ex) {
+                System.out.println("Can't Connect to Socket");
+                socketConnected = false;
+            }
+        }
+    }
+
+    public static boolean getConnected() {
+        return socketConnected;
+    }
+
+    public static InputStream getInStream() {
+        return is;
+    }
+
+    public static OutputStream getOutStream() {
+        return os;
+    }
 
     protected void initDefaultCommand() {
     }
-
-  
 }

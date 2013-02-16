@@ -23,6 +23,8 @@ public class DriverControls extends Command {
     OI oi = OI.getInstance();
     Joystick driver = oi.getDriver();
     public static int driveMode = 0;
+    boolean pressed = false;
+    boolean trayOut = false;
     // 0 = Kaj, 1 = Hang, 2 = Position, 3 = auto turn
 
     protected void initialize() {
@@ -55,16 +57,28 @@ public class DriverControls extends Command {
         }
         
         if (driver.getRawAxis(InputConstants.dPadX)>0.2){
-            Scheduler.getInstance().add(new PositionControl(true, 4, true, 0));
+            Scheduler.getInstance().add(new PositionControl(true, 2.7, true, -1.7));
             setDriveMode(2);
         }
         if (driver.getRawAxis(InputConstants.dPadX)<-0.2){
-            Scheduler.getInstance().add(new PositionControl(true,0, true, 4));
+            Scheduler.getInstance().add(new PositionControl(true,-1.7, true, 2.7));
             setDriveMode(2);
         }
         pneumatics.postUp(driver.getRawButton(InputConstants.l1Button));
-
-        //System.out.println("DCon");
+        if(driver.getRawButton(InputConstants.squareButton)){
+            pneumatics.hangControl(true);
+        }
+        if(driver.getRawButton(InputConstants.xButton)){
+            pneumatics.hangControl(false);
+        }
+        if(!pressed && driver.getRawButton(InputConstants.triangleButton)){
+            trayOut = !trayOut;
+            pressed = true;
+            pneumatics.trayControl(trayOut);
+        }
+        if(!driver.getRawButton(InputConstants.triangleButton)){
+            pressed = false;
+        }
     }
 
     protected boolean isFinished() {
