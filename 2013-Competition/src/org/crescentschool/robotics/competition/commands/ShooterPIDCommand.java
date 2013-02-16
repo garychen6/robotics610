@@ -129,8 +129,8 @@ public class ShooterPIDCommand extends Command {
         pushPIDStats();
         if (avgSpeed > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
             pneumatics.setFeeder(true);
-            System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
-
+            //System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
+            System.out.println("RPM: " + current);
             if (feedDelay == 0) {
                 feedDelay = 10;
             }
