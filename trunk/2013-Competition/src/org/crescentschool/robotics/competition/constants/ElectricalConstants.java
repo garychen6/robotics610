@@ -51,4 +51,6 @@ public class ElectricalConstants {
     final public static int hangReverse = 10;
     //Channel for LED Relay
     final public static int LEDRelay = 2;
+    //Channel for relay for the 10 point hang mechanism
+    final public static int lowHangRelay = 3;
 }

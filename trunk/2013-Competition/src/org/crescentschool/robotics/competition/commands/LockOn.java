@@ -23,10 +23,13 @@ public class LockOn extends Command {
 
     InputStream is;
     OutputStream os;
+    InputStream is2;
+    OutputStream os2;
     String data;
+    private double height;
     Joystick joyDriver;
     OI oi;
-    double offset;
+    private double offset;
     Gyro gyro;
     double area;
     DriveTrain driveTrain;
@@ -59,30 +62,34 @@ public class LockOn extends Command {
     // Called repeatedly when this Command is scheduled to run
 
     protected void execute() {
-        if(Socket.getConnected()){
-        data = "";
-        byte[] msg = new byte[1000];
+        if (Socket.getConnected()) {
+            data = "";
+            byte[] msg = new byte[1000];
 
-        try {
-            os.write("<request><get_variable>OFFSET</get_variable></request>".getBytes());
-            is.read(msg);
-            String message = new String(msg);
-            offset = retrieveVal(message, "OFFSET");
+            try {
+                os.write("<request><get_variable>OFFSET</get_variable></request>".getBytes());
+                is.read(msg);
+                String message = new String(msg);
+                offset = (retrieveVal(message, "OFFSET"));
 
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        if (offset < 0) {
-            offset = Math.max(offset, -0.2);
+                os2.write("<request><get_variable>HEIGHT</get_variable></request>".getBytes());
+                is2.read(msg);
+                String message2 = new String(msg);
+                height = (retrieveVal(message, "HEIGHT"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            if (getOffset() < 0) {
+                offset = (Math.max(getOffset(), -0.2));
+            } else {
+                offset = (Math.min(getOffset(), 0.2));
+            }
+            SmartDashboard.putNumber("OFFSET", offset);
+            SmartDashboard.putNumber("HEIGHT", height);
+            angleTurn = Math.toDegrees(MathUtils.atan(getOffset() * Math.tan(Math.toRadians(28.5))));
+            driveTrain.setAngle(angleTurn, getOffset() != prevOffset, 3);
+            prevOffset = getOffset();
         } else {
-            offset = Math.min(offset, 0.2);
-        }
-        SmartDashboard.putNumber("OFFSET", offset);
-        angleTurn = Math.toDegrees(MathUtils.atan(offset * Math.tan(Math.toRadians(28.5))));
-        driveTrain.setAngle(angleTurn, offset != prevOffset, 3);
-        prevOffset = offset;
-        }else{
             System.out.println("Aborting LockON");
             this.end();
         }
@@ -107,4 +114,6 @@ public class LockOn extends Command {
     // subsystems is scheduled to run
     protected void interrupted() {
     }
+
+
 }
