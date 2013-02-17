@@ -31,12 +31,14 @@ public class Coyobot extends IterativeRobot {
     DriveTrain driveTrain;
     Pneumatics pneumatics;
     Command autonomousCommand;
+    
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
+        
         shooter = Shooter.getInstance();
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();

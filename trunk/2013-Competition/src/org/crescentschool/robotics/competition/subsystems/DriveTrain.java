@@ -301,7 +301,8 @@ public class DriveTrain extends Subsystem {
 
     public void handleCANError() {
         if (canError) {
-            System.out.println("CAN Error!");
+            SmartDashboard.putString("Messages", "CAN Error!");
+            Logger.getLogger().debug("CAN Error!");
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ex) {

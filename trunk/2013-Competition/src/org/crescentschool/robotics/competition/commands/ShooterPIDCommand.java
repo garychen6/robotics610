@@ -6,7 +6,6 @@ package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Counter;
-import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Command;
@@ -14,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
-import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.subsystems.*;
 
 /**
  *
@@ -130,7 +129,8 @@ public class ShooterPIDCommand extends Command {
         if (avgSpeed > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
             pneumatics.setFeeder(true);
             //System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
-            System.out.println("RPM: " + current);
+            
+            Logger.getLogger().debug("RPM: " + current);
             if (feedDelay == 0) {
                 feedDelay = 10;
             }
@@ -297,7 +297,8 @@ public class ShooterPIDCommand extends Command {
 
     public void handleCANError() {
         if (canError) {
-            System.out.println("CAN Error!");
+            SmartDashboard.putString("Messages","CAN Error!");
+            Logger.getLogger().debug("CAN Error!");
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ex) {
