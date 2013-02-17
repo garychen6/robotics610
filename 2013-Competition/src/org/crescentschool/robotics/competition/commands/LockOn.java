@@ -13,7 +13,7 @@ import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
-import org.crescentschool.robotics.competition.subsystems.Socket;
+import org.crescentschool.robotics.competition.subsystems.*;
 
 /**
  *
@@ -40,6 +40,7 @@ public class LockOn extends Command {
     boolean sideLocked = false;
     boolean locked = false;
     Pneumatics pneumatics;
+    Timer time;
 
     public LockOn() throws IOException {
         Socket.startSocket();
@@ -67,15 +68,13 @@ public class LockOn extends Command {
             byte[] msg = new byte[1000];
 
             try {
-                os.write("<request><get_variable>OFFSET</get_variable></request>".getBytes());
+                time = Timer.getTimer("requestTime");
+                os.write("<request><get_variable>OFFSET, HEIGHT</get_variable></request>".getBytes());
                 is.read(msg);
                 String message = new String(msg);
                 offset = (retrieveVal(message, "OFFSET"));
-
-                os2.write("<request><get_variable>HEIGHT</get_variable></request>".getBytes());
-                is2.read(msg);
-                String message2 = new String(msg);
                 height = (retrieveVal(message, "HEIGHT"));
+                time.stop();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -90,7 +89,7 @@ public class LockOn extends Command {
             driveTrain.setAngle(angleTurn, getOffset() != prevOffset, 3);
             prevOffset = getOffset();
         } else {
-            System.out.println("Aborting LockON");
+            SmartDashboard.putString("Messages", "Aborting LockON");
             this.end();
         }
     }

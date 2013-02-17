@@ -1,12 +1,12 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.microedition.io.Connector;
 import javax.microedition.io.SocketConnection;
-import org.crescentschool.robotics.competition.commands.LockOn;
 
 /**
  *
@@ -28,7 +28,8 @@ public class Socket extends Subsystem {
                 os = sc.openOutputStream();
                 socketConnected = true;
             } catch (IOException ex) {
-                System.out.println("Can't Connect to Socket");
+                Logger.getLogger().debug("Can't Connect to Socket");
+                SmartDashboard.putString("Messages", "Can't Connect to Socket");
                 socketConnected = false;
             }
         }

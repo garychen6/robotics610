@@ -54,6 +54,7 @@ public class PositionControl extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        /*
         axis = oi.getOperator().getRawAxis(InputConstants.rightXAxis);
         if (Math.abs(oi.getOperator().getRawAxis(InputConstants.rightXAxis)) > 0.1) {
             trim += axis * 0.05;
@@ -62,8 +63,10 @@ public class PositionControl extends Command {
         }
 
         driveTrain.syncSlaves(false,0);
+        */
         SmartDashboard.putNumber("Position Left", driveTrain.getPositionLeft());
         SmartDashboard.putNumber("Position Right", driveTrain.getPositionRight());
+        
     }
 
     // Make this return true when this Command no longer needs to run execute()

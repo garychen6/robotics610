@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import java.io.IOException;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
-import org.crescentschool.robotics.competition.constants.KinectConstants;
+import org.crescentschool.robotics.competition.constants.ShootingConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
-import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.subsystems.*;
 import org.crescentschool.robotics.competition.commands.*;
 
 /**
@@ -21,42 +21,73 @@ import org.crescentschool.robotics.competition.commands.*;
  * @author robotics
  */
 public class OperatorControls extends Command {
-    
+
     OI oi = OI.getInstance();
     Joystick operator = oi.getOperator();
     Joystick driver = oi.getDriver();
     Shooter shooter = Shooter.getInstance();
     Pneumatics pneumatics = Pneumatics.getInstance();
-    int nearSpeed = KinectConstants.baseNearShooterRPM;
-    int farSpeed = KinectConstants.baseFarShooterRPM;
+    DriveTrain driveTrain = DriveTrain.getInstance();
+    int nearSpeed = ShootingConstants.baseNearShooterRPM;
+    int farSpeed = ShootingConstants.baseFarShooterRPM;
+    int YAYSpeed = ShootingConstants.YAYShooterRPM;
     boolean upPosition = true;
     boolean lightOn = false;
     boolean locking = false;
-    
+    Timer time;
+    boolean trimStick = false;
+    int trimTime = 0;
+    double trimPower = ShootingConstants.trimPower;
+    int shootingPosition = 0;
+    //0 = Pyramid Radius, 1 = Feeder, 2 = YAY!!!
+
     protected void initialize() {
     }
-    
+
     protected void execute() {
-        
+
         if (operator.getRawButton(InputConstants.l2Button)) {
+            shootingPosition = 1;
             shooter.setSpeed(farSpeed);
             shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             pneumatics.setAngleUp(false);
             upPosition = false;
         } else if (operator.getRawButton(InputConstants.l1Button)) {
+            shootingPosition = 0;
             shooter.setSpeed(nearSpeed);
             shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             pneumatics.setAngleUp(true);
             upPosition = true;
         }
-        if(driver.getRawAxis(InputConstants.dPadY) < -0.2){
-            shooter.setSpeed(nearSpeed - KinectConstants.moveBack);
-        }
-        
-        //btn1 reset
+
         if (operator.getRawButton(InputConstants.xButton)) {
-            nearSpeed = KinectConstants.baseNearShooterRPM;
-            farSpeed = KinectConstants.baseFarShooterRPM;
+            shootingPosition = 1;
+            shooter.setSpeed(farSpeed);
+            shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+            pneumatics.setAngleUp(false);
+            upPosition = false;
+        } else if (operator.getRawButton(InputConstants.triangleButton)) {
+            shootingPosition = 0;
+            shooter.setSpeed(nearSpeed);
+            shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+            pneumatics.setAngleUp(true);
+            upPosition = true;
+        } else if (operator.getRawButton(InputConstants.oButton)) {
+            shootingPosition = 2;
+            shooter.setSpeed(YAYSpeed);
+            shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+            pneumatics.setAngleUp(false);
+            upPosition = false;
+        }
+
+        if (driver.getRawAxis(InputConstants.dPadY) < -0.2) {
+            shooter.setSpeed(nearSpeed - ShootingConstants.moveBack);
+        }
+
+        //btn1 reset
+        if (operator.getRawButton(InputConstants.squareButton)) {
+            nearSpeed = ShootingConstants.baseNearShooterRPM;
+            farSpeed = ShootingConstants.baseFarShooterRPM;
             if (upPosition) {
                 shooter.setSpeed(nearSpeed);
                 shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
@@ -65,23 +96,47 @@ public class OperatorControls extends Command {
                 shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             }
         }
-        if (!locking && operator.getRawButton(InputConstants.r1Button)){
+
+        if (!locking && operator.getRawButton(InputConstants.r1Button)) {
+            time = Timer.getTimer("tracktime");
             shooter.setLight(true);
-            try{
+            try {
                 Scheduler.getInstance().add(new LockOn());
                 locking = true;
-            }
-            catch (IOException ex){
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
         if (locking && !operator.getRawButton(InputConstants.r1Button)) {
+            time.stop();
             shooter.setLight(false);
             Scheduler.getInstance().add(new PositionControl(true, 0, true, 0));
             locking = false;
         }
-        
-        // rightY trim
+        //rightX trim
+        double x = operator.getRawAxis(InputConstants.rightXAxis);
+        if (-x > 0.2 && !trimStick && trimTime <= 0) {
+            driveTrain.setLeftVBus(trimPower);
+            
+            trimStick = true;
+            trimTime = ShootingConstants.trimTime;
+        } else if (-x < -0.2 && !trimStick && trimTime <= 0) {
+            driveTrain.setLeftVBus(-trimPower);
+            driveTrain.setRightVBus(trimPower);
+            
+            trimStick = true;
+            trimTime = ShootingConstants.trimTime;
+        } else if (Math.abs(x) < 0.2) {
+            trimStick = false;
+        }
+        if (trimTime > 0) {
+            trimTime--;
+        }
+        if (trimTime <= 0) {
+            driveTrain.setRightVBus(0);
+            driveTrain.setLeftVBus(0);
+        }
+        // leftY trim
         if (Math.abs(operator.getRawAxis(InputConstants.leftYAxis)) > 0.1) {
             if (upPosition) {
                 nearSpeed += operator.getRawAxis(InputConstants.leftYAxis) * -10;
@@ -93,19 +148,19 @@ public class OperatorControls extends Command {
                 shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             }
         }
-     
+
     }
-    
+
     protected boolean isFinished() {
         return false;
     }
-    
+
     protected void end() {
     }
-    
+
     protected void interrupted() {
     }
-    
+
     public Joystick getOperator() {
         return OI.getInstance().getOperator();
     }
