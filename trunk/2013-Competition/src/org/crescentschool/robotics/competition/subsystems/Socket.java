@@ -27,7 +27,7 @@ public class Socket extends Subsystem {
                 is = sc.openInputStream();
                 os = sc.openOutputStream();
                 socketConnected = true;
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger().debug("Can't Connect to Socket");
                 SmartDashboard.putString("Messages", "Can't Connect to Socket");
                 socketConnected = false;

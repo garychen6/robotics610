@@ -57,7 +57,7 @@ public class PositionControl extends Command {
         /*
         axis = oi.getOperator().getRawAxis(InputConstants.rightXAxis);
         if (Math.abs(oi.getOperator().getRawAxis(InputConstants.rightXAxis)) > 0.1) {
-            trim += axis * 0.05;
+            trim += axis * 0.1;
             driveTrain.setPositionLeft(trim);
             driveTrain.setPositionRight(-trim);
         }

@@ -19,7 +19,7 @@ public class DriveTrain extends Subsystem {
     CANJaguar jagLeftMaster;
     Victor victorLeftSlaveMid;
     Victor victorLeftSlaveBack;
-    double p = 50.0;
+    double p = 45.0;
     double i = 0;
     double d = 0;
     double error = 0;
@@ -272,8 +272,8 @@ public class DriveTrain extends Subsystem {
         if (newOffset) {
             targetAngle = gyro.getAngle() + angle;
         }
-        double i = 0.004;
-        double p = 0.07;
+        double i = 0.005;
+        double p = 0.1;
         error = targetAngle - gyro.getAngle();
         errorI += error;
         errorI = Math.min(1.0 / i, errorI);
