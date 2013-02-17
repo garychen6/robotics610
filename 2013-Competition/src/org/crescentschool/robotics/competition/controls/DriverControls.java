@@ -5,13 +5,17 @@
 package org.crescentschool.robotics.competition.controls;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import java.io.IOException;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.commands.*;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.constants.KinectConstants;
+import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
+import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
  *
@@ -21,6 +25,9 @@ public class DriverControls extends Command {
 
     Pneumatics pneumatics = Pneumatics.getInstance();
     OI oi = OI.getInstance();
+    DriveTrain driveTrain = DriveTrain.getInstance();
+    Preferences constantsTable = Preferences.getInstance();
+    Shooter shooter = Shooter.getInstance();
     Joystick driver = oi.getDriver();
     public static int driveMode = 0;
     boolean pressed = false;
@@ -48,21 +55,25 @@ public class DriverControls extends Command {
         }
 
         if (getDriveMode() != 2 && driver.getRawAxis(InputConstants.dPadY) < -0.2) {
-            Scheduler.getInstance().add(new PositionControl(true, 3.2, true, 3.2));
+            Scheduler.getInstance().add(new PositionControl(true, 5.0, true, 5.0));
             setDriveMode(2);
         }
         if (getDriveMode() != 2 && driver.getRawAxis(InputConstants.dPadY) > 0.2) {
-            Scheduler.getInstance().add(new PositionControl(true, -3.2, true, -3.2));
+            Scheduler.getInstance().add(new PositionControl(true, -5.0, true, -5.0));
+            shooter.setSpeed(KinectConstants.baseNearShooterRPM - KinectConstants.moveBack);
             setDriveMode(2);
         }
         
         if (driver.getRawAxis(InputConstants.dPadX)>0.2){
-            Scheduler.getInstance().add(new PositionControl(true, 2.7, true, -1.7));
+//            Scheduler.getInstance().add(new PositionControl(true, constantsTable.getDouble("TurnShoot", 0), false, -0.5));
+//            driveTrain.setRightVBus(-1.0);
+            //driveTrain.setAngle(constantsTable.getDouble("TurnShoot", 0), true, 3);
             setDriveMode(2);
+            Scheduler.getInstance().add(new AngleTurn(50));
         }
         if (driver.getRawAxis(InputConstants.dPadX)<-0.2){
-            Scheduler.getInstance().add(new PositionControl(true,-1.7, true, 2.7));
-            setDriveMode(2);
+           setDriveMode(2);
+            Scheduler.getInstance().add(new AngleTurn(-50));
         }
         pneumatics.postUp(driver.getRawButton(InputConstants.l1Button));
         if(driver.getRawButton(InputConstants.squareButton)){

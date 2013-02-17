@@ -32,7 +32,7 @@ public class ShooterPIDCommand extends Command {
     private static double setpoint = 0;
     private static double output = 0;
     private static double outputChange = 0;
-    private static double[] error = new double[10];
+    private static double[] error = new double[3];
     private static Timer timer;
     private static double prevTime;
     private static double time;
@@ -126,7 +126,7 @@ public class ShooterPIDCommand extends Command {
         double outputFinal = 0;
         prevTime = time;
         pushPIDStats();
-        if (avgSpeed > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
+        if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
             pneumatics.setFeeder(true);
             //System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
             
@@ -135,7 +135,7 @@ public class ShooterPIDCommand extends Command {
                 feedDelay = 10;
             }
             outputFinal = -12;
-        } else if (avgSpeed < 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
+        } else if (error[0] < 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
             if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
             }
