@@ -41,6 +41,8 @@ public class KajDrive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+                OurTimer time = OurTimer.getTimer("KajDrive");
+
         shooter.setLight(false);
         double rightSpeed, leftSpeed, x, y;
         x = driver.getRawAxis(InputConstants.rightXAxis);
@@ -56,6 +58,7 @@ public class KajDrive extends Command {
             driveTrain.setLeftVBus(leftSpeed);
             driveTrain.setRightVBus(rightSpeed);
         }
+        time.stop();
     }
 
     // Make this return true when this Command no longer needs to run execute()

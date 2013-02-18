@@ -40,10 +40,13 @@ public class Shoot extends Command {
         shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
         pneumatics.setAngleUp(true);
         shooter.setSpeed(nearSpeed);
+        
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+                OurTimer time = OurTimer.getTimer("Shoot");
+
         //ADD TRIM
         if (!fired && ShooterPIDCommand.getCurrent() >= nearSpeed && shotFris < 4) {
             pneumatics.setFeeder(true);
@@ -64,9 +67,10 @@ public class Shoot extends Command {
         }
         if (shotFris >= 4) {
             ShooterPIDCommand.setAuton(false);
-            Scheduler.getInstance().add(new PositionControl(true, -15.5, true, -12.5));
+            Scheduler.getInstance().add(new PositionControl(true, -11.5, true, -11.5));
             finished = true;
         }
+        time.stop();
     }
 
     // Make this return true when this Command no longer needs to run execute()

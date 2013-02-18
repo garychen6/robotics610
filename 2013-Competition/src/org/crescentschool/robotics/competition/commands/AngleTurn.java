@@ -7,6 +7,7 @@ package org.crescentschool.robotics.competition.commands;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.OurTimer;
 
 /**
  *
@@ -35,9 +36,10 @@ public class AngleTurn extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        double ff = 0.001;
-        double i = 0.005;
-        double p = 0.1;
+        OurTimer time = OurTimer.getTimer("AngleTurn");
+        double ff = 0;
+        double i = constantsTable.getDouble("AngleI", 0);
+        double p = constantsTable.getDouble("AngleP", 0);;
         error = angle - driveTrain.getGyro().getAngle();
         errorI += error;
         errorI = Math.min(1.0 / i, errorI);
@@ -45,7 +47,7 @@ public class AngleTurn extends Command {
         driveTrain.setRightVBus(error * -p - i * errorI-ff*angle);
         driveTrain.setLeftVBus(error * p + i * errorI+ff*angle);
 
-
+        time.stop();
     }
 // Make this return true when this Command no longer needs to run execute()
 

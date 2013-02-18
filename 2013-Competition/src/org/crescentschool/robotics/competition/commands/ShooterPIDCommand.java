@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.controls.OperatorControls;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
 import org.crescentschool.robotics.competition.subsystems.*;
 
@@ -24,15 +25,15 @@ public class ShooterPIDCommand extends Command {
     private static double kP = 0;
     private static double kI = 0;
     private static double kD = 0;
-    private static double p = 0;
-    private static double i = 0;
-    private static double d = 0;
+    private static double p = 0.01;
+    private static double i = 0.00001;
+    private static double d = 0.0001;
     private static double prevSpeed = 0;
     private static double ff = 1.5 / 580.0;
     private static double setpoint = 0;
     private static double output = 0;
     private static double outputChange = 0;
-    private static double[] error = new double[2];
+    private static double[] error = new double[3];
     private static Timer timer;
     private static double prevTime;
     private static double time;
@@ -99,6 +100,7 @@ public class ShooterPIDCommand extends Command {
      * This program runs speed control code.
      */
     protected void execute() {
+        OurTimer logTime = OurTimer.getTimer("ShooterPIDCommand");
 
         try {
             if (opticalSensor != null) {
@@ -120,7 +122,7 @@ public class ShooterPIDCommand extends Command {
         avgSpeed /= error.length;
         p = (error[0] - error[1]) * kP;
         i = (error[0]) * kI;
-        //d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
+        d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
         outputChange = p + i + d;
         output += outputChange;
         double outputFinal = 0;
@@ -130,20 +132,23 @@ public class ShooterPIDCommand extends Command {
         if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
             pneumatics.setFeeder(true);
             //System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
-            
+
             if (feedDelay == 0) {
                 feedDelay = 10;
             }
-            outputFinal = -12;
-        } else if (error[0]< 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
+            if (OperatorControls.getShootingPosition() == 0) {
+                outputFinal = (output + ff * setpoint);
+            } else {
+                outputFinal = -12;
+            }
+
+        } else if (error[0] < 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
             if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
             }
             outputFinal = -12;
-        }else if(error[0]> 200 && (oi.getOperator().getRawButton(InputConstants.r2Button))){
-            
-        } 
-        else {
+        } else if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button))) {
+        } else {
             if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
             }
@@ -161,6 +166,7 @@ public class ShooterPIDCommand extends Command {
             canError = true;
             handleCANError();
         }
+        logTime.stop();
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -299,7 +305,7 @@ public class ShooterPIDCommand extends Command {
 
     public void handleCANError() {
         if (canError) {
-            SmartDashboard.putString("Messages","CAN Error!");
+            SmartDashboard.putString("Messages", "CAN Error!");
             Logger.getLogger().debug("CAN Error!");
             try {
                 Thread.sleep(500);
@@ -314,7 +320,7 @@ public class ShooterPIDCommand extends Command {
                 controller.enableControl(0);
             } catch (CANTimeoutException ex) {
                 ex.printStackTrace();
-                canError = true; 
+                canError = true;
                 handleCANError();
             }
         }

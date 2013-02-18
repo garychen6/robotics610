@@ -19,7 +19,7 @@ public class DriveTrain extends Subsystem {
     CANJaguar jagLeftMaster;
     Victor victorLeftSlaveMid;
     Victor victorLeftSlaveBack;
-    double p = 45.0;
+    double p = 10.0;
     double i = 0;
     double d = 0;
     double error = 0;
