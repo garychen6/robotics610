@@ -10,6 +10,7 @@ import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.controls.*;
+import org.crescentschool.robotics.competition.subsystems.OurTimer;
 
 /**
  *
@@ -54,6 +55,8 @@ public class PositionControl extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+                OurTimer time = OurTimer.getTimer("PositionControl");
+
         /*
         axis = oi.getOperator().getRawAxis(InputConstants.rightXAxis);
         if (Math.abs(oi.getOperator().getRawAxis(InputConstants.rightXAxis)) > 0.1) {
@@ -61,12 +64,12 @@ public class PositionControl extends Command {
             driveTrain.setPositionLeft(trim);
             driveTrain.setPositionRight(-trim);
         }
-
+*/
         driveTrain.syncSlaves(false,0);
-        */
+        
         SmartDashboard.putNumber("Position Left", driveTrain.getPositionLeft());
         SmartDashboard.putNumber("Position Right", driveTrain.getPositionRight());
-        
+        time.stop();
     }
 
     // Make this return true when this Command no longer needs to run execute()

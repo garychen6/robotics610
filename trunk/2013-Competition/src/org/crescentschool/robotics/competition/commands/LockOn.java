@@ -43,7 +43,7 @@ public class LockOn extends Command {
     double error = 0;
     double errorI = 0;
     Preferences constantsTable = Preferences.getInstance();
-    Timer time;
+    OurTimer time;
 
     public LockOn() throws IOException {
         Socket.startSocket();
@@ -59,18 +59,19 @@ public class LockOn extends Command {
         os = Socket.getOutStream();
         driveTrain.resetGyro();
 
-
+        System.out.println("Trying to track");
         if (Socket.getConnected()) {
+            System.out.println("Connected");
             data = "";
             byte[] msg = new byte[1000];
 
             try {
-                time = Timer.getTimer("requestTime");
+                time = OurTimer.getTimer("requestTime");
                 os.write("<request><get_variables>OFFSET, HEIGHT</get_variables></request>".getBytes());
                 is.read(msg);
                 String message = new String(msg);
                 offset = retrieveVal(message, "OFFSET");
-
+                System.out.println(message);
 
                 time.stop();
             } catch (IOException ex) {
@@ -102,6 +103,7 @@ public class LockOn extends Command {
     // Called repeatedly when this Command is scheduled to run
 
     protected void execute() {
+                OurTimer time = OurTimer.getTimer("LockOn");
 
 //        if (offset != prevOffset) {
 //            errorI = 0;
@@ -130,8 +132,9 @@ public class LockOn extends Command {
         driveTrain.setLeftVBus(Math.min(0.3, (error* p + i * errorI + ff * angle)));
 
         System.out.println("Angle: " + angle + " Gyro: " + driveTrain.getGyro().getAngle() + " error: " + error + " errorI: " + errorI);
-
+        System.out.println("Tracking");
         prevOffset = offset;
+        time.stop();
     }
 
     public static double retrieveVal(String msg, String variable) {

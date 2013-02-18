@@ -43,6 +43,7 @@ public class DriverControls extends Command {
         if (getDriveMode() != 0 && driver.getRawButton(InputConstants.r1Button)) {
             Scheduler.getInstance().add(new KajDrive());
             pneumatics.setPowerTakeOff(false);
+            OperatorControls.setTrimming(false);
             setDriveMode(0);
         }
 

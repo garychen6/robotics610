@@ -15,7 +15,7 @@ import java.util.Calendar;
  */
 public class Logger {
 
-    private final String mode = "Console";    // Console or File or SmartBoard
+    private final String mode = "File";    // Console or File or SmartBoard
     private final int level = 4;              // 4=DEBUG, 3=INFO, 2=WARN, 1=ERROR
     private final String FILENAME = "log.txt";
     private OutputStreamWriter writer = null;

@@ -7,14 +7,14 @@ package org.crescentschool.robotics.competition.subsystems;
  *          t.stop();  // the elapsed time is logged using the Logger
  * 
  */
-public class Timer {
+public class OurTimer {
     
     String key;
     long startTime, endTime;
     private static Logger logger = Logger.getLogger();
     
-    public static Timer getTimer(String key) {
-        Timer timer = new Timer();
+    public static OurTimer getTimer(String key) {
+        OurTimer timer = new OurTimer();
         timer.key = key;
         timer.startTime = System.currentTimeMillis();
         return timer;
