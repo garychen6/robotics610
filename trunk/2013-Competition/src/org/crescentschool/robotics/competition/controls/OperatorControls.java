@@ -137,6 +137,8 @@ public class OperatorControls extends Command {
             driveTrain.setRightVBus(0);
             driveTrain.setLeftVBus(0);
         }
+        shooter.setLight(operator.getRawButton(InputConstants.startButton));
+       
 
         // leftY trim
         if (Math.abs(operator.getRawAxis(InputConstants.leftYAxis)) > 0.1) {

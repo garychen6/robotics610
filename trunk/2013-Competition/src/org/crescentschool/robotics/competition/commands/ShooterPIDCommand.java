@@ -32,7 +32,7 @@ public class ShooterPIDCommand extends Command {
     private static double setpoint = 0;
     private static double output = 0;
     private static double outputChange = 0;
-    private static double[] error = new double[3];
+    private static double[] error = new double[2];
     private static Timer timer;
     private static double prevTime;
     private static double time;
@@ -120,27 +120,30 @@ public class ShooterPIDCommand extends Command {
         avgSpeed /= error.length;
         p = (error[0] - error[1]) * kP;
         i = (error[0]) * kI;
-        d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
+        //d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
         outputChange = p + i + d;
         output += outputChange;
         double outputFinal = 0;
         prevTime = time;
         pushPIDStats();
+        SmartDashboard.putNumber("avgError", avgSpeed);
         if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
             pneumatics.setFeeder(true);
             //System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
             
-            Logger.getLogger().debug("RPM: " + current);
             if (feedDelay == 0) {
                 feedDelay = 10;
             }
             outputFinal = -12;
-        } else if (error[0] < 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
+        } else if (error[0]< 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
             if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
             }
             outputFinal = -12;
-        } else {
+        }else if(error[0]> 200 && (oi.getOperator().getRawButton(InputConstants.r2Button))){
+            
+        } 
+        else {
             if (feedDelay == 0) {
                 pneumatics.setFeeder(false);
             }
@@ -222,7 +225,6 @@ public class ShooterPIDCommand extends Command {
         output = 0;
         error[0] = 0;
         error[1] = 0;
-        error[2] = 0;
     }
 
     /**
