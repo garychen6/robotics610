@@ -110,26 +110,24 @@ public class LockOn extends Command {
         //i = 0.003
         //p = 0.05
         //window = 25
-        double ff = constantsTable.getDouble("lockFF", 0);
-        double i = constantsTable.getDouble("lockI", 0);
-        double p = constantsTable.getDouble("lockP", 0);
+        double ff = 0;
+        double i = 0.003;
+        double p = 0.04;
         error = angle - driveTrain.getGyro().getAngle();
 
         if (Math.abs(error) < constantsTable.getDouble("windowI", 0)) {
             errorI += error;
         }
-        
-        //errorI = Math.min(1.0 / i, errorI);
+
+        //errorI = Math.min(0.4 / i, errorI);
 
         if (Math.abs(error) < Math.abs(Math.toDegrees(MathUtils.atan(0.015 * Math.tan(Math.toRadians(28.5)))))) {
             errorI = 0;
             error = 0;
         }
 
-        driveTrain.setRightVBus(error
-                * -p - i * errorI - ff * angle);
-        driveTrain.setLeftVBus(error
-                * p + i * errorI + ff * angle);
+        driveTrain.setRightVBus(Math.max(-0.3, (error * -p - i * errorI - ff * angle)));
+        driveTrain.setLeftVBus(Math.min(0.3, (error* p + i * errorI + ff * angle)));
 
         System.out.println("Angle: " + angle + " Gyro: " + driveTrain.getGyro().getAngle() + " error: " + error + " errorI: " + errorI);
 
