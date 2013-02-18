@@ -66,7 +66,7 @@ public class LockOn extends Command {
 
             try {
                 time = Timer.getTimer("requestTime");
-                os.write("<request><get_variable>OFFSET, HEIGHT</get_variable></request>".getBytes());
+                os.write("<request><get_variables>OFFSET, HEIGHT</get_variables></request>".getBytes());
                 is.read(msg);
                 String message = new String(msg);
                 offset = retrieveVal(message, "OFFSET");
