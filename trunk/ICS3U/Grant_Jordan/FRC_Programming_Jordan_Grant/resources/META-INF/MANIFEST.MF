@@ -1,0 +1,6 @@
+MIDlet-Name: FRC_Programming_Jordan_Grant
+MIDlet-Version: 1.0.0
+MIDlet-Vendor: FIRST
+MIDlet-1: FRC_Programming_Grant_Jordan, , edu.wpi.first.wpilibj.templates.FRC_Programming_Grant_Jordan
+MicroEdition-Profile: IMP-1.0
+MicroEdition-Configuration: CLDC-1.1
