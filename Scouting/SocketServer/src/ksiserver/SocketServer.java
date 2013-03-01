@@ -31,7 +31,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 public class SocketServer extends JFrame {
-    
+
     static int port = 9000,
             maxConnections = 10, // use 0 for unlimited;
             activeThreadCount = 0;
@@ -41,7 +41,7 @@ public class SocketServer extends JFrame {
     static javax.swing.JScrollPane jScrollPane1;
     static DataBaseClient dataBase;
     static javax.swing.JTextArea log;
-    
+
     SocketServer() {
         super("Scouting Server 1.0");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,7 +49,7 @@ public class SocketServer extends JFrame {
         initMenus();
         setVisible(true);
     }
-    
+
     private void initMenus() {
         JMenuBar menu = new JMenuBar();
         JMenu file = new JMenu("File");
@@ -61,7 +61,7 @@ public class SocketServer extends JFrame {
         });
         file.add(exit);
         menu.add(file);
-        
+
         JMenu sheets = new JMenu("Info");
         JMenuItem team = new JMenuItem("Team Sheet");
         team.addActionListener(new ActionListener() {
@@ -93,23 +93,34 @@ public class SocketServer extends JFrame {
                 calcRankings();
             }
         });
+        JMenuItem generate = new JMenuItem("Generate Teams");
+        rankings.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    generateALL();
+                } catch (DocumentException ex) {
+                    Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
         sheets.add(team);
         sheets.add(match);
         sheets.add(rankings);
+        sheets.add(generate);
         menu.add(sheets);
-        
+
         setJMenuBar(menu);
     }
-    
+
     public static boolean isInteger(String s) {
-        try {            
-            Integer.parseInt(s);            
-        } catch (NumberFormatException e) {            
-            return false;            
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return false;
         }
         return true;
     }
-    
+
     public void calcRankings() {
         log.append("Rankings List (Highest KPR -> Lowest KPR)\n");
         dataBase.resetMaps();
@@ -125,10 +136,11 @@ public class SocketServer extends JFrame {
         }
         dataBase.updateRankings();
         while (dataBase.getRankings().peek() != null) {
-            log.append(dataBase.getRankings().poll().getTeamNum() + "\n");
+            TeamSheet team = dataBase.getRankings().poll();
+            log.append(team.getTeamNum() + " " + team.getKPR() + "\n");
         }
     }
-    
+
     public void teamPDF() throws FileNotFoundException, DocumentException {
         String teamNumber = JOptionPane.showInputDialog("Team:");
         String teamFileName = JOptionPane.showInputDialog("Sheet Name:");
@@ -137,7 +149,32 @@ public class SocketServer extends JFrame {
         PDFCreator teamPDF = new PDFCreator(dataBasePath, teamFileName, "");
         teamPDF.createTeamPDF(dataBase.lookUpMatchSheets(teamNumber));
     }
-    
+
+    public void generateTeam(String teamNumber, String folder) throws FileNotFoundException, DocumentException {
+        String teamFileName = teamNumber;
+        dataBase.resetMaps();
+        dataBase.update(teamNumber);
+        PDFCreator teamPDF = new PDFCreator(dataBasePath+ "\\"+folder, teamFileName, "");
+        teamPDF.createTeamPDF(dataBase.lookUpMatchSheets(teamNumber));
+    }
+
+    public void generateALL() throws DocumentException {
+        String folder = JOptionPane.showInputDialog("Folder Name:");
+        File dir = new File(dataBasePath + "\\" + folder);
+        dir.mkdir();
+        dir.setReadable(true);
+        try {
+            File[] files = new File(dataBasePath).listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (isInteger(files[i].getName())) {
+                    generateTeam(files[i].getName(), folder);
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void matchPDF() throws FileNotFoundException, DocumentException {
         String[] teams = JOptionPane.showInputDialog("Team Numbers: \n(eg.:Blue1,Blue2,Blue3,Red1,Red2,Red3)").split(",");
         String matchFileName = JOptionPane.showInputDialog("Sheet Name:");
@@ -148,7 +185,7 @@ public class SocketServer extends JFrame {
         PDFCreator matchPDF = new PDFCreator(dataBasePath, "", matchFileName);
         matchPDF.createMatchPDF(dataBase.lookUpTeamSheet(teams[0]), dataBase.lookUpTeamSheet(teams[1]), dataBase.lookUpTeamSheet(teams[2]), dataBase.lookUpTeamSheet(teams[3]), dataBase.lookUpTeamSheet(teams[4]), dataBase.lookUpTeamSheet(teams[5]));
     }
-    
+
     public static void main(String[] args) throws IOException {
         teams = new ArrayList();
         ServerSocket server = new ServerSocket(port, port, InetAddress.getByName("10.6.10.12"));
@@ -171,16 +208,16 @@ public class SocketServer extends JFrame {
             log.append(socket.getInetAddress().getHostAddress() + " is connected.\n");
             worker.start();
         }
-        
+
     }
-    
+
     private void initComponents() {
-        
+
         jDialog1 = new javax.swing.JDialog();
         jScrollPane1 = new javax.swing.JScrollPane();
         log = new javax.swing.JTextArea();
-        
-        
+
+
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
         jDialog1Layout.setHorizontalGroup(
@@ -189,13 +226,13 @@ public class SocketServer extends JFrame {
         jDialog1Layout.setVerticalGroup(
                 jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGap(0, 300, Short.MAX_VALUE));
-        
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        
+
         log.setColumns(20);
         log.setRows(5);
         jScrollPane1.setViewportView(log);
-        
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -204,30 +241,30 @@ public class SocketServer extends JFrame {
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE));
-        
+
         pack();
     }// </editor-fold>
 
     synchronized static public void write(String msg) {
         log.append(msg + "\n");
     }
-    
+
     synchronized static public String getDataBase() {
         return dataBasePath;
     }
-    
+
     synchronized static public void addTeam(String team) {
         teams.add(team);
     }
-    
+
     synchronized static public boolean containsTeam(String team) {
         return teams.contains(team);
     }
-    
+
     synchronized static public void incrementThreadCount() {
         activeThreadCount++;
     }
-    
+
     synchronized static public void decrementThreadCount() {
         activeThreadCount--;
     }
