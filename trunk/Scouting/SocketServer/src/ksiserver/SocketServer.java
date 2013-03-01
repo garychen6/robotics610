@@ -94,7 +94,7 @@ public class SocketServer extends JFrame {
             }
         });
         JMenuItem generate = new JMenuItem("Generate Teams");
-        rankings.addActionListener(new ActionListener() {
+        generate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
                     generateALL();
@@ -137,7 +137,7 @@ public class SocketServer extends JFrame {
         dataBase.updateRankings();
         while (dataBase.getRankings().peek() != null) {
             TeamSheet team = dataBase.getRankings().poll();
-            log.append(team.getTeamNum() + " " + team.getKPR() + "\n");
+            log.append(team.getTeamNum() + "                    " + team.getKPR() + "\n");
         }
     }
 
