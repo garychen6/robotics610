@@ -16,11 +16,11 @@ public class Pneumatics extends Subsystem {
     private static Pneumatics instance = null;
     static Compressor compressor;
     Solenoid feeder;
-    Solenoid powerTakeOff;
+    //Solenoid powerTakeOff;
     DoubleSolenoid post;
     Solenoid tray;
     DoubleSolenoid shooterAngle;
-    DoubleSolenoid trayFlip;
+    //DoubleSolenoid trayFlip;
     //DoubleSolenoid hang;
     Relay hang;
     boolean feederHigh = false;
@@ -35,11 +35,11 @@ public class Pneumatics extends Subsystem {
     Pneumatics() {
         //Initialize the compressor and solenoids.
         compressor = new Compressor(ElectricalConstants.compressorSwitch, ElectricalConstants.compressorRelay);
-        feeder = new Solenoid(ElectricalConstants.feeder);
-        powerTakeOff = new Solenoid(ElectricalConstants.digitalModule, ElectricalConstants.powerTakeOff);
+//        feeder = new Solenoid(ElectricalConstants.feeder);
+        //powerTakeOff = new Solenoid(ElectricalConstants.digitalModule, ElectricalConstants.powerTakeOff);
         shooterAngle = new DoubleSolenoid(ElectricalConstants.shooterAngleForward, ElectricalConstants.shooterAngleReverse);
         post = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.postForward, ElectricalConstants.postReverse);
-        trayFlip = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.trayFlipForward, ElectricalConstants.trayFlipReverse);
+        //trayFlip = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.trayFlipForward, ElectricalConstants.trayFlipReverse);
         hang = new Relay(3);
         //Run the compressor
         compressor.start();
@@ -56,7 +56,7 @@ public class Pneumatics extends Subsystem {
 
     public void setFeeder(boolean fire) {
         feeder.set(fire);
-    }
+   }
 
     public void setAngleUp(boolean fire) {
         if (!fire) {
@@ -66,9 +66,9 @@ public class Pneumatics extends Subsystem {
         }
     }
 
-    public void setPowerTakeOff(boolean fire) {
-        powerTakeOff.set(fire);
-    }
+//    public void setPowerTakeOff(boolean fire) {
+//        powerTakeOff.set(fire);
+//    }
 
     public boolean getFeederState() {
         return feederHigh;
@@ -102,11 +102,11 @@ public class Pneumatics extends Subsystem {
             hang.set(Relay.Value.kReverse);
         }
     }
-    public void trayControl(boolean fire){
-        if(fire){
-            trayFlip.set(DoubleSolenoid.Value.kForward);
-        } else {
-            trayFlip.set(DoubleSolenoid.Value.kReverse);
-        }
-    }
+//    public void trayControl(boolean fire){
+//        if(fire){
+//            trayFlip.set(DoubleSolenoid.Value.kForward);
+//        } else {
+//            trayFlip.set(DoubleSolenoid.Value.kReverse);
+//        }
+//    }
 }

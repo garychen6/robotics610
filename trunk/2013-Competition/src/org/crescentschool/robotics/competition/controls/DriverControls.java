@@ -42,7 +42,7 @@ public class DriverControls extends Command {
 
         if (getDriveMode() != 0 && driver.getRawButton(InputConstants.r1Button)) {
             Scheduler.getInstance().add(new KajDrive());
-            pneumatics.setPowerTakeOff(false);
+            //pneumatics.setPowerTakeOff(false);
             OperatorControls.setTrimming(false);
             setDriveMode(0);
         }
@@ -50,10 +50,10 @@ public class DriverControls extends Command {
 
 
 
-        if (getDriveMode() != 1 && driver.getRawButton(InputConstants.l2Button) && driver.getRawButton(InputConstants.r2Button)) {
-            pneumatics.setPowerTakeOff(true);
-            setDriveMode(1);
-        }
+//        if (getDriveMode() != 1 && driver.getRawButton(InputConstants.l2Button) && driver.getRawButton(InputConstants.r2Button)) {
+//            pneumatics.setPowerTakeOff(true);
+//            setDriveMode(1);
+//        }
 
         if (getDriveMode() != 2 && driver.getRawAxis(InputConstants.dPadY) < -0.2) {
             Scheduler.getInstance().add(new PositionControl(true, 5.0, true, 5.0));
@@ -86,7 +86,7 @@ public class DriverControls extends Command {
         if(!pressed && driver.getRawButton(InputConstants.triangleButton)){
             trayOut = !trayOut;
             pressed = true;
-            pneumatics.trayControl(trayOut);
+            //pneumatics.trayControl(trayOut);
         }
         if(!driver.getRawButton(InputConstants.triangleButton)){
             pressed = false;

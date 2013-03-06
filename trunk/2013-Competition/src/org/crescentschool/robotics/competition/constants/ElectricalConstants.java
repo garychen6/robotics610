@@ -13,6 +13,8 @@ public class ElectricalConstants {
     final public static int jagRightMaster = 2;
     //CAN ID of the left drivetrain Jaguar
     final public static int jagLeftMaster = 3;
+    //CAN ID of the jaguar controlling intake position
+    final public static int jagIntakePosition = 4;
     //PWM ID of the first right drivetrain Victor
     final public static int victorRightSlaveFront = 1;
     //PWM ID of the second right drivetrain Victor
@@ -21,6 +23,9 @@ public class ElectricalConstants {
     final public static int victorLeftSlaveFront = 3;
     //PWM ID of the second left drivetrain Victor
     final public static int victorLeftSlaveBack = 4;
+    
+    final public static int rollerVictor = 5;
+   
     
     final public static int gyroAnalogInput = 3;
     //CAN ID of the shooter Jaguar
