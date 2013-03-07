@@ -24,7 +24,7 @@ public class A_I_timed extends Command {
     public A_I_timed(double timeout) {
         System.out.println(this.toString());
         m_timeout = timeout;
-        requires(intake);
+        //requires(intake);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -32,8 +32,6 @@ public class A_I_timed extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
         setTimeout(m_timeout);
-        intake.setIntakeReverse(speed);
-        feeder.setFeeder(-0.5);
         
     }
 
@@ -44,6 +42,9 @@ public class A_I_timed extends Command {
         } else if (isTimedOut()) {
             isFinished = true;
         }
+        
+        intake.setIntakeReverse(-speed);
+       // feeder.setFeeder(0.5);
     }
 
     // Make this return true when this Command no longer needs to run execute()

@@ -26,10 +26,9 @@ public class A_D_distance extends Command {
 
     public A_D_distance(double inches) {
         System.out.println(this.toString());
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
-        
-        this.setPoint = setPoint/PIDConstants.wheelCircumference;
+
+
+        this.setPoint = inches / PIDConstants.wheelCircumference;
         requires(driveTrain);
     }
 
@@ -38,25 +37,15 @@ public class A_D_distance extends Command {
         driveTrain.reInit();
         Turret.getInstance().resetPosition();
         Turret.getInstance().setPosition(5);
-        
+
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         driveTrain.setPos(setPoint);
-        System.out.println("Position DriveTrain: "+driveTrain.getLeftPos());
-        if (Math.abs(driveTrain.getLeftPos()) > 2 && Math.abs(driveTrain.getLeftPos()) < 3) {
-            flipper.setFlippers(PotConstants.flipperBridge);
-        }
-        if (Math.abs(driveTrain.getLeftPos()) > 18) {
-            flipper.setFlippers(PotConstants.flipperBallPickup);
-        }
-        if (shooter.getAutonOver()) {
-            flipper.setFlippers(PotConstants.flipperBridge);
-            isFinished = true;
-        } else if (Math.abs(Math.abs(driveTrain.getLeftPos()) - Math.abs(setPoint)) < 0.1) {
-            flipper.setFlippers(PotConstants.flipperBridge);
-            isFinished = true;
+        System.out.println(driveTrain.getLeftPos() + "  " + setPoint);
+        if(Math.abs(driveTrain.getLeftPos()-setPoint)<1){
+            isFinished=true;
         }
     }
 

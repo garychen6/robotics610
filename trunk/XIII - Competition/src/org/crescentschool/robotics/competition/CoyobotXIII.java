@@ -6,16 +6,20 @@
 /*----------------------------------------------------------------------------*/
 package org.crescentschool.robotics.competition;
 
+import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.KinectStick;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.commands.A_D_distance;
 //TODO: What happened to A_shootOnly? 
 import org.crescentschool.robotics.competition.commands.A_shootAfter;
 import org.crescentschool.robotics.competition.commands.A_shootFirst;
 import org.crescentschool.robotics.competition.commands.A_shootOnly;
+import org.crescentschool.robotics.competition.commands.G;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.controls.OperatorControls;
@@ -35,7 +39,8 @@ import org.crescentschool.robotics.competition.subsystems.Turret;
  * directory.
  */
 public class CoyobotXIII extends IterativeRobot {
-    
+
+    Gyro gyro;
     Command autonomous;
     KinectStick leftArm;
     Shooter shooter;
@@ -48,10 +53,10 @@ public class CoyobotXIII extends IterativeRobot {
     String autonName = "";
     Turret turret;
     Camera camera;
-   // CoyoBotUltrasonic ultrasonic;
+    // CoyoBotUltrasonic ultrasonic;
     boolean kajMode = false;
     boolean autonChanged = false;
-    Command auton;
+    CommandGroup auton;
     double autonWaitTime = 0;
 
     /**
@@ -59,6 +64,8 @@ public class CoyobotXIII extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
+        gyro = new Gyro(2);
+        gyro.reset();
         // Initialize all subsystems
         oi = OI.getInstance();
         turret = Turret.getInstance();
@@ -68,27 +75,33 @@ public class CoyobotXIII extends IterativeRobot {
         intake = Intake.getInstance();
         feeder = Feeder.getInstance();
         //leftArm = new KinectStick(1);
-       // autonomous = new A_ST_shoot();
+        // autonomous = new A_ST_shoot();
         camera = Camera.getInstance();
         //ultrasonic = CoyoBotUltrasonic.getInstance();
-        auton = new A_shootOnly(autonWaitTime);
+        auton = new G();
         //auton = new A_shootFirst();
     }
-    
+
     public void autonomousInit() {
         // schedule the autonomous command (example)
-        turret.initPosMode();
-        shooter.resetPID();
-        auton.start();
+        //auton.start(;
+       auton.start();
+        //driveTrain.setNewPos(2);
+       /*
+         turret.initPosMode();
+         shooter.resetPID();
+         auton.start();
+         */
     }
-    
+
     public void autonomousPeriodic() {
-        
+
         Scheduler.getInstance().run();
-        printDiagnostics();
-        OI.printToDS(1, "Auton Mode: " + autonName);
+        /* printDiagnostics();
+         OI.printToDS(1, "Auton Mode: " + autonName);
+         */
     }
-    
+
     public void disabledPeriodicd() {
         //System.out.println("Driver EncL: " + driveTrain.getLeftSpeed());
         //System.out.println("Driver EncR: " + driveTrain.getRightSpeed());
@@ -142,7 +155,7 @@ public class CoyobotXIII extends IterativeRobot {
 //        System.out.println("Dpad X: "+ OI.getInstance().getOperator().getRawAxis(5));
 //        System.out.println("Dpad Y: "+ OI.getInstance().getOperator().getRawAxis(6));
     }
-    
+
     public void teleopInit() {
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to 
@@ -154,18 +167,20 @@ public class CoyobotXIII extends IterativeRobot {
         Scheduler.getInstance().add(new OperatorControls());
 //        Scheduler.getInstance().add(new M_P_Tuning());
     }
-    
+
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         //camera.processCamera();
         Buttons.update();
         printDiagnostics();
-        
+        System.out.println(gyro.getAngle());
+
+
     }
-    
+
     public void teleopContinuous() {
     }
-    
+
     private void printDiagnostics() {
         //SmartDashboard.putDouble("Shooter Speed", (shooter.getShooterSpeed() - 1212) / -80.167);
         //SmartDashboard.putDouble("Left Drive Speed", -driveTrain.getLeftSpeed());

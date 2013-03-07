@@ -15,6 +15,7 @@ import org.crescentschool.robotics.competition.constants.PIDConstants;
 
 /**
  * Subsystem for the drivetrain
+ *
  * @author Warfa Jibril, Patrick White, Mr. Lim
  */
 public class DriveTrain extends Subsystem {
@@ -33,9 +34,8 @@ public class DriveTrain extends Subsystem {
     private Accelerometer accel;
     private PIDController posControllerRight;
     private PIDController posControllerLeft;
-    private CoyoBotGyro vertGyro;
+    //private CoyoBotGyro vertGyro;
     private PIDSource rightPosIn = new PIDSource() {
-    
         public double pidGet() {
             try {
                 return jagRightMaster.getPosition();
@@ -48,7 +48,6 @@ public class DriveTrain extends Subsystem {
         }
     };
     private PIDOutput rightPosOut = new PIDOutput() {
-
         public void pidWrite(double output) {
             try {
                 // Jag is in Speed Control Mode
@@ -65,7 +64,6 @@ public class DriveTrain extends Subsystem {
         }
     };
     private PIDSource leftPosIn = new PIDSource() {
-
         public double pidGet() {
             try {
                 return jagLeftMaster.getPosition();
@@ -78,7 +76,6 @@ public class DriveTrain extends Subsystem {
         }
     };
     private PIDOutput leftPosOut = new PIDOutput() {
-
         public void pidWrite(double output) {
             try {
                 jagLeftMaster.setX(2 * output);
@@ -100,6 +97,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Ensures only one drivetrain is instantiated.
+     *
      * @return The singleton drivetrain instance.
      */
     public static DriveTrain getInstance() {
@@ -137,8 +135,8 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
         //gyro = new CoyoBotGyro(ElectricalConstants.GyroPort);
-       // gyro.setSensitivity(0.007);
-        vertGyro = new CoyoBotGyro(ElectricalConstants.VertGyroPort);
+        // gyro.setSensitivity(0.007);
+        //vertGyro = new CoyoBotGyro(ElectricalConstants.VertGyroPort);
         initPosMode();
     }
 
@@ -147,7 +145,7 @@ public class DriveTrain extends Subsystem {
         controlMode = 3;
         posControllerRight.setPID(-pPos, -iPos, -dPos);
         posControllerLeft.setPID(pPos, iPos, dPos);
-       // gyro.reset();
+        // gyro.reset();
         try {
             jagLeftMaster.configFaultTime(0.5);
             jagRightMaster.configFaultTime(0.5);
@@ -280,7 +278,8 @@ public class DriveTrain extends Subsystem {
             ex.printStackTrace();
         }
     }
-      /**
+
+    /**
      * Sets the slaves at the same voltage as the masters.
      */
     private void PIDsyncSlaves() {
@@ -295,7 +294,8 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Sets the target position for the left side of the drivetrain.
-     * @param setpoint 
+     *
+     * @param setpoint
      */
     public void setLeftPos(double setpoint) {
         if (controlMode != 3) {
@@ -306,7 +306,8 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Sets the target position for the right side of the drivetrain.
-     * @param setpoint 
+     *
+     * @param setpoint
      */
     public void setRightPos(double setpoint) {
         if (controlMode != 3) {
@@ -317,12 +318,13 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Sets the target position for the both sides of the drivetrain.
-     * @param setpoint 
+     *
+     * @param setpoint
      */
     public void setPos(double setpoint) {
         setLeftPos(setpoint);
         setRightPos(setpoint);
-        System.out.println("SetPoint " + setpoint);
+        
     }
 
     /**
@@ -397,6 +399,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Sets the target speed for the left side of the drivetrain.
+     *
      * @param setpoint The target speed in ft/s.
      */
     public void setLeftSpeed(double setpoint) {
@@ -416,6 +419,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Sets the target speed for the right side of the drivetrain.
+     *
      * @param setpoint The target speed in ft/s.
      */
     public void setRightSpeed(double setpoint) {
@@ -434,6 +438,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Sets the target speed for the both sides of the drivetrain.
+     *
      * @param setpoint The target speed in ft/s.
      */
     public void setSpeed(double setpoint) {
@@ -443,6 +448,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Gets the target speed for the left side of the drivetrain.
+     *
      * @return The target speed in ft/s.
      */
     public double getLeftSpeedSetpoint() {
@@ -458,6 +464,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Gets the target speed for the right side of the drivetrain.
+     *
      * @return The target speed in ft/s.
      */
     public double getRightSpeedSetpoint() {
@@ -473,6 +480,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Gets the target speed for both sides of the drivetrain.
+     *
      * @return The target speed in ft/s.
      */
     public double getSpeedSetpoint() {
@@ -488,6 +496,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Gets the current speed for the left side of the drivetrain.
+     *
      * @return The target speed in ft/s.
      */
     public double getLeftSpeed() {
@@ -503,6 +512,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Gets the current speed for the right side of the drivetrain.
+     *
      * @return The target speed in ft/s.
      */
     public double getRightSpeed() {
@@ -518,6 +528,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Gets the current speed for both sides of the drivetrain.
+     *
      * @return The target speed in ft/s.
      */
     public double getSpeed() {
@@ -533,6 +544,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Sets the target normalized voltage for the left side of the drivetrain.
+     *
      * @param setpoint The target normalized voltage from -1 to 1.
      */
     public void setLeftVBus(double setpoint) {
@@ -552,11 +564,12 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Sets the target normalized voltage for the left side of the drivetrain.
+     *
      * @param setpoint The target normalized voltage from -1 to 1.
      */
     public void setRightVBus(double setpoint) {
         if (controlMode != 1) {
-            initVBusMode();
+            //initVBusMode();
         }
         try {
             jagRightMaster.setX(setpoint);
@@ -658,6 +671,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      * Returns the drivetrain's gyro.
+     *
      * @return The drivetrain's gyro.
      */
     public CoyoBotGyro getGyro() {
@@ -696,22 +710,16 @@ public class DriveTrain extends Subsystem {
         }
     }
 
-    /**
-     * Gets the value of the vertical gyro.
-     * @return The angle of the vertical gyro.
-     */
-    public double getVertAngle() {
-
-        return vertGyro.getAngle();
-    }
 
     /**
      * Gets the value of the horizontal gyro.
+     *
      * @return The angle of the horizontal gyro.
      */
     public double getHorizAngle() {
 
         return 0;
     }
-    
+
+   
 }

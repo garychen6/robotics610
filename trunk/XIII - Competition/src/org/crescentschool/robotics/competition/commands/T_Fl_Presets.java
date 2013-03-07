@@ -62,12 +62,14 @@ public class T_Fl_Presets extends Command {
                 break;
         }
         }
+        /*
         if (Buttons.isPressed(InputConstants.kAButton, 1)) {
             flipper.setFlippers(PotConstants.flipperBridgeAssist);
             driveTrain.setLeftPos(driveTrain.getLeftPos());
             driveTrain.setRightPos(driveTrain.getRightPos());
             isBAssist = true;
         }
+        */
         if (Buttons.isPressed(InputConstants.kStartButton, 1)) {
             flipper.reInit();
         }

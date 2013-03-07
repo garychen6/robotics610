@@ -243,7 +243,7 @@ public class Turret extends Subsystem {
         if (controlMode != 2) {
             initPosMode();
         }
-        System.out.println("Position: " + position);
+        //System.out.println("Position: " + position);
         position += inc;
 
         if (position > PotConstants.turretHiLimit) {
