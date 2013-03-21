@@ -23,6 +23,7 @@ public class Pneumatics extends Subsystem {
     //DoubleSolenoid trayFlip;
     //DoubleSolenoid hang;
     Relay hang;
+    private boolean angleHigh = false;
     boolean feederHigh = false;
 
     public static Pneumatics getInstance() {
@@ -57,13 +58,14 @@ public class Pneumatics extends Subsystem {
     public void setFeeder(boolean fire) {
         feeder.set(fire);
    }
-
+    
     public void setAngleUp(boolean fire) {
         if (!fire) {
             shooterAngle.set(DoubleSolenoid.Value.kForward);
         } else {
             shooterAngle.set(DoubleSolenoid.Value.kReverse);
         }
+        angleHigh = fire;
     }
 
 //    public void setPowerTakeOff(boolean fire) {
@@ -109,4 +111,18 @@ public class Pneumatics extends Subsystem {
 //            trayFlip.set(DoubleSolenoid.Value.kReverse);
 //        }
 //    }
+
+    /**
+     * @return the angleHigh
+     */
+    public boolean isAngleHigh() {
+        return angleHigh;
+    }
+
+    /**
+     * @param angleHigh the angleHigh to set
+     */
+    public void setAngleHigh(boolean angleHigh) {
+        this.angleHigh = angleHigh;
+    }
 }

@@ -42,7 +42,7 @@ public class Shoot extends Command {
     protected void initialize() {
         shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
         pneumatics.setAngleUp(true);
-        shooter.setSpeed(nearSpeed);
+        shooter.setSpeed(nearSpeed+330);
         shotFris = 0;
         
     }
@@ -55,7 +55,6 @@ public class Shoot extends Command {
         if (!fired && ShooterPIDCommand.getCurrent() >= nearSpeed && shotFris < frisbees) {
             pneumatics.setFeeder(true);
             fired = true;
-
             shotFris++;
             if (shotFris == 4) {
                 try {

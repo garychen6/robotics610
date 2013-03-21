@@ -70,11 +70,11 @@ public class DriverControls extends Command {
 //            driveTrain.setRightVBus(-1.0);
             //driveTrain.setAngle(constantsTable.getDouble("TurnShoot", 0), true, 3);
             setDriveMode(2);
-            Scheduler.getInstance().add(new AngleTurn(50));
+            Scheduler.getInstance().add(new AngleTurn(constantsTable.getDouble("AngleTurn", 0)));
         }
         if (driver.getRawAxis(InputConstants.dPadX) < -0.2) {
             setDriveMode(2);
-            Scheduler.getInstance().add(new AngleTurn(-50));
+            Scheduler.getInstance().add(new AngleTurn(-constantsTable.getDouble("AngleTurn", 0)));
         }
         pneumatics.postUp(driver.getRawButton(InputConstants.l1Button));
         if (driver.getRawButton(InputConstants.squareButton)) {

@@ -11,21 +11,26 @@ import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.constants.ShootingConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.OurTimer;
+import org.crescentschool.robotics.competition.subsystems.Pneumatics;
 
 /**
  *
  * @author Warfa
  */
 public class TrimDrive extends Command {
+
     DriveTrain driveTrain;
     OI oi;
     boolean trimStick = false;
     boolean trimming = false;
     double trimTime = 0;
-    double trimPower =0;
+    double trimPower = 0;
     Preferences constantsTable;
+    Pneumatics pneumatics;
+
     public TrimDrive() {
         oi = OI.getInstance();
+        pneumatics = Pneumatics.getInstance();
         driveTrain = DriveTrain.getInstance();
         requires(driveTrain);
         // Use requires() here to declare subsystem dependencies
@@ -34,12 +39,16 @@ public class TrimDrive extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        trimPower = ShootingConstants.trimPower;
+        if (pneumatics.isAngleHigh()) {
+            trimPower = ShootingConstants.trimPower;
+        } else {
+            trimPower = 1.0;
+        }
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-                OurTimer logTime = OurTimer.getTimer("TrimDrive");
+        OurTimer logTime = OurTimer.getTimer("TrimDrive");
 
         double x = oi.getOperator().getRawAxis(InputConstants.rightXAxis);
         if (x > 0.2 && !trimStick && trimTime <= 0) {
@@ -59,7 +68,7 @@ public class TrimDrive extends Command {
             trimTime--;
         }
         if (trimTime <= 0) {
-            trimming= false;
+            trimming = false;
             driveTrain.setRightVBus(0);
             driveTrain.setLeftVBus(0);
         }

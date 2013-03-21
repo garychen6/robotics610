@@ -38,6 +38,8 @@ public class AngleTurn extends Command {
     protected void execute() {
         OurTimer time = OurTimer.getTimer("AngleTurn");
         double ff = 0;
+        //Angle I = 0
+        //Angle P = 0.01
         double i = constantsTable.getDouble("AngleI", 0);
         double p = constantsTable.getDouble("AngleP", 0);;
         error = angle - driveTrain.getGyro().getAngle();

@@ -103,6 +103,7 @@ public class OperatorControls extends Command {
             setTrimming(false);
             try {
                 Scheduler.getInstance().add(new LockOn());
+              
                 locking = true;
                 
             } catch (IOException ex) {
