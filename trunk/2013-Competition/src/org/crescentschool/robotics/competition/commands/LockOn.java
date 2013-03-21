@@ -61,19 +61,16 @@ public class LockOn extends Command {
 
         System.out.println("Trying to track");
         if (Socket.getConnected()) {
-            System.out.println("Connected");
             data = "";
             byte[] msg = new byte[1000];
 
             try {
-                time = OurTimer.getTimer("requestTime");
-                os.write("<request><get_variables>OFFSET, HEIGHT</get_variables></request>".getBytes());
+                os.write("<request><get_variable>OFFSET</get_variable></request>".getBytes());
                 is.read(msg);
                 String message = new String(msg);
                 offset = retrieveVal(message, "OFFSET");
                 System.out.println(message);
 
-                time.stop();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -93,7 +90,6 @@ public class LockOn extends Command {
 
 
         angle = Math.toDegrees(MathUtils.atan(offset * Math.tan(Math.toRadians(28.5))));
-        System.out.println("Angle: " + angle + " Offset: " + offset);
 
     }
 
@@ -113,10 +109,11 @@ public class LockOn extends Command {
         //p = 0.05
         //window = 25
         double ff = 0;
-        double i = 0.003;
+        double i = 0.06;
         double p = 0.04;
         error = angle - driveTrain.getGyro().getAngle();
 
+        //Window I = 10
         if (Math.abs(error) < constantsTable.getDouble("windowI", 0)) {
             errorI += error;
         }

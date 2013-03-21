@@ -47,6 +47,7 @@ public class ShooterPIDCommand extends Command {
     private static boolean auton = false;
     private double avgSpeed = 0;
     private boolean canError = false;
+    private boolean isLongBomb = false;
 
     /**
      * @return the auton
@@ -129,30 +130,59 @@ public class ShooterPIDCommand extends Command {
         prevTime = time;
         pushPIDStats();
         SmartDashboard.putNumber("avgError", avgSpeed);
-        if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
-            pneumatics.setFeeder(true);
-            //System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
+        if (pneumatics.isAngleHigh()&&!auton) {
+            if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
+                pneumatics.setFeeder(true);
+                //System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
 
-            if (feedDelay == 0) {
-                feedDelay = 10;
-            }
-            if (OperatorControls.getShootingPosition() == 0) {
-                outputFinal = (output + ff * setpoint);
-            } else {
+                if (feedDelay == 0) {
+                    feedDelay = 10;
+                }
+                if (OperatorControls.getShootingPosition() == 0) {
+                    outputFinal = (output + ff * setpoint);
+                } else {
+                    outputFinal = -12;
+                }
+
+            } else if (error[0] < 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
+                if (feedDelay == 0) {
+                    pneumatics.setFeeder(false);
+                }
                 outputFinal = -12;
+            } else if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button))) {
+            } else {
+                if (feedDelay == 0) {
+                    pneumatics.setFeeder(false);
+                }
+                outputFinal = (output + ff * setpoint);
             }
-
-        } else if (error[0] < 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
-            if (feedDelay == 0) {
-                pneumatics.setFeeder(false);
-            }
-            outputFinal = -12;
-        } else if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button))) {
         } else {
-            if (feedDelay == 0) {
-                pneumatics.setFeeder(false);
+            if (error[0] > 0 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
+                pneumatics.setFeeder(true);
+                //System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
+
+                if (feedDelay == 0) {
+                    feedDelay = 10;
+                }
+                if (OperatorControls.getShootingPosition() == 0) {
+                    outputFinal = (output + ff * setpoint);
+                } else {
+
+                    outputFinal = (output + ff * setpoint);
+                }
+
+            } else if (error[0] < 0 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
+                if (feedDelay == 0) {
+                    pneumatics.setFeeder(false);
+                }
+                outputFinal = (output + ff * setpoint);
+            } else if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button))) {
+            } else {
+                if (feedDelay == 0) {
+                    pneumatics.setFeeder(false);
+                }
+                outputFinal = (output + ff * setpoint);
             }
-            outputFinal = (output + ff * setpoint);
         }
 
         if (feedDelay > 0) {
