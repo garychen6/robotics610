@@ -27,6 +27,7 @@ public class PositionControl extends Command {
     //negative is left, positive is right
     boolean leftPositionMode = false;
     boolean rightPositionMode = false;
+    boolean finished = false;
 
     public PositionControl(boolean leftPositionMode, double left, boolean rightPositionMode, double right) {
         // Use requires() here to declare subsystem dependencies
@@ -37,6 +38,7 @@ public class PositionControl extends Command {
         this.rightPositionMode = rightPositionMode;
         setPointRight = right;
         setPointLeft = left;
+        finished = false;
         requires(driveTrain);
     }
     // Called just before this Command runs the first time
@@ -51,30 +53,34 @@ public class PositionControl extends Command {
             driveTrain.setPositionRight(setPointRight);
         }
         DriverControls.setDriveMode(2);
+
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-                OurTimer time = OurTimer.getTimer("PositionControl");
+        OurTimer time = OurTimer.getTimer("PositionControl");
 
         /*
-        axis = oi.getOperator().getRawAxis(InputConstants.rightXAxis);
-        if (Math.abs(oi.getOperator().getRawAxis(InputConstants.rightXAxis)) > 0.1) {
-            trim += axis * 0.1;
-            driveTrain.setPositionLeft(trim);
-            driveTrain.setPositionRight(-trim);
-        }
-*/
-        driveTrain.syncSlaves(false,0);
-        
+         axis = oi.getOperator().getRawAxis(InputConstants.rightXAxis);
+         if (Math.abs(oi.getOperator().getRawAxis(InputConstants.rightXAxis)) > 0.1) {
+         trim += axis * 0.1;
+         driveTrain.setPositionLeft(trim);
+         driveTrain.setPositionRight(-trim);
+         }
+         */
+        driveTrain.syncSlaves(false, 0);
+
         SmartDashboard.putNumber("Position Left", driveTrain.getPositionLeft());
         SmartDashboard.putNumber("Position Right", driveTrain.getPositionRight());
+        if (Math.abs(driveTrain.getPositionLeft() - setPointLeft) < 0.2) {
+            finished = true;
+        }
         time.stop();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return finished;
     }
 
     // Called once after isFinished returns true

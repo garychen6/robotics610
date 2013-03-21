@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
 public class DriveTrain extends Subsystem {

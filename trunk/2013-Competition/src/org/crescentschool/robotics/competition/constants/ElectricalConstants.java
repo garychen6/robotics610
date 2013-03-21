@@ -10,6 +10,7 @@ package org.crescentschool.robotics.competition.constants;
  */
 public class ElectricalConstants {
     //CAN ID of the right drivetrain Jaguar
+
     final public static int jagRightMaster = 2;
     //CAN ID of the left drivetrain Jaguar
     final public static int jagLeftMaster = 3;
@@ -23,13 +24,9 @@ public class ElectricalConstants {
     final public static int victorLeftSlaveFront = 3;
     //PWM ID of the second left drivetrain Victor
     final public static int victorLeftSlaveBack = 4;
-    
-    final public static int rollerVictor = 5;
-   
-    
     final public static int gyroAnalogInput = 3;
     //CAN ID of the shooter Jaguar
-    final public static int jagShooter = 4; 
+    final public static int jagShooter = 4;
     //Driver Joystick
     final public static int driverJoystick = 1;
     //Operator Joystick
@@ -49,7 +46,7 @@ public class ElectricalConstants {
     //Channel for double solenoid to retract the piston.
     final public static int shooterAngleReverse = 4;
     final public static int postForward = 5;
-    final public static int postReverse =6;
+    final public static int postReverse = 6;
     final public static int trayFlipForward = 8;
     final public static int trayFlipReverse = 7;
     final public static int hangForward = 9;
@@ -58,4 +55,10 @@ public class ElectricalConstants {
     final public static int LEDRelay = 2;
     //Channel for relay for the 10 point hang mechanism
     final public static int lowHangRelay = 3;
+    final public static int leftGateForward = 3;
+    final public static int leftGateReverse = 4;
+    final public static int rightGateForward = 5;
+    final public static int rightGateReverse = 6;
+    final public static int rollerVic = 5;
+    final public static int armJag = 5;
 }

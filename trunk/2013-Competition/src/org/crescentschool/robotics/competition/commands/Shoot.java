@@ -25,14 +25,17 @@ public class Shoot extends Command {
     boolean fired = false;
     boolean finished = false;
     int shotFris = 0;
+    int frisbees = 0;
 
-    public Shoot() {
+    public Shoot(int frisbees) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         driveTrain = DriveTrain.getInstance();
         requires(driveTrain);
         pneumatics = Pneumatics.getInstance();
         shooter = Shooter.getInstance();
+        this.frisbees = frisbees;
+        shotFris = 0;
     }
 
     // Called just before this Command runs the first time
@@ -40,6 +43,7 @@ public class Shoot extends Command {
         shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
         pneumatics.setAngleUp(true);
         shooter.setSpeed(nearSpeed);
+        shotFris = 0;
         
     }
 
@@ -48,7 +52,7 @@ public class Shoot extends Command {
                 OurTimer time = OurTimer.getTimer("Shoot");
 
         //ADD TRIM
-        if (!fired && ShooterPIDCommand.getCurrent() >= nearSpeed && shotFris < 4) {
+        if (!fired && ShooterPIDCommand.getCurrent() >= nearSpeed && shotFris < frisbees) {
             pneumatics.setFeeder(true);
             fired = true;
 
@@ -67,7 +71,7 @@ public class Shoot extends Command {
         }
         if (shotFris >= 4) {
             ShooterPIDCommand.setAuton(false);
-            Scheduler.getInstance().add(new PositionControl(true, -11.5, true, -11.5));
+            //Scheduler.getInstance().add(new PositionControl(true, -11.5, true, -11.5));
             finished = true;
         }
         time.stop();
