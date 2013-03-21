@@ -29,6 +29,7 @@ public class KajDrive extends Command {
         DriverControls.setDriveMode(0);
         shooter = Shooter.getInstance();
         pneumatics = Pneumatics.getInstance();
+        System.out.println("KajDrive");
         requires(driveTrain);
     }
 
