@@ -31,6 +31,7 @@ public class Coyobot extends IterativeRobot {
     DriveTrain driveTrain;
     Pneumatics pneumatics;
     Command autonomousCommand;
+    Intake intake;
     
 
     /**
@@ -42,7 +43,8 @@ public class Coyobot extends IterativeRobot {
         shooter = Shooter.getInstance();
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
-        autonomousCommand = new Shoot();
+        intake = Intake.getInstance();
+        autonomousCommand = new G();
     }
 
     /**

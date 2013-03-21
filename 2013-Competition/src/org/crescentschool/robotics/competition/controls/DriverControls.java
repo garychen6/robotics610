@@ -64,31 +64,30 @@ public class DriverControls extends Command {
             shooter.setSpeed(KinectConstants.baseNearShooterRPM - KinectConstants.moveBack);
             setDriveMode(2);
         }
-        
-        if (driver.getRawAxis(InputConstants.dPadX)>0.2){
+
+        if (driver.getRawAxis(InputConstants.dPadX) > 0.2) {
 //            Scheduler.getInstance().add(new PositionControl(true, constantsTable.getDouble("TurnShoot", 0), false, -0.5));
 //            driveTrain.setRightVBus(-1.0);
             //driveTrain.setAngle(constantsTable.getDouble("TurnShoot", 0), true, 3);
             setDriveMode(2);
             Scheduler.getInstance().add(new AngleTurn(50));
         }
-        if (driver.getRawAxis(InputConstants.dPadX)<-0.2){
-           setDriveMode(2);
+        if (driver.getRawAxis(InputConstants.dPadX) < -0.2) {
+            setDriveMode(2);
             Scheduler.getInstance().add(new AngleTurn(-50));
         }
         pneumatics.postUp(driver.getRawButton(InputConstants.l1Button));
-        if(driver.getRawButton(InputConstants.squareButton)){
+        if (driver.getRawButton(InputConstants.squareButton)) {
             pneumatics.hangControl(true);
         }
-        if(driver.getRawButton(InputConstants.xButton)){
+        if (driver.getRawButton(InputConstants.xButton)) {
             pneumatics.hangControl(false);
         }
-        if(!pressed && driver.getRawButton(InputConstants.triangleButton)){
+        if (!pressed && driver.getRawButton(InputConstants.triangleButton)) {
             trayOut = !trayOut;
             pressed = true;
-            //pneumatics.trayControl(trayOut);
         }
-        if(!driver.getRawButton(InputConstants.triangleButton)){
+        if (!driver.getRawButton(InputConstants.triangleButton)) {
             pressed = false;
         }
     }
@@ -120,5 +119,4 @@ public class DriverControls extends Command {
     public static void setDriveMode(int driveMode2) {
         driveMode = driveMode2;
     }
-    
 }
