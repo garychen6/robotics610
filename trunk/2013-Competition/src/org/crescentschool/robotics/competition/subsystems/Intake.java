@@ -7,9 +7,11 @@ package org.crescentschool.robotics.competition.subsystems;
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.commands.*;
 import org.crescentschool.robotics.competition.constants.*;
 
@@ -25,7 +27,7 @@ public class Intake extends Subsystem {
     Victor rollers;
     static Intake intake = null;
     private int armPos = 0;
-    DoubleSolenoid leftGate;
+    Solenoid leftGate;
     DoubleSolenoid rightGate;
     Preferences preferences;
     double target;
@@ -38,11 +40,7 @@ public class Intake extends Subsystem {
     }
 
     public void leftOpen(boolean open) {
-        if (open) {
-            leftGate.set(DoubleSolenoid.Value.kForward);
-        } else {
-            leftGate.set(DoubleSolenoid.Value.kReverse);
-        }
+        leftGate.set(open);
     }
 
     public void rightOpen(boolean open) {
@@ -56,7 +54,7 @@ public class Intake extends Subsystem {
     public Intake() {
         preferences = Preferences.getInstance();
 
-        leftGate = new DoubleSolenoid(ElectricalConstants.leftGateForward, ElectricalConstants.leftGateReverse);
+        leftGate = new Solenoid(ElectricalConstants.leftGate);
         rightGate = new DoubleSolenoid(ElectricalConstants.rightGateForward, ElectricalConstants.rightGateReverse);
         try {
             arm = new CANJaguar(ElectricalConstants.armJag);
@@ -144,7 +142,8 @@ public class Intake extends Subsystem {
                     break;
             }
             double change = arm.getPosition() - target;
-            System.out.println(arm.getPosition());
+            SmartDashboard.putNumber("armPosition", arm.getPosition());
+            //System.out.println(arm.getPosition());
             //arm.setX(change * p);
 
         } catch (CANTimeoutException ex) {

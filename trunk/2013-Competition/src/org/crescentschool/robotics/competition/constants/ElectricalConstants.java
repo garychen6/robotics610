@@ -40,7 +40,7 @@ public class ElectricalConstants {
     //Feeder solenoid channel
     final public static int feeder = 1;
     //Power take off solenoid channel
-    final public static int powerTakeOff = 2;
+    final public static int leftGate = 2;
     //Channel for double solenoid to extend the piston.
     final public static int shooterAngleForward = 3;
     //Channel for double solenoid to retract the piston.
@@ -55,10 +55,9 @@ public class ElectricalConstants {
     final public static int LEDRelay = 2;
     //Channel for relay for the 10 point hang mechanism
     final public static int lowHangRelay = 3;
-    final public static int leftGateForward = 3;
-    final public static int leftGateReverse = 4;
-    final public static int rightGateForward = 5;
-    final public static int rightGateReverse = 6;
+    
+    final public static int rightGateForward = 7;
+    final public static int rightGateReverse = 8;
     final public static int rollerVic = 5;
     final public static int armJag = 5;
 }

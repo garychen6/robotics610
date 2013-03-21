@@ -36,7 +36,7 @@ public class Pneumatics extends Subsystem {
     Pneumatics() {
         //Initialize the compressor and solenoids.
         compressor = new Compressor(ElectricalConstants.compressorSwitch, ElectricalConstants.compressorRelay);
-//        feeder = new Solenoid(ElectricalConstants.feeder);
+        feeder = new Solenoid(ElectricalConstants.feeder);
         //powerTakeOff = new Solenoid(ElectricalConstants.digitalModule, ElectricalConstants.powerTakeOff);
         shooterAngle = new DoubleSolenoid(ElectricalConstants.shooterAngleForward, ElectricalConstants.shooterAngleReverse);
         post = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.postForward, ElectricalConstants.postReverse);

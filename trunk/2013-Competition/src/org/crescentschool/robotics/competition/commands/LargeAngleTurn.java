@@ -11,18 +11,19 @@ import org.crescentschool.robotics.competition.subsystems.OurTimer;
 
 /**
  *
- * @author Warfa
+ * @author Ian
  */
-public class AngleTurn extends Command {
+public class LargeAngleTurn extends Command {
 
     double angle;
     DriveTrain driveTrain;
     double error = 0;
     double errorI = 0;
     Preferences constantsTable = Preferences.getInstance();
-    public AngleTurn(double angle) {
+
+    public LargeAngleTurn(double angle) {
         this.angle = angle;
-         driveTrain = DriveTrain.getInstance();
+        driveTrain = DriveTrain.getInstance();
         requires(driveTrain);
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -31,7 +32,6 @@ public class AngleTurn extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -40,14 +40,14 @@ public class AngleTurn extends Command {
         double ff = 0;
         //Angle I = 0
         //Angle P = 0.01
-        double i = 0;
-        double p = 0.01;
+        double i = constantsTable.getDouble("AngleI", 0);
+        double p = constantsTable.getDouble("AngleP", 0);
         error = angle - driveTrain.getGyro().getAngle();
         errorI += error;
         errorI = Math.min(1.0 / i, errorI);
 
-        driveTrain.setRightVBus(error * -p - i * errorI-ff*angle);
-        driveTrain.setLeftVBus(error * p + i * errorI+ff*angle);
+        driveTrain.setRightVBus(error * -p - i * errorI - ff * angle);
+        driveTrain.setLeftVBus(error * p + i * errorI + ff * angle);
 
         time.stop();
     }
