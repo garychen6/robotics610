@@ -86,15 +86,18 @@ public class PickUp extends Command {
             } else if (!joystick.getRawButton(InputConstants.l2Button)) {
                 if (feeding) {
                     //PIDConstants.feedTime
-                    if (teleTime.get() > preferences.getDouble("feedTime",0)*2 && inPosition) {
+                    if (teleTime.get() > 0.4 * 5 && inPosition) {
                         intake.setRollers(0);
                         pos = 2;
                         feeding = false;
-                        inPosition = false;
+                        inPosition = false; 
                         intake.leftOpen(false);
                         intake.rightOpen(false);
 
-                    } else if (teleTime.get() > preferences.getDouble("feedTime",0) && inPosition) {
+                    } else if (teleTime.get() > 0.8 * 1.5 && inPosition) {
+                        intake.leftOpen(false);
+                        intake.rightOpen(false);
+                    }  else if (teleTime.get() > 0.8 && inPosition) {
                         intake.rightOpen(true);
 
                     } else if (Math.abs(intake.getChange()) < 0.08 && pos == 1) {
@@ -166,10 +169,14 @@ public class PickUp extends Command {
                 intake.setRollers(1);
                 intake.leftOpen(true);
                 //PIDConstants.feedTime
-                if (timer.get() > preferences.getDouble("feedTime",0)) {
+                if (timer.get() > 0.8) {
                     intake.rightOpen(true);
                 }
-                if (timer.get() > preferences.getDouble("feedTime",0)*2) {
+                if (timer.get() > 0.8 * 1.5) {
+                    //intake.rightOpen(false);
+                    //intake.leftOpen(false);
+                }
+                if (timer.get() > 0.4 * 5) {
                     System.out.println("gates");
                     finished = true;
                 }

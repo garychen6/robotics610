@@ -27,8 +27,8 @@ public class Intake extends Subsystem {
     Victor rollers;
     static Intake intake = null;
     private int armPos = 0;
-    Solenoid leftGate;
-    DoubleSolenoid rightGate;
+    DoubleSolenoid leftGate;
+    Solenoid rightGate;
     Preferences preferences;
     double target;
 
@@ -40,22 +40,24 @@ public class Intake extends Subsystem {
     }
 
     public void leftOpen(boolean open) {
-        leftGate.set(open);
+        if (!open) {
+            leftGate.set(DoubleSolenoid.Value.kReverse);
+        } else {
+            leftGate.set(DoubleSolenoid.Value.kForward);
+        }
     }
 
     public void rightOpen(boolean open) {
-        if (open) {
-            rightGate.set(DoubleSolenoid.Value.kReverse);
-        } else {
-            rightGate.set(DoubleSolenoid.Value.kForward);
-        }
+        rightGate.set(open);
+        
     }
 
     public Intake() {
         preferences = Preferences.getInstance();
 
-        leftGate = new Solenoid(ElectricalConstants.leftGate);
-        rightGate = new DoubleSolenoid(ElectricalConstants.rightGateForward, ElectricalConstants.rightGateReverse);
+        leftGate = new DoubleSolenoid(ElectricalConstants.rightGateForward, ElectricalConstants.rightGateReverse);
+
+        rightGate = new Solenoid(ElectricalConstants.leftGate);
         try {
             arm = new CANJaguar(ElectricalConstants.armJag);
             arm.changeControlMode(CANJaguar.ControlMode.kPercentVbus);
@@ -125,18 +127,18 @@ public class Intake extends Subsystem {
             switch (armPos) {
                 case 0:
                     //target = PIDConstants.armIntake;
-                    target = preferences.getDouble("stow", 0);
+                    target = preferences.getDouble("intake", 0);
                     p = 2;
                     break;
                 case 1:
                     //target = PIDConstants.armFeed;
                     target = preferences.getDouble("feed", 0);
 
-                    p = 4;
+                    p = 3;
                     break;
                 case 2:
                     //target = PIDConstants.armStow;
-                    target = preferences.getDouble("intake", 0);
+                    target = preferences.getDouble("stow", 0);
 
                     p = 4;
                     break;
@@ -144,7 +146,7 @@ public class Intake extends Subsystem {
             double change = arm.getPosition() - target;
             SmartDashboard.putNumber("armPosition", arm.getPosition());
             //System.out.println(arm.getPosition());
-            //arm.setX(change * p);
+            arm.setX(change * p);
 
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();

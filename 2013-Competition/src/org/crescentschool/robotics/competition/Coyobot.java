@@ -32,19 +32,18 @@ public class Coyobot extends IterativeRobot {
     Pneumatics pneumatics;
     Command autonomousCommand;
     Intake intake;
-    
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
-        
+
         shooter = Shooter.getInstance();
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
         intake = Intake.getInstance();
-        //autonomousCommand = new G();
+        autonomousCommand = new G();
     }
 
     /**
@@ -53,10 +52,9 @@ public class Coyobot extends IterativeRobot {
     public void autonomousInit() {
         // schedule the autonomous command (example)
         driveTrain.getGyro().reset();
-      //  autonomousCommand.start();
+        autonomousCommand.start();
         ShooterPIDCommand.setAuton(true);
     }
-    
 
     /**
      * This function is called periodically during autonomous.
