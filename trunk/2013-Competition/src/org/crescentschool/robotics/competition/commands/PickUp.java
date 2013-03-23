@@ -169,13 +169,10 @@ public class PickUp extends Command {
                 intake.setRollers(1);
                 intake.leftOpen(true);
                 //PIDConstants.feedTime
-                if (timer.get() > 0.8) {
+                if (timer.get() > 1.5) {
                     intake.rightOpen(true);
                 }
-                if (timer.get() > 0.8 * 1.5) {
-                    //intake.rightOpen(false);
-                    //intake.leftOpen(false);
-                }
+               
                 if (timer.get() > 0.4 * 5) {
                     System.out.println("gates");
                     finished = true;

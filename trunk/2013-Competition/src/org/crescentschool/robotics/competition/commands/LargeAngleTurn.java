@@ -20,6 +20,7 @@ public class LargeAngleTurn extends Command {
     double error = 0;
     double errorI = 0;
     Preferences constantsTable = Preferences.getInstance();
+    boolean finished = false;
 
     public LargeAngleTurn(double angle) {
         this.angle = angle;
@@ -28,10 +29,13 @@ public class LargeAngleTurn extends Command {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         driveTrain.getGyro().reset();
+        finished = false;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
+        finished = false;
+
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -48,13 +52,16 @@ public class LargeAngleTurn extends Command {
 
         driveTrain.setRightVBus(error * -p - i * errorI - ff * angle);
         driveTrain.setLeftVBus(error * p + i * errorI + ff * angle);
-
+        if (Math.abs(error) < 10) {
+            finished = true;
+        }
         time.stop();
     }
 // Make this return true when this Command no longer needs to run execute()
 
     protected boolean isFinished() {
-        return false;
+
+        return finished;
     }
 
     // Called once after isFinished returns true

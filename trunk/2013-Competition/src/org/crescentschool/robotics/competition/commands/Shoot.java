@@ -26,8 +26,9 @@ public class Shoot extends Command {
     boolean finished = false;
     int shotFris = 0;
     int frisbees = 0;
+    boolean delay = false;
 
-    public Shoot(int frisbees) {
+    public Shoot(int frisbees, boolean delay) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         driveTrain = DriveTrain.getInstance();
@@ -36,40 +37,50 @@ public class Shoot extends Command {
         shooter = Shooter.getInstance();
         this.frisbees = frisbees;
         shotFris = 0;
+        this.delay = delay;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
         shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
         pneumatics.setAngleUp(true);
-        shooter.setSpeed(nearSpeed+330);
+        shooter.setSpeed(nearSpeed + 330);
+        ShooterPIDCommand.setAuton(true);
         shotFris = 0;
-        
+        fired = false;
+        if (delay) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-                OurTimer time = OurTimer.getTimer("Shoot");
+        OurTimer time = OurTimer.getTimer("Shoot");
 
         //ADD TRIM
         if (!fired && ShooterPIDCommand.getCurrent() >= nearSpeed && shotFris < frisbees) {
             pneumatics.setFeeder(true);
             fired = true;
             shotFris++;
-            if (shotFris == 4) {
+            if (shotFris == frisbees) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
             }
-            Logger.getLogger().debug(shotFris+"");
+            Logger.getLogger().debug(shotFris + "");
         } else if (ShooterPIDCommand.getCurrent() < nearSpeed) {
             pneumatics.setFeeder(false);
             fired = false;
         }
-        if (shotFris >= 4) {
+        if (shotFris >= frisbees) {
             ShooterPIDCommand.setAuton(false);
+            pneumatics.setAngleUp(false);
             //Scheduler.getInstance().add(new PositionControl(true, -11.5, true, -11.5));
             finished = true;
         }
@@ -78,6 +89,7 @@ public class Shoot extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
+
         return finished;
     }
 

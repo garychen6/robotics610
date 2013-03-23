@@ -45,11 +45,12 @@ public class Intake extends Subsystem {
         } else {
             leftGate.set(DoubleSolenoid.Value.kForward);
         }
+        
     }
 
     public void rightOpen(boolean open) {
         rightGate.set(open);
-        
+
     }
 
     public Intake() {
@@ -139,7 +140,7 @@ public class Intake extends Subsystem {
                 case 2:
                     //target = PIDConstants.armStow;
                     target = preferences.getDouble("stow", 0);
-
+                    SmartDashboard.putNumber("armCurrent", arm.getOutputCurrent());
                     p = 4;
                     break;
             }
