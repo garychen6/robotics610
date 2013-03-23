@@ -72,7 +72,8 @@ public class PositionControl extends Command {
 
         SmartDashboard.putNumber("Position Left", driveTrain.getPositionLeft());
         SmartDashboard.putNumber("Position Right", driveTrain.getPositionRight());
-        if (Math.abs(driveTrain.getPositionLeft() - setPointLeft) < 0.2) {
+
+        if (Math.abs(Math.abs(driveTrain.getPositionLeft()) - Math.abs(setPointLeft)) < 1.5) {
             finished = true;
         }
         time.stop();

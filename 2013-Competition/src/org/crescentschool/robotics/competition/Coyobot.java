@@ -43,7 +43,7 @@ public class Coyobot extends IterativeRobot {
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
         intake = Intake.getInstance();
-        autonomousCommand = new G();
+        autonomousCommand = new FiveDisc();
     }
 
     /**
@@ -67,7 +67,7 @@ public class Coyobot extends IterativeRobot {
      * This function is run when driver control starts.
      */
     public void teleopInit() {
-        //autonomousCommand.cancel();
+        autonomousCommand.cancel();
         ShooterPIDCommand.setAuton(false);
         Scheduler.getInstance().add(new DriverControls());
         Scheduler.getInstance().add(new OperatorControls());

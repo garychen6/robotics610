@@ -11,7 +11,7 @@ package org.crescentschool.robotics.competition.constants;
 public class ShootingConstants {
     //The # of degrees that the kinect can see
     final public static double kinectFOV = 57.8;
-    final public static int baseNearShooterRPM = 3850;
+    final public static int baseNearShooterRPM = 4050;
     final public static int baseFarShooterRPM = 4800;
     final public static int baseLeftMiddleShooter = 4150;
     final public static int baseRightMiddleShooter = 4300;

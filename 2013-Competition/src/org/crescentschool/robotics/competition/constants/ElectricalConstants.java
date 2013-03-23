@@ -38,9 +38,9 @@ public class ElectricalConstants {
     //Digital module
     final public static int digitalModule = 1;
     //Feeder solenoid channel
-    final public static int feeder = 1;
+    final public static int feeder = 2;
     //Power take off solenoid channel
-    final public static int leftGate = 2;
+    final public static int leftGate = 1;
     //Channel for double solenoid to extend the piston.
     final public static int shooterAngleForward = 3;
     //Channel for double solenoid to retract the piston.
