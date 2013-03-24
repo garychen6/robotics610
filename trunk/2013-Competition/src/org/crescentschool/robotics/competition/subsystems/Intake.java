@@ -100,7 +100,7 @@ public class Intake extends Subsystem {
     }
 
     public void initDefaultCommand() {
-        setDefaultCommand(new PickUp(false, 0, false));
+        //setDefaultCommand(new PickUp(false, 0, false));
     }
 
     public void setRollers(double i) {
@@ -135,7 +135,7 @@ public class Intake extends Subsystem {
                     //target = PIDConstants.armFeed;
                     target = preferences.getDouble("feed", 0);
 
-                    p = 3;
+                    p = 2.8;
                     break;
                 case 2:
                     //target = PIDConstants.armStow;
@@ -147,7 +147,7 @@ public class Intake extends Subsystem {
             double change = arm.getPosition() - target;
             SmartDashboard.putNumber("armPosition", arm.getPosition());
             //System.out.println(arm.getPosition());
-            arm.setX(change * p);
+            //arm.setX(change * p*0.9);
 
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();

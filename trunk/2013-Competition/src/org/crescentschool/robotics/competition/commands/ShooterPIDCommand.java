@@ -130,7 +130,7 @@ public class ShooterPIDCommand extends Command {
         prevTime = time;
         pushPIDStats();
         SmartDashboard.putNumber("avgError", avgSpeed);
-        if (pneumatics.isAngleHigh()&&!auton) {
+        if (!auton) {
             if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
                 pneumatics.setFeeder(true);
                 //System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
