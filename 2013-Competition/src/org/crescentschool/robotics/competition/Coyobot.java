@@ -42,8 +42,8 @@ public class Coyobot extends IterativeRobot {
         shooter = Shooter.getInstance();
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
-        intake = Intake.getInstance();
-        autonomousCommand = new FiveDisc();
+        //intake = Intake.getInstance();
+        autonomousCommand = new G();
     }
 
     /**

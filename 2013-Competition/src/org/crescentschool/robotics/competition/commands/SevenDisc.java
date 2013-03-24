@@ -24,7 +24,7 @@ public class SevenDisc extends CommandGroup {
         /*
          addParallel(new PickUp(true, 0, false));
          */
-        addSequential(new Shoot(4, false));
+        addSequential(new Shoot(1, false));
         addSequential(new LargeAngleTurn(180));
         addSequential(new PickUp(true, 0, false));
         addSequential(new PositionControl(true, -5, true, -5));
@@ -49,7 +49,7 @@ public class SevenDisc extends CommandGroup {
         addSequential(new LargeAngleTurn(0));
 
         //Shoot our 9 discs :D
-        addSequential(new Shoot(4, true));
+        addSequential(new Shoot(5, true));
         System.out.println("If you see this then you have no idea how happy I am.");
         /*
          * //Corner

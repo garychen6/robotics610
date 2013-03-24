@@ -20,7 +20,7 @@ public class Pneumatics extends Subsystem {
     DoubleSolenoid post;
     Solenoid tray;
     DoubleSolenoid shooterAngle;
-    //DoubleSolenoid trayFlip;
+    DoubleSolenoid trayFlip;
     //DoubleSolenoid hang;
     Relay hang;
     private boolean angleHigh = false;
@@ -40,7 +40,7 @@ public class Pneumatics extends Subsystem {
         //powerTakeOff = new Solenoid(ElectricalConstants.digitalModule, ElectricalConstants.powerTakeOff);
         shooterAngle = new DoubleSolenoid(ElectricalConstants.shooterAngleForward, ElectricalConstants.shooterAngleReverse);
         post = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.postForward, ElectricalConstants.postReverse);
-        //trayFlip = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.trayFlipForward, ElectricalConstants.trayFlipReverse);
+        trayFlip = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.trayFlipForward, ElectricalConstants.trayFlipReverse);
         hang = new Relay(3);
         //Run the compressor
         compressor.start();
@@ -104,13 +104,13 @@ public class Pneumatics extends Subsystem {
             hang.set(Relay.Value.kReverse);
         }
     }
-//    public void trayControl(boolean fire){
-//        if(fire){
-//            trayFlip.set(DoubleSolenoid.Value.kForward);
-//        } else {
-//            trayFlip.set(DoubleSolenoid.Value.kReverse);
-//        }
-//    }
+    public void trayControl(boolean fire){
+        if(fire){
+            trayFlip.set(DoubleSolenoid.Value.kForward);
+        } else {
+            trayFlip.set(DoubleSolenoid.Value.kReverse);
+        }
+    }
 
     /**
      * @return the angleHigh

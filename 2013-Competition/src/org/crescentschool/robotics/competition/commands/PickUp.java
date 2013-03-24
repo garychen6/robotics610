@@ -17,6 +17,7 @@ import org.crescentschool.robotics.competition.constants.*;
  * @author Ian
  */
 public class PickUp extends Command {
+    
 
     Intake intake = null;
     int pos = 2;
@@ -38,6 +39,7 @@ public class PickUp extends Command {
     Preferences preferences;
 
     public PickUp(boolean auton, int pos, boolean gates) {
+        
         oi = OI.getInstance();
         intake = Intake.getInstance();
         joystick = oi.getDriver();
@@ -62,140 +64,142 @@ public class PickUp extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if (!auton) {
-            if (joystick.getRawButton(InputConstants.r2Button)) {
-                intake.setRollers(-1);
-            } else if (joystick.getRawButton(InputConstants.l2Button) && !feedButton) {
-                intake.leftOpen(false);
-                intake.rightOpen(false);
-                pos = 0;
-                intake.setRollers(1);
-                feedButton = true;
-                feeding = false;
-            } else if (!joystick.getRawButton(InputConstants.l2Button) && feedButton) {
-                intake.leftOpen(false);
-                intake.rightOpen(false);
+        /*
+         if (!auton) {
+         if (joystick.getRawButton(InputConstants.r2Button)) {
+         intake.setRollers(-1);
+         } else if (joystick.getRawButton(InputConstants.l2Button) && !feedButton) {
+         intake.leftOpen(false);
+         intake.rightOpen(false);
+         pos = 0;
+         intake.setRollers(1);
+         feedButton = true;
+         feeding = false;
+         } else if (!joystick.getRawButton(InputConstants.l2Button) && feedButton) {
+         intake.leftOpen(false);
+         intake.rightOpen(false);
 
-                teleTime = new Timer();
-                teleTime.reset();
-                teleTime.start();
-                pos = 1;
-                intake.setRollers(1);
-                feedButton = false;
-                feeding = true;
-            } else if (!joystick.getRawButton(InputConstants.l2Button)) {
-                if (feeding) {
-                    //PIDConstants.feedTime
-                    if (teleTime.get() > 0.4 * 5 && inPosition) {
-                        intake.setRollers(0);
-                        pos = 2;
-                        feeding = false;
-                        inPosition = false; 
-                        intake.leftOpen(false);
-                        intake.rightOpen(false);
+         teleTime = new Timer();
+         teleTime.reset();
+         teleTime.start();
+         pos = 1;
+         intake.setRollers(1);
+         feedButton = false;
+         feeding = true;
+         } else if (!joystick.getRawButton(InputConstants.l2Button)) {
+         if (feeding) {
+         //PIDConstants.feedTime
+         if (teleTime.get() > 0.4 * 5 && inPosition) {
+         intake.setRollers(0);
+         pos = 2;
+         feeding = false;
+         inPosition = false; 
+         intake.leftOpen(false);
+         intake.rightOpen(false);
 
-                    } else if (teleTime.get() > 0.8 * 1.5 && inPosition) {
-                        intake.leftOpen(false);
-                        intake.rightOpen(false);
-                    }  else if (teleTime.get() > 0.8 && inPosition) {
-                        intake.rightOpen(true);
+         } else if (teleTime.get() > 0.8 * 1.5 && inPosition) {
+         intake.leftOpen(false);
+         intake.rightOpen(false);
+         }  else if (teleTime.get() > 0.8 && inPosition) {
+         intake.rightOpen(true);
 
-                    } else if (Math.abs(intake.getChange()) < 0.08 && pos == 1) {
-                        intake.leftOpen(true);
+         } else if (Math.abs(intake.getChange()) < 0.08 && pos == 1) {
+         intake.leftOpen(true);
 
-                        if (!inPosition) {
-                            teleTime.reset();
-                            inPosition = true;
-                        }
-                    }
-                } else {
-                    intake.setRollers(0);
-                }
+         if (!inPosition) {
+         teleTime.reset();
+         inPosition = true;
+         }
+         }
+         } else {
+         intake.setRollers(0);
+         }
 
-            }
+         }
 
-            /*
+         /*
 
-             if (joystick.getRawButton(InputConstants.squareButton) && !square) {
-             pos--;
-             square = true;
-             if (pos < 0) {
-             pos = 0;
-             }
-             System.out.println("Intake Position: " + pos);
-             } else if (!joystick.getRawButton(InputConstants.squareButton)) {
-             square = false;
-             }
-             if (joystick.getRawButton(InputConstants.triangleButton) && !triangle) {
-             pos++;
-             triangle = true;
-             if (pos > 2) {
-             pos = 2;
-             }
-             System.out.println("Intake Position: " + pos);
+         if (joystick.getRawButton(InputConstants.squareButton) && !square) {
+         pos--;
+         square = true;
+         if (pos < 0) {
+         pos = 0;
+         }
+         System.out.println("Intake Position: " + pos);
+         } else if (!joystick.getRawButton(InputConstants.squareButton)) {
+         square = false;
+         }
+         if (joystick.getRawButton(InputConstants.triangleButton) && !triangle) {
+         pos++;
+         triangle = true;
+         if (pos > 2) {
+         pos = 2;
+         }
+         System.out.println("Intake Position: " + pos);
 
-             } else if (!joystick.getRawButton(InputConstants.triangleButton)) {
-             triangle = false;
-             }
-             */
-            /*
-             if (joystick.getRawButton(InputConstants.xButton)) {
-             intake.setRollers(1);
-             } else if (joystick.getRawButton(InputConstants.oButton)) {
-             intake.setRollers(-1);
-             } else {
-             intake.setRollers(0);
-             }
-             */
-            /*
-             if (joystick.getRawButton(InputConstants.r1Button)) {
-             intake.setIntake(0.4);
-
-
-             } else if (joystick.getRawButton(InputConstants.l1Button)) {
-             intake.setIntake(-0.75);
-             } else {
-             intake.setIntake(0);
-             }
-             */
-
-            //System.out.println(intake.getPot());
+         } else if (!joystick.getRawButton(InputConstants.triangleButton)) {
+         triangle = false;
+         }
+         */
+        /*
+         if (joystick.getRawButton(InputConstants.xButton)) {
+         intake.setRollers(1);
+         } else if (joystick.getRawButton(InputConstants.oButton)) {
+         intake.setRollers(-1);
+         } else {
+         intake.setRollers(0);
+         }
+         */
+        /*
+         if (joystick.getRawButton(InputConstants.r1Button)) {
+         intake.setIntake(0.4);
 
 
-            intake.setArmPos(pos);
+         } else if (joystick.getRawButton(InputConstants.l1Button)) {
+         intake.setIntake(-0.75);
+         } else {
+         intake.setIntake(0);
+         }
+             
 
-        } else {
-            if (gates) {
-                intake.setRollers(1);
-                intake.leftOpen(true);
-                //PIDConstants.feedTime
-                if (timer.get() > 1.5) {
-                    intake.rightOpen(true);
-                }
+         //System.out.println(intake.getPot());
+
+
+         intake.setArmPos(pos);
+
+         } else {
+         if (gates) {
+         intake.setRollers(1);
+         intake.leftOpen(true);
+         //PIDConstants.feedTime
+         if (timer.get() > 1.5) {
+         intake.rightOpen(true);
+         }
                
-                if (timer.get() > 0.4 * 5) {
-                    System.out.println("gates");
-                    finished = true;
-                }
-            } else {
-                intake.setArmPos(autoPot);
-                intake.setRollers(1);
-                if (Math.abs(intake.getChange()) < 0.08) {
-                    count++;
-                    if (count > 5) {
-                        finished = true;
-                    }
+         if (timer.get() > 0.4 * 5) {
+         System.out.println("gates");
+         finished = true;
+         }
+         } else {
+         intake.setArmPos(autoPot);
+         intake.setRollers(1);
+         if (Math.abs(intake.getChange()) < 0.08) {
+         count++;
+         if (count > 5) {
+         finished = true;
+         }
 
-                } else {
-                    count = 0;
-                }
+         } else {
+         count = 0;
+         }
 
-            }
+         }
 
 
-            // Make this return true when this Command no longer needs to run execute()
+         // Make this return true when this Command no longer needs to run execute()
 
-        }
+         }
+         * */
     }
 
     protected boolean isFinished() {

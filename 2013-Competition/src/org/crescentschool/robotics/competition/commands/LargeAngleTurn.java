@@ -29,6 +29,7 @@ public class LargeAngleTurn extends Command {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         driveTrain.getGyro().reset();
+        setTimeout(3);
         finished = false;
     }
 
@@ -54,6 +55,9 @@ public class LargeAngleTurn extends Command {
         driveTrain.setLeftVBus(error * p + i * errorI + ff * angle);
         if (Math.abs(error) < 10) {
             finished = true;
+        }
+        if(isTimedOut()){
+           finished = true;
         }
         time.stop();
     }

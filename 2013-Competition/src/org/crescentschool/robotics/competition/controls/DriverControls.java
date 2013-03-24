@@ -85,6 +85,7 @@ public class DriverControls extends Command {
         }
         if (!pressed && driver.getRawButton(InputConstants.triangleButton)) {
             trayOut = !trayOut;
+            pneumatics.trayControl(trayOut);
             pressed = true;
         }
         if (!driver.getRawButton(InputConstants.triangleButton)) {

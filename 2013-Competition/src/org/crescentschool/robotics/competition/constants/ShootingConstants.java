@@ -18,5 +18,7 @@ public class ShootingConstants {
 
     final public static int moveBack = 700;
     final public static int trimTime = 3;
+    
+    
     final public static double trimPower = 0.5;
 }

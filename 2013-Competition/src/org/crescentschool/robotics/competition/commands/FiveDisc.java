@@ -27,9 +27,9 @@ public class FiveDisc extends CommandGroup {
          addParallel(new PickUp(true, 0, false));
          */
         //addParallel(new PickUp(true, 2, false));
-       addSequential(new Shoot(1, false));
+       addSequential(new Shoot(4, false));
         //addParallel(new PickUp(true, 2, false));
-        //addSequential(new LargeAngleTurn(180));
+        addSequential(new LargeAngleTurn(180));
         addSequential(new PickUp(true, 0, false));
         addSequential(new PositionControl(true, -5, true, -5));
         //Keep Driving half the midD... While moving the intake up
@@ -46,7 +46,7 @@ public class FiveDisc extends CommandGroup {
         //Drive the other half and feed discs
         addSequential(new PositionControl(true, -5, true, -5));
         System.out.println("Stage 3 Complete.");
-        //addSequential(new Shoot(4, true));
+        addSequential(new Shoot(4, true));
 
 
         /*
