@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -35,13 +36,14 @@ public class RobotTemplate extends IterativeRobot {
     CANJaguar shooter;
     CANJaguar shooter2;
     Compressor compressor;
+    Relay tray;
 
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
     public void robotInit() {
-
+        tray = new Relay(2);
         oi = OI.getInstance();
         compressor = new Compressor(1, 1);
         compressor.start();
@@ -67,7 +69,7 @@ public class RobotTemplate extends IterativeRobot {
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
-        ShooterPIDCommand shoot = new ShooterPIDCommand(0.00220, shooter,shooter2, optical);
+        ShooterPIDCommand shoot = new ShooterPIDCommand(0.00220, shooter, shooter2, optical);
         Thread thread = new Thread(shoot);
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
@@ -92,6 +94,7 @@ public class RobotTemplate extends IterativeRobot {
     }
 
     public void teleopInit() {
+        tray.set(Relay.Value.kForward);
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
@@ -107,7 +110,7 @@ public class RobotTemplate extends IterativeRobot {
 
 
         ShooterPIDCommand.pushPIDStats();
-       
+
 
         Scheduler.getInstance().run();
     }
