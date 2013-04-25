@@ -49,6 +49,7 @@ public class OperatorControls extends Command {
 
 
         if (operator.getRawButton(InputConstants.l2Button)) {
+            ShooterPIDCommand.setShooterAngle(1);
             setShootingPosition(1);
             shooter.setSpeed(farSpeed);
             shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
@@ -77,6 +78,7 @@ public class OperatorControls extends Command {
 
         //btn1 reset
         if (operator.getRawButton(InputConstants.l1Button)) {
+            ShooterPIDCommand.setShooterAngle(0);
             nearSpeed = ShootingConstants.baseNearShooterRPM;
             farSpeed = ShootingConstants.baseFarShooterRPM;
             leftSpeed = ShootingConstants.baseLeftMiddleShooter;

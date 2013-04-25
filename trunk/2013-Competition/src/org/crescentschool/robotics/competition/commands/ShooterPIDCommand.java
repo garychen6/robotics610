@@ -6,197 +6,193 @@ package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Counter;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
-import org.crescentschool.robotics.competition.controls.OperatorControls;
+import org.crescentschool.robotics.competition.subsystems.Logger;
+import org.crescentschool.robotics.competition.subsystems.OurTimer;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
-import org.crescentschool.robotics.competition.subsystems.*;
 
 /**
  *
  * @author robotics
  */
-public class ShooterPIDCommand extends Command {
+public class ShooterPIDCommand implements Runnable {
 
-    private static double kP = 0;
-    private static double kI = 0;
-    private static double kD = 0;
-    private static double p = 0.01;
-    private static double i = 0.00001;
-    private static double d = 0.0001;
-    private static double prevSpeed = 0;
+    //p=0.01, i=0.00001, d=0.0001
     private static double ff = 1.5 / 580.0;
     private static double setpoint = 0;
-    private static double output = 0;
-    private static double outputChange = 0;
-    private static double[] error = new double[3];
-    private static Timer timer;
-    private static double prevTime;
-    private static double time;
+    //5675 Long Range
     private static double current;
     private static CANJaguar controller;
+    private static CANJaguar controller2;
     private static Counter opticalSensor;
-    private static Shooter shooter;
-    private static Pneumatics pneumatics;
+    private static double shooterAngle = 1;
+    private static double outputFinal = 0;
+    //0 is bottom, 1 is top
     private static OI oi;
-    private static int feedDelay = 0;
-    private static boolean auton = false;
-    private double avgSpeed = 0;
+
+    /**
+     * @param aShooterAngle the shooterAngle to set
+     */
+    public static void setShooterAngle(double aShooterAngle) {
+        shooterAngle = aShooterAngle;
+    }
     private boolean canError = false;
-    private boolean isLongBomb = false;
+    private Preferences preferences;
+    Joystick joystick;
+    private int extendCount = 0;
+    private int settleDownCount = 0;
+    private int retractDelay = 12;
+    private static double delay = 10;
+    Pneumatics pneumatics;
+    OurTimer logTime = OurTimer.getTimer("PID");
 
-    /**
-     * @return the auton
-     */
-    public static boolean isAuton() {
-        return auton;
-    }
+    public ShooterPIDCommand(double ff, CANJaguar controller, CANJaguar controller2, Counter opticalSensor) {
+        oi = OI.getInstance();
+        pneumatics = Pneumatics.getInstance();
 
-    /**
-     * @param aAuton the auton to set
-     */
-    public static void setAuton(boolean aAuton) {
-        auton = aAuton;
-    }
-
-    /**
-     * This program gets an instance of the shooter, pneumatics, and oi, and
-     * also changes the ff, kP, kI, and kD values to the ones in this method.
-     *
-     * It also starts a timer for calculating the time.
-     *
-     * @param p the shooter's Position value for its PID control.
-     * @param i the shooter's Integral value for its PID control.
-     * @param d the shooter's Derivative value for its PID control.
-     * @param ff the shooter's FeedForward value for its FeedForward control.
-     * @param controller the motor controller to be passed in
-     * @param opticalSensor the optical sensor (counter) to be passed in
-     */
-    public ShooterPIDCommand(double p, double i, double d, double ff, CANJaguar controller, Counter opticalSensor) {
-        shooter = Shooter.getInstance();
-        requires(shooter);
+        preferences = Preferences.getInstance();
         ShooterPIDCommand.ff = ff;
-        ShooterPIDCommand.kP = p;
-        ShooterPIDCommand.kI = i;
-        ShooterPIDCommand.kD = d;
-        timer = new Timer();
-        timer.start();
         ShooterPIDCommand.opticalSensor = opticalSensor;
         ShooterPIDCommand.opticalSensor.start();
         ShooterPIDCommand.controller = controller;
-        pneumatics = Pneumatics.getInstance();
-        oi = OI.getInstance();
+        ShooterPIDCommand.controller2 = controller2;
+
     }
 
-    // Called just before this Command runs the first time
     protected void initialize() {
     }
 
-    // Called repeatedly when this Command is scheduled to run
-    /**
-     * This program runs speed control code.
-     */
-    protected void execute() {
-        OurTimer logTime = OurTimer.getTimer("ShooterPIDCommand");
+    public void run() {
+        Logger logger = Logger.getLogger();
 
-        try {
-            if (opticalSensor != null) {
-                current = -(60 / (opticalSensor.getPeriod() * (8.0 / 7.0)));
+        while (true) {
+            //Grab ff and setpoint from Smart Dashboard
+            /*
+             * 
+             * 
+             * WARFAAAA What was the FF Constant??
+             * 
+             * 
+             * 
+             * 
+             * 
+             */
+            setFf(preferences.getDouble("ff", 0));
+            //Temporary Code until we have the actual robot and a Pneumatics Class
+            //NEEDS TO BE CHANGED BEFORE COMPETITION
+            if (shooterAngle == 1) {
+                delay = 0;
             } else {
-                current = controller.getSpeed();
+                delay = 10;
             }
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-        }
-        time = timer.get();
-        for (int i = error.length - 1; i >= 1; i--) {
-            error[i] = error[i - 1];
-        }
-        error[0] = setpoint - current;
-        for (int i = 0; i < error.length; i++) {
-            avgSpeed += error[i];
-        }
-        avgSpeed /= error.length;
-        p = (error[0] - error[1]) * kP;
-        i = (error[0]) * kI;
-        d = ((error[0] - 2 * error[1] + error[2]) / (time - prevTime)) * kD;
-        outputChange = p + i + d;
-        output += outputChange;
-        double outputFinal = 0;
-        prevTime = time;
-        pushPIDStats();
-        SmartDashboard.putNumber("avgError", avgSpeed);
-        if (!auton) {
-            if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
-                pneumatics.setFeeder(true);
-                //System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
+            
+            //Logger to log the entire PID loop
+            logTime.stop();
+            logTime = OurTimer.getTimer("PID");
 
-                if (feedDelay == 0) {
-                    feedDelay = 10;
-                }
-                if (OperatorControls.getShootingPosition() == 0) {
-                    outputFinal = (output + ff * setpoint);
+            //Read the speed from the optical
+            try {
+                if (opticalSensor != null) {
+                    //Simplified version of 60/((8/7)*period)
+                    current = ((105.0) / (2.0 * opticalSensor.getPeriod()));
+                    //Post the speed to the smartdashboard
+                    SmartDashboard.putNumber("Speed", current);
                 } else {
-                    outputFinal = -12;
+                    current = controller.getSpeed();
                 }
-
-            } else if (error[0] < 200 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
-                if (feedDelay == 0) {
-                    pneumatics.setFeeder(false);
-                }
-                outputFinal = -12;
-            } else if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button))) {
-            } else {
-                if (feedDelay == 0) {
-                    pneumatics.setFeeder(false);
-                }
-                outputFinal = (output + ff * setpoint);
+            } catch (CANTimeoutException ex) {
+                ex.printStackTrace();
             }
-        } else {
-            if (error[0] > 0 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
-                pneumatics.setFeeder(true);
-                //System.out.println("Instant: " + error[0] + " Avg: " + avgSpeed);
+            //This will be the VOLTAGE we send to the jag. Not percentVBus
+            outputFinal = 0;
 
-                if (feedDelay == 0) {
-                    feedDelay = 10;
+            //If we are up to speed and we want to fire
+            //e.g. setpoint = 5000 we want to get up to 5100. 5000-5100 will give -100 and will be less than -100 if we are running faster than 5100
+            if (setpoint - current < -100 && (oi.getOperator().getRawButton(InputConstants.r2Button))) {
+                //This should always start off as 0 since it will reset when the shooter is recovering.
+                if (extendCount == 3) {
+                    //Fire and log
+                    pneumatics.setFeeder(true);
+                    Logger.getLogger().debug("Speed: " + current);
                 }
-                if (OperatorControls.getShootingPosition() == 0) {
-                    outputFinal = (output + ff * setpoint);
+                //Keep counting up with the extended count until we reach retract delay.
+                if (extendCount >= retractDelay) {
+                    //At that point retract.
+                    pneumatics.setFeeder(false);
+                    extendCount = 0;
                 } else {
+                    extendCount++;
+                }
+                //While we are at the right speed, use ff while the disc is going through the shooter.
+                outputFinal = ff * (setpoint + 200);
 
-                    outputFinal = (output + ff * setpoint);
+
+            } //If we are within 300 of our desired shooting speed and we are holding the trigger.
+            //If we are within 300 of our desired shooting speed and we are holding the trigger.
+            else if (shooterAngle == 0 && setpoint - current < 300 && (oi.getOperator().getRawButton(InputConstants.r2Button))) {
+                //settleDownCount is the counter for when we want to stop at our coasting speed and then ramp up again.
+                System.out.println("BAD");
+                if (settleDownCount >= delay) {
+
+                    //Reset our extended count
+                    extendCount = 0;
+                    //Full blast since the delay is over. This will get us into the firing if statement.
+                    outputFinal = 12;
+
+                } else {
+                    //If we have not yet finished the delay, then hold at the coasting speed until we are ready to fire.
+                    outputFinal = ff * setpoint;
+                    extendCount = 0;
+
+                    settleDownCount++;
                 }
 
-            } else if (error[0] < 0 && (oi.getOperator().getRawButton(InputConstants.r2Button) || auton)) {
-                if (feedDelay == 0) {
+            } //If we are not up to speed and the trigger is held (Auto mode) 
+            //The shooter is recovering from a shot.
+            else if (setpoint - current > -100 && (oi.getOperator().getRawButton(InputConstants.r2Button))) {
+                //Reset our settledown counter
+                settleDownCount = 0;
+                //Even though the wheel has slowed down, it doesn't mean our shark fin extend delay has not yet ended.
+                //Check if it has ended and retract when it has.
+                if (extendCount >= retractDelay) {
                     pneumatics.setFeeder(false);
+                } else {
+                    extendCount++;
                 }
-                outputFinal = (output + ff * setpoint);
-            } else if (error[0] > 200 && (oi.getOperator().getRawButton(InputConstants.r2Button))) {
-            } else {
-                if (feedDelay == 0) {
+                //Run the motors at full power to ensure the fastest possible recovery time.
+                outputFinal = 12;
+            } //When the trigger isn't pressed or when we just want to coast.
+            else {
+                //Retract the feeder if the delay is over.
+                if (extendCount >= retractDelay) {
                     pneumatics.setFeeder(false);
+                } else {
+                    extendCount++;
                 }
-                outputFinal = (output + ff * setpoint);
+                //Hold at 100 below our shooting speed
+                outputFinal = ff * setpoint;
             }
-        }
 
-        if (feedDelay > 0) {
-            feedDelay--;
-        }
 
-        try {
-            controller.setX(outputFinal);
-        } catch (CANTimeoutException ex) {
-            ex.printStackTrace();
-            canError = true;
-            handleCANError();
+            //Send the power to the motors.
+            try {
+                controller.setX(outputFinal);
+                controller2.setX(outputFinal);
+            } catch (CANTimeoutException ex) {
+                ex.printStackTrace();
+                canError = true;
+                handleCANError();
+            }
+            //Push our pid stats to the smart dashboard.
+            pushPIDStats();
+
         }
-        logTime.stop();
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -211,33 +207,6 @@ public class ShooterPIDCommand extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    }
-
-    /**
-     * This method returns the proportional value.
-     *
-     * @return the proportional value
-     */
-    public static double getP() {
-        return kP;
-    }
-
-    /**
-     * This method returns the integral value.
-     *
-     * @return the integral value
-     */
-    public static double getI() {
-        return kI;
-    }
-
-    /**
-     * This method returns the derivative value.
-     *
-     * @return the derivative value
-     */
-    public static double getD() {
-        return kD;
     }
 
     /**
@@ -257,40 +226,8 @@ public class ShooterPIDCommand extends Command {
      * @param setpoint 200 less than the new setpoint to be set
      */
     synchronized public static void setSetpoint(double setpoint) {
-        ShooterPIDCommand.setpoint = setpoint + 200;
-        output = 0;
-        error[0] = 0;
-        error[1] = 0;
-    }
+        ShooterPIDCommand.setpoint = setpoint - 100;
 
-    /**
-     * This method sets the proportional value to the parameter p
-     *
-     * @param p the new proportional value
-     */
-    synchronized public static void setP(double p) {
-        output = 0;
-        ShooterPIDCommand.kP = p;
-    }
-
-    /**
-     * This method sets the integral value to the parameter i
-     *
-     * @param i the new integral value
-     */
-    synchronized public static void setI(double i) {
-        output = 0;
-        ShooterPIDCommand.kI = i;
-    }
-
-    /**
-     * This method sets the derivative value to the parameter d.
-     *
-     * @param d the new derivative value
-     */
-    synchronized public static void setD(double d) {
-        output = 0;
-        ShooterPIDCommand.kD = d;
     }
 
     /**
@@ -312,7 +249,7 @@ public class ShooterPIDCommand extends Command {
     }
 
     public static double getCurrent() {
-        return -current;
+        return current;
     }
 
     /**
@@ -323,20 +260,16 @@ public class ShooterPIDCommand extends Command {
      * and the output.
      */
     public static void pushPIDStats() {
-        SmartDashboard.putNumber("Error", error[0]);
-        SmartDashboard.putNumber("P", p);
-        SmartDashboard.putNumber("I", i);
-        SmartDashboard.putNumber("D", d);
-        SmartDashboard.putNumber("SpeedNum", -current);
-        SmartDashboard.putNumber("SpeedNumGraph", -current);
-        SmartDashboard.putNumber("OpticalPeriod", opticalSensor.getPeriod());
-        SmartDashboard.putNumber("Output", output + ff * setpoint);
+        SmartDashboard.putNumber("Speed", current);
+        SmartDashboard.putNumber("FF", ff);
+        SmartDashboard.putNumber("Setpoint", setpoint + 100);
+        SmartDashboard.putNumber("Voltage", outputFinal);
+        SmartDashboard.putNumber("Delay", delay);
     }
 
     public void handleCANError() {
         if (canError) {
             SmartDashboard.putString("Messages", "CAN Error!");
-            Logger.getLogger().debug("CAN Error!");
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ex) {

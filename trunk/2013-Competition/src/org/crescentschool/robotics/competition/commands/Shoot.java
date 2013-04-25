@@ -45,7 +45,7 @@ public class Shoot extends Command {
         shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
         pneumatics.setAngleUp(true);
         shooter.setSpeed(nearSpeed + 330);
-        ShooterPIDCommand.setAuton(true);
+        OldShooterCode.setAuton(true);
         shotFris = 0;
         fired = false;
         if (delay) {
@@ -62,7 +62,7 @@ public class Shoot extends Command {
         OurTimer time = OurTimer.getTimer("Shoot");
 
         //ADD TRIM
-        if (!fired && ShooterPIDCommand.getCurrent() >= nearSpeed && shotFris < frisbees) {
+        if (!fired && OldShooterCode.getCurrent() >= nearSpeed && shotFris < frisbees) {
             pneumatics.setFeeder(true);
             fired = true;
             shotFris++;
@@ -74,12 +74,12 @@ public class Shoot extends Command {
                 }
             }
             Logger.getLogger().debug(shotFris + "");
-        } else if (ShooterPIDCommand.getCurrent() < nearSpeed) {
+        } else if (OldShooterCode.getCurrent() < nearSpeed) {
             pneumatics.setFeeder(false);
             fired = false;
         }
         if (shotFris >= frisbees) {
-            ShooterPIDCommand.setAuton(false);
+            OldShooterCode.setAuton(false);
             pneumatics.setAngleUp(false);
             //Scheduler.getInstance().add(new PositionControl(true, -11.5, true, -11.5));
             finished = true;

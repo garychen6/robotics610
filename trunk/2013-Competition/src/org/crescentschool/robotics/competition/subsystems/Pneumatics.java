@@ -18,7 +18,8 @@ public class Pneumatics extends Subsystem {
     Solenoid feeder;
     //Solenoid powerTakeOff;
     DoubleSolenoid post;
-    Solenoid tray;
+    //Solenoid tray;
+    Relay tray;
     DoubleSolenoid shooterAngle;
     DoubleSolenoid trayFlip;
     //DoubleSolenoid hang;
@@ -42,6 +43,7 @@ public class Pneumatics extends Subsystem {
         post = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.postForward, ElectricalConstants.postReverse);
         trayFlip = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.trayFlipForward, ElectricalConstants.trayFlipReverse);
         hang = new Relay(3);
+        tray = new Relay(2);
         //Run the compressor
         compressor.start();
 
@@ -58,7 +60,13 @@ public class Pneumatics extends Subsystem {
     public void setFeeder(boolean fire) {
         feeder.set(fire);
    }
-    
+    public void setTray(boolean fire){
+        if(fire){
+            tray.set(Relay.Value.kForward);
+        }else{
+            tray.set(Relay.Value.kOff);
+        }
+    }
     public void setAngleUp(boolean fire) {
         if (!fire) {
             shooterAngle.set(DoubleSolenoid.Value.kForward);

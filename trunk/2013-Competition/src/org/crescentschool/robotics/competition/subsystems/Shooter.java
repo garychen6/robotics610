@@ -6,10 +6,10 @@ package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.CANJaguar;
 import edu.wpi.first.wpilibj.Counter;
-import edu.wpi.first.wpilibj.GearTooth;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.crescentschool.robotics.competition.commands.OldShooterCode;
 import org.crescentschool.robotics.competition.commands.ShooterPIDCommand;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
@@ -21,8 +21,9 @@ public class Shooter extends Subsystem {
 
     static Shooter instance = null;
     CANJaguar shooter;
+    CANJaguar shooter2;
     Counter optical;
-    
+    ShooterPIDCommand shoot;
     Relay light;
     /**
      * Ensures that only one shooter is instantiated.
@@ -44,11 +45,22 @@ public class Shooter extends Subsystem {
             shooter.changeControlMode(CANJaguar.ControlMode.kVoltage);
             shooter.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shooter.enableControl(0);
+            shooter2 = new CANJaguar(ElectricalConstants.jagShooter);
+            shooter2.changeControlMode(CANJaguar.ControlMode.kSpeed);
+            shooter2.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
+            shooter2.configEncoderCodesPerRev(8);
+            shooter2.changeControlMode(CANJaguar.ControlMode.kVoltage);
+            shooter2.configNeutralMode(CANJaguar.NeutralMode.kCoast);
+            shooter2.enableControl(0);
             optical = new Counter(2);
             optical.setMaxPeriod(5);
             optical.setSemiPeriodMode(true);
             optical.start();
             light = new Relay(ElectricalConstants.LEDRelay);
+            shoot = new ShooterPIDCommand(0.00220, shooter, shooter2, optical);
+            Thread thread = new Thread(shoot);
+            thread.setPriority(Thread.MIN_PRIORITY);
+            thread.start();
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -82,10 +94,7 @@ public class Shooter extends Subsystem {
      * @param ff set the feedforward value
      */
     public void setPID(double p, double i, double d, double ff) {
-        ShooterPIDCommand.setP(p);
-        ShooterPIDCommand.setI(i);
-        ShooterPIDCommand.setD(d);
-        ShooterPIDCommand.setFf(ff);
+        
     }
     
     /**
@@ -103,7 +112,7 @@ public class Shooter extends Subsystem {
      */
     public void setSpeed(double rpm) {
         // Made negative so that we don't shoot backwards! -Mr. Lim
-        ShooterPIDCommand.setSetpoint(-rpm);
+        shoot.setSetpoint(rpm);
     }
     
 //    public ShooterPIDCommand getPIDController(){
@@ -114,6 +123,5 @@ public class Shooter extends Subsystem {
      * Initialize PID control as the default command.
      */
     protected void initDefaultCommand() {
-        setDefaultCommand(new ShooterPIDCommand(0, 0, 0, 0, shooter, optical));
     }
 }
