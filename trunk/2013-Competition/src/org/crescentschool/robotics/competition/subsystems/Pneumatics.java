@@ -43,7 +43,7 @@ public class Pneumatics extends Subsystem {
         post = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.postForward, ElectricalConstants.postReverse);
         trayFlip = new DoubleSolenoid(ElectricalConstants.digitalModule, ElectricalConstants.trayFlipForward, ElectricalConstants.trayFlipReverse);
         hang = new Relay(3);
-        tray = new Relay(2);
+        //tray = new Relay(2);
         //Run the compressor
         compressor.start();
 

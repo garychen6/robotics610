@@ -24,7 +24,7 @@ import org.crescentschool.robotics.competition.subsystems.Pneumatics;
 public class ShooterPIDCommand implements Runnable {
 
     //p=0.01, i=0.00001, d=0.0001
-    private static double ff = 1.5 / 580.0;
+    private static double ff = 0.0022;
     private static double setpoint = 0;
     //5675 Long Range
     private static double current;
@@ -50,7 +50,6 @@ public class ShooterPIDCommand implements Runnable {
     private int retractDelay = 12;
     private static double delay = 10;
     Pneumatics pneumatics;
-    OurTimer logTime = OurTimer.getTimer("PID");
 
     public ShooterPIDCommand(double ff, CANJaguar controller, CANJaguar controller2, Counter opticalSensor) {
         oi = OI.getInstance();
@@ -69,9 +68,9 @@ public class ShooterPIDCommand implements Runnable {
     }
 
     public void run() {
-        Logger logger = Logger.getLogger();
-
+        System.out.println("ShooterPIDCommand");
         while (true) {
+            
             //Grab ff and setpoint from Smart Dashboard
             /*
              * 
@@ -83,7 +82,6 @@ public class ShooterPIDCommand implements Runnable {
              * 
              * 
              */
-            setFf(preferences.getDouble("ff", 0));
             //Temporary Code until we have the actual robot and a Pneumatics Class
             //NEEDS TO BE CHANGED BEFORE COMPETITION
             if (shooterAngle == 1) {
@@ -92,14 +90,13 @@ public class ShooterPIDCommand implements Runnable {
                 delay = 10;
             }
             
-            //Logger to log the entire PID loop
-            logTime.stop();
-            logTime = OurTimer.getTimer("PID");
+         
 
             //Read the speed from the optical
             try {
                 if (opticalSensor != null) {
                     //Simplified version of 60/((8/7)*period)
+                    System.out.println(opticalSensor.getPeriod());
                     current = ((105.0) / (2.0 * opticalSensor.getPeriod()));
                     //Post the speed to the smartdashboard
                     SmartDashboard.putNumber("Speed", current);
