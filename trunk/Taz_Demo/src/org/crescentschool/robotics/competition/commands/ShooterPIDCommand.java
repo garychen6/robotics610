@@ -96,7 +96,7 @@ public class ShooterPIDCommand implements Runnable {
             try {
                 if (opticalSensor != null) {
                     //Simplified version of 60/((8/7)*period)
-                    System.out.println(opticalSensor.getPeriod());
+                    //System.out.println(opticalSensor.getPeriod());
                     current = ((105.0) / (2.0 * opticalSensor.getPeriod()));
                     //Post the speed to the smartdashboard
                     SmartDashboard.putNumber("Speed", current);

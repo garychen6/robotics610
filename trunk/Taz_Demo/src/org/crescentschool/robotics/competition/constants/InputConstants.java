@@ -34,4 +34,6 @@ public class InputConstants {
     final public static int l2Button = 7;
     final public static int startButton = 10;
     final public static int selectButton = 9;
+    
+    final public static boolean competitionCode = true;
 }

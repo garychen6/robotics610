@@ -48,39 +48,48 @@ public class KajDrive extends Command {
         shooter.setLight(false);
         double rightSpeed, leftSpeed, x, y;
 
-        if (operator.getRawButton(InputConstants.r1Button)) {
-            halfSpeed = !halfSpeed;
-        }
-        if (!driveTrain.locked && operator.getRawAxis(InputConstants.leftXAxis) > 0.2
-                || operator.getRawAxis(InputConstants.leftXAxis) < -0.2
-                || operator.getRawAxis(InputConstants.leftYAxis) > 0.2
-                || operator.getRawAxis(InputConstants.leftYAxis) < -0.2
-                || operator.getRawAxis(InputConstants.rightXAxis) > 0.2
-                || operator.getRawAxis(InputConstants.rightXAxis) < -0.2
-                || operator.getRawAxis(InputConstants.rightYAxis) > 0.2
-                || operator.getRawAxis(InputConstants.rightYAxis) < -0.2) {
-            driveTrain.locked = true;
-        }
-        if (driveTrain.locked) {
-            x = operator.getRawAxis(InputConstants.rightXAxis);
-            y = operator.getRawAxis(InputConstants.leftYAxis);
+        if (!InputConstants.competitionCode) {
+            if (operator.getRawButton(InputConstants.r1Button)) {
+                halfSpeed = !halfSpeed;
+            }
+            if (!driveTrain.locked && operator.getRawAxis(InputConstants.leftXAxis) > 0.2
+                    || operator.getRawAxis(InputConstants.leftXAxis) < -0.2
+                    || operator.getRawAxis(InputConstants.leftYAxis) > 0.2
+                    || operator.getRawAxis(InputConstants.leftYAxis) < -0.2
+                    || operator.getRawAxis(InputConstants.rightXAxis) > 0.2
+                    || operator.getRawAxis(InputConstants.rightXAxis) < -0.2
+                    || operator.getRawAxis(InputConstants.rightYAxis) > 0.2
+                    || operator.getRawAxis(InputConstants.rightYAxis) < -0.2) {
+                driveTrain.locked = true;
+            }
+            if (driveTrain.locked) {
+                x = operator.getRawAxis(InputConstants.rightXAxis);
+                y = operator.getRawAxis(InputConstants.leftYAxis);
+            } else {
+                x = driver.getRawAxis(InputConstants.rightXAxis);
+                y = driver.getRawAxis(InputConstants.leftYAxis);
+            }
+            if (operator.getRawButton(InputConstants.triangleButton)) {
+                driveTrain.locked = false;
+            }
+            x = x * x * x;
+            y = y * y * y;
+            if (halfSpeed) {
+                leftSpeed = (x - y) / 2;
+                rightSpeed = (-x - y) / 2;
+            } else {
+                leftSpeed = x - y;
+                rightSpeed = -x - y;
+            }
         } else {
             x = driver.getRawAxis(InputConstants.rightXAxis);
             y = driver.getRawAxis(InputConstants.leftYAxis);
-        }
-        if(operator.getRawButton(InputConstants.triangleButton)){
-            driveTrain.locked = false;
-        }
-        x = x * x * x;
-        y = y * y * y;
-        if (halfSpeed) {
-            leftSpeed = (x - y) / 4;
-            rightSpeed = (-x - y) / 4;
-        } else {
+            x = x * x * x;
+            y = y * y * y;
             leftSpeed = x - y;
             rightSpeed = -x - y;
         }
-       // System.out.println("Operator axis: " + operator.getRawAxis(InputConstants.rightXAxis) + " " + operator.getRawAxis(InputConstants.leftYAxis));
+        // System.out.println("Operator axis: " + operator.getRawAxis(InputConstants.rightXAxis) + " " + operator.getRawAxis(InputConstants.leftYAxis));
         //System.out.println("Driver axis: " + driver.getRawAxis(InputConstants.rightXAxis) + " " + driver.getRawAxis(InputConstants.leftYAxis));
         System.out.println("Locked: " + driveTrain.locked);
         if (driver.getRawButton(InputConstants.l1Button)) {
