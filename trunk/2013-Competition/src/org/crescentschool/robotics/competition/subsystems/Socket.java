@@ -30,7 +30,7 @@ public class Socket extends Subsystem {
                 System.out.println("Connected to RoboRealm");
             } catch (Exception ex) {
                 Logger.getLogger().debug("Can't Connect to Socket");
-                SmartDashboard.putString("Messages", "Can't Connect to Socket");
+                //SmartDashboard.putString("Messages", "Can't Connect to Socket");
                 socketConnected = false;
             }
         }

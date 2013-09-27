@@ -289,9 +289,9 @@ public class DriveTrain extends Subsystem {
                 break;
         }
 
-        SmartDashboard.putNumber("Output", error * -p - i * errorI);
-        SmartDashboard.putNumber("turnError", error);
-        SmartDashboard.putNumber("Angle Wanted", angle);
+//        SmartDashboard.putNumber("Output", error * -p - i * errorI);
+//        SmartDashboard.putNumber("turnError", error);
+//        SmartDashboard.putNumber("Angle Wanted", angle);
     }
 
     public void setErrorI(double errorI) {

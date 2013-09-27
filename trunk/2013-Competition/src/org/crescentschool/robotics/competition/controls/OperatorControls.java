@@ -52,22 +52,22 @@ public class OperatorControls extends Command {
             ShooterPIDCommand.setShooterAngle(1);
             setShootingPosition(1);
             shooter.setSpeed(farSpeed);
-            shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+            //shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             pneumatics.setAngleUp(false);
         } else if (operator.getRawButton(InputConstants.l1Button)) {
             setShootingPosition(0);
             shooter.setSpeed(nearSpeed);
-            shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+           // shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             pneumatics.setAngleUp(true);
         } else if (operator.getRawButton(InputConstants.squareButton)) {
             setShootingPosition(2);
             shooter.setSpeed(leftSpeed);
-            shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+            //shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             pneumatics.setAngleUp(false);
         } else if (operator.getRawButton(InputConstants.oButton)) {
             setShootingPosition(3);
             shooter.setSpeed(rightSpeed);
-            shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+           // shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             pneumatics.setAngleUp(false);
         }
         
@@ -101,7 +101,7 @@ public class OperatorControls extends Command {
 
         if (!locking && operator.getRawButton(InputConstants.r1Button)) {
             time = OurTimer.getTimer("tracktime");
-            shooter.setLight(true);
+            //shooter.setLight(true);
             setTrimming(false);
             try {
                 Scheduler.getInstance().add(new LockOn());
@@ -114,14 +114,15 @@ public class OperatorControls extends Command {
         }
         if (locking && !operator.getRawButton(InputConstants.r1Button)) {
             time.stop();
-            shooter.setLight(false);
+            //shooter.setLight(false);
             Scheduler.getInstance().add(new PositionControl(true, 0, true, 0));
             locking = false;
         }
 
         //rightX trim
         double x = operator.getRawAxis(InputConstants.rightXAxis);
-        if(Math.abs(x) > 0.2 && !isTrimming()){
+        double y = operator.getRawAxis(InputConstants.rightYAxis);
+        if((Math.abs(x) > 0.5 ||Math.abs(y)>0.5) && !isTrimming()){
             Scheduler.getInstance().add(new TrimDrive());
             setTrimming(true);
             DriverControls.setDriveMode(4);

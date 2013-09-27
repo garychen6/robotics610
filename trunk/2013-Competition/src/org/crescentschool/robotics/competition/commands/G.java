@@ -6,13 +6,17 @@ package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import org.crescentschool.robotics.competition.constants.ShootingConstants;
 
 /**
  *
  * @author Ian
  */
 public class G extends CommandGroup {
-
+    private int auton = 1;
+    //0 shoot 3
+    //1 shoot 3 drop back
+    //2 drop back shoot 3
     public G() {
         /*
          preferences = Preferences.getInstance();
@@ -35,11 +39,21 @@ public class G extends CommandGroup {
 
 
         // addParallel(new PickUp(true, 0, false));
-
-        addSequential(new Shoot(4, false));
-        addSequential(new PositionControl(true, -7, true, -7));
-        addSequential(new LargeAngleTurn(73.5));
-        addSequential(new PositionControl(true, -11, true, -11));
+//        switch(auton){
+//            case 0:
+//                addSequential(new Shoot(4, false,ShootingConstants.baseNearShooterRPM));
+//            break;
+//            case 1:
+                addSequential(new Shoot(4, false,ShootingConstants.baseNearShooterRPM));
+               addSequential(new PositionControl(true, -15, true, -15));
+//            break;
+//            case 2:
+//                addSequential(new PositionControl(true, -4, true, -4));
+//                addSequential(new Shoot(4, false,ShootingConstants.baseNearShooterRPM-200));
+//            break;
+//                
+//        }
+        //addSequential(new PositionControl(true, -13, true, -13));
 
         /*
          System.out.println("Stage 1 Complete.");
@@ -52,7 +66,7 @@ public class G extends CommandGroup {
          addParallel(new PickUp(true, 1, false));
          addSequential(new PositionControl(true, 14.5 / 2.0, true, 14.5 / 2.0));
          //Feed discs while moving the other half of the way
-         addParallel(new PickUp(true, 1, true));
+         addParallel(new PickUp(true, 1, true)
          addSequential(new PositionControl(true, 15.5 / 2.0, true, 15.5 / 2.0));
 
          //Shoot 2 while moving the intake down
@@ -107,5 +121,19 @@ public class G extends CommandGroup {
 
 
 
+    }
+
+    /**
+     * @return the auton
+     */
+    public int getAuton() {
+        return auton;
+    }
+
+    /**
+     * @param auton the auton to set
+     */
+    public void setAuton(int auton) {
+        this.auton = auton;
     }
 }
