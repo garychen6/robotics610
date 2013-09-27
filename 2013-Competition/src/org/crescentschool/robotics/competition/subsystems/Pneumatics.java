@@ -62,9 +62,9 @@ public class Pneumatics extends Subsystem {
    }
     public void setTray(boolean fire){
         if(fire){
-            tray.set(Relay.Value.kForward);
+            tray.set(Relay.Value.kReverse);
         }else{
-            tray.set(Relay.Value.kOff);
+            tray.set(Relay.Value.kForward);
         }
     }
     public void setAngleUp(boolean fire) {

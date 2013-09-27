@@ -25,6 +25,7 @@ public class Shooter extends Subsystem {
     Counter optical;
     ShooterPIDCommand shoot;
     Relay light;
+    private boolean auton = false;
     /**
      * Ensures that only one shooter is instantiated.
      * @return The singleton shooter instance.
@@ -45,22 +46,20 @@ public class Shooter extends Subsystem {
             shooter.changeControlMode(CANJaguar.ControlMode.kVoltage);
             shooter.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shooter.enableControl(0);
-            shooter2 = new CANJaguar(ElectricalConstants.jagShooter);
+            shooter2 = new CANJaguar(5);
             shooter2.changeControlMode(CANJaguar.ControlMode.kSpeed);
             shooter2.setSpeedReference(CANJaguar.SpeedReference.kQuadEncoder);
             shooter2.configEncoderCodesPerRev(8);
             shooter2.changeControlMode(CANJaguar.ControlMode.kVoltage);
             shooter2.configNeutralMode(CANJaguar.NeutralMode.kCoast);
             shooter2.enableControl(0);
-            optical = new Counter(2);
+            optical = new Counter(3);
             optical.setMaxPeriod(5);
             optical.setSemiPeriodMode(true);
             optical.start();
-            light = new Relay(ElectricalConstants.LEDRelay);
-            shoot = new ShooterPIDCommand(0.00220, shooter, shooter2, optical);
-            Thread thread = new Thread(shoot);
-            thread.setPriority(Thread.MIN_PRIORITY);
-            thread.start();
+            //light = new Relay(ElectricalConstants.LEDRelay);
+           
+            
         } catch (CANTimeoutException ex) {
             ex.printStackTrace();
         }
@@ -112,7 +111,7 @@ public class Shooter extends Subsystem {
      */
     public void setSpeed(double rpm) {
         // Made negative so that we don't shoot backwards! -Mr. Lim
-        shoot.setSetpoint(rpm);
+       ShooterPIDCommand.setSetpoint(rpm);
     }
     
 //    public ShooterPIDCommand getPIDController(){
@@ -123,5 +122,20 @@ public class Shooter extends Subsystem {
      * Initialize PID control as the default command.
      */
     protected void initDefaultCommand() {
+        setDefaultCommand(new ShooterPIDCommand(0.00220, shooter, shooter2, optical));
+    }
+
+    /**
+     * @return the auton
+     */
+    public boolean isAuton() {
+        return auton;
+    }
+
+    /**
+     * @param auton the auton to set
+     */
+    public void setAuton(boolean auton) {
+        this.auton = auton;
     }
 }

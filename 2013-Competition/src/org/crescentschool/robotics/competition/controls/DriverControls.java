@@ -13,6 +13,7 @@ import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.commands.*;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.constants.KinectConstants;
+import org.crescentschool.robotics.competition.constants.ShootingConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Pneumatics;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
@@ -32,6 +33,7 @@ public class DriverControls extends Command {
     public static int driveMode = 0;
     boolean pressed = false;
     boolean trayOut = false;
+    boolean pressedTray = false;
     // 0 = Kaj, 1 = Hang, 2 = Position, 3 = auto turn
 
     protected void initialize() {
@@ -82,15 +84,33 @@ public class DriverControls extends Command {
         }
         if (driver.getRawButton(InputConstants.xButton)) {
             pneumatics.hangControl(false);
+            shooter.setSpeed(ShootingConstants.baseNearShooterRPM-200);
+        }
+         if (driver.getRawButton(InputConstants.l2Button)) {
+            pneumatics.hangControl(true);
+        }
+        if (driver.getRawButton(InputConstants.r2Button)) {
+            pneumatics.hangControl(false);
+            shooter.setSpeed(ShootingConstants.baseNearShooterRPM-200);
         }
         if (!pressed && driver.getRawButton(InputConstants.triangleButton)) {
-            trayOut = !trayOut;
-            pneumatics.trayControl(trayOut);
+            // trayOut = !trayOut;
+            //pneumatics.trayControl(trayOut);
             pressed = true;
         }
         if (!driver.getRawButton(InputConstants.triangleButton)) {
             pressed = false;
         }
+
+        if (!pressedTray && driver.getRawButton(InputConstants.selectButton)) {
+            pneumatics.setTray(trayOut);
+            trayOut = !trayOut;
+            pressedTray = true;
+        }
+        if(!driver.getRawButton(InputConstants.selectButton)){
+            pressedTray = false;
+        }
+        
     }
 
     protected boolean isFinished() {

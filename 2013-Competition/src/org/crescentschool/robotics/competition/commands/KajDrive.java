@@ -35,7 +35,7 @@ public class KajDrive extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        shooter.setLight(false);
+      //  shooter.setLight(false);
         
     }
 
@@ -43,7 +43,7 @@ public class KajDrive extends Command {
     protected void execute() {
                 OurTimer time = OurTimer.getTimer("KajDrive");
 
-        shooter.setLight(false);
+        //shooter.setLight(false);
         double rightSpeed, leftSpeed, x, y;
         x = driver.getRawAxis(InputConstants.rightXAxis);
         y = driver.getRawAxis(InputConstants.leftYAxis);

@@ -140,12 +140,12 @@ public class Intake extends Subsystem {
                 case 2:
                     //target = PIDConstants.armStow;
                     target = preferences.getDouble("stow", 0);
-                    SmartDashboard.putNumber("armCurrent", arm.getOutputCurrent());
+                   // SmartDashboard.putNumber("armCurrent", arm.getOutputCurrent());
                     p = 4;
                     break;
             }
             double change = arm.getPosition() - target;
-            SmartDashboard.putNumber("armPosition", arm.getPosition());
+           // SmartDashboard.putNumber("armPosition", arm.getPosition());
             //System.out.println(arm.getPosition());
             //arm.setX(change * p*0.9);
 

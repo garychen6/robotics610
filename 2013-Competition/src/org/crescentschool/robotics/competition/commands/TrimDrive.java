@@ -51,17 +51,28 @@ public class TrimDrive extends Command {
         OurTimer logTime = OurTimer.getTimer("TrimDrive");
 
         double x = oi.getOperator().getRawAxis(InputConstants.rightXAxis);
-        if (x > 0.2 && !trimStick && trimTime <= 0) {
+        double y = oi.getOperator().getRawAxis(InputConstants.rightYAxis);
+        if (y < -0.5 && !trimStick && trimTime <= 0) {
             driveTrain.setLeftVBus(trimPower);
-            driveTrain.setRightVBus(-trimPower);
-            trimStick = true;
-            trimTime = ShootingConstants.trimTime;
-        } else if (x < -0.2 && !trimStick && trimTime <= 0) {
-            driveTrain.setLeftVBus(-trimPower);
             driveTrain.setRightVBus(trimPower);
             trimStick = true;
             trimTime = ShootingConstants.trimTime;
-        } else if (Math.abs(x) < 0.2) {
+        } else if (y > 0.5 && !trimStick && trimTime <= 0) {
+            driveTrain.setLeftVBus(-trimPower);
+            driveTrain.setRightVBus(-trimPower);
+            trimStick = true;
+            trimTime = ShootingConstants.trimTime;
+        } else if (x > 0.5 && !trimStick && trimTime <= 0) {
+            driveTrain.setLeftVBus(trimPower*0.75);
+            driveTrain.setRightVBus(-trimPower);
+            trimStick = true;
+            trimTime = ShootingConstants.trimTime;
+        } else if (x < -0.5 && !trimStick && trimTime <= 0) {
+            driveTrain.setLeftVBus(-trimPower);
+            driveTrain.setRightVBus(trimPower*0.75);
+            trimStick = true;
+            trimTime = ShootingConstants.trimTime;
+        } else if (Math.abs(x) < 0.5 && Math.abs(y) < 0.5) {
             trimStick = false;
         }
         if (trimTime > 0) {

@@ -43,9 +43,11 @@ public class Coyobot extends IterativeRobot {
         driveTrain = DriveTrain.getInstance();
         constantsTable = Preferences.getInstance();
         //intake = Intake.getInstance();
+        pneumatics = Pneumatics.getInstance();
+       
         autonomousCommand = new G();
+        
     }
-
     /**
      * This function is run when autonomous mode starts.
      */
@@ -53,7 +55,9 @@ public class Coyobot extends IterativeRobot {
         // schedule the autonomous command (example)
         driveTrain.getGyro().reset();
         autonomousCommand.start();
-        OldShooterCode.setAuton(true);
+        //OldShooterCode.setAuton(true);
+        shooter.setAuton(true);
+        pneumatics.setTray(true);
     }
 
     /**
@@ -67,8 +71,10 @@ public class Coyobot extends IterativeRobot {
      * This function is run when driver control starts.
      */
     public void teleopInit() {
+        shooter.setAuton(false);
+        pneumatics.setTray(true);
         autonomousCommand.cancel();
-        OldShooterCode.setAuton(false);
+        ///OldShooterCode.setAuton(false);
         Scheduler.getInstance().add(new DriverControls());
         Scheduler.getInstance().add(new OperatorControls());
         System.out.println("TeleopInit finished");

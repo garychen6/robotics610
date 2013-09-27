@@ -323,14 +323,14 @@ public class OldShooterCode extends Command {
      * and the output.
      */
     public static void pushPIDStats() {
-        SmartDashboard.putNumber("Error", error[0]);
-        SmartDashboard.putNumber("P", p);
-        SmartDashboard.putNumber("I", i);
-        SmartDashboard.putNumber("D", d);
-        SmartDashboard.putNumber("SpeedNum", -current);
-        SmartDashboard.putNumber("SpeedNumGraph", -current);
-        SmartDashboard.putNumber("OpticalPeriod", opticalSensor.getPeriod());
-        SmartDashboard.putNumber("Output", output + ff * setpoint);
+//        SmartDashboard.putNumber("Error", error[0]);
+//        SmartDashboard.putNumber("P", p);
+//        SmartDashboard.putNumber("I", i);
+//        SmartDashboard.putNumber("D", d);
+//        SmartDashboard.putNumber("SpeedNum", -current);
+//        SmartDashboard.putNumber("SpeedNumGraph", -current);
+//        SmartDashboard.putNumber("OpticalPeriod", opticalSensor.getPeriod());
+//        SmartDashboard.putNumber("Output", output + ff * setpoint);
     }
 
     public void handleCANError() {

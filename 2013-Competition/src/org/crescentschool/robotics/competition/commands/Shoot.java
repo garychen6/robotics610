@@ -27,10 +27,11 @@ public class Shoot extends Command {
     int shotFris = 0;
     int frisbees = 0;
     boolean delay = false;
-
-    public Shoot(int frisbees, boolean delay) {
+    int speed = 0;
+    public Shoot(int frisbees, boolean delay, int autonSpeed) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
+        speed = autonSpeed;
         driveTrain = DriveTrain.getInstance();
         requires(driveTrain);
         pneumatics = Pneumatics.getInstance();
@@ -42,10 +43,10 @@ public class Shoot extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+        //shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
         pneumatics.setAngleUp(true);
-        shooter.setSpeed(nearSpeed + 330);
-        OldShooterCode.setAuton(true);
+        shooter.setSpeed(speed+ 330);
+        //OldShooterCode.setAuton(true);
         shotFris = 0;
         fired = false;
         if (delay) {
@@ -62,7 +63,8 @@ public class Shoot extends Command {
         OurTimer time = OurTimer.getTimer("Shoot");
 
         //ADD TRIM
-        if (!fired && OldShooterCode.getCurrent() >= nearSpeed && shotFris < frisbees) {
+        if (!fired && ShooterPIDCommand.getCurrent() >= nearSpeed && shotFris < frisbees) {
+            System.out.println(ShooterPIDCommand.getCurrent()-nearSpeed);
             pneumatics.setFeeder(true);
             fired = true;
             shotFris++;
@@ -73,13 +75,13 @@ public class Shoot extends Command {
                     ex.printStackTrace();
                 }
             }
-            Logger.getLogger().debug(shotFris + "");
-        } else if (OldShooterCode.getCurrent() < nearSpeed) {
+           // Logger.getLogger().debug(shotFris + "");
+        } else if (ShooterPIDCommand.getCurrent() < nearSpeed) {
             pneumatics.setFeeder(false);
             fired = false;
         }
         if (shotFris >= frisbees) {
-            OldShooterCode.setAuton(false);
+           // OldShooterCode.setAuton(false);
             pneumatics.setAngleUp(false);
             //Scheduler.getInstance().add(new PositionControl(true, -11.5, true, -11.5));
             finished = true;
