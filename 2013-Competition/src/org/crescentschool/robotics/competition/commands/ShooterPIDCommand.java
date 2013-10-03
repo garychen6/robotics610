@@ -70,7 +70,7 @@ public class ShooterPIDCommand extends Command {
     }
 
     public void execute() {
-        System.out.println("ShooterPIDCommand");
+        //System.out.println("ShooterPIDCommand");
         //Grab ff and setpoint from Smart Dashboard
             /*
          * 

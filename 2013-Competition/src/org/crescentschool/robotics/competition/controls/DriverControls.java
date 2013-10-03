@@ -56,27 +56,28 @@ public class DriverControls extends Command {
 //            pneumatics.setPowerTakeOff(true);
 //            setDriveMode(1);
 //        }
+        if (InputConstants.competitionCode) {
+            if (getDriveMode() != 2 && driver.getRawAxis(InputConstants.dPadY) < -0.2) {
+                Scheduler.getInstance().add(new PositionControl(true, 5.0, true, 5.0));
+                setDriveMode(2);
+            }
+            if (getDriveMode() != 2 && driver.getRawAxis(InputConstants.dPadY) > 0.2) {
+                Scheduler.getInstance().add(new PositionControl(true, -5.0, true, -5.0));
+                shooter.setSpeed(KinectConstants.baseNearShooterRPM - KinectConstants.moveBack);
+                setDriveMode(2);
+            }
 
-        if (getDriveMode() != 2 && driver.getRawAxis(InputConstants.dPadY) < -0.2) {
-            Scheduler.getInstance().add(new PositionControl(true, 5.0, true, 5.0));
-            setDriveMode(2);
-        }
-        if (getDriveMode() != 2 && driver.getRawAxis(InputConstants.dPadY) > 0.2) {
-            Scheduler.getInstance().add(new PositionControl(true, -5.0, true, -5.0));
-            shooter.setSpeed(KinectConstants.baseNearShooterRPM - KinectConstants.moveBack);
-            setDriveMode(2);
-        }
-
-        if (driver.getRawAxis(InputConstants.dPadX) > 0.2) {
+            if (driver.getRawAxis(InputConstants.dPadX) > 0.2) {
 //            Scheduler.getInstance().add(new PositionControl(true, constantsTable.getDouble("TurnShoot", 0), false, -0.5));
 //            driveTrain.setRightVBus(-1.0);
-            //driveTrain.setAngle(constantsTable.getDouble("TurnShoot", 0), true, 3);
-            setDriveMode(2);
-            Scheduler.getInstance().add(new AngleTurn(constantsTable.getDouble("AngleTurn", 0)));
-        }
-        if (driver.getRawAxis(InputConstants.dPadX) < -0.2) {
-            setDriveMode(2);
-            Scheduler.getInstance().add(new AngleTurn(-constantsTable.getDouble("AngleTurn", 0)));
+                //driveTrain.setAngle(constantsTable.getDouble("TurnShoot", 0), true, 3);
+                setDriveMode(2);
+                Scheduler.getInstance().add(new AngleTurn(constantsTable.getDouble("AngleTurn", 0)));
+            }
+            if (driver.getRawAxis(InputConstants.dPadX) < -0.2) {
+                setDriveMode(2);
+                Scheduler.getInstance().add(new AngleTurn(-constantsTable.getDouble("AngleTurn", 0)));
+            }
         }
         pneumatics.postUp(driver.getRawButton(InputConstants.l1Button));
         if (driver.getRawButton(InputConstants.squareButton)) {
@@ -84,14 +85,14 @@ public class DriverControls extends Command {
         }
         if (driver.getRawButton(InputConstants.xButton)) {
             pneumatics.hangControl(false);
-            shooter.setSpeed(ShootingConstants.baseNearShooterRPM-200);
+            shooter.setSpeed(ShootingConstants.baseNearShooterRPM - 200);
         }
-         if (driver.getRawButton(InputConstants.l2Button)) {
+        if (driver.getRawButton(InputConstants.l2Button)) {
             pneumatics.hangControl(true);
         }
         if (driver.getRawButton(InputConstants.r2Button)) {
             pneumatics.hangControl(false);
-            shooter.setSpeed(ShootingConstants.baseNearShooterRPM-200);
+            shooter.setSpeed(ShootingConstants.baseNearShooterRPM - 200);
         }
         if (!pressed && driver.getRawButton(InputConstants.triangleButton)) {
             // trayOut = !trayOut;
@@ -107,10 +108,10 @@ public class DriverControls extends Command {
             trayOut = !trayOut;
             pressedTray = true;
         }
-        if(!driver.getRawButton(InputConstants.selectButton)){
+        if (!driver.getRawButton(InputConstants.selectButton)) {
             pressedTray = false;
         }
-        
+
     }
 
     protected boolean isFinished() {

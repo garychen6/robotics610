@@ -57,7 +57,7 @@ public class OperatorControls extends Command {
         } else if (operator.getRawButton(InputConstants.l1Button)) {
             setShootingPosition(0);
             shooter.setSpeed(nearSpeed);
-           // shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+            // shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             pneumatics.setAngleUp(true);
         } else if (operator.getRawButton(InputConstants.squareButton)) {
             setShootingPosition(2);
@@ -67,10 +67,10 @@ public class OperatorControls extends Command {
         } else if (operator.getRawButton(InputConstants.oButton)) {
             setShootingPosition(3);
             shooter.setSpeed(rightSpeed);
-           // shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+            // shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             pneumatics.setAngleUp(false);
         }
-        
+
         //shooter.setLight(operator.getRawButton(InputConstants.startButton));
         if (driver.getRawAxis(InputConstants.dPadY) < -0.2) {
             shooter.setSpeed(nearSpeed - ShootingConstants.moveBack);
@@ -98,57 +98,58 @@ public class OperatorControls extends Command {
                 shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
             }
         }
+        if (InputConstants.competitionCode) {
+            if (!locking && operator.getRawButton(InputConstants.r1Button)) {
+                time = OurTimer.getTimer("tracktime");
+                //shooter.setLight(true);
+                setTrimming(false);
+                try {
+                    Scheduler.getInstance().add(new LockOn());
 
-        if (!locking && operator.getRawButton(InputConstants.r1Button)) {
-            time = OurTimer.getTimer("tracktime");
-            //shooter.setLight(true);
-            setTrimming(false);
-            try {
-                Scheduler.getInstance().add(new LockOn());
-              
-                locking = true;
-                
-            } catch (IOException ex) {
-                ex.printStackTrace();
+                    locking = true;
+
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
-        }
-        if (locking && !operator.getRawButton(InputConstants.r1Button)) {
-            time.stop();
-            //shooter.setLight(false);
-            Scheduler.getInstance().add(new PositionControl(true, 0, true, 0));
-            locking = false;
-        }
+            if (locking && !operator.getRawButton(InputConstants.r1Button)) {
+                time.stop();
+                //shooter.setLight(false);
+                Scheduler.getInstance().add(new PositionControl(true, 0, true, 0));
+                locking = false;
+            }
 
-        //rightX trim
-        double x = operator.getRawAxis(InputConstants.rightXAxis);
-        double y = operator.getRawAxis(InputConstants.rightYAxis);
-        if((Math.abs(x) > 0.5 ||Math.abs(y)>0.5) && !isTrimming()){
-            Scheduler.getInstance().add(new TrimDrive());
-            setTrimming(true);
-            DriverControls.setDriveMode(4);
-        }
-        
-        //shooter.setLight(operator.getRawButton(InputConstants.startButton));
-       
+            //rightX trim
+            double x = operator.getRawAxis(InputConstants.rightXAxis);
+            double y = operator.getRawAxis(InputConstants.rightYAxis);
+            if ((Math.abs(x) > 0.5 || Math.abs(y) > 0.5) && !isTrimming()) {
+                Scheduler.getInstance().add(new TrimDrive());
+                setTrimming(true);
+                DriverControls.setDriveMode(4);
+            }
 
-        // leftY trim
-        if (Math.abs(operator.getRawAxis(InputConstants.leftYAxis)) > 0.1) {
-            if (getShootingPosition() == 0) {
-                nearSpeed += operator.getRawAxis(InputConstants.leftYAxis) * -10;
-                shooter.setSpeed(nearSpeed);
-                shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
-            } else if (getShootingPosition() == 1) {
-                farSpeed += operator.getRawAxis(InputConstants.leftYAxis) * -10;
-                shooter.setSpeed(farSpeed);
-                shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
-            } else if (getShootingPosition() == 2) {
-                leftSpeed += operator.getRawAxis(InputConstants.leftYAxis) * -10;
-                shooter.setSpeed(leftSpeed);
-                shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
-            } else if (getShootingPosition() == 3) {
-                rightSpeed += operator.getRawAxis(InputConstants.leftYAxis) * -10;
-                shooter.setSpeed(rightSpeed);
-                shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+            //shooter.setLight(operator.getRawButton(InputConstants.startButton));
+
+
+            // leftY trim
+            if (Math.abs(operator.getRawAxis(InputConstants.leftYAxis)) > 0.1) {
+                if (getShootingPosition() == 0) {
+                    nearSpeed += operator.getRawAxis(InputConstants.leftYAxis) * -10;
+                    shooter.setSpeed(nearSpeed);
+                    shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+                } else if (getShootingPosition() == 1) {
+                    farSpeed += operator.getRawAxis(InputConstants.leftYAxis) * -10;
+                    shooter.setSpeed(farSpeed);
+                    shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+                } else if (getShootingPosition() == 2) {
+                    leftSpeed += operator.getRawAxis(InputConstants.leftYAxis) * -10;
+                    shooter.setSpeed(leftSpeed);
+                    shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+                } else if (getShootingPosition() == 3) {
+                    rightSpeed += operator.getRawAxis(InputConstants.leftYAxis) * -10;
+                    shooter.setSpeed(rightSpeed);
+                    shooter.setPID(PIDConstants.shooterP, PIDConstants.shooterI, PIDConstants.shooterD, PIDConstants.shooterFF);
+                }
             }
         }
 
