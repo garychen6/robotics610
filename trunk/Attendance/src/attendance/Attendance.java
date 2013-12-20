@@ -22,7 +22,7 @@ public class Attendance {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        
+        while(true){
       String []rawList = new String[50];  //their names + y'n
       String []nameList = new String[50];
       String []hereList = new String[50];
@@ -61,29 +61,26 @@ public class Attendance {
         } else {
             System.out.println("Sorry, check your spelling and make sure you're using your full name + Caps!");
         }
-        int length = Array.getLength(list);
+       
         
         
         
-for(int i=0; i<20; i++){
-    if (list[i].equals(name)) {
- //       here[i] = "Y\n";
-    }
-    
-    
-}
+
         FileWriter outFile = new FileWriter("Attendance122.csv");
 
         
-        for(int i=0; i<20; i++){
+        for(int i=0; i<44; i++){
     if (list[i].equals(name)) {
-             hereList[i] = "Y\n";
+             hereList[i] = "Y";
              System.out.println(hereList[i]);
+    }
+    if(hereList[i] == "Y"){
+        hereList[i] = "Y";
     }
     
     
-}
-        for(int i=0; i<20; i++){
+
+        
             outFile.write(list[i] + ",");
             outFile.write(hereList[i] + "\n");
             
@@ -103,7 +100,7 @@ for(int i=0; i<20; i++){
 
 
 
-
+        }
         // TODO code application logic here
     }
 }
