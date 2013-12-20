@@ -76,7 +76,7 @@ for(int i=0; i<20; i++){
 
         
         for(int i=0; i<20; i++){
-    if (nameList[i].equals(name)) {
+    if (list[i].equals(name)) {
              hereList[i] = "Y\n";
              System.out.println(hereList[i]);
     }
@@ -84,7 +84,8 @@ for(int i=0; i<20; i++){
     
 }
         for(int i=0; i<20; i++){
-            outFile.write(hereList[i]);
+            outFile.write(list[i] + ",");
+            outFile.write(hereList[i] + "\n");
             
                    
            
