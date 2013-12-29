@@ -25,7 +25,7 @@ import javax.swing.SwingConstants;
  * @author Jamie 
  * 
  */
-public class Attendance_V2 extends JFrame {
+public class Attendance_V1 extends JFrame {
 
     static public final String name = "Team 610 Attendance"; //Title of the program
     static public final int height = 1200; //Height of box
@@ -43,11 +43,11 @@ public class Attendance_V2 extends JFrame {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        Attendance_V2 Attendance_Final;
-        Attendance_Final = new Attendance_V2();
+        Attendance_V1 Attendance_Final;
+        Attendance_Final = new Attendance_V1();
     }
 
-    public Attendance_V2() throws IOException {
+    public Attendance_V1() throws IOException {
 
         //The constant team size.
         setTitle(name); // sets the title
@@ -84,7 +84,7 @@ public class Attendance_V2 extends JFrame {
                         try {
                             writeToFile();
                         } catch (IOException ex) {
-                            Logger.getLogger(Attendance_V2.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(Attendance_V1.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
                         nameBox.setText("Incorrect name.");
