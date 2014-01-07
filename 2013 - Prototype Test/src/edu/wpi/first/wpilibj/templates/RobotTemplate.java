@@ -31,7 +31,7 @@ public class RobotTemplate extends IterativeRobot {
     Encoder leftEnc, rightEnc;
     Gyro driveGyro;
     int printCount = 0;
-
+/// i dont like it
     public void robotInit() {
         frontLeft = new Talon(6);
         midLeft = new Talon(5);
@@ -46,7 +46,7 @@ public class RobotTemplate extends IterativeRobot {
         rightEnc.start();
         driveGyro = new Gyro(1);
 
-        driveGyro.setSensitivity(0.0125);
+        driveGyro.setSensitivity(0.0016);
         driveGyro.reset();
     }
 
@@ -61,11 +61,13 @@ public class RobotTemplate extends IterativeRobot {
      */
     public void teleopPeriodic() {
         double y = driverStick.getRawAxis(2);
+        double rightY= driverStick.getRawAxis(4);
         double x = driverStick.getRawAxis(3);
 
         double leftSpeed = y - x;
         double rightSpeed = y + x;
-
+        //double leftSpeed = y;
+        //double rightSpeed = rightY;
 
         frontLeft.set(leftSpeed);
         midLeft.set(leftSpeed);
