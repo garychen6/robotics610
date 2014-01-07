@@ -3,15 +3,11 @@ package attendance;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.*;
 import java.util.*;
-import java.lang.*;
+import java.util.Timer;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +27,7 @@ public class Attendance_V1 extends JFrame {
     static public final int height = 1200; //Height of box
     static public final int width = 1650; // Width of box
     private JTextField nameBox;
+    private JLabel image;
     private Container contents;
     private JLabel title;
     private JLabel badName;
@@ -58,29 +55,39 @@ public class Attendance_V1 extends JFrame {
         badName.setHorizontalAlignment(JLabel.CENTER);
         nameBox.setHorizontalAlignment(JTextField.CENTER);
         contents = getContentPane();
+        
         contents.setLayout(new FlowLayout());
         contents.setBackground(Color.green.darker()); //make it a nice dark green        
         contents.add(title);
         contents.add(badName);
+        
         contents.add(nameBox);
 
         nameBox.addKeyListener(new KeyListener() {         //Checks if the enter key is pressed, if it is the entry is put into nameEntry, and the text is erased
 
             public void keyPressed(KeyEvent e) {
+               
 
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     boolean nameMatches = false;
+                    boolean cheatMode = false;
                     for (int i = 0; i < 44; i++) {
                         nameEntry = nameBox.getText();
+                        
+                        
 
                         if (nameEntry.contains(teamList[i])) {
                             nameMatches = true;
 
                         }
+                        
 
                     }
+                    
+                   
                     if (nameMatches) {
-                        nameBox.setText("");
+                        
+                        nameBox.setText("Thanks for signing in!");
                         try {
                             writeToFile();
                         } catch (IOException ex) {
@@ -88,6 +95,9 @@ public class Attendance_V1 extends JFrame {
                         }
                     } else {
                         nameBox.setText("Incorrect name.");
+                        
+                        
+                        
                     }
                 }
 
@@ -143,7 +153,7 @@ public class Attendance_V1 extends JFrame {
             for (int i = 0; i < TEAM_SIZE; i++) {
                 //Set the first value to the name, the next to the attendance value.
                 attendanceList[i][0] = teamList[i];
-                attendanceList[i][1] = "N";
+                attendanceList[i][1] = "No";
             }
         }
         //Create a new scanner to take the user's input.
@@ -162,7 +172,7 @@ public class Attendance_V1 extends JFrame {
             //If the input matches a name,
             if (attendanceList[i][0].equals(name)) {
                 //Set the attendance value to Y
-                attendanceList[i][1] = "Y";
+                attendanceList[i][1] = "Yes";
                 nameExists = true;
             }
             //Write it to the csv file.
