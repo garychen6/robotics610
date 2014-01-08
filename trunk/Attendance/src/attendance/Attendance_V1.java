@@ -63,11 +63,12 @@ public class Attendance_V1 extends JFrame {
         FlowLayout Layout = new FlowLayout();
         contents.setLayout(Layout);
     //   contents.setLayout(layout);
-        contents.setBackground(Color.green.darker()); //make it a nice dark green        
+        contents.setBackground(Color.green.darker().darker().darker()); //make it a nice dark green        
         contents.add(title);
-        contents.add(badName);
+        
         
         contents.add(nameBox);
+        contents.add(badName);
 
         nameBox.addKeyListener(new KeyListener() {         //Checks if the enter key is pressed, if it is the entry is put into nameEntry, and the text is erased
 
@@ -85,6 +86,7 @@ public class Attendance_V1 extends JFrame {
 
                         if (nameEntry.contains(teamList[i])) {
                             nameMatches = true;
+                             contents.setBackground(Color.green.darker().darker().darker());
 
                         }
                         
@@ -106,7 +108,8 @@ public class Attendance_V1 extends JFrame {
                         }
                     } else {
                         badName.setText("Incorrect name.");
-                        nameBox.setText("");
+                        contents.setBackground(Color.red.darker());
+                       
                         
                         
                         
