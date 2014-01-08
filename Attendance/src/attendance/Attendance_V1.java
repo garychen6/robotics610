@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.SpringLayout;
 
 /**
  *
@@ -49,14 +49,20 @@ public class Attendance_V1 extends JFrame {
         //The constant team size.
         setTitle(name); // sets the title
         setSize(width, height); //sets the size
-        title = new JLabel("Please enter your full name.", SwingConstants.CENTER); //Instruction Label
+        title = new JLabel("Please enter your full name."); //Instruction Label
         nameBox = new JTextField(20); //box for entry of info 
-        badName = new JLabel();
+        badName = new JLabel("");
         badName.setHorizontalAlignment(JLabel.CENTER);
+        title.setHorizontalAlignment(JLabel.CENTER);
+        title.setVerticalAlignment(JLabel.CENTER);
         nameBox.setHorizontalAlignment(JTextField.CENTER);
+        title.setVerticalAlignment(JLabel.CENTER);
         contents = getContentPane();
-        
-        contents.setLayout(new FlowLayout());
+        Timer timer = new Timer("Reset");
+       
+        FlowLayout Layout = new FlowLayout();
+        contents.setLayout(Layout);
+    //   contents.setLayout(layout);
         contents.setBackground(Color.green.darker()); //make it a nice dark green        
         contents.add(title);
         contents.add(badName);
@@ -71,6 +77,7 @@ public class Attendance_V1 extends JFrame {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     boolean nameMatches = false;
                     boolean cheatMode = false;
+                    
                     for (int i = 0; i < 44; i++) {
                         nameEntry = nameBox.getText();
                         
@@ -87,14 +94,19 @@ public class Attendance_V1 extends JFrame {
                    
                     if (nameMatches) {
                         
-                        nameBox.setText("Thanks for signing in!");
+                        badName.setText("Thanks for signing in!");
+                        nameBox.setText("");
+                     
+                        
+ 
                         try {
                             writeToFile();
                         } catch (IOException ex) {
                             Logger.getLogger(Attendance_V1.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
-                        nameBox.setText("Incorrect name.");
+                        badName.setText("Incorrect name.");
+                        nameBox.setText("");
                         
                         
                         
