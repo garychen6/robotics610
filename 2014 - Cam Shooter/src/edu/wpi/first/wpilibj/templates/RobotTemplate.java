@@ -20,13 +20,13 @@ import edu.wpi.first.wpilibj.Victor;
  */
 public class RobotTemplate extends IterativeRobot {
 
-    int cameraRelay = 1;
     Victor catapult;
     Joystick joystick;
     DigitalInput optical;
-    boolean loaded = false;
-    boolean rest = true;
-    int stopping = 0;
+    boolean rest;
+    boolean fired;
+    int stopping;
+    int firing;
 
    
     /**
@@ -34,10 +34,12 @@ public class RobotTemplate extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-
+        stopping = 0;
         catapult = new Victor(2);
         joystick = new Joystick(1);
-        optical = new DigitalInput(1, cameraRelay);
+        optical = new DigitalInput(1, 1);
+        rest = true;
+        firing = 0;
     }
 
     /**
@@ -52,32 +54,25 @@ public class RobotTemplate extends IterativeRobot {
     public void teleopPeriodic() {
         if (optical.get() && rest == false) {
             catapult.set(1);
-
             stopping = 10;
-        } else if (joystick.getRawButton(1)) {
+        } else if (joystick.getRawButton(InputConstants.kR2Button) && fired == false) {
             catapult.set(1);
-            System.out.println("Trigger pressed");
+            firing = 2;
             rest = false;
+            fired = true;
         } else {
-            if (stopping > 0) {
+            if(firing > 0){
+                catapult.set(1);
+                firing--;
+            } else if (stopping > 0) {
                 rest = true;
                 catapult.set(-0.2);
                 stopping--;
-                System.out.println("Stopping");
-
             } else {
-
                 catapult.set(0);
-
-                System.out.println("Stopped");
-
+                fired = false;
             }
-
-
         }
-
-
-
     }
 
     /**
