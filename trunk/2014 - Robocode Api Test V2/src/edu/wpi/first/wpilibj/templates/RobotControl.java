@@ -88,7 +88,7 @@ public class RobotControl {
         }
         setStop(false);
     }
-
+    
     public void setTurnRight(int degrees) {
         double minSpeed = 0.175;
         double minSpeed2 = 0.145;
@@ -101,14 +101,13 @@ public class RobotControl {
 
         while (angle > sG - degrees) {
             angle = driveGyro.getAngle();
-            if (angle > sG) {
-                angle = sG - 0.5;
-            }
-            if (angle > sG - halfDegrees) {
-                speed = minSpeed + ((angle - sG) / (halfDegrees) * (maxSpeed - minSpeed));
-            } else {
-                speed = maxSpeed - ((angle - (sG - ((angle - sG) + degrees))) / (degrees)) * (maxSpeed - minSpeed2);
-
+            if(angle>=sG){
+                angle = sG-0.5;
+            }            
+            if(angle>sG-halfDegrees){
+                speed = minSpeed-((angle-sG)/(halfDegrees)*(maxSpeed-minSpeed));
+            }else{
+                speed = maxSpeed+((angle-(sG-((angle-sG)+degrees)))/(degrees))*(maxSpeed-minSpeed2);
                 if (speed < minSpeed2) {
                     speed = minSpeed2;
                     System.out.println("min");
