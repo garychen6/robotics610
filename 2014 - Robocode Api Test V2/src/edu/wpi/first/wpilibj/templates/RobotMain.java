@@ -55,15 +55,12 @@ public class RobotMain extends IterativeRobot {
         robot.setLeft(lSpeed);
         robot.setRight(rSpeed);
         
-        if(!down){
-            if(driver.getRawButton(2)){
-                robot.setTurnLeft(90);
-            }else if(driver.getRawButton(4)){
-                down = true;
-                robot.setTurnRight(90);
-                down = true;
-            }
-        }
+        if(driver.getRawButton(2))
+                robot.setTurnLeft(45);
+        
+        if(driver.getRawButton(4))
+                robot.setTurnRight(45);
+        
         robot.printSensors();
     }
     
