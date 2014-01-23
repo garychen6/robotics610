@@ -46,33 +46,27 @@ public class RobotControl {
     }
 
     public void setTurnLeft(int degrees) {
+
         
         //Local Variables
-        double minSpeed = 0.175;
-        double minSpeed2 = 0.145;
+        double minSpeed = 0.35;
+        double minSpeed2 = 0.23;
         double maxSpeed = 0.7;
         double speed;
 
-        int halfDegrees = degrees / 2;
+        double halfDegrees = degrees / 3;
         double sG = driveGyro.getAngle();
         double angle = sG;
-        
-        
+
         while (angle < sG + degrees) {  //Turn loop
             angle = driveGyro.getAngle();
 
-            
-            if (angle < sG) {   //Gyro value can sometimes start negative, consequently the robot will not move
-                angle = sG + 0.5;
-            }
-            
             /*
-            Speed scales based on the percentage of the half turn complete
-            Min. Speed <= speed <= Max. Speed
-            */
-            
+             Speed scales based on the percentage of the half turn complete
+             Min. Speed <= speed <= Max. Speed
+             */
             if (angle < sG + halfDegrees) { //First half of turn
-                speed = minSpeed + ((angle - sG) / (halfDegrees) * (maxSpeed - minSpeed)); 
+                speed = minSpeed + ((angle - sG) / (halfDegrees) * (maxSpeed - minSpeed));
                 if (speed < minSpeed) { //Min. speed restriction
                     speed = minSpeed;
                 }
@@ -91,33 +85,32 @@ public class RobotControl {
         setStop(false); //Stop at end of turn
         parent.down = false;
     }
-    
+
     public void setTurnRight(int degrees) {
         
         //Local Variables
-        double minSpeed = 0.175;
-        double minSpeed2 = 0.145;
+        double minSpeed = 0.35;
+        double minSpeed2 = 0.23;
         double maxSpeed = 0.7;
         double speed;
-        
-        int halfDegrees = degrees / 2;
+
+        double halfDegrees = degrees / 3;
         double sG = driveGyro.getAngle();
         double angle = sG;
 
         /*
-        Speed scales based on the percentage of the half turn complete
-        Min. Speed <= speed <= Max. Speed
-        */
-        
+         Speed scales based on the percentage of the half turn complete
+         Min. Speed <= speed <= Max. Speed
+         */
         while (angle > sG - degrees) {  //First half of turn
             angle = driveGyro.getAngle();
-            if(angle>=sG){
-                angle = sG-0.5;
-            }            
-            if(angle>sG-halfDegrees){
-                speed = minSpeed-((angle-sG)/(halfDegrees)*(maxSpeed-minSpeed));
-            }else{  //Second half of turn
-                speed = maxSpeed+((angle-(sG-((angle-sG)+degrees)))/(degrees))*(maxSpeed-minSpeed2);
+            if (angle > sG - halfDegrees) {
+                speed = minSpeed - ((angle - sG) / (halfDegrees) * (maxSpeed - minSpeed));
+                if (speed < minSpeed) { //Min. speed restriction
+                    speed = minSpeed;
+                }
+            } else {  //Second half of turn
+                speed = maxSpeed + ((angle - (sG - ((angle - sG) + degrees))) / (degrees)) * (maxSpeed - minSpeed2);
                 if (speed < minSpeed2) {    //Min. speed restriction
                     speed = minSpeed2;
                 }
