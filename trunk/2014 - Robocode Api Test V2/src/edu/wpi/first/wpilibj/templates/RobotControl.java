@@ -22,14 +22,11 @@ public class RobotControl {
     Gyro driveGyro;
 
     private RobotMain parent;
-    private Timer controlTime;
 
     private int ticks = 0;
 
     public RobotControl(RobotMain parent) {
         this.parent = parent;
-
-        controlTime = new Timer();
 
         frontLeft = new Talon(6);
         midLeft = new Talon(5);
@@ -83,7 +80,6 @@ public class RobotControl {
             setRight(-speed);
         }
         setStop(false); //Stop at end of turn
-        parent.down = false;
     }
 
     public void setTurnRight(int degrees) {
@@ -122,21 +118,9 @@ public class RobotControl {
             setRight(speed);
         }
         setStop(false); //Stop at end of turn
-        parent.down = false;
     }
 
     public void setStop(boolean brake) {
-        double lastTime = getTimeMSec();
-
-        if (brake) {
-            //int mod = leftEnc.getDirection() ? 1 : -1;
-            int mod = -1;
-
-            while (lastTime < getTimeMSec() + Constants.BRAKE_TIME_MSEC) {
-                setLeft(Constants.MID_SPEED * mod);
-                setRight(Constants.MID_SPEED * mod);
-            }
-        }
         setLeft(0);
         setRight(0);
     }
@@ -264,36 +248,13 @@ public class RobotControl {
         leftEnc.start();
         rightEnc.start();
         driveGyro.reset();
-
-        controlTime.start();
     }
 
     public void stop() {
-        controlTime.stop();
         resetEncoders();
     }
 
     public int getEncoders() {
         return (Math.abs(leftEnc.getRaw()) + Math.abs(rightEnc.getRaw())) / 2;
-    }
-
-    public double getTime() {
-        return controlTime.get();
-    }
-
-    public double getTimeMSec() {
-        return getTime() / 1000;
-    }
-
-    public double getTimeSec() {
-        return getTime() / 100000;
-    }
-
-    public double getPercentage(double num, double denom) {
-        return getPercentageDecimal(num, denom) * 100;
-    }
-
-    public double getPercentageDecimal(double num, double denom) {
-        return (num / denom);
     }
 }
