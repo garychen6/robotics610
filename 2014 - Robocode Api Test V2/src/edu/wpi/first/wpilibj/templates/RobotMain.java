@@ -38,7 +38,7 @@ public class RobotMain extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-
+ 
     }
 
     /**
@@ -55,12 +55,20 @@ public class RobotMain extends IterativeRobot {
         robot.setLeft(lSpeed);
         robot.setRight(rSpeed);
         
-        if(driver.getRawButton(2))
-                robot.setTurnLeft(90);
+       if(driver.getRawButton(2)){
+            robot.setTurnLeft(90);
+        }
         
-        if(driver.getRawButton(4))
+        if(driver.getRawButton(4)){
+            robot.setTurnRight(90);
+        }
+                
+        if(driver.getRawButton(5)){
+            for(int i = 0; i<3; i++){
+                robot.setForward(180);
                 robot.setTurnRight(90);
-        
+            }
+        }
         robot.printSensors();
     }
     
