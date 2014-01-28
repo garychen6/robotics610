@@ -44,11 +44,10 @@ public class RobotControl {
 
     public void setTurnLeft(int degrees) {
 
-        
         //Local Variables
         double minSpeed = 0.35;
-        double minSpeed2 = 0.23;
-        double maxSpeed = 0.7;
+        double minSpeed2 = 0.15;
+        double maxSpeed = 0.6;
         double speed;
 
         double halfDegrees = degrees / 3;
@@ -79,15 +78,23 @@ public class RobotControl {
             setLeft(speed);
             setRight(-speed);
         }
+
+        while (angle - (sG + degrees) >= 1) { //Pull back if overshooting turn     
+            System.out.println("Overturn Left");
+            speed = minSpeed;
+            setLeft(-speed);
+            setRight(speed);
+        }
+        
         setStop(false); //Stop at end of turn
     }
 
     public void setTurnRight(int degrees) {
-        
+
         //Local Variables
         double minSpeed = 0.35;
-        double minSpeed2 = 0.23;
-        double maxSpeed = 0.7;
+        double minSpeed2 = 0.15;
+        double maxSpeed = 0.6;
         double speed;
 
         double halfDegrees = degrees / 3;
@@ -117,6 +124,14 @@ public class RobotControl {
             setLeft(-speed);
             setRight(speed);
         }
+
+        while (angle + (sG + degrees) <= -1) { //Pull back if overshooting turn 
+            System.out.println("Overturn Right");
+            speed = minSpeed*2;
+            setLeft(speed);
+            setRight(-speed);
+        }
+
         setStop(false); //Stop at end of turn
     }
 
