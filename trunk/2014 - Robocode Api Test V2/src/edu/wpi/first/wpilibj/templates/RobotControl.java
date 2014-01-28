@@ -24,6 +24,9 @@ public class RobotControl {
     private RobotMain parent;
 
     private int ticks = 0;
+    private int iCap = 1000;
+    private int iCount = 0;
+    private boolean finished = false;
 
     public RobotControl(RobotMain parent) {
         this.parent = parent;
@@ -40,6 +43,7 @@ public class RobotControl {
 
         driveGyro = new Gyro(1);
         driveGyro.setSensitivity(Constants.GYRO_SENSITIVITY);
+        starts();
     }
 
     public void setTurnLeft(int degrees) {
@@ -79,13 +83,12 @@ public class RobotControl {
             setRight(-speed);
         }
 
-        while (angle - (sG + degrees) >= 1) { //Pull back if overshooting turn     
+        while(angle >=(sG+degrees)+1){
             System.out.println("Overturn Left");
             speed = minSpeed;
             setLeft(-speed);
             setRight(speed);
         }
-        
         setStop(false); //Stop at end of turn
     }
 
@@ -125,13 +128,14 @@ public class RobotControl {
             setRight(speed);
         }
 
-        while (angle + (sG + degrees) <= -1) { //Pull back if overshooting turn 
+        //-45<=(45-90)-1
+        while(angle<=(sG-degrees)-1){
             System.out.println("Overturn Right");
             speed = minSpeed*2;
             setLeft(speed);
             setRight(-speed);
         }
-
+   
         setStop(false); //Stop at end of turn
     }
 
@@ -139,12 +143,61 @@ public class RobotControl {
         setLeft(0);
         setRight(0);
     }
-
+    public void setForward(int encTicks){
+        int lastEnc = getEncoders();
+        while(getEncoders()<lastEnc+encTicks){
+            System.out.println("enc:"+getEncoders()+", lc"+lastEnc+encTicks);
+            setForward(0.5);
+        }
+        setStop(false);
+    }
     public void setForward(double speed) {
         setLeft(speed);
         setRight(speed);
     }
+    public void setForward3(int targetInches){
+        //Get the left and right values on the encoders
+        
+        double p = 0.02;
+        double i = 0.0008;
+        
+        double leftInches = toInches(leftEnc.get());
+        double rightInches = toInches(rightEnc.get());
+        double leftSpeed = (targetInches - leftInches) * p;
+        double rightSpeed = (targetInches - rightInches) * p;
 
+        if (leftSpeed > 0.05) {
+            if (iCount < iCap) {
+                iCount++;
+            }
+        } else if (leftSpeed < -.05) {
+            if (iCount > -iCap) {
+                iCount--;
+            }
+        }
+        double encoderError = Math.abs(targetInches-(leftInches+rightInches)/2.0);
+        if(encoderError<0.1){
+            finished = true;
+            iCount=0;
+        }
+        double gyroError = Math.abs(driveGyro.getAngle());
+        if (driveGyro.getAngle() < -0.5) {
+
+            rightSpeed -= gyroError * 0.05;
+
+            leftSpeed += gyroError * 0.05;
+
+        } else if (driveGyro.getAngle() > 0.5) {
+            rightSpeed += gyroError * 0.05;
+            leftSpeed -= gyroError * 0.05;
+
+        }
+        
+        leftSpeed += i * iCount;
+        rightSpeed += i * iCount;
+        setLeft(leftSpeed);
+        setRight(rightSpeed);
+    }
     public void setForward2(int inches, double speed) {
         resetEncoders();
 
@@ -259,7 +312,7 @@ public class RobotControl {
         rightEnc.reset();
     }
 
-    public void start() {
+    public void starts() {
         leftEnc.start();
         rightEnc.start();
         driveGyro.reset();
@@ -270,6 +323,9 @@ public class RobotControl {
     }
 
     public int getEncoders() {
-        return (Math.abs(leftEnc.getRaw()) + Math.abs(rightEnc.getRaw())) / 2;
+        return (Math.abs(leftEnc.get()) + Math.abs(rightEnc.get())) / 2;
+    }
+    private double toInches(int encCount) {
+        return ((int) (encCount / 10.24 * Math.PI * 6 + 0.5)) / 100.0*3.8;
     }
 }
