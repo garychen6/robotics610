@@ -42,6 +42,7 @@ public class RobotTemplate extends IterativeRobot {
     Preferences prefs;
     boolean pastLimit = false;
     Victor catapult;
+    Victor secondCatapult;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -53,7 +54,7 @@ public class RobotTemplate extends IterativeRobot {
         optical = new DigitalInput(1, opticalPort);
         pot = new AnalogPotentiometer(2);
         prefs = Preferences.getInstance();
-
+        secondCatapult = new Victor(3);
     }
 
     /**
@@ -80,7 +81,9 @@ public class RobotTemplate extends IterativeRobot {
 //        } else {
 //            catapult.set(0);
 //        }
-
+        if(joystick.getRawButton(3)){
+            secondCatapult.set(0.8);
+        }
         switch (stage) {
             case 0:
                 double error = loadedPosition - potValue;
