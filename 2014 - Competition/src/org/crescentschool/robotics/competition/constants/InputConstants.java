@@ -23,7 +23,7 @@ public class InputConstants {
     final public static int dPadX = 5;
     //D-Pad Vertical 
     final public static int dPadY = 6;
-    //Buttons(PS3 Controls)
+    //Buttons(PlayStation Controls)
     final public static int xButton = 2;
     final public static int oButton = 3;
     final public static int squareButton = 1;

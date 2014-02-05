@@ -13,12 +13,15 @@ public class ElectricalConstants {
     public static final int catcherSensor = 5;
     public static final int compressorPressureSwitch = 6;
     public static final int compressorRelay = 1;
-    public static final int catcherSolenoidForward = 3;
-    public static final int catcherSolenoidReverse = 4;
-    public static final int leftIntakeSolenoidForward = 5;
-    public static final int leftIntakeSolenoidReverse = 6;
-    public static final int rightIntakeSolenoidForward = 1;
-    public static final int rightIntakeSolenoidReverse = 2;
+    public static final int catcherSolenoidForward = -1;
+    public static final int catcherSolenoidReverse = -1;
+    public static final int intakeSolenoidForward = 1;
+    public static final int intakeSolenoidReverse = 2;
+    public static final int rightIntakeSolenoidForward = -1;
+    public static final int rightIntakeSolenoidReverse = -1;
+        public static final int leftIntakeWristSolenoidForward = 3;
+    public static final int leftIntakeWristSolenoidReverse = 4;
+
     public static final int leftIntakeRoller = 7;
     public static final int rightIntakeRoller = 8;
     public static final int leftEncoderASource = 2;

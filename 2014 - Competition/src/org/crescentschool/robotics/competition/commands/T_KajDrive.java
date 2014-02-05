@@ -32,6 +32,7 @@ public class T_KajDrive extends Command {
         System.out.println("Kaj Drive");
 
         prefs = Preferences.getInstance();
+        driveTrain.resetGyro(); 
         //Take control of the drivetrain
         requires(driveTrain);
 
@@ -41,24 +42,24 @@ public class T_KajDrive extends Command {
     }
 
     protected void execute() {
+        SmartDashboard.putNumber("Gyro", driveTrain.getGyroDegrees());
         //Create variables for x, y, right speed and the left speed
         double rightSpeed, leftSpeed, x, y;
         //Set x and y to their axis values
         x = driver.getRawAxis(InputConstants.rightXAxis);
         y = driver.getRawAxis(InputConstants.leftYAxis);
-        //Cube the values
-        x = x * x * x;
-        y = y * y * y;
+        
         //Set the left and rightspeed using x and y
-        leftSpeed = y + x;
-        rightSpeed = y - x;
+        leftSpeed = y - x;
+        rightSpeed = y + x;
         //Set the left and right side of the drive
         driveTrain.setLeftVBus(-leftSpeed);
         driveTrain.setRightVBus(-rightSpeed);
-
+        
 
         SmartDashboard.putNumber("leftEnc", driveTrain.getLeftEncoderInches());
         SmartDashboard.putNumber("rightEnc", driveTrain.getRightEncoderInches());
+     
     }
 
     protected boolean isFinished() {
