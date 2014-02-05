@@ -20,10 +20,13 @@ public class BackgroundCompressor extends Subsystem {
 
     private BackgroundCompressor() {
         //Initialize the compressor and start it once the instance is created.
-        compressor = new Compressor(ElectricalConstants.compressorPressureSwitch, ElectricalConstants.compressorRelay);
+        compressor = new Compressor(6, 1);
+        System.out.println(compressor.getPressureSwitchValue());
         compressor.start();
+        System.out.println("Compressor started");
     }
-    
+
+
 //Get the singleton instance of the compressor.
     public static BackgroundCompressor getInstance() {
         if (instance == null) {

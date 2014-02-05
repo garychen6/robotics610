@@ -4,6 +4,7 @@
  */
 package org.crescentschool.robotics.competition.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.Talon;
@@ -37,13 +38,17 @@ public class DriveTrain extends Subsystem {
         rightEncoder.setReverseDirection(true);
         leftEncoder.start();
         rightEncoder.start();
+
         //Create the gyro, set it sensitivity, and start it at 0 degrees.
         gyro = new Gyro(ElectricalConstants.gyroInput);
         gyro.setSensitivity(ElectricalConstants.gyroSensitivity);
         gyro.reset();
 
+
+     
+
     }
-    
+
     //Get the singleton instance of drivetrain.
     static public DriveTrain getInstance() {
         if (instance == null) {
@@ -51,44 +56,54 @@ public class DriveTrain extends Subsystem {
         }
         return instance;
     }
-    public void resetEncoders(){
-        rightEncoder.reset();
-        leftEncoder.reset();
-    }
     //Start KajDrive when the drivetrain is first created.
+
     protected void initDefaultCommand() {
         setDefaultCommand(new T_KajDrive());
     }
+
+    public void resetEncoders() {
+        rightEncoder.reset();
+        leftEncoder.reset();
+    }
+
     //Return the gyro's reading rounded to the nearest int.
     public double getGyroDegrees() {
-        return gyro.getAngle();
+
+        return -gyro.getAngle();
+    }
+
+    public void resetGyro() {
+        gyro.reset();
     }
     //Return the left encoder value in inches.
-    public double getLeftEncoderInches(){
+
+    public double getLeftEncoderInches() {
         return toInches(leftEncoder.get());
-        
+
     }
     //Return the right encoder value in inches.
-    public double getRightEncoderInches(){
+
+    public double getRightEncoderInches() {
         return toInches(rightEncoder.get());
     }
     //Set the left side of the drivetrain using vbus
+
     public void setLeftVBus(double value) {
-        leftFront.set(-value);
-        leftMiddle.set(-value);
-        leftBack.set(-value);
+        leftFront.set(value);
+        leftMiddle.set(value);
+        leftBack.set(value);
     }
     //Set the right side of the drivetrain using vbus.
+
     public void setRightVBus(double value) {
         rightFront.set(-value);
         rightMiddle.set(-value);
         rightBack.set(-value);
     }
     //Mr. Lim's equation to convert encoder counts to inches.
+
     private double toInches(int encCount) {
-        return ((int) (encCount / 10.24 * Math.PI * 6 + 0.5)) / 100.0*3.8;
-    }
-    public void resetGyro(){
-        gyro.reset();
+        return ((int) (encCount / 10.24 * Math.PI * 6 + 0.5)) / 100.0 * 3.8;
     }
 }

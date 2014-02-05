@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
@@ -26,19 +27,20 @@ public class A_PositionMove extends Command {
     private int iCount = 0;
     private OI oi;
     private Joystick driver;
+    private int finishedCount = 0;
     private boolean finished = false;
 
     //NOT IMPLEMENTED/TESTED YET
     //Create a position move
     public A_PositionMove(double targetInches) {
-
+        setTimeout(3);
         //Get the robot preferences from the smartdashboard
         prefs = Preferences.getInstance();
 
         //Save the target number of inches.
         this.targetInches = targetInches;
         driveTrain = DriveTrain.getInstance();
-        
+        finishedCount = 0;
         oi = OI.getInstance();
         driver = oi.getDriver();
         //Take control of the drivetrain
@@ -52,8 +54,8 @@ public class A_PositionMove extends Command {
     }
 
     protected void execute() {
-        double p = prefs.getDouble("driveP", 0);
-        double i = prefs.getDouble("driveI", 0);
+        double p = PIDConstants.positionP;
+        double i = PIDConstants.positionI;
 
 
         //Get the left and right values on the encoders
@@ -69,39 +71,56 @@ public class A_PositionMove extends Command {
                 iCount++;
             }
         } else if (leftSpeed < -.05) {
-            if (iCount > -iCap) {
+            if (iCount
+                    > -iCap) {
                 iCount--;
             }
         }
-        double encoderError = Math.abs(targetInches-(leftInches+rightInches)/2.0);
-        if(encoderError<0.1){
-            finished = true;
-            iCount=0;
+        double encoderError = Math.abs(targetInches - (leftInches + rightInches) / 2.0);
+        if (encoderError < 0.1) {
+        }
+
+        if (Math.abs(targetInches - leftInches) < 2 || Math.abs(targetInches - rightInches) < 2) {
+            finishedCount++;
+            if (finishedCount > 20) {
+                finished = true;
+                iCount = 0;
+
+            }
+
+        } else {
+            finished = false;
         }
         double gyroError = Math.abs(driveTrain.getGyroDegrees());
-        if (driveTrain.getGyroDegrees() < -0.5) {
+        if (driveTrain.getGyroDegrees() < -0.1) {
 
             rightSpeed -= gyroError * 0.05;
 
             leftSpeed += gyroError * 0.05;
 
-        } else if (driveTrain.getGyroDegrees() > 0.5) {
+        } else if (driveTrain.getGyroDegrees() > 0.1) {
             rightSpeed += gyroError * 0.05;
             leftSpeed -= gyroError * 0.05;
 
         }
-        
+
         SmartDashboard.putNumber("Gyro", driveTrain.getGyroDegrees());
-        SmartDashboard.putNumber("driveI", iCount * i);
+
+
         leftSpeed += i * iCount;
         rightSpeed += i * iCount;
+        SmartDashboard.putNumber("leftSpeed", leftSpeed);
+        SmartDashboard.putNumber("rightSpeed", rightSpeed);
         driveTrain.setLeftVBus(leftSpeed);
         driveTrain.setRightVBus(rightSpeed);
-        
+
     }
 
     protected boolean isFinished() {
-        return finished;
+        if (finished || isTimedOut()) {
+            System.out.println("Position Move Finished");
+        }
+        return finished || isTimedOut();
     }
 
     protected void end() {

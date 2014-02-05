@@ -23,12 +23,18 @@ public class Camera extends Subsystem {
 
     private AxisCamera camera;
     private int offset = 0;
-
+    private static Camera instance = null;
     private Camera() {
         //Get the camera and save the reference.
         camera = AxisCamera.getInstance();
 
 
+    }
+    public static Camera getInstance(){
+        if (instance == null){
+            instance = new Camera();
+        }
+        return instance;
     }
 
     public void processCamera() {

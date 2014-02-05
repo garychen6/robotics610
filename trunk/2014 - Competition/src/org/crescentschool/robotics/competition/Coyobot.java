@@ -36,7 +36,9 @@ public class Coyobot extends IterativeRobot {
     public void robotInit() {
         backgroundCompressor = BackgroundCompressor.getInstance();
         oi = OI.getInstance();
-        autonomousCommand = new A_MiddleTwoBall();
+        Scheduler.getInstance().add(new DriverControls());
+
+        //autonomousCommand = new A_MiddleTwoBall();
 
     }
 
@@ -44,9 +46,9 @@ public class Coyobot extends IterativeRobot {
      * This function is run when autonomous mode starts.
      */
     public void autonomousInit() {
-                autonomousCommand = new A_MiddleTwoBall();
-
-        autonomousCommand.start();
+//                autonomousCommand = new A_MiddleTwoBall();
+//
+//        autonomousCommand.start();
         // schedule the autonomous command (example)
     }
 
@@ -61,10 +63,7 @@ public class Coyobot extends IterativeRobot {
      * This function is run when driver control starts.
      */
     public void teleopInit() {
-Joystick driver;
-Button button;
-        driver = new Joystick(1);
-driver.getButton(Joystick.ButtonType.kTop);
+
         Scheduler.getInstance().add(new DriverControls());
 
 

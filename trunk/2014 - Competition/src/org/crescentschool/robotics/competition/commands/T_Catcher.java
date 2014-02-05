@@ -54,7 +54,7 @@ public class T_Catcher extends Command {
         //If the catcher is open, open the catcher and intake.
         if (catcherOpen) {
             catcher.setCatcherOpen(true);
-            intake.setPositionDown(true);
+//            intake.setPositionDown(true);
             //If the catcher is open, take control of the intake as well. 
             requires(intake);
             //If any of the intake buttons are pressed, release control of the intake and close the catcher.
@@ -67,7 +67,7 @@ public class T_Catcher extends Command {
         else {
 
             catcher.setCatcherOpen(false);
-            intake.setPositionDown(false);
+//            intake.setPositionDown(false);
 
         }
     }
