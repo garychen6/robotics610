@@ -47,17 +47,25 @@ public class A_PositionLock extends Command {
         
        
          
-        double leftDifference = Math.abs(driveTrain.getLeftEncoderInches()-leftStop);
-        double rightDifference = Math.abs(driveTrain.getRightEncoderInches()-rightStop);
+        double leftDifference = driveTrain.getLeftEncoderInches()-leftStop;
+        double rightDifference = driveTrain.getRightEncoderInches()-rightStop;
          System.out.println("Left: " +leftDifference);
          System.out.println("Right: " + rightDifference);
+        
         if(leftDifference > 0.1){
-            driveTrain.setLeftVBus(p*(driveTrain.getLeftEncoderInches()-leftStop)); 
+            driveTrain.setLeftVBus(0.000001*(-p*(driveTrain.getLeftEncoderInches()-leftStop))); 
+             SmartDashboard.putNumber("Leftdiff", leftStop - driveTrain.getRightEncoderInches());
+        }else if(leftDifference < 0.1){
+               driveTrain.setLeftVBus(0.000001*(p*(driveTrain.getLeftEncoderInches()-leftStop))); 
              SmartDashboard.putNumber("Leftdiff", leftStop - driveTrain.getRightEncoderInches());
         }
+        
         if(rightDifference > 0.1){
-            driveTrain.setRightVBus(p*(driveTrain.getRightEncoderInches()-rightStop));  
+            driveTrain.setRightVBus(0.000001*(-p*(driveTrain.getRightEncoderInches()-rightStop)));  
             SmartDashboard.putNumber("RightDiff", rightStop - driveTrain.getLeftEncoderInches());
+        }else{
+            driveTrain.setLeftVBus(0);
+            driveTrain.setRightVBus(0);
         }
         
         

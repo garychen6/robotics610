@@ -20,8 +20,8 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  */
 public class A_PositionMove extends Command {
 
-    private DriveTrain driveTrain;
-    private double targetInches;
+        private DriveTrain driveTrain;
+        private double targetInches;
     private Preferences prefs;
     private int iCap = 10000;
     private int iCount = 0;
@@ -32,7 +32,7 @@ public class A_PositionMove extends Command {
 
     //NOT IMPLEMENTED/TESTED YET
     //Create a position move
-    public A_PositionMove(double targetInches) {
+    public A_PositionMove(int targetInches) {
         setTimeout(3);
         //Get the robot preferences from the smartdashboard
         prefs = Preferences.getInstance();
@@ -59,7 +59,7 @@ public class A_PositionMove extends Command {
 
 
         //Get the left and right values on the encoders
-        double leftInches = driveTrain.getLeftEncoderInches();
+                   double leftInches = driveTrain.getLeftEncoderInches();
         double rightInches = driveTrain.getRightEncoderInches();
         double leftSpeed = (targetInches - leftInches) * p;
         double rightSpeed = (targetInches - rightInches) * p;

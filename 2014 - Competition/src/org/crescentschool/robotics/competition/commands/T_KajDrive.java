@@ -1,4 +1,4 @@
-/*
+    /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -56,6 +56,7 @@ public class T_KajDrive extends Command {
         driveTrain.setLeftVBus(-leftSpeed);
         driveTrain.setRightVBus(-rightSpeed);
         
+
 
         SmartDashboard.putNumber("leftEnc", driveTrain.getLeftEncoderInches());
         SmartDashboard.putNumber("rightEnc", driveTrain.getRightEncoderInches());

@@ -21,7 +21,7 @@ public class ElectricalConstants {
     public static final int rightIntakeSolenoidReverse = -1;
         public static final int leftIntakeWristSolenoidForward = 3;
     public static final int leftIntakeWristSolenoidReverse = 4;
-
+public static final int catapultTalon = 7;
     public static final int leftIntakeRoller = 7;
     public static final int rightIntakeRoller = 8;
     public static final int leftEncoderASource = 2;

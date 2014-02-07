@@ -55,7 +55,7 @@ public class DriveTrain extends Subsystem {
             instance = new DriveTrain();
         }
         return instance;
-    }
+    }  
     //Start KajDrive when the drivetrain is first created.
 
     protected void initDefaultCommand() {
