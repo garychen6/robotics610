@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.crescentschool.robotics.competition.commands.A_MiddleTwoBall;
+import org.crescentschool.robotics.competition.commands.A_PositionLock;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.subsystems.BackgroundCompressor;
 
@@ -38,7 +39,7 @@ public class Coyobot extends IterativeRobot {
         oi = OI.getInstance();
         Scheduler.getInstance().add(new DriverControls());
 
-        //autonomousCommand = new A_MiddleTwoBall();
+    //   autonomousCommand = new A_PositionLock();
 
     }
 
@@ -46,9 +47,9 @@ public class Coyobot extends IterativeRobot {
      * This function is run when autonomous mode starts.
      */
     public void autonomousInit() {
-//                autonomousCommand = new A_MiddleTwoBall();
+     //         autonomousCommand = new A_PositionLock();
 //
-//        autonomousCommand.start();
+     //  autonomousCommand.start();
         // schedule the autonomous command (example)
     }
 
