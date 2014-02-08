@@ -4,9 +4,7 @@
  */
 package org.crescentschool.robotics.competition.subsystems;
 
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.OI;
@@ -20,22 +18,14 @@ public class Shooter extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
-    int stage = 0;
     OI oi;
-    double loadedPosition = 2.5;
-    double firedPosition = 2.7;
-    AnalogPotentiometer pot;
-    Preferences prefs;
-    boolean pastLimit = false;
     Talon catapult;
     DigitalInput optical;
-    int opticalPort = 7;
     private static Shooter instance;
 
     private Shooter() {
-        optical = new DigitalInput(1, opticalPort);
+        optical = new DigitalInput(1, ElectricalConstants.opticalPort);
         oi = OI.getInstance();
-        prefs = Preferences.getInstance();
         catapult = new Talon(ElectricalConstants.catapultTalon);
     }
 
