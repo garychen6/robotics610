@@ -31,7 +31,7 @@ public class A_GyroTurn extends Command {
     //POSTIVE ANGLE IS CLOCKWISE
 
     public A_GyroTurn(double targetDegrees) {
-        setTimeout(3);
+        setTimeout(2);
         this.targetDegrees = targetDegrees;
         //Get the robot preferences from the smartdashboard
         prefs = Preferences.getInstance();
@@ -52,8 +52,8 @@ public class A_GyroTurn extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        double p = PIDConstants.gyroP;
-        double i = PIDConstants.gyroI;
+        double p = 0.01;
+        double i = 0.006;
 
 
         //Get the left and right values on the encoders

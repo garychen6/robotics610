@@ -45,9 +45,8 @@ public class Intake extends Subsystem {
     //Set the rollers at a current vbus.
     //A value of 1 should be intaking
     public void setIntaking(double intaking) {
-        double speed = prefs.getDouble("intakeSpeed", 0);
-        leftRoller.set(speed*intaking);
-        rightRoller.set(speed*intaking);
+        leftRoller.set(-intaking);
+        rightRoller.set(intaking);
     }
     public void setWrist(boolean closed){
         if (!closed) {
@@ -66,6 +65,5 @@ public class Intake extends Subsystem {
     }
     //Run Teleop Intake when the intake is first created.
     protected void initDefaultCommand() {
-        setDefaultCommand(new T_Intake());
     }
 }

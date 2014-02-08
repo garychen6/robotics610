@@ -59,7 +59,6 @@ public class DriveTrain extends Subsystem {
     //Start KajDrive when the drivetrain is first created.
 
     protected void initDefaultCommand() {
-        setDefaultCommand(new T_KajDrive());
     }
 
     public void resetEncoders() {

@@ -12,10 +12,12 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import org.crescentschool.robotics.competition.commands.A_MiddleOneBall;
 import org.crescentschool.robotics.competition.commands.A_MiddleTwoBall;
 import org.crescentschool.robotics.competition.commands.A_PositionLock;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.subsystems.BackgroundCompressor;
+import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,6 +30,7 @@ public class Coyobot extends IterativeRobot {
 
     BackgroundCompressor backgroundCompressor;
     OI oi;
+    Shooter shooter;
     Command autonomousCommand;
 
     /**
@@ -38,8 +41,9 @@ public class Coyobot extends IterativeRobot {
         backgroundCompressor = BackgroundCompressor.getInstance();
         oi = OI.getInstance();
         Scheduler.getInstance().add(new DriverControls());
+        shooter = Shooter.getInstance();
 
-    //   autonomousCommand = new A_PositionLock();
+        autonomousCommand = new A_MiddleOneBall();
 
     }
 
@@ -47,9 +51,9 @@ public class Coyobot extends IterativeRobot {
      * This function is run when autonomous mode starts.
      */
     public void autonomousInit() {
-     //         autonomousCommand = new A_PositionLock();
+        autonomousCommand = new A_MiddleOneBall();
 //
-     //  autonomousCommand.start();
+        autonomousCommand.start();
         // schedule the autonomous command (example)
     }
 
