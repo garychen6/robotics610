@@ -53,6 +53,5 @@ public class Catcher extends Subsystem {
     //Run the teleop catcher command when first created.
 
     protected void initDefaultCommand() {
-        setDefaultCommand(new T_Catcher());
     }
 }

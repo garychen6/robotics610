@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.commands.T_Catapult;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
 /**
  *
@@ -29,15 +29,14 @@ public class Shooter extends Subsystem {
     boolean pastLimit = false;
     Talon catapult;
     DigitalInput optical;
-  
-    int opticalPort = 1;
+    int opticalPort = 7;
     private static Shooter instance;
 
     private Shooter() {
         optical = new DigitalInput(1, opticalPort);
         oi = OI.getInstance();
         prefs = Preferences.getInstance();
-        catapult = new Talon(7);
+        catapult = new Talon(ElectricalConstants.catapultTalon);
     }
 
     public static Shooter getInstance() {
@@ -48,7 +47,6 @@ public class Shooter extends Subsystem {
     }
 
     public boolean isLoading() {
-
         return optical.get();
     }
 
@@ -57,23 +55,6 @@ public class Shooter extends Subsystem {
     }
 
     public void initDefaultCommand() {
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        
-        
-
-
-        setDefaultCommand(new T_Catapult());
 
     }
 }

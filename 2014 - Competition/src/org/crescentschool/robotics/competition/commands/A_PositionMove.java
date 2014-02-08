@@ -54,8 +54,8 @@ public class A_PositionMove extends Command {
     }
 
     protected void execute() {
-        double p = PIDConstants.positionP;
-        double i = PIDConstants.positionI;
+        double p = 0.02;
+        double i = 0.0015;
 
 
         //Get the left and right values on the encoders
