@@ -7,16 +7,13 @@
 package org.crescentschool.robotics.competition;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import org.crescentschool.robotics.competition.commands.A_MiddleOneBall;
-import org.crescentschool.robotics.competition.commands.A_MiddleTwoBall;
-import org.crescentschool.robotics.competition.commands.A_PositionLock;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.subsystems.BackgroundCompressor;
+import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Shooter;
 
 /**
@@ -32,6 +29,7 @@ public class Coyobot extends IterativeRobot {
     OI oi;
     Shooter shooter;
     Command autonomousCommand;
+    Camera camera;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -40,9 +38,7 @@ public class Coyobot extends IterativeRobot {
     public void robotInit() {
         backgroundCompressor = BackgroundCompressor.getInstance();
         oi = OI.getInstance();
-        Scheduler.getInstance().add(new DriverControls());
-        shooter = Shooter.getInstance();
-
+        camera = Camera.getInstance();
         autonomousCommand = new A_MiddleOneBall();
 
     }

@@ -27,6 +27,8 @@ public class T_Catapult extends Command {
     int loadCount = 0;
     Preferences prefs;
     Intake intake;
+    boolean truss = false;
+    Joystick operator;
 
     public T_Catapult() {
         System.out.println("Catapult");
@@ -36,7 +38,7 @@ public class T_Catapult extends Command {
         prefs = Preferences.getInstance();
         intake = Intake.getInstance();
         requires(shooter);
-
+        operator = oi.getOperator();
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -48,6 +50,7 @@ public class T_Catapult extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         requires(shooter);
+        shooter.setHardStop(driver.getRawButton(InputConstants.oButton));
 
         if (!firing) {
 
@@ -55,33 +58,42 @@ public class T_Catapult extends Command {
                 shooter.setMain(-1);
             } else {
                 shooter.setMain(0);
-                if (driver.getRawButton(InputConstants.r2Button)) {
+                if (operator.getRawButton(InputConstants.r2Button)) {
+                    truss = false;
+
                     firing = true;
                     fireCount = 0;
+                    if(!intake.getWristClosed()){
+                        fireCount = 10;
+                    }
                     requires(intake);
-
+                } else if (operator.getRawButton(InputConstants.r1Button)) {
+                    truss = true;
+                    firing = true;
+                    fireCount = 0;
+                    if(!intake.getWristClosed()){
+                        fireCount = 10;
+                    }
+                    requires(intake);
                 }
             }
         } else {
             requires(intake);
-
+            intake.setWrist(false);
+            shooter.setHardStop(truss);
             if (fireCount < 10) {
                 shooter.setMain(0);
-                intake.setWrist(false);
                 fireCount++;
             } else if (fireCount < 20) {
-                intake.setWrist(false);
 
                 fireCount++;
                 loadCount = 0;
                 shooter.setMain(-1);
             } else {
-                intake.setWrist(false);
 
                 shooter.setMain(0);
                 if (loadCount > 20) {
                     firing = false;
-                    Scheduler.getInstance().add(new T_Intake());
 
                 } else {
                     loadCount++;

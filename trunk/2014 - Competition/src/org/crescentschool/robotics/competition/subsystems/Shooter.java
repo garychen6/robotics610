@@ -5,6 +5,8 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.OI;
@@ -22,11 +24,13 @@ public class Shooter extends Subsystem {
     Talon catapult;
     DigitalInput optical;
     private static Shooter instance;
+    private DoubleSolenoid hardStopSol;
 
     private Shooter() {
         optical = new DigitalInput(1, ElectricalConstants.opticalPort);
         oi = OI.getInstance();
         catapult = new Talon(ElectricalConstants.catapultTalon);
+        hardStopSol = new DoubleSolenoid(ElectricalConstants.shooterHardStopSol,5);
     }
 
     public static Shooter getInstance() {
@@ -34,6 +38,14 @@ public class Shooter extends Subsystem {
             instance = new Shooter();
         }
         return instance;
+    }
+
+    public void setHardStop(boolean truss) {
+        if (truss) {
+            hardStopSol.set(DoubleSolenoid.Value.kForward);
+        } else {
+            hardStopSol.set(DoubleSolenoid.Value.kReverse);
+        }
     }
 
     public boolean isLoading() {
@@ -45,6 +57,5 @@ public class Shooter extends Subsystem {
     }
 
     public void initDefaultCommand() {
-
     }
 }

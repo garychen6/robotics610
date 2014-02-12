@@ -4,6 +4,7 @@
  */
 package org.crescentschool.robotics.competition.subsystems;
 
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 import java.util.Calendar;
 import java.util.Date;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.ImagingConstants;
 
 /**
@@ -24,15 +26,27 @@ public class Camera extends Subsystem {
     private AxisCamera camera;
     private int offset = 0;
     private static Camera instance = null;
+    private Relay ringLight;
+
     private Camera() {
         //Get the camera and save the reference.
         camera = AxisCamera.getInstance();
-
+        ringLight = new Relay(ElectricalConstants.cameraRingLight);
 
     }
-    public static Camera getInstance(){
-        if (instance == null){
+
+    public static Camera getInstance() {
+
+        if (instance == null) {
             instance = new Camera();
+        }
+        try {
+            instance.camera.getImage().free();
+
+        } catch (NIVisionException ex) {
+            ex.printStackTrace();
+        } catch (AxisCameraException ex) {
+            ex.printStackTrace();
         }
         return instance;
     }
@@ -42,6 +56,8 @@ public class Camera extends Subsystem {
         ParticleAnalysisReport[] analysis = null;
         //Offset >0 is on the right, offset <0 is on the left.
         offset = 0;
+        int areaSum = -1;
+
         try {
             //Run if the camera has a new image
             if (camera.freshImage()) {
@@ -55,40 +71,29 @@ public class Camera extends Subsystem {
                 BinaryImage binImage = colorImage.thresholdHSV(ImagingConstants.HThresholdMin, ImagingConstants.HThresholdMax, ImagingConstants.SThresholdMin, ImagingConstants.SThresholdMax, ImagingConstants.VThresholdMin, ImagingConstants.VThresholdMax);
                 //Get the analysis of particles
                 analysis = binImage.getOrderedParticleAnalysisReports(5);
-//Save the finishing time
+                //Save the finishing time
                 Date endTime1 = Calendar.getInstance().getTime();
                 //Release the images from memory
                 binImage.free();
                 colorImage.free();
                 //Save the time required to process the image.
                 long time = endTime1.getTime() - startTime1.getTime();
-
                 //If particles were found, 
                 if (analysis != null && analysis.length > 0) {
                     //Count how many particles are on the left or right.
-                    int leftParticles = 0;
-                    int rightParticles = 0;
+                    int rightArea = 0;
                     //Iterate through the particles
                     for (int i = 0; i < analysis.length; i++) {
                         //If the particle area is more than 50
-                        if (analysis[i].particleArea > 50) {
-                            //Add it to the left or the right particle count
-                            if (analysis[i].center_mass_x - width / 2.0 > 0) {
-                                rightParticles++;
-                            } else {
-                                leftParticles++;
-                            }
-                        }
+                        if (analysis[i].particleArea > 20) {
+                            //Add it to the left or the area  count
+                            areaSum += analysis[i].particleArea;
 
+                        }
                     }
+
                     //If one side has more particles, set the offset to 1 or -1. If they're equal, set the offset to 0.
-                    if (rightParticles > leftParticles) {
-                        offset = 1;
-                    } else if (leftParticles > rightParticles) {
-                        offset = -1;
-                    } else {
-                        offset = 0;
-                    }
+
 
                 } else {
 //                    Display a message if no particles were found
@@ -100,8 +105,26 @@ public class Camera extends Subsystem {
         } catch (NIVisionException ex) {
             ex.printStackTrace();
         }
+//        System.out.println("areaSum " + areaSum);
+        if (areaSum > 80) {
+            offset = -1;
+        } else if(areaSum==-1){
+            offset = 0;
+        } else {
+            offset=1;
+        }
+    }
+
+    public void setRingLight(boolean on) {
+        if (on) {
+            ringLight.set(Relay.Value.kForward);
+        } else {
+            ringLight.set(Relay.Value.kOff);
+
+        }
     }
     //runs processcamera and then returns the offset given out.
+
     public int getOffset() {
         processCamera();
         return offset;
