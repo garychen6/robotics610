@@ -38,8 +38,13 @@ public class DriverControls extends Command {
     Shooter shooter;
     int driveMode = 0;
     Camera camera;
+    boolean ringLightButtonPressed = false;
+    boolean camLightOn = true;
+    Joystick operator;
+    int count = 0;
 
     public DriverControls() {
+        System.out.println("Driver Controls");
         prefs = Preferences.getInstance();
         oi = OI.getInstance();
         driver = oi.getDriver();
@@ -48,6 +53,8 @@ public class DriverControls extends Command {
 //        catcher = Catcher.getInstance();
         intake = Intake.getInstance();
         driveTrain.resetEncoders();
+        camera = Camera.getInstance();
+        operator = oi.getOperator();
         Scheduler.getInstance().add(new T_KajDrive());
         Scheduler.getInstance().add(new T_Intake());
         Scheduler.getInstance().add(new T_Catapult());
@@ -64,30 +71,52 @@ public class DriverControls extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        if (count < 100) {
+            count++;
+        } else {
+            if(camera.getOffset()==-1){
+//                System.out.println("Left");
+            } else {
+//                System.out.println("Right");
+            } 
+
+            count = 0;
+        }
         //SmartDashboard.putNumber("Offset", camera.getOffset());
         int distance = prefs.getInt("distance", 0);
         int angle = prefs.getInt("angle", 0);
+        if (driver.getRawButton(InputConstants.startButton) && !ringLightButtonPressed) {
+            ringLightButtonPressed = true;
 
+            camLightOn = !camLightOn;
 
-        if (driver.getRawButton(InputConstants.triangleButton) && driveMode != 0) {
-            driveMode = 0;
-            Scheduler.getInstance().add(new A_PositionMove(distance));
-        } else if (driver.getRawButton(InputConstants.xButton) && driveMode != 1) {
-            driveMode = 1;
+        } else if (!driver.getRawButton(InputConstants.startButton)) {
+            ringLightButtonPressed = false;
+        }
+        camera.setRingLight(camLightOn);
 
-            Scheduler.getInstance().add(new A_PositionMove(-distance));
+//        if (driver.getRawButton(InputConstants.triangleButton) && driveMode != 0) {
+//            driveMode = 0;
+//            Scheduler.getInstance().add(new A_PositionMove(distance));
+//        } else if (driver.getRawButton(InputConstants.xButton) && driveMode != 1) {
+//            driveMode = 1;
+//
+//            Scheduler.getInstance().add(new A_PositionMove(-distance));
+//
+//        } else if (driver.getRawButton(InputConstants.squareButton) && driveMode != 2) {
+//            driveMode = 2;
+//
+//            Scheduler.getInstance().add(new A_GyroTurn(-angle));
+//
+//        } else if (driver.getRawButton(InputConstants.oButton) && driveMode != 3) {
+//            driveMode = 3;
+//
+//            Scheduler.getInstance().add(new A_GyroTurn(angle));
+//
+//        } else 
 
-        } else if (driver.getRawButton(InputConstants.squareButton) && driveMode != 2) {
-            driveMode = 2;
+        if ((Math.abs(driver.getRawAxis(InputConstants.leftYAxis)) > 0.2 || Math.abs(driver.getRawAxis(InputConstants.rightXAxis)) > 0.2) && driveMode != 4) {
 
-            Scheduler.getInstance().add(new A_GyroTurn(-angle));
-
-        } else if (driver.getRawButton(InputConstants.oButton) && driveMode != 3) {
-            driveMode = 3;
-
-            Scheduler.getInstance().add(new A_GyroTurn(angle));
-
-        } else if ((Math.abs(driver.getRawAxis(InputConstants.leftYAxis)) > 0.2 || Math.abs(driver.getRawAxis(InputConstants.rightXAxis)) > 0.2) && driveMode != 4) {
             driveMode = 4;
 
             Scheduler.getInstance().add(new T_KajDrive());

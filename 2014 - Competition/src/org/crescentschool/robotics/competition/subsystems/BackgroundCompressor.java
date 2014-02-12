@@ -20,7 +20,7 @@ public class BackgroundCompressor extends Subsystem {
 
     private BackgroundCompressor() {
         //Initialize the compressor and start it once the instance is created.
-        compressor = new Compressor(6, 1);
+        compressor = new Compressor(ElectricalConstants.compressorPressureSwitch, ElectricalConstants.compressorRelay);
         System.out.println(compressor.getPressureSwitchValue());
         compressor.start();
         System.out.println("Compressor started");

@@ -37,4 +37,6 @@ public class ElectricalConstants {
     public static final int talonDriveRightMiddle = 5;
     public static final int talonDriveRightBack = 6;
     public static final int opticalPort = 7;
+    public static final int shooterHardStopSol = 6;
+    public static final int cameraRingLight = 2;
 }

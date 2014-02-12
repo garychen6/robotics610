@@ -28,10 +28,11 @@ public class A_GyroTurn extends Command {
     private OI oi;
     private boolean finished = false;
     private int finishedCount = 0;
+    boolean badGyro = false;
     //POSTIVE ANGLE IS CLOCKWISE
 
     public A_GyroTurn(double targetDegrees) {
-        setTimeout(2);
+        setTimeout(PIDConstants.gyroTurnTimeout);
         this.targetDegrees = targetDegrees;
         //Get the robot preferences from the smartdashboard
         prefs = Preferences.getInstance();
@@ -39,6 +40,7 @@ public class A_GyroTurn extends Command {
         //Save the target number of inches.
         driveTrain = DriveTrain.getInstance();
         driveTrain.resetEncoders();
+        driveTrain.resetGyro();
         oi = OI.getInstance();
         //Take control of the drivetrain
         requires(driveTrain);
@@ -46,59 +48,69 @@ public class A_GyroTurn extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        driveTrain.resetGyro();
         System.out.println("Gyro Turn " + targetDegrees);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        double p = 0.01;
-        double i = 0.006;
+        if (!badGyro) {
+            double p = PIDConstants.gyroP;
+            double i = PIDConstants.gyroI;
 
 
-        //Get the left and right values on the encoders
-        double gyro = driveTrain.getGyroDegrees();
-        double error = (targetDegrees - gyro);
-        double leftSpeed = error * p;
-        double rightSpeed = -error * p;
+            //Get the left and right values on the encoders
+            double gyro = driveTrain.getGyroDegrees();
+            double error = (targetDegrees - gyro);
+            double leftSpeed = error * p;
+            double rightSpeed = -error * p;
 
-        SmartDashboard.putNumber("Gyro", gyro);
+            SmartDashboard.putNumber("Gyro", gyro);
 
-        if (leftSpeed > 0.05) {
-            if (iCount < iCap) {
-                iCount++;
+            if (leftSpeed > 0.05) {
+                if (iCount < iCap) {
+                    iCount++;
+                }
+            } else if (leftSpeed < -.05) {
+                if (iCount > -iCap) {
+                    iCount--;
+                }
             }
-        } else if (leftSpeed < -.05) {
-            if (iCount > -iCap) {
-                iCount--;
+            if (Math.abs(error) < 1) {
+
+                finishedCount++;
+                iCount = 0;
+
+                if (finishedCount > 20) {
+
+                    finished = true;
+                }
+
+            } else {
+                finishedCount = 0;
             }
-        }
-        if (Math.abs(error) < 1) {
 
-            finishedCount++;
-            iCount = 0;
+            SmartDashboard.putNumber("turnI", iCount * i);
+            leftSpeed += i * iCount;
+            rightSpeed -= i * iCount;
 
-            if (finishedCount > 20) {
-
-                finished = true;
-            }
-
+            driveTrain.setLeftVBus(leftSpeed);
+            driveTrain.setRightVBus(rightSpeed);
         } else {
-            finishedCount = 0;
+            driveTrain.setLeftVBus(0);
+            driveTrain.setRightVBus(0);
         }
-
-        SmartDashboard.putNumber("turnI", iCount * i);
-        leftSpeed += i * iCount;
-        rightSpeed -= i * iCount;
-
-        driveTrain.setLeftVBus(leftSpeed);
-        driveTrain.setRightVBus(rightSpeed);
 
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return finished || isTimedOut();
+
+        if (Math.abs(driveTrain.getLeftEncoderInches()) > PIDConstants.gyroPositionCheck||badGyro) {
+            badGyro = true;
+            return false;
+        } else {
+            return finished || isTimedOut();
+        }
     }
 
     // Called once after isFinished returns true

@@ -42,12 +42,15 @@ public class T_KajDrive extends Command {
     }
 
     protected void execute() {
+        SmartDashboard.putNumber("leftEnc", driveTrain.getLeftEncoderInches());
+        SmartDashboard.putNumber("rightEnc", driveTrain.getRightEncoderInches());
         SmartDashboard.putNumber("Gyro", driveTrain.getGyroDegrees());
         //Create variables for x, y, right speed and the left speed
         double rightSpeed, leftSpeed, x, y;
         //Set x and y to their axis values
         x = driver.getRawAxis(InputConstants.rightXAxis);
         y = driver.getRawAxis(InputConstants.leftYAxis);
+        //Drive Smoothing
         
         //Set the left and rightspeed using x and y
         leftSpeed = y - x;
@@ -56,10 +59,7 @@ public class T_KajDrive extends Command {
         driveTrain.setLeftVBus(-leftSpeed);
         driveTrain.setRightVBus(-rightSpeed);
         
-
-
-        SmartDashboard.putNumber("leftEnc", driveTrain.getLeftEncoderInches());
-        SmartDashboard.putNumber("rightEnc", driveTrain.getRightEncoderInches());
+        
      
     }
 

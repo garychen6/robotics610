@@ -28,9 +28,10 @@ public class T_Intake extends Command {
     boolean armButtonFired = false;
     boolean arm = false;
     boolean wrist = false;
-    private int intakeReleasedMaxTime = 30;
-    private int intakeReleasedCount = intakeReleasedMaxTime - 1;
+    private int intakeReleasedMaxTime = 5;
+    private int intakeReleasedCount = 0;
     private Preferences prefs;
+    Joystick operator;
 
     public T_Intake() {
         //Get the OI, joystick, and intake
@@ -41,6 +42,8 @@ public class T_Intake extends Command {
         intakeTimer = new Timer();
         intakeTimer.reset();
         intakeTimer.start();
+        operator = oi.getOperator();
+
         prefs = Preferences.getInstance();
         //Take control of the intake upon constructing
         requires(intake);
@@ -53,6 +56,7 @@ public class T_Intake extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+
 //        if (driver.getRawButton(InputConstants.l1Button)) {
 //            intake.setIntaking(1);
 //        } else if (driver.getRawButton(InputConstants.r1Button)) {
@@ -85,12 +89,12 @@ public class T_Intake extends Command {
 //            armButtonFired = false;
 //        }
         //If the button is pressed and it wasn't pressed last time, start intaking
-        if (driver.getRawButton(InputConstants.l1Button)) {
+        if (driver.getRawButton(InputConstants.l2Button)) {
             intaking = true;
             intakeReleasedCount = 0;
 
         } //If the button is not pressed, start a count and then set intaking to false if the count is up.
-        else if (!driver.getRawButton(InputConstants.l1Button)) {
+        else if (!driver.getRawButton(InputConstants.l2Button)) {
             if (intakeReleasedCount > intakeReleasedMaxTime) {
                 intaking = false;
 
@@ -119,13 +123,12 @@ public class T_Intake extends Command {
             intake.setWrist(false);
             intake.setIntaking(prefs.getDouble("intakeSpeed", 0));
         } //If the button is pressed, keep the intake up and outtake
-        else if (driver.getRawButton(InputConstants.l2Button)) {
+        else if (driver.getRawButton(InputConstants.r2Button)) {
             intake.setPositionDown(false);
             intake.setWrist(true);
 
             intake.setIntaking(-prefs.getDouble("intakeSpeed", 0));
-        } //If nothing is happening, stop the intake.
-        else if (driver.getRawButton(InputConstants.r1Button)) {
+        } else if (operator.getRawButton(InputConstants.l1Button)||driver.getRawButton(InputConstants.l1Button)) {
             intake.setWrist(false);
 
         } else {

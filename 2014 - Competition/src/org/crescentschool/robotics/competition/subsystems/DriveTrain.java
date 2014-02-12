@@ -43,8 +43,6 @@ public class DriveTrain extends Subsystem {
         gyro = new Gyro(ElectricalConstants.gyroInput);
         gyro.setSensitivity(ElectricalConstants.gyroSensitivity);
         gyro.reset();
-
-
      
 
     }
