@@ -4,13 +4,10 @@
  */
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
@@ -42,6 +39,7 @@ public class A_GyroTurn extends Command {
         driveTrain.resetEncoders();
         driveTrain.resetGyro();
         oi = OI.getInstance();
+
         //Take control of the drivetrain
         requires(driveTrain);
     }
@@ -49,6 +47,7 @@ public class A_GyroTurn extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
         System.out.println("Gyro Turn " + targetDegrees);
+
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -66,21 +65,19 @@ public class A_GyroTurn extends Command {
 
             SmartDashboard.putNumber("Gyro", gyro);
 
-            if (leftSpeed > 0.05) {
-                if (iCount < iCap) {
-                    iCount++;
-                }
-            } else if (leftSpeed < -.05) {
-                if (iCount > -iCap) {
-                    iCount--;
-                }
+            if (iCount < iCap) {
+                iCount++;
             }
-            if (Math.abs(error) < 1) {
+            if (iCount > -iCap) {
+                iCount--;
+            }
+
+            if (Math.abs(error) < 5) {
 
                 finishedCount++;
                 iCount = 0;
 
-                if (finishedCount > 20) {
+                if (finishedCount > 10) {
 
                     finished = true;
                 }
@@ -90,8 +87,13 @@ public class A_GyroTurn extends Command {
             }
 
             SmartDashboard.putNumber("turnI", iCount * i);
-            leftSpeed += i * iCount;
-            rightSpeed -= i * iCount;
+            if (targetDegrees < 0) {
+                leftSpeed += i * iCount;
+                rightSpeed -= i * iCount;
+            } else {
+                leftSpeed -= i * iCount;
+                rightSpeed += i * iCount;
+            }
 
             driveTrain.setLeftVBus(leftSpeed);
             driveTrain.setRightVBus(rightSpeed);
@@ -105,10 +107,15 @@ public class A_GyroTurn extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
 
-        if (Math.abs(driveTrain.getLeftEncoderInches()) > PIDConstants.gyroPositionCheck||badGyro) {
+        if (Math.abs(driveTrain.getLeftEncoderInches()) > PIDConstants.gyroPositionCheck || badGyro) {
             badGyro = true;
             return false;
         } else {
+            if (finished || isTimedOut()) {
+                System.out.println("Gyro Turn Finished");
+                driveTrain.setLeftVBus(0);
+                driveTrain.setRightVBus(0);
+            }
             return finished || isTimedOut();
         }
     }

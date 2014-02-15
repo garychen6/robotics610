@@ -29,29 +29,33 @@ public class A_PositionMove extends Command {
     private Joystick driver;
     private int finishedCount = 0;
     private boolean finished = false;
+    private int targetAngle;
 
     //NOT IMPLEMENTED/TESTED YET
     //Create a position move
-    public A_PositionMove(int targetInches) {
+    public A_PositionMove(int targetInches, int targetAngle) {
         setTimeout(PIDConstants.positionMoveTimeout);
         //Get the robot preferences from the smartdashboard
         prefs = Preferences.getInstance();
 
         //Save the target number of inches.
         this.targetInches = targetInches;
+        this.targetAngle = targetAngle;
+
         driveTrain = DriveTrain.getInstance();
         driveTrain.resetEncoders();
         driveTrain.resetGyro();
         finishedCount = 0;
         oi = OI.getInstance();
         driver = oi.getDriver();
+
         //Take control of the drivetrain
         requires(driveTrain);
     }
 
     protected void initialize() {
-        System.out.println("Position Move " + targetInches);
-        
+        System.out.println("Position Move " + targetInches + " angle " + targetAngle);
+
     }
 
     protected void execute() {
@@ -67,22 +71,20 @@ public class A_PositionMove extends Command {
         SmartDashboard.putNumber("leftEnc", leftInches);
         SmartDashboard.putNumber("rightEnc", rightInches);
 
-        if (leftSpeed > 0.05) {
-            if (iCount < iCap) {
-                iCount++;
-            }
-        } else if (leftSpeed < -.05) {
-            if (iCount
-                    > -iCap) {
-                iCount--;
-            }
+        if (iCount < iCap) {
+            iCount++;
         }
-        double encoderError = Math.abs(targetInches - (leftInches + rightInches) / 2.0);
-        
+        if (iCount
+                > -iCap) {
+            iCount--;
+        }
 
-        if (Math.abs(targetInches - leftInches) < 2 || Math.abs(targetInches - rightInches) < 2) {
+        double encoderError = Math.abs(targetInches - (leftInches + rightInches) / 2.0);
+
+
+        if (Math.abs(targetInches - leftInches) < 3 || Math.abs(targetInches - rightInches) < 3) {
             finishedCount++;
-            if (finishedCount > 20) {
+            if (finishedCount > 10) {
                 finished = true;
                 iCount = 0;
 
@@ -91,16 +93,16 @@ public class A_PositionMove extends Command {
         } else {
             finished = false;
         }
-        double gyroError = Math.abs(driveTrain.getGyroDegrees());
-        if (driveTrain.getGyroDegrees() < -0.1) {
+        double gyroError = Math.abs(driveTrain.getGyroDegrees() - targetAngle);
+        if (driveTrain.getGyroDegrees() - targetAngle < -0.01) {
 
-            rightSpeed -= gyroError * 0.05;
+            rightSpeed -= gyroError * 0.02;
 
-            leftSpeed += gyroError * 0.05;
+            leftSpeed += gyroError * 0.02;
 
-        } else if (driveTrain.getGyroDegrees() > 0.1) {
-            rightSpeed += gyroError * 0.05;
-            leftSpeed -= gyroError * 0.05;
+        } else if (driveTrain.getGyroDegrees() - targetAngle > 0.01) {
+            rightSpeed += gyroError * 0.02;
+            leftSpeed -= gyroError * 0.02;
 
         }
 
@@ -119,6 +121,8 @@ public class A_PositionMove extends Command {
     protected boolean isFinished() {
         if (finished || isTimedOut()) {
             System.out.println("Position Move Finished");
+            driveTrain.setLeftVBus(0);
+            driveTrain.setRightVBus(0);
         }
         return finished || isTimedOut();
     }

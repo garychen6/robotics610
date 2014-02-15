@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Intake;
-import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.subsystems.Catapult;
 
 /**
  *
@@ -19,7 +19,7 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
  */
 public class T_Catapult extends Command {
 
-    Shooter shooter;
+    Catapult shooter;
     Joystick driver;
     private OI oi;
     int fireCount = 0;
@@ -32,7 +32,7 @@ public class T_Catapult extends Command {
 
     public T_Catapult() {
         System.out.println("Catapult");
-        shooter = Shooter.getInstance();
+        shooter = Catapult.getInstance();
         oi = OI.getInstance();
         driver = oi.getDriver();
         prefs = Preferences.getInstance();
@@ -50,7 +50,6 @@ public class T_Catapult extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         requires(shooter);
-        shooter.setHardStop(driver.getRawButton(InputConstants.oButton));
 
         if (!firing) {
 

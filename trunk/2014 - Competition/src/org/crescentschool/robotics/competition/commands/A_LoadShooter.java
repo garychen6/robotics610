@@ -6,7 +6,7 @@ package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.constants.InputConstants;
-import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.subsystems.Catapult;
 
 /**
  *
@@ -14,11 +14,13 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
  */
 public class A_LoadShooter extends Command {
 
-    Shooter shooter;
+    Catapult shooter;
+    boolean finished = false;
+    int finishedCount = 0;
 
     public A_LoadShooter() {
         System.out.println("A_LoadShooter");
-        shooter = Shooter.getInstance();
+        shooter = Catapult.getInstance();
         requires(shooter);
     }
 
@@ -30,15 +32,21 @@ public class A_LoadShooter extends Command {
     protected void execute() {
         if (shooter.isLoading()) {
             shooter.setMain(-1);
+            finishedCount = 0;
         } else {
             shooter.setMain(0);
-
+            if(finishedCount<20){
+                finishedCount++;
+            } else {
+                finished=  true;
+            }
         }
+        
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return !shooter.isLoading();
+        return finished;
     }
 
     // Called once after isFinished returns true

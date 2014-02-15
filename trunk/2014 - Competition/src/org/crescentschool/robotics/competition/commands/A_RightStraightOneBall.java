@@ -14,12 +14,12 @@ import org.crescentschool.robotics.competition.subsystems.Camera;
  *
  * @author ianlo
  */
-public class A_MiddleOneBall extends CommandGroup {
+public class A_RightStraightOneBall extends CommandGroup {
 
     Preferences prefs;
     Camera camera;
 
-    public A_MiddleOneBall() {
+    public A_RightStraightOneBall() {
 
         prefs = Preferences.getInstance();
         camera = Camera.getInstance();
@@ -30,12 +30,11 @@ public class A_MiddleOneBall extends CommandGroup {
 
         camera.setRingLight(true);
 
-        int offset = camera.getOffset(ImagingConstants.middleAreaThreshold);
-        
+        int offset = camera.getOffset(ImagingConstants.rightAreaThreshold);
         int count = 0;
         while (offset == 0 && count < 5000 && goodReads < 5) {
-            int newOffset = camera.getOffset(ImagingConstants.middleAreaThreshold);
-            if (newOffset == -1) {
+            int newOffset = camera.getOffset(ImagingConstants.rightAreaThreshold);
+            if (newOffset == 1) {
                 offset = newOffset;
                 goodReads = 5;
             } else if (newOffset != 0) {
@@ -61,24 +60,14 @@ public class A_MiddleOneBall extends CommandGroup {
 
         //TODO use camera.getoffset()
         if (offset < 0) {
-            addSequential(new A_PositionMove(distance, -angle));
-            addParallel(new A_Intake(false, false, 0, 1500));
-            addSequential(new A_Wait(0.2));
-            addSequential(new A_FireShooter());
-            //TODO Sanity Check encoders before calling shoot
-            //TODO Logic for checking if theres a ball (either here or in shooter)
+            addSequential(new A_Wait(5));
 
-
-
-        } else {
-
-            addSequential(new A_PositionMove(distance, angle));
-            addParallel(new A_Intake(false, false, 0, 1500));
-            addSequential(new A_Wait(0.2));
-
-            addSequential(new A_FireShooter());
 
         }
+        addSequential(new A_PositionMove(distance, 0));
+        addParallel(new A_Intake(false, false, 0, 1500));
+        addSequential(new A_Wait(0.2));
+        addSequential(new A_FireShooter());
 
 
     }

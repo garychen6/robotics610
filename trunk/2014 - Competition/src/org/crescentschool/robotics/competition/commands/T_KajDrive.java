@@ -23,7 +23,7 @@ public class T_KajDrive extends Command {
     private Joystick driver;
     private DriveTrain driveTrain;
     private Preferences prefs;
-
+    
     public T_KajDrive() {
         //Get the IO, joystick and drivetrain instances.
         oi = OI.getInstance();
@@ -32,7 +32,7 @@ public class T_KajDrive extends Command {
         System.out.println("Kaj Drive");
 
         prefs = Preferences.getInstance();
-        driveTrain.resetGyro(); 
+        driveTrain.resetGyro();
         //Take control of the drivetrain
         requires(driveTrain);
 
@@ -42,6 +42,7 @@ public class T_KajDrive extends Command {
     }
 
     protected void execute() {
+        
         SmartDashboard.putNumber("leftEnc", driveTrain.getLeftEncoderInches());
         SmartDashboard.putNumber("rightEnc", driveTrain.getRightEncoderInches());
         SmartDashboard.putNumber("Gyro", driveTrain.getGyroDegrees());
@@ -51,16 +52,21 @@ public class T_KajDrive extends Command {
         x = driver.getRawAxis(InputConstants.rightXAxis);
         y = driver.getRawAxis(InputConstants.leftYAxis);
         //Drive Smoothing
-        
+
         //Set the left and rightspeed using x and y
         leftSpeed = y - x;
         rightSpeed = y + x;
+        if (driver.getRawButton(InputConstants.l2Button)) {
+            leftSpeed /= 2.0;
+            rightSpeed /= 2.0;
+        }
+
         //Set the left and right side of the drive
         driveTrain.setLeftVBus(-leftSpeed);
         driveTrain.setRightVBus(-rightSpeed);
-        
-        
-     
+
+
+
     }
 
     protected boolean isFinished() {
