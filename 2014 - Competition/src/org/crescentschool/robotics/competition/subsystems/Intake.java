@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
 /**
@@ -37,7 +39,6 @@ public class Intake extends Subsystem {
     public void setPositionDown(boolean down) {
         //Set the solenoids accordingly.
         if (down) {
-
             intakeSol.set(DoubleSolenoid.Value.kReverse);
         } else {
             intakeSol.set(DoubleSolenoid.Value.kForward);
@@ -47,8 +48,12 @@ public class Intake extends Subsystem {
     //A value of 1 should be intaking
 
     public void setIntaking(double intaking) {
-        leftRoller.set(-intaking);
-        rightRoller.set(intaking);
+        double voltage = OI.getInstance().getDS().getBatteryVoltage();
+        SmartDashboard.putNumber("Battery Voltage", voltage);
+        double targetVolts = intaking*12;
+        double newPercentage = targetVolts/voltage;
+        leftRoller.set(-newPercentage);
+        rightRoller.set(newPercentage);
     }
 
     public void setWrist(boolean closed) {
@@ -59,7 +64,8 @@ public class Intake extends Subsystem {
             wristSol.set(DoubleSolenoid.Value.kForward);
         }
     }
-    public boolean getWristClosed(){
+
+    public boolean getWristClosed() {
         return wristClosed;
     }
     //Get the singleton instance of the Intake

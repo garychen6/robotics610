@@ -1,8 +1,7 @@
 package org.crescentschool.robotics.competition;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import org.crescentschool.robotics.competition.controls.DriverControls;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -13,6 +12,7 @@ public class OI {
     private Joystick driver;
     private Joystick operator;
     static OI instance = null;
+    private static DriverStation drStation;
 
     /**
      * Get instance of OI.
@@ -32,7 +32,12 @@ public class OI {
     OI() {
         driver = new Joystick(1);
         operator = new Joystick(2);
+        drStation = DriverStation.getInstance();
 
+    }
+
+    public DriverStation getDS() {
+        return drStation;
     }
 
     /**

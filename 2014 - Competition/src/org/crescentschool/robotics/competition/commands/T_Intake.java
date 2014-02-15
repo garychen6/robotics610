@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.OI;
+import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Intake;
 
@@ -57,44 +58,14 @@ public class T_Intake extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
 
-//        if (driver.getRawButton(InputConstants.l1Button)) {
-//            intake.setIntaking(1);
-//        } else if (driver.getRawButton(InputConstants.r1Button)) {
-//            intake.setIntaking(-1);
-//        } else {
-//            intake.setIntaking(0);
-//        }
-//
-//        if (driver.getRawButton(InputConstants.l2Button) && !wristButtonFired) {
-//            wrist = !wrist;
-//
-//            intake.setWrist(wrist);
-//
-//            wristButtonFired = true;
-//        } else if (!driver.getRawButton(InputConstants.l2Button)) {
-//            wristButtonFired = false;
-//        }
-//        if (driver.getRawButton(InputConstants.r2Button) && !armButtonFired) {
-//            arm = !arm;
-//
-//            intake.setPositionDown(arm);
-//            if (!arm) {
-//                wrist = true;
-//                intake.setWrist(wrist);
-//
-//            }
-//            armButtonFired = true;
-//
-//        } else if (!driver.getRawButton(InputConstants.r2Button)) {
-//            armButtonFired = false;
-//        }
+
         //If the button is pressed and it wasn't pressed last time, start intaking
-        if (driver.getRawButton(InputConstants.l2Button)) {
+        if (driver.getRawButton(InputConstants.r1Button)) {
             intaking = true;
             intakeReleasedCount = 0;
 
         } //If the button is not pressed, start a count and then set intaking to false if the count is up.
-        else if (!driver.getRawButton(InputConstants.l2Button)) {
+        else if (!driver.getRawButton(InputConstants.r1Button)) {
             if (intakeReleasedCount > intakeReleasedMaxTime) {
                 intaking = false;
 
@@ -109,7 +80,7 @@ public class T_Intake extends Command {
         if (intaking) {
             intake.setPositionDown(true);
             intake.setWrist(true);
-            intake.setIntaking(prefs.getDouble("intakeSpeed", 0));
+            intake.setIntaking(ElectricalConstants.intakeSpeed);
             //Restart the timer
             intakeTimer = new Timer();
             intakeTimer.reset();
@@ -121,14 +92,15 @@ public class T_Intake extends Command {
             //Bring the intake back up.
             intake.setPositionDown(false);
             intake.setWrist(false);
-            intake.setIntaking(prefs.getDouble("intakeSpeed", 0));
+            intake.setIntaking(0);
+
         } //If the button is pressed, keep the intake up and outtake
         else if (driver.getRawButton(InputConstants.r2Button)) {
             intake.setPositionDown(false);
             intake.setWrist(true);
 
-            intake.setIntaking(-prefs.getDouble("intakeSpeed", 0));
-        } else if (operator.getRawButton(InputConstants.l1Button)||driver.getRawButton(InputConstants.l1Button)) {
+            intake.setIntaking(-ElectricalConstants.intakeSpeed);
+        } else if (operator.getRawButton(InputConstants.l1Button) || driver.getRawButton(InputConstants.l1Button)) {
             intake.setWrist(false);
 
         } else {

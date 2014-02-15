@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.image.BinaryImage;
 import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.Calendar;
 import java.util.Date;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
@@ -27,6 +28,7 @@ public class Camera extends Subsystem {
     private int offset = 0;
     private static Camera instance = null;
     private Relay ringLight;
+    private int areaThreshold = 275;
 
     private Camera() {
         //Get the camera and save the reference.
@@ -57,10 +59,10 @@ public class Camera extends Subsystem {
         //Offset >0 is on the right, offset <0 is on the left.
         offset = 0;
         int areaSum = -1;
-
         try {
             //Run if the camera has a new image
             if (camera.freshImage()) {
+
                 //Get the image and save the width
                 ColorImage colorImage = camera.getImage();
                 int width = colorImage.getWidth();
@@ -105,13 +107,15 @@ public class Camera extends Subsystem {
         } catch (NIVisionException ex) {
             ex.printStackTrace();
         }
-//        System.out.println("areaSum " + areaSum);
-        if (areaSum > 80) {
+        SmartDashboard.putNumber("areaSum", areaSum);
+        if (areaSum > areaThreshold) {
+
             offset = -1;
-        } else if(areaSum==-1){
+        } else if (areaSum == -1) {
             offset = 0;
         } else {
-            offset=1;
+            System.out.println(areaSum);
+            offset = 1;
         }
     }
 
@@ -125,7 +129,8 @@ public class Camera extends Subsystem {
     }
     //runs processcamera and then returns the offset given out.
 
-    public int getOffset() {
+    public int getOffset(int areaThreshold) {
+        this.areaThreshold = areaThreshold;
         processCamera();
         return offset;
     }

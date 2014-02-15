@@ -10,18 +10,17 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.commands.T_Catcher;
 import org.crescentschool.robotics.competition.commands.A_GyroTurn;
+import org.crescentschool.robotics.competition.commands.A_PositionMove;
 import org.crescentschool.robotics.competition.commands.T_Intake;
 import org.crescentschool.robotics.competition.commands.T_KajDrive;
-import org.crescentschool.robotics.competition.commands.A_PositionMove;
 import org.crescentschool.robotics.competition.commands.T_Catapult;
+import org.crescentschool.robotics.competition.constants.ImagingConstants;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
-import org.crescentschool.robotics.competition.subsystems.Catcher;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Intake;
-import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.subsystems.Catapult;
 
 /**
  *
@@ -33,9 +32,8 @@ public class DriverControls extends Command {
     OI oi;
     Joystick driver;
     DriveTrain driveTrain;
-    Catcher catcher;
     Intake intake;
-    Shooter shooter;
+    Catapult shooter;
     int driveMode = 0;
     Camera camera;
     boolean ringLightButtonPressed = false;
@@ -48,9 +46,8 @@ public class DriverControls extends Command {
         prefs = Preferences.getInstance();
         oi = OI.getInstance();
         driver = oi.getDriver();
-        shooter = Shooter.getInstance();
+        shooter = Catapult.getInstance();
         driveTrain = DriveTrain.getInstance();
-//        catcher = Catcher.getInstance();
         intake = Intake.getInstance();
         driveTrain.resetEncoders();
         camera = Camera.getInstance();
@@ -74,15 +71,16 @@ public class DriverControls extends Command {
         if (count < 100) {
             count++;
         } else {
-            if(camera.getOffset()==-1){
-//                System.out.println("Left");
+            int offset = camera.getOffset(ImagingConstants.middleAreaThreshold);
+            if (offset == -1) {
+                SmartDashboard.putString("Goal Side", "Left");
             } else {
-//                System.out.println("Right");
-            } 
+                SmartDashboard.putString("Goal Side", "Right");
+            }
+            SmartDashboard.putNumber("Offset", offset);
 
             count = 0;
         }
-        //SmartDashboard.putNumber("Offset", camera.getOffset());
         int distance = prefs.getInt("distance", 0);
         int angle = prefs.getInt("angle", 0);
         if (driver.getRawButton(InputConstants.startButton) && !ringLightButtonPressed) {
@@ -95,27 +93,26 @@ public class DriverControls extends Command {
         }
         camera.setRingLight(camLightOn);
 
-//        if (driver.getRawButton(InputConstants.triangleButton) && driveMode != 0) {
-//            driveMode = 0;
-//            Scheduler.getInstance().add(new A_PositionMove(distance));
-//        } else if (driver.getRawButton(InputConstants.xButton) && driveMode != 1) {
-//            driveMode = 1;
-//
-//            Scheduler.getInstance().add(new A_PositionMove(-distance));
-//
-//        } else if (driver.getRawButton(InputConstants.squareButton) && driveMode != 2) {
-//            driveMode = 2;
-//
-//            Scheduler.getInstance().add(new A_GyroTurn(-angle));
-//
-//        } else if (driver.getRawButton(InputConstants.oButton) && driveMode != 3) {
-//            driveMode = 3;
-//
-//            Scheduler.getInstance().add(new A_GyroTurn(angle));
-//
-//        } else 
+        if (driver.getRawButton(InputConstants.triangleButton) && driveMode != 0) {
+            driveMode = 0;
+            Scheduler.getInstance().add(new A_PositionMove(distance,angle));
+        } else if (driver.getRawButton(InputConstants.xButton) && driveMode != 1) {
+            driveMode = 1;
 
-        if ((Math.abs(driver.getRawAxis(InputConstants.leftYAxis)) > 0.2 || Math.abs(driver.getRawAxis(InputConstants.rightXAxis)) > 0.2) && driveMode != 4) {
+            Scheduler.getInstance().add(new A_PositionMove(-distance,angle));
+
+        } else if (driver.getRawButton(InputConstants.squareButton) && driveMode != 2) {
+            driveMode = 2;
+
+            Scheduler.getInstance().add(new A_GyroTurn(-angle));
+
+        } else if (driver.getRawButton(InputConstants.oButton) && driveMode != 3) {
+            driveMode = 3;
+
+            Scheduler.getInstance().add(new A_GyroTurn(angle));
+
+        } else 
+            if ((Math.abs(driver.getRawAxis(InputConstants.leftYAxis)) > 0.2 || Math.abs(driver.getRawAxis(InputConstants.rightXAxis)) > 0.2) && driveMode != 4) {
 
             driveMode = 4;
 

@@ -17,8 +17,7 @@ public class ElectricalConstants {
     public static final int catcherSolenoidReverse = -1;
     public static final int intakeSolenoidForward = 1;
     public static final int intakeSolenoidReverse = 2;
-    public static final int rightIntakeSolenoidForward = -1;
-    public static final int rightIntakeSolenoidReverse = -1;
+   
     public static final int leftIntakeWristSolenoidForward = 3;
     public static final int leftIntakeWristSolenoidReverse = 4;
     public static final int catapultTalon = 9;
@@ -39,4 +38,7 @@ public class ElectricalConstants {
     public static final int opticalPort = 7;
     public static final int shooterHardStopSol = 6;
     public static final int cameraRingLight = 2;
+            public static final double intakeSpeed = 0.6;
+
+
 }

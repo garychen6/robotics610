@@ -6,7 +6,7 @@ package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.subsystems.Intake;
-import org.crescentschool.robotics.competition.subsystems.Shooter;
+import org.crescentschool.robotics.competition.subsystems.Catapult;
 
 /**
  *
@@ -14,13 +14,13 @@ import org.crescentschool.robotics.competition.subsystems.Shooter;
  */
 public class A_FireShooter extends Command {
 
-    Shooter shooter;
+    Catapult shooter;
     int fireCount = 0;
     boolean finished = false;
 
     public A_FireShooter() {
         System.out.println("A_FireShooter");
-        shooter = Shooter.getInstance();
+        shooter = Catapult.getInstance();
         requires(shooter);
 
     }
@@ -31,7 +31,7 @@ public class A_FireShooter extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-
+        
         if (fireCount < 10) {
             shooter.setMain(-1);
             fireCount++;
@@ -46,7 +46,7 @@ public class A_FireShooter extends Command {
     protected boolean isFinished() {
         if (finished) {
             shooter.setMain(0);
-
+            System.out.println("Fire Shooter Finished");
         }
         return finished;
     }
