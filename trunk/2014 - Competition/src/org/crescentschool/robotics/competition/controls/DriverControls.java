@@ -5,13 +5,10 @@
 package org.crescentschool.robotics.competition.controls;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.commands.A_GyroTurn;
-import org.crescentschool.robotics.competition.commands.A_PositionMove;
 import org.crescentschool.robotics.competition.commands.T_Intake;
 import org.crescentschool.robotics.competition.commands.T_KajDrive;
 import org.crescentschool.robotics.competition.commands.T_Catapult;
@@ -28,7 +25,6 @@ import org.crescentschool.robotics.competition.subsystems.Catapult;
  */
 public class DriverControls extends Command {
 
-    Preferences prefs;
     OI oi;
     Joystick driver;
     DriveTrain driveTrain;
@@ -37,13 +33,13 @@ public class DriverControls extends Command {
     int driveMode = 0;
     Camera camera;
     boolean ringLightButtonPressed = false;
-    boolean camLightOn = true;
+    boolean camLightOn = false;
     Joystick operator;
     int count = 0;
+    int[] pastUltrasonicReads = new int[10];
 
     public DriverControls() {
         System.out.println("Driver Controls");
-        prefs = Preferences.getInstance();
         oi = OI.getInstance();
         driver = oi.getDriver();
         shooter = Catapult.getInstance();
@@ -68,21 +64,12 @@ public class DriverControls extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        if (count < 100) {
-            count++;
-        } else {
-            int offset = camera.getOffset(ImagingConstants.middleAreaThreshold);
-            if (offset == -1) {
-                SmartDashboard.putString("Goal Side", "Left");
-            } else {
-                SmartDashboard.putString("Goal Side", "Right");
-            }
-            SmartDashboard.putNumber("Offset", offset);
+        SmartDashboard.putNumber("Ultrasonic", camera.getUltrasonicInches());
+        SmartDashboard.putNumber("Gyro", driveTrain.getGyroDegrees());
+        
+        
 
-            count = 0;
-        }
-        int distance = prefs.getInt("distance", 0);
-        int angle = prefs.getInt("angle", 0);
+
         if (driver.getRawButton(InputConstants.startButton) && !ringLightButtonPressed) {
             ringLightButtonPressed = true;
 
@@ -93,26 +80,8 @@ public class DriverControls extends Command {
         }
         camera.setRingLight(camLightOn);
 
-        if (driver.getRawButton(InputConstants.triangleButton) && driveMode != 0) {
-            driveMode = 0;
-            Scheduler.getInstance().add(new A_PositionMove(distance,angle));
-        } else if (driver.getRawButton(InputConstants.xButton) && driveMode != 1) {
-            driveMode = 1;
 
-            Scheduler.getInstance().add(new A_PositionMove(-distance,angle));
-
-        } else if (driver.getRawButton(InputConstants.squareButton) && driveMode != 2) {
-            driveMode = 2;
-
-            Scheduler.getInstance().add(new A_GyroTurn(-angle));
-
-        } else if (driver.getRawButton(InputConstants.oButton) && driveMode != 3) {
-            driveMode = 3;
-
-            Scheduler.getInstance().add(new A_GyroTurn(angle));
-
-        } else 
-            if ((Math.abs(driver.getRawAxis(InputConstants.leftYAxis)) > 0.2 || Math.abs(driver.getRawAxis(InputConstants.rightXAxis)) > 0.2) && driveMode != 4) {
+        if ((Math.abs(driver.getRawAxis(InputConstants.leftYAxis)) > 0.2 || Math.abs(driver.getRawAxis(InputConstants.rightXAxis)) > 0.2) && driveMode != 4) {
 
             driveMode = 4;
 

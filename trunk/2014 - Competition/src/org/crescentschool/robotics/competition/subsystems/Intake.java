@@ -22,7 +22,6 @@ public class Intake extends Subsystem {
     private Talon leftRoller, rightRoller;
     private DoubleSolenoid intakeSol;
     private DoubleSolenoid wristSol;
-    Preferences prefs;
     private boolean wristClosed = true;
 
     private Intake() {
@@ -32,7 +31,6 @@ public class Intake extends Subsystem {
         //Initialize the solenoids that will control the intake position
         intakeSol = new DoubleSolenoid(ElectricalConstants.intakeSolenoidForward, ElectricalConstants.intakeSolenoidReverse);
         wristSol = new DoubleSolenoid(ElectricalConstants.leftIntakeWristSolenoidForward, ElectricalConstants.leftIntakeWristSolenoidReverse);
-        prefs = Preferences.getInstance();
     }
     //Set the position of the intake
 

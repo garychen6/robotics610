@@ -10,17 +10,17 @@ package org.crescentschool.robotics.competition.constants;
  */
 public class ImagingConstants {
 
-    public static final int HThresholdMin = 87;
+    public static final int HThresholdMin = 65;
     /**
      * The maximum red value that an individual pixel in a camera image may have
      * to be included in the threshold
      */
-    public static final int HThresholdMax = 129;
+    public static final int HThresholdMax = 100;
     /**
      * The minimum green value that an individual pixel in a camera image may
      * have to be included in the threshold
      */
-    public static final int SThresholdMin = 76;
+    public static final int SThresholdMin = 226;
     /**
      * The minimum green value that an individual pixel in a camera image may
      * have to be included in the threshold
@@ -30,15 +30,15 @@ public class ImagingConstants {
      * The minimum blue value that an individual pixel in a camera image may
      * have to be included in the threshold
      */
-    public static final int VThresholdMin = 52;
+    public static final int VThresholdMin = 50;
     /**
      * The minimum blue value that an individual pixel in a camera image may
      * have to be included in the threshold
      */
     public static final int VThresholdMax = 255;
-    public static final int leftAreaThreshold = 350;
-    public static final int middleAreaThreshold = 275;
-    public static final int rightAreaThreshold = 150;
+    public static final int leftAreaThreshold = 180;
+    public static final int middleAreaThreshold = 140;
+    public static final int rightAreaThreshold = 60;
    
 
 }

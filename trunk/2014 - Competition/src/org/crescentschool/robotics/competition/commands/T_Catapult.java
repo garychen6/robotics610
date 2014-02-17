@@ -7,16 +7,13 @@ package org.crescentschool.robotics.competition.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
+import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Intake;
 import org.crescentschool.robotics.competition.subsystems.Catapult;
 
-/**
- *
- * @author jamiekilburn
- */
 public class T_Catapult extends Command {
 
     Catapult shooter;
@@ -25,20 +22,25 @@ public class T_Catapult extends Command {
     int fireCount = 0;
     boolean firing = false;
     int loadCount = 0;
-    Preferences prefs;
     Intake intake;
     boolean truss = false;
     Joystick operator;
-
+    boolean loaded = false;
+    int loadedTime = 0;
+    Camera camera;
+    Preferences prefs;
+    
     public T_Catapult() {
         System.out.println("Catapult");
         shooter = Catapult.getInstance();
         oi = OI.getInstance();
         driver = oi.getDriver();
-        prefs = Preferences.getInstance();
         intake = Intake.getInstance();
-        requires(shooter);
         operator = oi.getOperator();
+        camera = Camera.getInstance();
+        prefs = Preferences.getInstance();
+        requires(shooter);
+
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -50,40 +52,66 @@ public class T_Catapult extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         requires(shooter);
+        if (shooter.isLoading()) {
+            SmartDashboard.putNumber("Catapult Sensor", 1);
 
+        } else {
+            SmartDashboard.putNumber("Catapult Sensor", -1);
+
+        }
         if (!firing) {
+            if (shooter.isLoading() && !loaded) {
 
-            if (shooter.isLoading()) {
                 shooter.setMain(-1);
+                loadedTime = 0;
             } else {
-                shooter.setMain(0);
-                if (operator.getRawButton(InputConstants.r2Button)) {
-                    truss = false;
+                if (loadedTime < 2) {
+                    loadedTime++;
+                } else {
+                    loaded = true;
+                    shooter.setMain(0);
+//                    if(false&&operator.getRawButton(InputConstants.l2Button)&&camera.getUltrasonicInches()<prefs.getInt("closeLimit", 0) &&camera.getUltrasonicInches()>prefs.getInt("farLimit", 0)){
+//                        truss = false;
+//
+//                        firing = true;
+//                        fireCount = 0;
+//                        if (!intake.getWristClosed()) {
+//                            fireCount = 10;
+//                        }
+//                        requires(intake);
+//                    }
+//                    else
+                    if (operator.getRawButton(InputConstants.r2Button)) {
+                        truss = false;
 
-                    firing = true;
-                    fireCount = 0;
-                    if(!intake.getWristClosed()){
-                        fireCount = 10;
+                        firing = true;
+                        fireCount = 0;
+
+                        if (!intake.getWristClosed()) {
+                            fireCount = 10;
+                        }
+                        System.out.println("Shot from: " + camera.getUltrasonicInches());
+                        requires(intake);
+                    } else if (operator.getRawButton(InputConstants.r1Button)) {
+                        truss = true;
+                        firing = true;
+                        fireCount = 0;
+                        if (!intake.getWristClosed()) {
+                            fireCount = 10;
+                        }
+                        requires(intake);
                     }
-                    requires(intake);
-                } else if (operator.getRawButton(InputConstants.r1Button)) {
-                    truss = true;
-                    firing = true;
-                    fireCount = 0;
-                    if(!intake.getWristClosed()){
-                        fireCount = 10;
-                    }
-                    requires(intake);
+
                 }
             }
         } else {
             requires(intake);
             intake.setWrist(false);
             shooter.setHardStop(truss);
-            if (fireCount < 10) {
+            if (fireCount < prefs.getInt("eyebrowDelay", 10)) {
                 shooter.setMain(0);
                 fireCount++;
-            } else if (fireCount < 20) {
+            } else if (!shooter.isLoading()) {
 
                 fireCount++;
                 loadCount = 0;
@@ -93,7 +121,7 @@ public class T_Catapult extends Command {
                 shooter.setMain(0);
                 if (loadCount > 20) {
                     firing = false;
-
+                    loaded = false;
                 } else {
                     loadCount++;
                 }

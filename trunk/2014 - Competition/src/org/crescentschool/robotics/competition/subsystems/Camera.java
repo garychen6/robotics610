@@ -4,7 +4,10 @@
  */
 package org.crescentschool.robotics.competition.subsystems;
 
+import edu.wpi.first.wpilibj.AnalogChannel;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -26,14 +29,18 @@ public class Camera extends Subsystem {
 
     private AxisCamera camera;
     private int offset = 0;
+    private AnalogChannel ultrasonic;
     private static Camera instance = null;
     private Relay ringLight;
     private int areaThreshold = 275;
+    private double ultrasonicReading = 0;
 
     private Camera() {
         //Get the camera and save the reference.
         camera = AxisCamera.getInstance();
         ringLight = new Relay(ElectricalConstants.cameraRingLight);
+        ultrasonic = new AnalogChannel(ElectricalConstants.ultrasonicChannel);
+        ultrasonic.setAverageBits(8);
 
     }
 
@@ -42,18 +49,19 @@ public class Camera extends Subsystem {
         if (instance == null) {
             instance = new Camera();
         }
-        try {
-            instance.camera.getImage().free();
-
-        } catch (NIVisionException ex) {
-            ex.printStackTrace();
-        } catch (AxisCameraException ex) {
-            ex.printStackTrace();
-        }
+        
         return instance;
     }
 
+    public double getUltrasonicInches() {
+        double newValue = ultrasonic.getAverageVoltage() * ElectricalConstants.ultrasonicVtoF;
+        return newValue;
+
+    }
+
     public void processCamera() {
+                camera = AxisCamera.getInstance();
+
         //Create a particle analysis report for the particles
         ParticleAnalysisReport[] analysis = null;
         //Offset >0 is on the right, offset <0 is on the left.
@@ -111,10 +119,12 @@ public class Camera extends Subsystem {
         if (areaSum > areaThreshold) {
 
             offset = -1;
+            System.out.println(areaSum);
         } else if (areaSum == -1) {
             offset = 0;
         } else {
             System.out.println(areaSum);
+
             offset = 1;
         }
     }
