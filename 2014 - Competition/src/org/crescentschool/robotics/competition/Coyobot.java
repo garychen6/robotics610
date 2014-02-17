@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.crescentschool.robotics.competition.commands.A_DriveForward;
 import org.crescentschool.robotics.competition.commands.A_LeftStraightOneBall;
 import org.crescentschool.robotics.competition.commands.A_MiddleOneBall;
 import org.crescentschool.robotics.competition.commands.A_MiddleTwoBall;
@@ -78,6 +79,10 @@ public class Coyobot extends IterativeRobot {
                 autonomousCommand = new A_StraightTwoBall();
 
                 break;
+            case 5:
+                autonomousCommand = new A_DriveForward();
+
+                break;
             default:
                 autonomousCommand = new A_MiddleOneBall();
                 break;
@@ -130,6 +135,9 @@ public class Coyobot extends IterativeRobot {
         } else if (driver.getRawButton(InputConstants.r1Button)) {
 
             autoMode = 4;
+        } else if (driver.getRawButton(InputConstants.r2Button)) {
+
+            autoMode = 5;
         }
         switch (autoMode) {
             case 0:
@@ -149,6 +157,10 @@ public class Coyobot extends IterativeRobot {
                 break;
             case 4:
                 SmartDashboard.putString("Auto", "Straight Two Ball");
+
+                break;
+                 case 5:
+                SmartDashboard.putString("Auto", "Drive Forward");
 
                 break;
             default:

@@ -16,15 +16,13 @@ import org.crescentschool.robotics.competition.subsystems.Camera;
  */
 public class A_MiddleOneBall extends CommandGroup {
 
-    Preferences prefs;
     Camera camera;
 
     public A_MiddleOneBall() {
 
-        prefs = Preferences.getInstance();
         camera = Camera.getInstance();
-        int distance = prefs.getInt("distance", 0);;
-        int angle = prefs.getInt("angle", 0);
+        int distance = 50;
+        int angle = 10;
         String side = "right";
         int goodReads = 0;
 
@@ -33,7 +31,7 @@ public class A_MiddleOneBall extends CommandGroup {
         int offset = camera.getOffset(ImagingConstants.middleAreaThreshold);
         
         int count = 0;
-        while (offset == 0 && count < 5000 && goodReads < 5) {
+        while (offset == 0 && count < 100 && goodReads < 5) {
             int newOffset = camera.getOffset(ImagingConstants.middleAreaThreshold);
             if (newOffset == -1) {
                 offset = newOffset;

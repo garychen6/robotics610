@@ -16,17 +16,14 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  */
 public class A_StraightTwoBall extends CommandGroup {
 
-    Preferences prefs;
     Camera camera;
     DriveTrain driveTrain;
 
     public A_StraightTwoBall() {
         driveTrain = DriveTrain.getInstance();
         driveTrain.resetEncoders();
-        driveTrain.resetGyro();
-        prefs = Preferences.getInstance();
         camera = Camera.getInstance();
-        int distance = prefs.getInt("distance", 0);;
+        int distance = 40;
         addParallel(new A_LoadShooter());
 
 
@@ -56,6 +53,7 @@ public class A_StraightTwoBall extends CommandGroup {
         addSequential(new A_Wait(0.1));
 
         addSequential(new A_FireShooter());
+        addSequential(new A_PositionMove((int) (-distance), 0));
 
 
     }

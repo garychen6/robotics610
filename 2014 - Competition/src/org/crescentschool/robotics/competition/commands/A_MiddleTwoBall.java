@@ -17,19 +17,18 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  */
 public class A_MiddleTwoBall extends CommandGroup {
 
-    Preferences prefs;
     Camera camera;
     DriveTrain driveTrain;
+    Preferences prefs;
 
     public A_MiddleTwoBall() {
-
+        prefs = Preferences.getInstance();
         driveTrain = DriveTrain.getInstance();
         driveTrain.resetEncoders();
         driveTrain.resetGyro();
-        prefs = Preferences.getInstance();
         camera = Camera.getInstance();
-        int distance = 50;
-        int angle = 10;
+        int distance = prefs.getInt("distance", 0);
+        int angle = prefs.getInt("angle", 0);
         String side = "right";
         int goodReads = 0;
 
@@ -37,30 +36,30 @@ public class A_MiddleTwoBall extends CommandGroup {
 
         int offset = camera.getOffset(ImagingConstants.middleAreaThreshold);
         int count = 0;
-        while (offset == 0 && count < 5000 && goodReads < 10) {
-            int newOffset = camera.getOffset(ImagingConstants.middleAreaThreshold);
-
-            if (newOffset == -1) {
-                offset = -1;
-                goodReads = 10;
-            } else if (newOffset == 1) {
-
-                goodReads++;
-                if (goodReads == 10) {
-//                    System.out.println("Going Right");
-
-                    offset = 1;
-                }
-
-            }
-            count++;
-        }
+//        while (offset == 0 && count < 100 && goodReads < 10) {
+//            int newOffset = camera.getOffset(ImagingConstants.middleAreaThreshold);
+//
+//            if (newOffset == -1) {
+//                offset = -1;
+//                goodReads = 10;
+//            } else if (newOffset == 1) {
+//
+//                goodReads++;
+//                if (goodReads == 10) {
+////                    System.out.println("Going Right");
+//
+//                    offset = 1;
+//                }
+//
+//            }
+//            count++;
+//        }
         addSequential(new A_Wait(0.5));
 
 
 
         //TODO use camera.getoffset()
-        if (offset < 0) {
+        if (false) {
             System.out.println("Going Left");
             addParallel(new A_LoadShooter());
 
@@ -78,20 +77,21 @@ public class A_MiddleTwoBall extends CommandGroup {
             addParallel(new A_PositionMove(-distance, 0));
             addSequential(new A_LoadShooter());
 
+            addSequential(new A_Wait(0.5));
+
+            addParallel(new A_Intake(false, true, ElectricalConstants.intakeSpeed, 1500));
+
+            addSequential(new A_Wait(0.2));
 
             addParallel(new A_Intake(false, false, 0, 1500));
 
-            addSequential(new A_Wait(0.1));
-
-            addSequential(new A_GyroTurn(angle * 2));
-
-            addSequential(new A_PositionMove(distance, angle));
+            addSequential(new A_PositionMove(distance, angle * 2));
 
             addParallel(new A_Intake(false, false, 0, 1500));
             addSequential(new A_Wait(0.1));
 
             addSequential(new A_FireShooter());
-            addSequential(new A_PositionMove((int) (-distance ), angle));
+            addSequential(new A_PositionMove((int) (-distance), angle));
 
 
             //TODO Sanity Check encoders before calling shoot
@@ -117,21 +117,22 @@ public class A_MiddleTwoBall extends CommandGroup {
 
             addParallel(new A_PositionMove(-distance, 0));
             addSequential(new A_LoadShooter());
+            addSequential(new A_Wait(0.5));
 
 
-            addParallel(new A_Intake(false, false, 0, 1500));
+            addParallel(new A_Intake(false, true, ElectricalConstants.intakeSpeed, 1500));
+            addSequential(new A_Wait(0.2));
 
-            addSequential(new A_Wait(0.1));
 
-            addSequential(new A_GyroTurn(-angle * 2));
+            addParallel(new A_Intake(false, true, 0, 1500));
 
-            addSequential(new A_PositionMove(distance, -angle));
+            addSequential(new A_PositionMove(distance, -angle * 2));
 
             addParallel(new A_Intake(false, false, 0, 1500));
             addSequential(new A_Wait(0.1));
 
             addSequential(new A_FireShooter());
-            addSequential(new A_PositionMove((int) (-distance ), -angle));
+            addSequential(new A_PositionMove((int) (-distance), -angle));
 
 
         }

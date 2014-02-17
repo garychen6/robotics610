@@ -22,7 +22,6 @@ public class T_KajDrive extends Command {
     private OI oi;
     private Joystick driver;
     private DriveTrain driveTrain;
-    private Preferences prefs;
     
     public T_KajDrive() {
         //Get the IO, joystick and drivetrain instances.
@@ -31,8 +30,6 @@ public class T_KajDrive extends Command {
         driveTrain = DriveTrain.getInstance();
         System.out.println("Kaj Drive");
 
-        prefs = Preferences.getInstance();
-        driveTrain.resetGyro();
         //Take control of the drivetrain
         requires(driveTrain);
 
@@ -45,7 +42,6 @@ public class T_KajDrive extends Command {
         
         SmartDashboard.putNumber("leftEnc", driveTrain.getLeftEncoderInches());
         SmartDashboard.putNumber("rightEnc", driveTrain.getRightEncoderInches());
-        SmartDashboard.putNumber("Gyro", driveTrain.getGyroDegrees());
         //Create variables for x, y, right speed and the left speed
         double rightSpeed, leftSpeed, x, y;
         //Set x and y to their axis values
