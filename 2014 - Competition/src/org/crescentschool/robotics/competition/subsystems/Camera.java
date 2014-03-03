@@ -32,7 +32,7 @@ public class Camera extends Subsystem {
     private AnalogChannel ultrasonic;
     private static Camera instance = null;
     private Relay ringLight;
-    private int areaThreshold = 275;
+    private int widthThreshold = 15;
     private double ultrasonicReading = 0;
 
     private Camera() {
@@ -49,7 +49,7 @@ public class Camera extends Subsystem {
         if (instance == null) {
             instance = new Camera();
         }
-        
+
         return instance;
     }
 
@@ -60,13 +60,13 @@ public class Camera extends Subsystem {
     }
 
     public void processCamera() {
-                camera = AxisCamera.getInstance();
+        camera = AxisCamera.getInstance();
 
         //Create a particle analysis report for the particles
         ParticleAnalysisReport[] analysis = null;
         //Offset >0 is on the right, offset <0 is on the left.
         offset = 0;
-        int areaSum = -1;
+
         try {
             //Run if the camera has a new image
             if (camera.freshImage()) {
@@ -88,6 +88,7 @@ public class Camera extends Subsystem {
                 colorImage.free();
                 //Save the time required to process the image.
                 long time = endTime1.getTime() - startTime1.getTime();
+
                 //If particles were found, 
                 if (analysis != null && analysis.length > 0) {
                     //Count how many particles are on the left or right.
@@ -95,10 +96,13 @@ public class Camera extends Subsystem {
                     //Iterate through the particles
                     for (int i = 0; i < analysis.length; i++) {
                         //If the particle area is more than 50
-                        if (analysis[i].particleArea > 20) {
+                        if (analysis[i].particleArea > 20 && analysis[i].boundingRectWidth > widthThreshold) {
                             //Add it to the left or the area  count
-                            areaSum += analysis[i].particleArea;
-
+                            offset = -1;
+                            i = analysis.length;
+                            break;
+                        } else if (analysis[i].particleArea > 20 && analysis[i].boundingRectWidth <= widthThreshold) {
+                            offset = 1;
                         }
                     }
 
@@ -109,24 +113,17 @@ public class Camera extends Subsystem {
 //                    Display a message if no particles were found
 //                    System.out.println("Goal not found");
                 }
+
+                SmartDashboard.putNumber("offset", offset);
             }
+
         } catch (AxisCameraException ex) {
             ex.printStackTrace();
         } catch (NIVisionException ex) {
             ex.printStackTrace();
         }
-        SmartDashboard.putNumber("areaSum", areaSum);
-        if (areaSum > areaThreshold) {
 
-            offset = -1;
-            System.out.println(areaSum);
-        } else if (areaSum == -1) {
-            offset = 0;
-        } else {
-            System.out.println(areaSum);
 
-            offset = 1;
-        }
     }
 
     public void setRingLight(boolean on) {
@@ -139,8 +136,8 @@ public class Camera extends Subsystem {
     }
     //runs processcamera and then returns the offset given out.
 
-    public int getOffset(int areaThreshold) {
-        this.areaThreshold = areaThreshold;
+    public int getOffset(int widthThreshold) {
+        this.widthThreshold = widthThreshold;
         processCamera();
         return offset;
     }

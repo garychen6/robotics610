@@ -27,10 +27,10 @@ public class A_RightStraightOneBall extends CommandGroup {
 
         camera.setRingLight(true);
 
-        int offset = camera.getOffset(ImagingConstants.rightAreaThreshold);
+        int offset = camera.getOffset(ImagingConstants.middleWidthThreshold);
         int count = 0;
         while (offset == 0 && count < 100 && goodReads < 5) {
-            int newOffset = camera.getOffset(ImagingConstants.rightAreaThreshold);
+            int newOffset = camera.getOffset(ImagingConstants.middleWidthThreshold);
             if (newOffset == 1) {
                 offset = newOffset;
                 goodReads = 5;

@@ -22,6 +22,7 @@ import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.subsystems.BackgroundCompressor;
 import org.crescentschool.robotics.competition.subsystems.Catapult;
+import org.crescentschool.robotics.competition.subsystems.Lights;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -52,6 +53,8 @@ public class Coyobot extends IterativeRobot {
         System.out.println("Two Ball");
         driver = oi.getDriver();
         operator = oi.getOperator();
+        Lights.getInstance().setPattern(Lights.PRE);
+
     }
 
     /**
@@ -104,6 +107,7 @@ public class Coyobot extends IterativeRobot {
     public void teleopInit() {
         Scheduler.getInstance().removeAll();
         Scheduler.getInstance().add(new DriverControls());
+        Lights.getInstance().setPattern(Lights.TELE);
 
     }
 
@@ -118,8 +122,20 @@ public class Coyobot extends IterativeRobot {
     }
 
     public void disabledPeriodic() {
-        if (driver.getRawButton(InputConstants.triangleButton)) {
+        Lights.getInstance().setPattern(Lights.PRE);
+        if (operator.getRawButton(InputConstants.squareButton)) {
+            Lights.getInstance().setRedAlliance(false);
+        } else if (operator.getRawButton(InputConstants.oButton)) {
+            Lights.getInstance().setRedAlliance(true);
 
+        }
+        if (Lights.getInstance().isRedAlliance()) {
+            SmartDashboard.putString("Alliance", "Red");
+        } else {
+            SmartDashboard.putString("Alliance", "Blue");
+
+        }
+        if (driver.getRawButton(InputConstants.triangleButton)) {
             autoMode = 0;
 
         } else if (driver.getRawButton(InputConstants.xButton)) {
@@ -159,7 +175,7 @@ public class Coyobot extends IterativeRobot {
                 SmartDashboard.putString("Auto", "Straight Two Ball");
 
                 break;
-                 case 5:
+            case 5:
                 SmartDashboard.putString("Auto", "Drive Forward");
 
                 break;
