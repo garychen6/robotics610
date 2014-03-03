@@ -13,6 +13,7 @@ import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Intake;
 import org.crescentschool.robotics.competition.subsystems.Catapult;
+import org.crescentschool.robotics.competition.subsystems.Lights;
 
 public class T_Catapult extends Command {
 
@@ -29,7 +30,7 @@ public class T_Catapult extends Command {
     int loadedTime = 0;
     Camera camera;
     Preferences prefs;
-    
+
     public T_Catapult() {
         System.out.println("Catapult");
         shooter = Catapult.getInstance();
@@ -52,6 +53,8 @@ public class T_Catapult extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         requires(shooter);
+
+        shooter.turnOnSensor();
         if (shooter.isLoading()) {
             SmartDashboard.putNumber("Catapult Sensor", 1);
 
@@ -60,28 +63,20 @@ public class T_Catapult extends Command {
 
         }
         if (!firing) {
+//            System.out.println(shooter.isLoading() + " " + !loaded);
             if (shooter.isLoading() && !loaded) {
 
                 shooter.setMain(-1);
                 loadedTime = 0;
             } else {
-                if (loadedTime < 2) {
+                if (loadedTime < 1) {
                     loadedTime++;
                 } else {
                     loaded = true;
                     shooter.setMain(0);
-//                    if(false&&operator.getRawButton(InputConstants.l2Button)&&camera.getUltrasonicInches()<prefs.getInt("closeLimit", 0) &&camera.getUltrasonicInches()>prefs.getInt("farLimit", 0)){
-//                        truss = false;
-//
-//                        firing = true;
-//                        fireCount = 0;
-//                        if (!intake.getWristClosed()) {
-//                            fireCount = 10;
-//                        }
-//                        requires(intake);
-//                    }
-//                    else
+
                     if (operator.getRawButton(InputConstants.r2Button)) {
+                        Lights.getInstance().setPattern(Lights.SHOOT);
                         truss = false;
 
                         firing = true;
@@ -93,6 +88,8 @@ public class T_Catapult extends Command {
                         System.out.println("Shot from: " + camera.getUltrasonicInches());
                         requires(intake);
                     } else if (operator.getRawButton(InputConstants.r1Button)) {
+                        Lights.getInstance().setPattern(Lights.SHOOT);
+
                         truss = true;
                         firing = true;
                         fireCount = 0;
@@ -125,6 +122,8 @@ public class T_Catapult extends Command {
                 } else {
                     loadCount++;
                 }
+                Lights.getInstance().setPattern(Lights.TELE);
+
             }
         }
 //        System.out.println(shooter.isLoading());

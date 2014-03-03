@@ -40,4 +40,5 @@ public class ElectricalConstants {
     public static final int cameraRingLight = 2;
     public static final double intakeSpeed = 0.6;
     public static final int ultrasonicChannel = 2;
+    
 }

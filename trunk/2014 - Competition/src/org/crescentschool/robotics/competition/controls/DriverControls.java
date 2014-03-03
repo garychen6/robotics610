@@ -64,12 +64,11 @@ public class DriverControls extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        
         SmartDashboard.putNumber("Ultrasonic", camera.getUltrasonicInches());
         SmartDashboard.putNumber("Gyro", driveTrain.getGyroDegrees());
-        
-        
 
-
+//        camera.getOffset(15);
         if (driver.getRawButton(InputConstants.startButton) && !ringLightButtonPressed) {
             ringLightButtonPressed = true;
 

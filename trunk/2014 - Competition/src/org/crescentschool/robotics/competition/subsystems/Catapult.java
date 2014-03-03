@@ -8,18 +8,22 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 
 /**
  *
- * @author jamiekilburn
+ * @author Jamie
  */
 public class Catapult extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
-
+    Solenoid catapultSensorSol;
+    
+    Timer talon;
+    
     OI oi;
     Talon catapult;
     DigitalInput optical;
@@ -28,6 +32,8 @@ public class Catapult extends Subsystem {
 
     private Catapult() {
         optical = new DigitalInput(1, ElectricalConstants.opticalPort);
+        catapultSensorSol = new Solenoid(2, 1);
+        catapultSensorSol.set(true);
         oi = OI.getInstance();
         catapult = new Talon(ElectricalConstants.catapultTalon);
         hardStopSol = new DoubleSolenoid(ElectricalConstants.shooterHardStopSol,5);
@@ -39,7 +45,9 @@ public class Catapult extends Subsystem {
         }
         return instance;
     }
-
+    public void turnOnSensor(){
+        catapultSensorSol.set(true);
+    }
     public void setHardStop(boolean truss) {
         if (truss) {
             hardStopSol.set(DoubleSolenoid.Value.kForward);
@@ -49,6 +57,7 @@ public class Catapult extends Subsystem {
     }
 
     public boolean isLoading() {
+//        System.out.println(!optical.get());
         return !optical.get();
     }
 

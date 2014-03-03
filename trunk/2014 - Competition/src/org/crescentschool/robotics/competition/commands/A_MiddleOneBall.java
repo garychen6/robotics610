@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.crescentschool.robotics.competition.constants.ImagingConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
+import org.crescentschool.robotics.competition.subsystems.Lights;
 
 /**
  *
@@ -28,11 +29,11 @@ public class A_MiddleOneBall extends CommandGroup {
 
         camera.setRingLight(true);
 
-        int offset = camera.getOffset(ImagingConstants.middleAreaThreshold);
-        
+        int offset = camera.getOffset(ImagingConstants.middleWidthThreshold);
+
         int count = 0;
         while (offset == 0 && count < 100 && goodReads < 5) {
-            int newOffset = camera.getOffset(ImagingConstants.middleAreaThreshold);
+            int newOffset = camera.getOffset(ImagingConstants.middleWidthThreshold);
             if (newOffset == -1) {
                 offset = newOffset;
                 goodReads = 5;
@@ -59,6 +60,8 @@ public class A_MiddleOneBall extends CommandGroup {
 
         //TODO use camera.getoffset()
         if (offset < 0) {
+
+//        if (true) {
             addSequential(new A_PositionMove(distance, -angle));
             addParallel(new A_Intake(false, false, 0, 1500));
             addSequential(new A_Wait(0.2));
@@ -78,6 +81,7 @@ public class A_MiddleOneBall extends CommandGroup {
 
         }
 
+        Lights.getInstance().setPattern(Lights.TELE);
 
     }
 }

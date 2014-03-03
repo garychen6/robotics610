@@ -13,6 +13,7 @@ import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
+import org.crescentschool.robotics.competition.subsystems.Lights;
 
 /**
  *
@@ -48,7 +49,29 @@ public class A_PositionMove extends Command {
         finishedCount = 0;
         oi = OI.getInstance();
         driver = oi.getDriver();
+        if (targetInches > 0) {
+            if (targetAngle < 0) {
+                if (Lights.getInstance().isRedAlliance()) {
+                    Lights.getInstance().setPattern(Lights.HOT_LEFT_RED);
+                } else {
+                    Lights.getInstance().setPattern(Lights.HOT_LEFT_BLUE);
 
+                }
+            } else if (targetInches > 0) {
+                if (Lights.getInstance().isRedAlliance()) {
+                    Lights.getInstance().setPattern(Lights.HOT_RIGHT_RED);
+                } else {
+                    Lights.getInstance().setPattern(Lights.HOT_RIGHT_BLUE);
+
+                }
+            } else {
+                Lights.getInstance().setPattern(Lights.TELE);
+
+            }
+        } else {
+            Lights.getInstance().setPattern(Lights.TELE);
+
+        }
         //Take control of the drivetrain
         requires(driveTrain);
     }

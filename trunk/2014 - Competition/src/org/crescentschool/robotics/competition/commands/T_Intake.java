@@ -12,6 +12,7 @@ import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.Intake;
+import org.crescentschool.robotics.competition.subsystems.Lights;
 
 /**
  *
@@ -31,7 +32,6 @@ public class T_Intake extends Command {
     boolean wrist = false;
     private int intakeReleasedMaxTime = 5;
     private int intakeReleasedCount = 0;
-    private boolean catching = false;
     Joystick operator;
 
     public T_Intake() {
@@ -62,7 +62,6 @@ public class T_Intake extends Command {
         //If the button is pressed and it wasn't pressed last time, start intaking
         if (driver.getRawButton(InputConstants.r1Button)) {
             intaking = true;
-            catching = false;
             intakeReleasedCount = 0;
 
         } //If the button is not pressed, start a count and then set intaking to false if the count is up.
@@ -76,17 +75,16 @@ public class T_Intake extends Command {
             }
 
         }
-        if (operator.getRawAxis(InputConstants.rightYAxis)>0.2) {
-            catching = true;
+        if (operator.getRawAxis(InputConstants.rightYAxis) > 0.2) {
             intaking = false;
 
-        } else if (operator.getRawAxis(InputConstants.rightYAxis)<0.2) {
-            catching = false;
+        } else if (operator.getRawAxis(InputConstants.rightYAxis) < 0.2) {
         }
 
 
         //If intaking, bring the intake down and run the rollers
         if (intaking) {
+            Lights.getInstance().setPattern(Lights.INTAKE);
             intake.setPositionDown(true);
             intake.setWrist(true);
             intake.setIntaking(ElectricalConstants.intakeSpeed);
@@ -96,12 +94,10 @@ public class T_Intake extends Command {
             intakeTimer.start();
             intakeRun = true;
 
-        } else if (catching) {
-            intake.setPositionDown(true);
-            intake.setWrist(true);
-            intake.setIntaking(0);
-        } //Keep the intake running 1 second while you move the intake up. If the intake has not been run yet, DO NOT run the intake for 1 second. Wait until the button is pressed at least once first.
-        else if (intakeTimer.get() < 1 && intakeRun && !catching) {
+        }  //Keep the intake running 1 second while you move the intake up. If the intake has not been run yet, DO NOT run the intake for 1 second. Wait until the button is pressed at least once first.
+        else if (intakeTimer.get() < 1 && intakeRun ) {
+            Lights.getInstance().setPattern(Lights.TELE);
+
             //Bring the intake back up.
             intake.setPositionDown(false);
             intake.setWrist(false);
@@ -109,11 +105,14 @@ public class T_Intake extends Command {
 
         } //If the button is pressed, keep the intake up and outtake
         else if (driver.getRawButton(InputConstants.r2Button)) {
+            
+
             intake.setPositionDown(false);
             intake.setWrist(true);
 
             intake.setIntaking(-ElectricalConstants.intakeSpeed);
         } else {
+
             intake.setIntaking(0);
             intake.setWrist(true);
             intake.setPositionDown(false);
@@ -123,7 +122,7 @@ public class T_Intake extends Command {
             intake.setIntaking(ElectricalConstants.intakeSpeed);
 
         }
-         if (operator.getRawButton(InputConstants.l2Button) ) {
+        if (operator.getRawButton(InputConstants.l2Button)) {
             intake.setWrist(false);
             intake.setIntaking(0);
 
