@@ -5,10 +5,7 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
@@ -40,8 +37,6 @@ public class T_KajDrive extends Command {
 
     protected void execute() {
         
-        SmartDashboard.putNumber("leftEnc", driveTrain.getLeftEncoderInches());
-        SmartDashboard.putNumber("rightEnc", driveTrain.getRightEncoderInches());
         //Create variables for x, y, right speed and the left speed
         double rightSpeed, leftSpeed, x, y;
         //Set x and y to their axis values
@@ -52,10 +47,7 @@ public class T_KajDrive extends Command {
         //Set the left and rightspeed using x and y
         leftSpeed = y - x;
         rightSpeed = y + x;
-        if (driver.getRawButton(InputConstants.l2Button)) {
-            leftSpeed /= 2.0;
-            rightSpeed /= 2.0;
-        }
+        
 
         //Set the left and right side of the drive
         driveTrain.setLeftVBus(-leftSpeed);

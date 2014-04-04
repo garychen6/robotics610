@@ -5,7 +5,6 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import org.crescentschool.robotics.competition.OI;
@@ -75,11 +74,7 @@ public class T_Intake extends Command {
             }
 
         }
-        if (operator.getRawAxis(InputConstants.rightYAxis) > 0.2) {
-            intaking = false;
 
-        } else if (operator.getRawAxis(InputConstants.rightYAxis) < 0.2) {
-        }
 
 
         //If intaking, bring the intake down and run the rollers
@@ -94,8 +89,8 @@ public class T_Intake extends Command {
             intakeTimer.start();
             intakeRun = true;
 
-        }  //Keep the intake running 1 second while you move the intake up. If the intake has not been run yet, DO NOT run the intake for 1 second. Wait until the button is pressed at least once first.
-        else if (intakeTimer.get() < 1 && intakeRun ) {
+        } //Keep the intake running 1 second while you move the intake up. If the intake has not been run yet, DO NOT run the intake for 1 second. Wait until the button is pressed at least once first.
+        else if (intakeTimer.get() < 1 && intakeRun) {
             Lights.getInstance().setPattern(Lights.TELE);
 
             //Bring the intake back up.
@@ -105,12 +100,15 @@ public class T_Intake extends Command {
 
         } //If the button is pressed, keep the intake up and outtake
         else if (driver.getRawButton(InputConstants.r2Button)) {
-            
+
 
             intake.setPositionDown(false);
             intake.setWrist(true);
 
             intake.setIntaking(-ElectricalConstants.intakeSpeed);
+        } else if (operator.getRawAxis(InputConstants.rightYAxis) < -0.2) {
+            intake.setPositionDown(true);
+
         } else {
 
             intake.setIntaking(0);

@@ -5,7 +5,6 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
@@ -17,16 +16,13 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  */
 public class A_PositionLock extends Command {
      private DriveTrain driveTrain;
-    private double targetInches;
-    private Preferences preferences;
-    private OI oi;
+    private double targetInches;    private OI oi;
     private Joystick driver;
    double leftStop;
      double rightStop;
     
     public A_PositionLock() {
         driveTrain = DriveTrain.getInstance();
-        preferences = Preferences.getInstance();
         this.targetInches = targetInches;
         
         
@@ -43,8 +39,7 @@ public class A_PositionLock extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        double p = preferences.getDouble("P", 0);
-        
+        double p = 0;
        
          
         double leftDifference = driveTrain.getLeftEncoderInches()-leftStop;
