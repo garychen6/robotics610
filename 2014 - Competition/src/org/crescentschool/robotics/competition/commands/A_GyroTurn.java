@@ -4,7 +4,6 @@
  */
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
@@ -19,7 +18,6 @@ public class A_GyroTurn extends Command {
 
     double targetDegrees = 0;
     private DriveTrain driveTrain;
-    private Preferences prefs;
     private int iCap = 10000;
     private int iCount = 0;
     private OI oi;
@@ -31,8 +29,7 @@ public class A_GyroTurn extends Command {
     public A_GyroTurn(double targetDegrees) {
         setTimeout(PIDConstants.gyroTurnTimeout);
         this.targetDegrees = targetDegrees;
-        //Get the robot preferences from the smartdashboard
-        prefs = Preferences.getInstance();
+        
 
         //Save the target number of inches.
         driveTrain = DriveTrain.getInstance();

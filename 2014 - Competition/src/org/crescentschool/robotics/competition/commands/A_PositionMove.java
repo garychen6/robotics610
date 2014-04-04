@@ -5,12 +5,9 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
-import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.constants.PIDConstants;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Lights;
@@ -23,7 +20,6 @@ public class A_PositionMove extends Command {
 
     private DriveTrain driveTrain;
     private double targetInches;
-    private Preferences prefs;
     private int iCap = 10000;
     private int iCount = 0;
     private OI oi;
@@ -36,8 +32,6 @@ public class A_PositionMove extends Command {
     //Create a position move
     public A_PositionMove(int targetInches, int targetAngle) {
         setTimeout(PIDConstants.positionMoveTimeout);
-        //Get the robot preferences from the smartdashboard
-        prefs = Preferences.getInstance();
 
         //Save the target number of inches.
         this.targetInches = targetInches;
@@ -50,14 +44,14 @@ public class A_PositionMove extends Command {
         oi = OI.getInstance();
         driver = oi.getDriver();
         if (targetInches > 0) {
-            if (targetAngle < 0) {
+            if (targetAngle > 0) {
                 if (Lights.getInstance().isRedAlliance()) {
                     Lights.getInstance().setPattern(Lights.HOT_LEFT_RED);
                 } else {
                     Lights.getInstance().setPattern(Lights.HOT_LEFT_BLUE);
 
                 }
-            } else if (targetInches > 0) {
+            } else if (targetInches < 0) {
                 if (Lights.getInstance().isRedAlliance()) {
                     Lights.getInstance().setPattern(Lights.HOT_RIGHT_RED);
                 } else {
@@ -78,6 +72,21 @@ public class A_PositionMove extends Command {
 
     protected void initialize() {
         System.out.println("Position Move " + targetInches + " angle " + targetAngle);
+        if (targetAngle < 0) {
+            if (Lights.getInstance().isRedAlliance()) {
+                Lights.getInstance().setPattern(Lights.HOT_LEFT_RED);
+            } else {
+                Lights.getInstance().setPattern(Lights.HOT_LEFT_BLUE);
+
+            }
+        } else if (targetAngle > 0) {
+            if (Lights.getInstance().isRedAlliance()) {
+                Lights.getInstance().setPattern(Lights.HOT_RIGHT_RED);
+            } else {
+                Lights.getInstance().setPattern(Lights.HOT_RIGHT_BLUE);
+
+            }
+        }
 
     }
 

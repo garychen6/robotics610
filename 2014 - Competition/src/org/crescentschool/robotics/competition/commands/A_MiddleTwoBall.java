@@ -4,10 +4,9 @@
  */
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
-import org.crescentschool.robotics.competition.constants.ImagingConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Lights;
@@ -20,53 +19,50 @@ public class A_MiddleTwoBall extends CommandGroup {
 
     Camera camera;
     DriveTrain driveTrain;
-    Preferences prefs;
 
     public A_MiddleTwoBall() {
-        prefs = Preferences.getInstance();
         driveTrain = DriveTrain.getInstance();
         driveTrain.resetEncoders();
         driveTrain.resetGyro();
+
         camera = Camera.getInstance();
-        int distance = 50;
+
+        int distance = 40;
         int angle = 10;
         String side = "right";
-        int goodReads = 0;
 
         camera.setRingLight(true);
+        addSequential(new A_Wait(1));
+        Timer timer = new Timer();
+        timer.reset();
+        timer.start();
 
-        int offset = camera.getOffset(ImagingConstants.middleWidthThreshold);
+        while (timer.get() < 0.5) {
+        }
+        System.out.println("Middle Two Ball");
+
+        int offset = 0;
         int count = 0;
-        while (offset == 0 && count < 100 && goodReads < 10) {
-            int newOffset = camera.getOffset(ImagingConstants.middleWidthThreshold);
-
-            if (newOffset == -1) {
-                offset = -1;
-                goodReads = 10;
-            } else if (newOffset == 1) {
-
-                goodReads++;
-                if (goodReads == 10) {
-
-                    offset = 1;
-                }
-
-            }
+        while (offset == 0 && count <100) {
+            
+            offset = camera.getOffset(10);
             count++;
         }
-        
-        addSequential(new A_Wait(0.5));
+        if(count >=100){
+            Lights.getInstance().setPattern(Lights.TELE);
+        }
+        System.out.println("Middle Two Ball");
 
 
 
         //TODO use camera.getoffset()
         if (offset == -1) {
-            if (Lights.getInstance().isRedAlliance()) {
-                Lights.getInstance().setPattern(Lights.HOT_LEFT_RED);
-            } else {
-                Lights.getInstance().setPattern(Lights.HOT_LEFT_BLUE);
-
-            }
+//            if (Lights.getInstance().isRedAlliance()) {
+//                Lights.getInstance().setPattern(Lights.HOT_LEFT_RED);
+//            } else {
+//                Lights.getInstance().setPattern(Lights.HOT_LEFT_BLUE);
+//
+//            }
             System.out.println("Going Left");
             addParallel(new A_LoadShooter());
 
@@ -81,7 +77,7 @@ public class A_MiddleTwoBall extends CommandGroup {
 
             addParallel(new A_Intake(true, true, ElectricalConstants.intakeSpeed, 1500));
 
-            addParallel(new A_PositionMove(-20, 0));
+            addParallel(new A_PositionMove((int) -(distance / 2.0), 0));
             addSequential(new A_LoadShooter());
 
             addSequential(new A_Wait(0.75));
@@ -91,7 +87,7 @@ public class A_MiddleTwoBall extends CommandGroup {
             addSequential(new A_Wait(0.2));
 
             addParallel(new A_Intake(false, false, 0, 1500));
-           
+
             addSequential(new A_PositionMove(distance + 10, angle * 2));
 
             addParallel(new A_Intake(false, false, 0, 1500));
@@ -107,7 +103,7 @@ public class A_MiddleTwoBall extends CommandGroup {
 
 
         } else {
-           
+
             System.out.println("Going Right");
 
             addParallel(new A_LoadShooter());
@@ -123,7 +119,7 @@ public class A_MiddleTwoBall extends CommandGroup {
 
             addParallel(new A_Intake(true, true, ElectricalConstants.intakeSpeed, 1500));
 
-            addParallel(new A_PositionMove(-20, 0));
+            addParallel(new A_PositionMove((int) -(distance / 2.0), 0));
             addSequential(new A_LoadShooter());
             addSequential(new A_Wait(0.75));
 
@@ -133,7 +129,7 @@ public class A_MiddleTwoBall extends CommandGroup {
 
 
             addParallel(new A_Intake(false, true, 0, 1500));
-          
+
             addSequential(new A_PositionMove(distance + 10, -angle * 2));
             addParallel(new A_Intake(false, false, 0, 1500));
             addSequential(new A_Wait(0.5));

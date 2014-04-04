@@ -33,7 +33,7 @@ public class OI {
         driver = new Joystick(1);
         operator = new Joystick(2);
         drStation = DriverStation.getInstance();
-
+        System.out.println("OI Initialized.");
     }
 
     public DriverStation getDS() {

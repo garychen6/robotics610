@@ -5,12 +5,10 @@
 package org.crescentschool.robotics.competition.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.OI;
 import org.crescentschool.robotics.competition.constants.InputConstants;
-import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Intake;
 import org.crescentschool.robotics.competition.subsystems.Catapult;
 import org.crescentschool.robotics.competition.subsystems.Lights;
@@ -28,8 +26,6 @@ public class T_Catapult extends Command {
     Joystick operator;
     boolean loaded = false;
     int loadedTime = 0;
-    Camera camera;
-    Preferences prefs;
 
     public T_Catapult() {
         System.out.println("Catapult");
@@ -38,8 +34,6 @@ public class T_Catapult extends Command {
         driver = oi.getDriver();
         intake = Intake.getInstance();
         operator = oi.getOperator();
-        camera = Camera.getInstance();
-        prefs = Preferences.getInstance();
         requires(shooter);
 
         // Use requires() here to declare subsystem dependencies
@@ -75,8 +69,7 @@ public class T_Catapult extends Command {
                     loaded = true;
                     shooter.setMain(0);
 
-                    if (operator.getRawButton(InputConstants.r2Button)) {
-                        Lights.getInstance().setPattern(Lights.SHOOT);
+                    if (operator.getRawButton(InputConstants.r2Button)||driver.getRawButton(InputConstants.l2Button)) {
                         truss = false;
 
                         firing = true;
@@ -85,10 +78,8 @@ public class T_Catapult extends Command {
                         if (!intake.getWristClosed()) {
                             fireCount = 10;
                         }
-                        System.out.println("Shot from: " + camera.getUltrasonicInches());
                         requires(intake);
                     } else if (operator.getRawButton(InputConstants.r1Button)) {
-                        Lights.getInstance().setPattern(Lights.SHOOT);
 
                         truss = true;
                         firing = true;
@@ -105,7 +96,7 @@ public class T_Catapult extends Command {
             requires(intake);
             intake.setWrist(false);
             shooter.setHardStop(truss);
-            if (fireCount < prefs.getInt("eyebrowDelay", 10)) {
+            if (fireCount < 15) {
                 shooter.setMain(0);
                 fireCount++;
             } else if (!shooter.isLoading()) {

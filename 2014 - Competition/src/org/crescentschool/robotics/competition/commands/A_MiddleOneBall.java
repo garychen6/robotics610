@@ -4,10 +4,8 @@
  */
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import org.crescentschool.robotics.competition.constants.ImagingConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Lights;
 
@@ -22,29 +20,24 @@ public class A_MiddleOneBall extends CommandGroup {
     public A_MiddleOneBall() {
 
         camera = Camera.getInstance();
+        camera.setRingLight(true);
         int distance = 50;
         int angle = 10;
         String side = "right";
         int goodReads = 0;
+        System.out.println("A_Middle One Ball");
 
-        camera.setRingLight(true);
+        addSequential(new A_Wait(1));
+        Timer timer = new Timer();
+        timer.reset();
+        timer.start();
 
-        int offset = camera.getOffset(ImagingConstants.middleWidthThreshold);
-
+        while (timer.get() < 0.5) {
+        }
+        int offset = 0;
         int count = 0;
-        while (offset == 0 && count < 100 && goodReads < 5) {
-            int newOffset = camera.getOffset(ImagingConstants.middleWidthThreshold);
-            if (newOffset == -1) {
-                offset = newOffset;
-                goodReads = 5;
-            } else if (newOffset != 0) {
-
-                goodReads++;
-                if (goodReads == 5) {
-                    offset = newOffset;
-                }
-
-            }
+        while (offset == 0 && count < 100) {
+            offset = camera.getOffset(10);
             count++;
         }
 

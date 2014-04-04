@@ -5,9 +5,7 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -32,7 +30,7 @@ public class Camera extends Subsystem {
     private AnalogChannel ultrasonic;
     private static Camera instance = null;
     private Relay ringLight;
-    private int widthThreshold = 15;
+    private int widthThreshold = 10;
     private double ultrasonicReading = 0;
 
     private Camera() {
@@ -53,12 +51,11 @@ public class Camera extends Subsystem {
         return instance;
     }
 
-    public double getUltrasonicInches() {
-        double newValue = ultrasonic.getAverageVoltage() * ElectricalConstants.ultrasonicVtoF;
-        return newValue;
-
-    }
-
+//    public double getUltrasonicInches() {
+//        double newValue = ultrasonic.getAverageVoltage() * ElectricalConstants.ultrasonicVtoF;
+//        return newValue;
+//
+//    }
     public void processCamera() {
         camera = AxisCamera.getInstance();
 
@@ -95,6 +92,9 @@ public class Camera extends Subsystem {
                     int rightArea = 0;
                     //Iterate through the particles
                     for (int i = 0; i < analysis.length; i++) {
+                        
+//                                                    System.out.println(i + " " + analysis[i].particleArea + " " + analysis[i].boundingRectWidth);
+
                         //If the particle area is more than 50
                         if (analysis[i].particleArea > 20 && analysis[i].boundingRectWidth > widthThreshold) {
                             //Add it to the left or the area  count
@@ -137,7 +137,7 @@ public class Camera extends Subsystem {
     //runs processcamera and then returns the offset given out.
 
     public int getOffset(int widthThreshold) {
-        this.widthThreshold = widthThreshold;
+//        this.widthThreshold = widthThreshold;
         processCamera();
         return offset;
     }

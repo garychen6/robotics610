@@ -5,7 +5,6 @@
 package org.crescentschool.robotics.competition.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -48,7 +47,7 @@ public class Intake extends Subsystem {
     public void setIntaking(double intaking) {
         double voltage = OI.getInstance().getDS().getBatteryVoltage();
         SmartDashboard.putNumber("Battery Voltage", voltage);
-        double targetVolts = intaking*12;
+        double targetVolts = -intaking*12;
         double newPercentage = targetVolts/voltage;
         leftRoller.set(-newPercentage);
         rightRoller.set(newPercentage);

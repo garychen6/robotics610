@@ -4,11 +4,7 @@
  */
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import org.crescentschool.robotics.competition.constants.ImagingConstants;
-import org.crescentschool.robotics.competition.subsystems.Camera;
 
 /**
  *
@@ -18,13 +14,7 @@ public class A_DriveForward extends CommandGroup {
 
     public A_DriveForward() {
 
-
-
-
-        addSequential(new A_PositionMove(50, 0));
-
-
-
+        addSequential(new A_PositionMove(50, -1));
 
     }
 }

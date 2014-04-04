@@ -4,8 +4,6 @@
  */
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.crescentschool.robotics.competition.constants.ImagingConstants;
 import org.crescentschool.robotics.competition.subsystems.Camera;
@@ -19,7 +17,7 @@ public class A_LeftStraightOneBall extends CommandGroup {
     Camera camera;
 
     public A_LeftStraightOneBall() {
-
+        System.out.println("Left Straight One Ball");
         camera = Camera.getInstance();
         int distance = 50;
         String side = "right";
@@ -27,23 +25,23 @@ public class A_LeftStraightOneBall extends CommandGroup {
 
         camera.setRingLight(true);
 
-        int offset = camera.getOffset(ImagingConstants.middleWidthThreshold);
+        int offset = -1;
         int count = 0;
-        while (offset == 0 && count < 100 && goodReads < 5) {
-            int newOffset = camera.getOffset(ImagingConstants.middleWidthThreshold);
-            if (newOffset == 1) {
-                offset = newOffset;
-                goodReads = 5;
-            } else if (newOffset != 0) {
-
-                goodReads++;
-                if (goodReads == 5) {
-                    offset = newOffset;
-                }
-
-            }
-            count++;
-        }
+//        while (offset == 0 && count < 100 && goodReads < 5) {
+//            int newOffset = camera.getOffset(ImagingConstants.middleWidthThreshold);
+//            if (newOffset == 1) {
+//                offset = newOffset;
+//                goodReads = 5;
+//            } else if (newOffset != 0) {
+//
+//                goodReads++;
+//                if (goodReads == 5) {
+//                    offset = newOffset;
+//                }
+//
+//            }
+//            count++;
+//        }
 
         if (offset < 0) {
             side = "Going Left";
@@ -65,6 +63,7 @@ public class A_LeftStraightOneBall extends CommandGroup {
         addParallel(new A_Intake(false, false, 0, 1500));
         addSequential(new A_Wait(0.2));
         addSequential(new A_FireShooter());
+        addSequential(new A_LoadShooter());
 
 
     }

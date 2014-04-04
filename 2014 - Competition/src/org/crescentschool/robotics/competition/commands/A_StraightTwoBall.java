@@ -4,10 +4,8 @@
  */
 package org.crescentschool.robotics.competition.commands;
 
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.crescentschool.robotics.competition.constants.ElectricalConstants;
-import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 
 /**
@@ -16,14 +14,13 @@ import org.crescentschool.robotics.competition.subsystems.DriveTrain;
  */
 public class A_StraightTwoBall extends CommandGroup {
 
-    Camera camera;
     DriveTrain driveTrain;
 
     public A_StraightTwoBall() {
         driveTrain = DriveTrain.getInstance();
         driveTrain.resetEncoders();
-        camera = Camera.getInstance();
         int distance = 50;
+
         addParallel(new A_LoadShooter());
 
 
