@@ -32,6 +32,7 @@ public class DriveTrain extends Subsystem {
         rightFront = new Talon(ElectricalConstants.talonDriveRightFront);
         rightMiddle = new Talon(ElectricalConstants.talonDriveRightMiddle);
         rightBack = new Talon(ElectricalConstants.talonDriveRightBack);
+        
         //Initialize and start the encoders.
         leftEncoder = new Encoder(ElectricalConstants.leftEncoderASource, ElectricalConstants.leftEncoderBSource);
         rightEncoder = new Encoder(ElectricalConstants.rightEncoderASource, ElectricalConstants.rightEncoderBSource);

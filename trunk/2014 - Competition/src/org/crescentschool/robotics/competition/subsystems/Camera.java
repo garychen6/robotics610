@@ -96,12 +96,12 @@ public class Camera extends Subsystem {
 //                                                    System.out.println(i + " " + analysis[i].particleArea + " " + analysis[i].boundingRectWidth);
 
                         //If the particle area is more than 50
-                        if (analysis[i].particleArea > 20 && analysis[i].boundingRectWidth > widthThreshold) {
+                        if (analysis[i].particleArea > 40 && analysis[i].boundingRectWidth > widthThreshold) {
                             //Add it to the left or the area  count
                             offset = -1;
                             i = analysis.length;
                             break;
-                        } else if (analysis[i].particleArea > 20 && analysis[i].boundingRectWidth <= widthThreshold) {
+                        } else if (analysis[i].particleArea > 40 && analysis[i].boundingRectWidth <= widthThreshold) {
                             offset = 1;
                         }
                     }
@@ -113,6 +113,7 @@ public class Camera extends Subsystem {
 //                    Display a message if no particles were found
 //                    System.out.println("Goal not found");
                 }
+                
 
                 SmartDashboard.putNumber("offset", offset);
             }
