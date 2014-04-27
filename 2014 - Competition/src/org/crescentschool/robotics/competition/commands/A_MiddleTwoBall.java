@@ -37,18 +37,18 @@ public class A_MiddleTwoBall extends CommandGroup {
         timer.reset();
         timer.start();
 
-        while (timer.get() < 0.5) {
+        while (timer.get() < 1) {
         }
         System.out.println("Middle Two Ball");
 
         int offset = 0;
         int count = 0;
-        while (offset == 0 && count <100) {
-            
+        while (offset == 0 && count < 100) {
+
             offset = camera.getOffset(10);
             count++;
         }
-        if(count >=100){
+        if (count >= 100) {
             Lights.getInstance().setPattern(Lights.TELE);
         }
         System.out.println("Middle Two Ball");
@@ -57,12 +57,7 @@ public class A_MiddleTwoBall extends CommandGroup {
 
         //TODO use camera.getoffset()
         if (offset == -1) {
-//            if (Lights.getInstance().isRedAlliance()) {
-//                Lights.getInstance().setPattern(Lights.HOT_LEFT_RED);
-//            } else {
-//                Lights.getInstance().setPattern(Lights.HOT_LEFT_BLUE);
-//
-//            }
+           
             System.out.println("Going Left");
             addParallel(new A_LoadShooter());
 
@@ -77,7 +72,7 @@ public class A_MiddleTwoBall extends CommandGroup {
 
             addParallel(new A_Intake(true, true, ElectricalConstants.intakeSpeed, 1500));
 
-            addParallel(new A_PositionMove((int) -(distance / 2.0), 0));
+            addParallel(new A_PositionMove((int) -40, 0));
             addSequential(new A_LoadShooter());
 
             addSequential(new A_Wait(0.75));
@@ -103,7 +98,7 @@ public class A_MiddleTwoBall extends CommandGroup {
 
 
         } else {
-
+            
             System.out.println("Going Right");
 
             addParallel(new A_LoadShooter());

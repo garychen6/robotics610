@@ -8,6 +8,7 @@ package org.crescentschool.robotics.competition;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -15,13 +16,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.crescentschool.robotics.competition.commands.A_DriveForward;
 import org.crescentschool.robotics.competition.commands.A_LeftStraightOneBall;
 import org.crescentschool.robotics.competition.commands.A_MiddleOneBall;
+import org.crescentschool.robotics.competition.commands.A_MiddleOneBallLeft;
+import org.crescentschool.robotics.competition.commands.A_MiddleOneBallRight;
 import org.crescentschool.robotics.competition.commands.A_MiddleTwoBall;
+import org.crescentschool.robotics.competition.commands.A_MiddleTwoBallLeft;
+import org.crescentschool.robotics.competition.commands.A_MiddleTwoBallRight;
 import org.crescentschool.robotics.competition.commands.A_RightStraightOneBall;
 import org.crescentschool.robotics.competition.commands.A_StraightTwoBall;
 import org.crescentschool.robotics.competition.constants.InputConstants;
 import org.crescentschool.robotics.competition.controls.DriverControls;
 import org.crescentschool.robotics.competition.subsystems.BackgroundCompressor;
+import org.crescentschool.robotics.competition.subsystems.Camera;
 import org.crescentschool.robotics.competition.subsystems.Catapult;
+import org.crescentschool.robotics.competition.subsystems.DriveTrain;
 import org.crescentschool.robotics.competition.subsystems.Lights;
 
 /**
@@ -36,10 +43,14 @@ public class Coyobot extends IterativeRobot {
     BackgroundCompressor backgroundCompressor;
     OI oi;
     Catapult shooter;
-    Command autonomousCommand;
+    Command rightAutonomousCommand;
+    Command leftAutonomousCommand;
     Joystick driver;
     Joystick operator;
     int autoMode = -1;
+    Timer timer;
+    boolean autonomousStarted = false;
+    int count = 0;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -56,30 +67,58 @@ public class Coyobot extends IterativeRobot {
         Lights.getInstance().setPattern(Lights.TELE);
         Scheduler.getInstance().removeAll();
 
-        autonomousCommand = new A_LeftStraightOneBall();
+        rightAutonomousCommand = new A_LeftStraightOneBall();
+        leftAutonomousCommand = new A_LeftStraightOneBall();
+
     }
 
     /**
      * This function is run when autonomous mode starts.
      */
     public void autonomousInit() {
-//        autonomousCommand = new A_MiddleOneBall();
+        autonomousStarted = false;
         System.out.println("Auto Init");
-//        if (autonomousCommand == null) {
-//            autonomousCommand = new A_MiddleOneBall();
-//        }
-//
-//        System.out.println("Auto start");
-        autonomousCommand.start();
-        // schedule the autonomous command (example)
+        timer = new Timer();
+        timer.reset();
+        timer.start();
+        if (autoMode != 0 && autoMode != 1) {
+            autonomousStarted = true;
+            rightAutonomousCommand.start();
+        }
+
     }
 
     /**
      * This function is called periodically during autonomous.
      */
     public void autonomousPeriodic() {
+
 //        System.out.println("Auto");
-        Scheduler.getInstance().run();
+        if ((autoMode == 0 || autoMode == 1) && !autonomousStarted) {
+            if (timer.get() > 1) {
+                int offset = 0;
+                offset = Camera.getInstance().getOffset(10);
+
+                if (offset == 0 && count < 100) {
+
+                    count++;
+                } else {
+                    if (offset < 0) {
+                        System.out.println("Left");
+                        autonomousStarted = true;
+                        leftAutonomousCommand.start();
+                    } else {
+                        System.out.println("Right");
+                        autonomousStarted = true;
+                        rightAutonomousCommand.start();
+                    }
+                }
+            }
+        } else {
+            Scheduler.getInstance().run();
+
+        }
+
     }
 
     /**
@@ -107,6 +146,7 @@ public class Coyobot extends IterativeRobot {
 //        SmartDashboard.putString("Auto", "None");
 //    }
     public void disabledPeriodic() {
+        SmartDashboard.putNumber("Gyro", DriveTrain.getInstance().getGyroDegrees());
         if (operator.getRawButton(InputConstants.squareButton)) {
             Lights.getInstance().setRedAlliance(false);
         } else if (operator.getRawButton(InputConstants.oButton)) {
@@ -123,64 +163,77 @@ public class Coyobot extends IterativeRobot {
             SmartDashboard.putString("Alliance", "Blue");
 
         }
-//        if (driver.getRawButton(InputConstants.triangleButton) && autoMode != 0) {
-//            autoMode = 0;
-//            autonomousCommand = new A_MiddleTwoBall();
-//
-//        } else if (driver.getRawButton(InputConstants.xButton) && autoMode != 1) {
-//
-//            autoMode = 1;
-//            autonomousCommand = new A_MiddleTwoBall();
-//
-//        } else if (driver.getRawButton(InputConstants.squareButton) && autoMode != 2) {
-//
-//            autoMode = 2;
-//            autonomousCommand = new A_LeftStraightOneBall();
-//
-//        } else if (driver.getRawButton(InputConstants.oButton) && autoMode != 3) {
-//
-//            autoMode = 3;
-//            autonomousCommand = new A_RightStraightOneBall();
-//
-//        } else if (driver.getRawButton(InputConstants.r1Button) && autoMode != 4) {
-//
-//            autoMode = 4;
-//            autonomousCommand = new A_StraightTwoBall();
-//
-//        } else if (driver.getRawButton(InputConstants.r2Button) && autoMode != 5) {
-//
-//            autoMode = 5;
-//            autonomousCommand = new A_DriveForward();
-//
-//        }
-//        switch (autoMode) {
-//            case -1:
-//                SmartDashboard.putString("Auto", "None");
-//                break;
-//            case 0:
-//                SmartDashboard.putString("Auto", "Middle Two Ball");
-//                break;
-//            case 1:
-//                SmartDashboard.putString("Auto", "Middle One Ball");
-//
-//                break;
-//            case 2:
-//                SmartDashboard.putString("Auto", "Left Straight One Ball");
-//
-//                break;
-//            case 3:
-//                SmartDashboard.putString("Auto", "Right Straight One Ball");
-//                break;
-//            case 4:
-//                SmartDashboard.putString("Auto", "Straight Two Ball");
-//                break;
-//            case 5:
-//                SmartDashboard.putString("Auto", "Drive Forward");
-//                break;
-//            default:
-//                SmartDashboard.putString("Auto", "Middle One Ball");
-//                break;
-//        }
+        if (driver.getRawButton(InputConstants.triangleButton) && autoMode != 0) {
+            autoMode = 0;
+            Scheduler.getInstance().removeAll();
+            rightAutonomousCommand = new A_MiddleTwoBallRight();
+            leftAutonomousCommand = new A_MiddleTwoBallLeft();
+
+        } else if (driver.getRawButton(InputConstants.xButton) && autoMode != 1) {
+
+            autoMode = 1;
+            Scheduler.getInstance().removeAll();
+
+            rightAutonomousCommand = new A_MiddleOneBallRight();
+            leftAutonomousCommand = new A_MiddleOneBallLeft();
+
+        } else if (driver.getRawButton(InputConstants.squareButton) && autoMode != 2) {
+
+            autoMode = 2;
+            Scheduler.getInstance().removeAll();
+
+            rightAutonomousCommand = new A_LeftStraightOneBall();
+
+        } else if (driver.getRawButton(InputConstants.oButton) && autoMode != 3) {
+
+            autoMode = 3;
+            Scheduler.getInstance().removeAll();
+
+            rightAutonomousCommand = new A_RightStraightOneBall();
+
+        } else if (driver.getRawButton(InputConstants.r1Button) && autoMode != 4) {
+
+            autoMode = 4;
+            Scheduler.getInstance().removeAll();
+
+            rightAutonomousCommand = new A_StraightTwoBall();
+
+        } else if (driver.getRawButton(InputConstants.r2Button) && autoMode != 5) {
+
+            autoMode = 5;
+            Scheduler.getInstance().removeAll();
+
+            rightAutonomousCommand = new A_DriveForward();
+
+        }
+        switch (autoMode) {
+            case -1:
+                SmartDashboard.putString("Auto", "None");
+                break;
+            case 0:
+                SmartDashboard.putString("Auto", "Middle Two Ball");
+                break;
+            case 1:
+                SmartDashboard.putString("Auto", "Middle One Ball");
+
+                break;
+            case 2:
+                SmartDashboard.putString("Auto", "Left Straight One Ball");
+
+                break;
+            case 3:
+                SmartDashboard.putString("Auto", "Right Straight One Ball");
+                break;
+            case 4:
+                SmartDashboard.putString("Auto", "Straight Two Ball");
+                break;
+            case 5:
+                SmartDashboard.putString("Auto", "Drive Forward");
+                break;
+            default:
+                SmartDashboard.putString("Auto", "Middle One Ball");
+                break;
+        }
     }
 
     /**

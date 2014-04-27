@@ -15,12 +15,12 @@ public class ImagingConstants {
      * The maximum red value that an individual pixel in a camera image may have
      * to be included in the threshold
      */
-    public static final int HThresholdMax = 110;
+    public static final int HThresholdMax = 90;
     /**
      * The minimum green value that an individual pixel in a camera image may
      * have to be included in the threshold
      */
-    public static final int SThresholdMin = 70;
+    public static final int SThresholdMin = 50;
     /**
      * The minimum green value that an individual pixel in a camera image may
      * have to be included in the threshold
@@ -30,7 +30,7 @@ public class ImagingConstants {
      * The minimum blue value that an individual pixel in a camera image may
      * have to be included in the threshold
      */
-    public static final int VThresholdMin = 64;
+    public static final int VThresholdMin = 50;
     /**
      * The minimum blue value that an individual pixel in a camera image may
      * have to be included in the threshold
