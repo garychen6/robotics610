@@ -30,10 +30,12 @@ public class A_LoadShooter extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+//        if the sensor is not tripped, load the shooter
         if (shooter.isLoading()) {
             shooter.setMain(-1);
             finishedCount = 0;
         } else {
+            //stop the shooter once it gets to the black part of the disc
             shooter.setMain(0);
             if(finishedCount<20){
                 finishedCount++;

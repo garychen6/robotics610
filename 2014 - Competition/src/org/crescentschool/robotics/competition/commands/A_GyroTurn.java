@@ -18,8 +18,6 @@ public class A_GyroTurn extends Command {
 
     double targetDegrees = 0;
     private DriveTrain driveTrain;
-    private int iCap = 10000;
-    private int iCount = 0;
     private OI oi;
     private boolean finished = false;
     private int finishedCount = 0;
@@ -61,18 +59,11 @@ public class A_GyroTurn extends Command {
             double rightSpeed = -error * p;
 
             SmartDashboard.putNumber("Gyro", gyro);
-
-            if (iCount < iCap) {
-                iCount++;
-            }
-            if (iCount > -iCap) {
-                iCount--;
-            }
+           
 
             if (Math.abs(error) < 5) {
 
                 finishedCount++;
-                iCount = 0;
 
                 if (finishedCount > 10) {
 
@@ -81,15 +72,6 @@ public class A_GyroTurn extends Command {
 
             } else {
                 finishedCount = 0;
-            }
-
-            SmartDashboard.putNumber("turnI", iCount * i);
-            if (targetDegrees < 0) {
-                leftSpeed += i * iCount;
-                rightSpeed -= i * iCount;
-            } else {
-                leftSpeed -= i * iCount;
-                rightSpeed += i * iCount;
             }
 
             driveTrain.setLeftVBus(leftSpeed);
@@ -103,7 +85,7 @@ public class A_GyroTurn extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-
+        
         if (Math.abs(driveTrain.getLeftEncoderInches()) > PIDConstants.gyroPositionCheck || badGyro) {
             badGyro = true;
             return false;

@@ -66,7 +66,7 @@ public class Coyobot extends IterativeRobot {
 
         Lights.getInstance().setPattern(Lights.TELE);
         Scheduler.getInstance().removeAll();
-
+        //Default autonomous command
         rightAutonomousCommand = new A_LeftStraightOneBall();
         leftAutonomousCommand = new A_LeftStraightOneBall();
 
@@ -76,11 +76,14 @@ public class Coyobot extends IterativeRobot {
      * This function is run when autonomous mode starts.
      */
     public void autonomousInit() {
+        //Reset autonomous
         autonomousStarted = false;
         System.out.println("Auto Init");
+        //Restart the 1 second timer for vision
         timer = new Timer();
         timer.reset();
         timer.start();
+        //If vision is not involved, just start
         if (autoMode != 0 && autoMode != 1) {
             autonomousStarted = true;
             rightAutonomousCommand.start();
@@ -92,22 +95,25 @@ public class Coyobot extends IterativeRobot {
      * This function is called periodically during autonomous.
      */
     public void autonomousPeriodic() {
-
-//        System.out.println("Auto");
+        //If this is vision, and autonomous hasn't been started yet
         if ((autoMode == 0 || autoMode == 1) && !autonomousStarted) {
+            //After 1 second has passed
             if (timer.get() > 1) {
+                //Grab the offset from the camera
                 int offset = 0;
                 offset = Camera.getInstance().getOffset(10);
-
+                //Keep running until a value of 1 or -1 is received
                 if (offset == 0 && count < 100) {
 
                     count++;
                 } else {
+                    //If its left, run the left auto
                     if (offset < 0) {
                         System.out.println("Left");
                         autonomousStarted = true;
                         leftAutonomousCommand.start();
                     } else {
+                        //run the right auto
                         System.out.println("Right");
                         autonomousStarted = true;
                         rightAutonomousCommand.start();
@@ -125,7 +131,9 @@ public class Coyobot extends IterativeRobot {
      * This function is run when driver control starts.
      */
     public void teleopInit() {
+        //Remove everything from the scheduler
         Scheduler.getInstance().removeAll();
+        //Start driver controls
         Scheduler.getInstance().add(new DriverControls());
         Lights.getInstance().setPattern(Lights.TELE);
 
@@ -141,12 +149,11 @@ public class Coyobot extends IterativeRobot {
         Scheduler.getInstance().run();
     }
 
-//    public void disabledInit() {
-////        autonomousCommand = new A_MiddleTwoBall();
-//        SmartDashboard.putString("Auto", "None");
-//    }
+
     public void disabledPeriodic() {
+        //Post the gyro value to the dashboard
         SmartDashboard.putNumber("Gyro", DriveTrain.getInstance().getGyroDegrees());
+        //Change the  colour of the lights depending on the alliance
         if (operator.getRawButton(InputConstants.squareButton)) {
             Lights.getInstance().setRedAlliance(false);
         } else if (operator.getRawButton(InputConstants.oButton)) {
@@ -163,6 +170,7 @@ public class Coyobot extends IterativeRobot {
             SmartDashboard.putString("Alliance", "Blue");
 
         }
+        //Change the autonomous command based on button presses
         if (driver.getRawButton(InputConstants.triangleButton) && autoMode != 0) {
             autoMode = 0;
             Scheduler.getInstance().removeAll();
@@ -206,6 +214,7 @@ public class Coyobot extends IterativeRobot {
             rightAutonomousCommand = new A_DriveForward();
 
         }
+        //Depending on the automode, post a string to the dashboard
         switch (autoMode) {
             case -1:
                 SmartDashboard.putString("Auto", "None");
