@@ -31,11 +31,12 @@ public class A_FireShooter extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        
+        //Count to 10 and run the shooter
         if (fireCount < 10) {
             shooter.setMain(-1);
             fireCount++;
         } else {
+            //After 10, stop the catapult, finish the command
             finished = true;
             shooter.setMain(0);
            

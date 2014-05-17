@@ -51,11 +51,7 @@ public class Camera extends Subsystem {
         return instance;
     }
 
-//    public double getUltrasonicInches() {
-//        double newValue = ultrasonic.getAverageVoltage() * ElectricalConstants.ultrasonicVtoF;
-//        return newValue;
-//
-//    }
+
     public void processCamera() {
         camera = AxisCamera.getInstance();
 
@@ -93,7 +89,6 @@ public class Camera extends Subsystem {
                     //Iterate through the particles
                     for (int i = 0; i < analysis.length; i++) {
                         
-//                                                    System.out.println(i + " " + analysis[i].particleArea + " " + analysis[i].boundingRectWidth);
 
                         //If the particle area is more than 50
                         if (analysis[i].particleArea > 40 && analysis[i].boundingRectWidth > widthThreshold) {

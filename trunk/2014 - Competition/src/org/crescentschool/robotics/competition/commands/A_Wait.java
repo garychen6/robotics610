@@ -29,6 +29,7 @@ public class A_Wait extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
+        //Simply wait for the command to time out
         if(isTimedOut()){
             System.out.println("Finished waiting");
         }

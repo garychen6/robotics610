@@ -30,7 +30,7 @@ public class A_StraightTwoBall extends CommandGroup {
         addParallel(new A_Intake(false, false, 0, 1500));
         addSequential(new A_Wait(0.1));
 
-//        addSequential(new A_FireShooter());
+        addSequential(new A_FireShooter());
 
         addParallel(new A_LoadShooter());
         addSequential(new A_Wait(0.75));
@@ -49,7 +49,7 @@ public class A_StraightTwoBall extends CommandGroup {
         addParallel(new A_Intake(false, false, 0, 1500));
         addSequential(new A_Wait(0.3));
 
-//        addSequential(new A_FireShooter());
+        addSequential(new A_FireShooter());
         addSequential(new A_LoadShooter());
 
 

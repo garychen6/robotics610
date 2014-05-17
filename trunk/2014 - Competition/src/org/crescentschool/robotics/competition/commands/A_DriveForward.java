@@ -21,22 +21,10 @@ public class A_DriveForward extends CommandGroup {
             Lights.getInstance().setPattern(Lights.HOT_LEFT_BLUE);
 
         }
+        
         System.out.println("Drive Forward");
         addSequential(new A_PositionMove(70, 0));
 
-        addParallel(new A_LoadShooter());
 
-        addParallel(new A_Intake(true, true, ElectricalConstants.intakeSpeed, 1500));
-
-        addSequential(new A_PositionMove(-70, 0));
-        addSequential(new A_Wait(0.3));
-
-        addParallel(new A_Intake(false, true, 0, 1500));
-
-        addSequential(new A_Wait(0.75));
-
-        addSequential(new A_PositionMove(70, 0));
-        addParallel(new A_Intake(false, false, 0, 1500));
-        addSequential(new A_Wait(0.3));
     }
 }
