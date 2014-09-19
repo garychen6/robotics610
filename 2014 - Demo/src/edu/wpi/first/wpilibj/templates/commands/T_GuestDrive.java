@@ -40,9 +40,9 @@ public class T_GuestDrive extends Command {
     protected void execute() {
         //Create variables for x, y, right speed and the left speed
         double rightSpeed, leftSpeed, x, y;
-        if (Math.abs(driver.getRawAxis(InputConstants.rightXAxis)) > 0.1 || Math.abs(driver.getRawAxis(InputConstants.rightYAxis)) > 0.1 || Math.abs(driver.getRawAxis(InputConstants.leftXAxis)) > 0.1 || Math.abs(driver.getRawAxis(InputConstants.rightYAxis)) > 0.1) {
+        if (Math.abs(driver.getRawAxis(InputConstants.rightXAxis)) > 0.1 || Math.abs(driver.getRawAxis(InputConstants.rightYAxis)) > 0.1 || Math.abs(driver.getRawAxis(InputConstants.leftXAxis)) > 0.1 || Math.abs(driver.getRawAxis(InputConstants.leftYAxis)) > 0.1) {
             guestAccess = false;
-        } else if (driver.getRawButton(InputConstants.r1Button) && guestAccess == false) {
+        } else if (driver.getRawButton(InputConstants.squareButton) && guestAccess == false) {
             guestAccess = true;
             System.out.println("Guest Access Enabled");
         }
