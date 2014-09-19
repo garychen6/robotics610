@@ -1,0 +1,102 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package edu.wpi.first.wpilibj.templates.commands;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.templates.OI;
+import edu.wpi.first.wpilibj.templates.subsystems.Camera;
+import edu.wpi.first.wpilibj.templates.subsystems.Catapult;
+import edu.wpi.first.wpilibj.templates.subsystems.DriveTrain;
+import edu.wpi.first.wpilibj.templates.subsystems.Intake;
+import org.crescentschool.robotics.competition.constants.InputConstants;
+
+/**
+ *
+ * @author ianlo
+ */
+public class DriverControls extends Command {
+
+    OI oi;
+    Joystick driver;
+    DriveTrain driveTrain;
+    Intake intake;
+    Catapult shooter;
+    int driveMode = 0;
+    Camera camera;
+    boolean ringLightButtonPressed = false;
+    boolean camLightOn = false;
+    Joystick operator;
+    int count = 0;
+    int[] pastUltrasonicReads = new int[10];
+
+    public DriverControls() {
+        System.out.println("Driver Controls");
+        oi = OI.getInstance();
+        driver = oi.getDriver();
+        shooter = Catapult.getInstance();
+        driveTrain = DriveTrain.getInstance();
+        intake = Intake.getInstance();
+        driveTrain.resetEncoders();
+        camera = Camera.getInstance();
+        operator = oi.getOperator();
+        Scheduler.getInstance().add(new T_GuestDrive());
+        Scheduler.getInstance().add(new T_Intake());
+        Scheduler.getInstance().add(new T_Catapult());
+
+
+        // camera = Camera.getInstance();
+        System.out.println("Driver Controls");
+        driveMode = 4;
+    }
+
+    // Called just before this Command runs the first time
+    protected void initialize() {
+    }
+
+    // Called repeatedly when this Command is scheduled to run
+    protected void execute() {
+
+        SmartDashboard.putNumber("Gyro", driveTrain.getGyroDegrees());
+        SmartDashboard.putNumber("leftEnc", driveTrain.getLeftEncoderInches());
+        SmartDashboard.putNumber("rightEnc", driveTrain.getRightEncoderInches());
+
+        //Turn the light on/off with the start button
+        if (driver.getRawButton(InputConstants.startButton) && !ringLightButtonPressed) {
+            ringLightButtonPressed = true;
+
+            camLightOn = !camLightOn;
+
+        } else if (!driver.getRawButton(InputConstants.startButton)) {
+            ringLightButtonPressed = false;
+        }
+        camera.setRingLight(camLightOn);
+
+
+        if ((Math.abs(driver.getRawAxis(InputConstants.leftYAxis)) > 0.2 || Math.abs(driver.getRawAxis(InputConstants.rightXAxis)) > 0.2) && driveMode != 4) {
+
+            driveMode = 4;
+
+            Scheduler.getInstance().add(new T_KajDrive());
+
+        }
+    }
+
+    // Make this return true when this Command no longer needs to run execute()
+    protected boolean isFinished() {
+        return false;
+    }
+
+    // Called once after isFinished returns true
+    protected void end() {
+    }
+
+    // Called when another command which requires one or more of the same
+    // subsystems is scheduled to run
+    protected void interrupted() {
+    }
+}
