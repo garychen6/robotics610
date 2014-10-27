@@ -7,7 +7,7 @@ You can download eclipse here:  https://www.eclipse.org/downloads/
 
 
 
-Downloading the FRC Plugins:
+==Downloading the FRC Plugins:==
 You can download the FRC plugins here: 
 http://first.wpi.edu/FRC/roborio/release/eclipse/
 To install them, save them to a folder on your computer and open Eclipse. On eclipse go to the Help tab, then to Install New Software. 
