@@ -5,5 +5,5 @@ You can download eclipse here:  https://www.eclipse.org/downloads/
 
 Downloading the FRC Plugins:
 You can download the FRC plugins here: 
-To install them, save them to a folder on your computer and open Eclipse. On eclipse go to the Window tab, then too
+To install them, save them to a folder on your computer and open Eclipse. On eclipse go to the Help tab, then to Install New Software. 
 NetBeans is the preferred Java IDE for use by FRC teams using Java because the plugins for the WPIlib FRC library are developed exclusively for NetBeans.
